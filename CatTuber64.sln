@@ -1,0 +1,70 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36221.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CatTuber64", "CatTuber64\CatTuber64.vcxproj", "{8418A437-A178-4A09-8EFC-EE77150B05AB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ThirdPart", "ThirdPart", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SDL3", "..\ThirdPart\SDL-release-3.2.16\VisualC\SDL\SDL.vcxproj", "{81CE8DAF-EBB2-4761-8E45-B71ABCCA8C68}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Live2DFramework", "..\ThirdPart\CubismSdkForNative-5-r.4.1\Samples\D3D11\Demo\proj.d3d11.cmake\build\proj_msvc2022_x64_md\Framework\Framework.vcxproj", "{3B372482-8D89-3F80-A7BC-9C34DD4070B6}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SDL3_image", "..\ThirdPart\SDL_image-release-3.2.4\VisualC\SDL_image.vcxproj", "{2BD5534E-00E2-4BEA-AC96-D9A92EA24696}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{3B3D925B-41CF-4FC3-B6C5-661248FB2518}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8418A437-A178-4A09-8EFC-EE77150B05AB}.Debug|x64.ActiveCfg = Debug|x64
+		{8418A437-A178-4A09-8EFC-EE77150B05AB}.Debug|x64.Build.0 = Debug|x64
+		{8418A437-A178-4A09-8EFC-EE77150B05AB}.Debug|x86.ActiveCfg = Debug|Win32
+		{8418A437-A178-4A09-8EFC-EE77150B05AB}.Debug|x86.Build.0 = Debug|Win32
+		{8418A437-A178-4A09-8EFC-EE77150B05AB}.Release|x64.ActiveCfg = Release|x64
+		{8418A437-A178-4A09-8EFC-EE77150B05AB}.Release|x64.Build.0 = Release|x64
+		{8418A437-A178-4A09-8EFC-EE77150B05AB}.Release|x86.ActiveCfg = Release|Win32
+		{8418A437-A178-4A09-8EFC-EE77150B05AB}.Release|x86.Build.0 = Release|Win32
+		{81CE8DAF-EBB2-4761-8E45-B71ABCCA8C68}.Debug|x64.ActiveCfg = Debug|x64
+		{81CE8DAF-EBB2-4761-8E45-B71ABCCA8C68}.Debug|x64.Build.0 = Debug|x64
+		{81CE8DAF-EBB2-4761-8E45-B71ABCCA8C68}.Debug|x86.ActiveCfg = Debug|Win32
+		{81CE8DAF-EBB2-4761-8E45-B71ABCCA8C68}.Debug|x86.Build.0 = Debug|Win32
+		{81CE8DAF-EBB2-4761-8E45-B71ABCCA8C68}.Release|x64.ActiveCfg = Release|x64
+		{81CE8DAF-EBB2-4761-8E45-B71ABCCA8C68}.Release|x64.Build.0 = Release|x64
+		{81CE8DAF-EBB2-4761-8E45-B71ABCCA8C68}.Release|x86.ActiveCfg = Release|Win32
+		{81CE8DAF-EBB2-4761-8E45-B71ABCCA8C68}.Release|x86.Build.0 = Release|Win32
+		{3B372482-8D89-3F80-A7BC-9C34DD4070B6}.Debug|x64.ActiveCfg = Debug|x64
+		{3B372482-8D89-3F80-A7BC-9C34DD4070B6}.Debug|x64.Build.0 = Debug|x64
+		{3B372482-8D89-3F80-A7BC-9C34DD4070B6}.Debug|x86.ActiveCfg = Debug|x64
+		{3B372482-8D89-3F80-A7BC-9C34DD4070B6}.Debug|x86.Build.0 = Debug|x64
+		{3B372482-8D89-3F80-A7BC-9C34DD4070B6}.Release|x64.ActiveCfg = Release|x64
+		{3B372482-8D89-3F80-A7BC-9C34DD4070B6}.Release|x64.Build.0 = Release|x64
+		{3B372482-8D89-3F80-A7BC-9C34DD4070B6}.Release|x86.ActiveCfg = Release|x64
+		{3B372482-8D89-3F80-A7BC-9C34DD4070B6}.Release|x86.Build.0 = Release|x64
+		{2BD5534E-00E2-4BEA-AC96-D9A92EA24696}.Debug|x64.ActiveCfg = Debug|x64
+		{2BD5534E-00E2-4BEA-AC96-D9A92EA24696}.Debug|x64.Build.0 = Debug|x64
+		{2BD5534E-00E2-4BEA-AC96-D9A92EA24696}.Debug|x86.ActiveCfg = Debug|Win32
+		{2BD5534E-00E2-4BEA-AC96-D9A92EA24696}.Debug|x86.Build.0 = Debug|Win32
+		{2BD5534E-00E2-4BEA-AC96-D9A92EA24696}.Release|x64.ActiveCfg = Release|x64
+		{2BD5534E-00E2-4BEA-AC96-D9A92EA24696}.Release|x64.Build.0 = Release|x64
+		{2BD5534E-00E2-4BEA-AC96-D9A92EA24696}.Release|x86.ActiveCfg = Release|Win32
+		{2BD5534E-00E2-4BEA-AC96-D9A92EA24696}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{81CE8DAF-EBB2-4761-8E45-B71ABCCA8C68} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{3B372482-8D89-3F80-A7BC-9C34DD4070B6} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{2BD5534E-00E2-4BEA-AC96-D9A92EA24696} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {670056E3-45A0-472E-9A85-FBF7029B1493}
+	EndGlobalSection
+EndGlobal

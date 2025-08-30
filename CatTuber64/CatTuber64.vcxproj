@@ -1,0 +1,223 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{8418a437-a178-4a09-8efc-ee77150b05ab}</ProjectGuid>
+    <RootNamespace>CatTuber64</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard_C>stdc11</LanguageStandard_C>
+      <AdditionalIncludeDirectories>..\..\ThirdPart\SDL-release-3.2.16\include;..\..\ThirdPart\SDL_image-release-3.2.4\include;..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Core\include;..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src;..\..\ThirdPart\glm-1.0.1-light;include;include\Util;G:\CommonProject\nim_duilib\nim_duilib-main</AdditionalIncludeDirectories>
+      <TreatWarningAsError>true</TreatWarningAsError>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard_C>stdc11</LanguageStandard_C>
+      <AdditionalIncludeDirectories>..\..\ThirdPart\SDL-release-3.2.16\include;..\..\ThirdPart\SDL_image-release-3.2.4\include;..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Core\include;..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src;..\..\ThirdPart\glm-1.0.1-light;include;include\Util;G:\CommonProject\nim_duilib\nim_duilib-main</AdditionalIncludeDirectories>
+      <TreatWarningAsError>true</TreatWarningAsError>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="include\AppContext.h" />
+    <ClInclude Include="include\AppSettings.h" />
+    <ClInclude Include="include\CatTuberApp.h" />
+    <ClInclude Include="include\Graphic.h" />
+    <ClInclude Include="include\Input\InputCommon.h" />
+    <ClInclude Include="include\Input\InputManager.h" />
+    <ClInclude Include="include\Input\KeyboardInput.h" />
+    <ClInclude Include="include\Input\MouseInput.h" />
+    <ClInclude Include="include\Item\MainSceneItem.h" />
+    <ClInclude Include="include\Item\Scene.h" />
+    <ClInclude Include="include\Item\SceneItem.h" />
+    <ClInclude Include="include\Item\TableObject.h" />
+    <ClInclude Include="include\Model\IModel.h" />
+    <ClInclude Include="include\Model\Live2DModelBase.h" />
+    <ClInclude Include="include\Model\ModelManager.h" />
+    <ClInclude Include="include\Pack\Pack.h" />
+    <ClInclude Include="include\RenderThread.h" />
+    <ClInclude Include="include\RenderWindowManager.h" />
+    <ClInclude Include="include\Util\json\allocator.h" />
+    <ClInclude Include="include\Util\json\assertions.h" />
+    <ClInclude Include="include\Util\json\config.h" />
+    <ClInclude Include="include\Util\json\forwards.h" />
+    <ClInclude Include="include\Util\json\json.h" />
+    <ClInclude Include="include\Util\json\json_features.h" />
+    <ClInclude Include="include\Util\json\reader.h" />
+    <ClInclude Include="include\Util\json\value.h" />
+    <ClInclude Include="include\Util\json\version.h" />
+    <ClInclude Include="include\Util\json\writer.h" />
+    <ClInclude Include="include\Util\ObjectPool.h" />
+    <ClInclude Include="include\Util\SDL_LockGuard.h" />
+    <ClInclude Include="include\Util\Util.h" />
+    <ClInclude Include="include\Util\WeakCallbackList.h" />
+    <ClInclude Include="include\Util\WeakSupport.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="src\Util\json\json_tool.h" />
+    <ClInclude Include="targetver.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="platform\Windows\WinKeyboardInput.cpp" />
+    <ClCompile Include="platform\Windows\WinMouseInput.cpp" />
+    <ClCompile Include="platform\Windows\WinRenderWindowManager.cpp" />
+    <ClCompile Include="src\AppContext.cpp" />
+    <ClCompile Include="src\AppSettings.cpp" />
+    <ClCompile Include="src\CatTuberApp.cpp" />
+    <ClCompile Include="src\Input\InputCommon.cpp" />
+    <ClCompile Include="src\Input\InputManager.cpp" />
+    <ClCompile Include="src\Item\MainSceneItem.cpp" />
+    <ClCompile Include="src\Item\Scene.cpp" />
+    <ClCompile Include="src\Item\SceneItem.cpp" />
+    <ClCompile Include="src\Item\TableObject.cpp" />
+    <ClCompile Include="src\Model\IModel.cpp" />
+    <ClCompile Include="src\Model\Live2DModelBase.cpp" />
+    <ClCompile Include="src\Model\ModelManager.cpp" />
+    <ClCompile Include="src\Pack\Pack.cpp" />
+    <ClCompile Include="src\RenderThread.cpp" />
+    <ClCompile Include="src\RenderWindowManager.cpp" />
+    <ClCompile Include="src\Util\json\json_reader.cpp" />
+    <ClCompile Include="src\Util\json\json_value.cpp" />
+    <ClCompile Include="src\Util\json\json_writer.cpp" />
+    <ClCompile Include="src\Util\Util.cpp" />
+    <ClCompile Include="src\Util\WeakSupport.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="CatTuber64.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="CatTuber64.ico" />
+    <Image Include="small.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Samples\D3D11\Demo\proj.d3d11.cmake\build\proj_msvc2022_x64_md\Framework\Framework.vcxproj">
+      <Project>{3b372482-8d89-3f80-a7bc-9c34dd4070b6}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ThirdPart\SDL-release-3.2.16\VisualC\SDL\SDL.vcxproj">
+      <Project>{81ce8daf-ebb2-4761-8e45-b71abcca8c68}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ThirdPart\SDL_image-release-3.2.4\VisualC\SDL_image.vcxproj">
+      <Project>{2bd5534e-00e2-4bea-ac96-d9a92ea24696}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\Util\json\json_valueiterator.inl" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

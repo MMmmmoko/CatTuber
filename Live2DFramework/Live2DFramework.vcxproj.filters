@@ -1,0 +1,306 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\CubismCdiJson.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\CubismDefaultParameterId.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\CubismFramework.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\CubismModelSettingJson.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Effect\CubismBreath.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Effect\CubismEyeBlink.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Effect\CubismPose.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Id\CubismId.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Id\CubismIdManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Math\CubismMath.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Math\CubismMatrix44.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Math\CubismModelMatrix.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Math\CubismTargetPoint.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Math\CubismVector2.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Math\CubismViewMatrix.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Model\CubismMoc.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Model\CubismModel.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Model\CubismModelUserData.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Model\CubismModelUserDataJson.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Model\CubismUserModel.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Motion\ACubismMotion.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Motion\CubismExpressionMotion.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Motion\CubismExpressionMotionManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Motion\CubismMotion.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Motion\CubismMotionJson.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Motion\CubismMotionManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Motion\CubismMotionQueueEntry.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Motion\CubismMotionQueueManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Physics\CubismPhysics.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Physics\CubismPhysicsJson.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Rendering\CubismRenderer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Rendering\D3D11\CubismOffscreenSurface_D3D11.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Rendering\D3D11\CubismRenderer_D3D11.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Rendering\D3D11\CubismRenderState_D3D11.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Rendering\D3D11\CubismShader_D3D11.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Type\csmRectF.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Type\csmString.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Utils\CubismDebug.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Utils\CubismJson.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Utils\CubismString.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\CubismCdiJson.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\CubismDefaultParameterId.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\CubismFramework.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\CubismFrameworkConfig.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\CubismJsonHolder.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\CubismModelSettingJson.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Effect\CubismBreath.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Effect\CubismEyeBlink.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Effect\CubismPose.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\ICubismAllocator.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\ICubismModelSetting.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Id\CubismId.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Id\CubismIdManager.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Live2DCubismCore.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Math\CubismMath.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Math\CubismMatrix44.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Math\CubismModelMatrix.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Math\CubismTargetPoint.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Math\CubismVector2.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Math\CubismViewMatrix.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Model\CubismMoc.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Model\CubismModel.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Model\CubismModelUserData.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Model\CubismModelUserDataJson.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Model\CubismUserModel.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Motion\ACubismMotion.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Motion\CubismExpressionMotion.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Motion\CubismExpressionMotionManager.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Motion\CubismMotion.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Motion\CubismMotionInternal.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Motion\CubismMotionJson.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Motion\CubismMotionManager.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Motion\CubismMotionQueueEntry.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Motion\CubismMotionQueueManager.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Physics\CubismPhysics.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Physics\CubismPhysicsInternal.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Physics\CubismPhysicsJson.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Rendering\CubismClippingManager.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Rendering\CubismRenderer.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Rendering\D3D11\CubismNativeInclude_D3D11.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Rendering\D3D11\CubismOffscreenSurface_D3D11.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Rendering\D3D11\CubismRenderer_D3D11.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Rendering\D3D11\CubismRenderState_D3D11.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Rendering\D3D11\CubismShader_D3D11.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Rendering\D3D11\CubismType_D3D11.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Rendering\Metal\CubismCommandBuffer_Metal.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Rendering\Metal\MetalShaderTypes.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Type\csmMap.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Type\csmRectF.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Type\csmString.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Type\csmVector.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Type\CubismBasicType.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Utils\CubismDebug.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Utils\CubismJson.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src\Utils\CubismString.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
