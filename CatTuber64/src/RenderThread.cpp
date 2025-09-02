@@ -126,7 +126,7 @@ void RenderThread::SendTask(void(*task)(void* userdata, uint64_t userdata2), voi
 
 void RenderThread::ThreadLoop()
 {
-
+	//SDL_WaitAndAcquireGPUSwapchainTexture();
 	auto& wm = RenderWindowManager::GetIns();
 	auto& im = InputManager::GetIns();
 
@@ -143,9 +143,11 @@ void RenderThread::ThreadLoop()
 		{
 			auto task = std::move(taskQueueFront.front());
 			taskQueueFront.pop();
-			task.task(task.userData,0);
+			task.task(task.userData, task.userdata2);
 		}
 
+		if (!wm.canStartFrame)
+			continue;
 
 		//计算时间差
 		uint64_t currentTick = SDL_GetTicksNS();
@@ -157,7 +159,7 @@ void RenderThread::ThreadLoop()
 		im.PumpDeviceOrNetworkInputEvents();
 		wm.UpdateAll(deltaTick);
 		wm.RenderAll();
-
+		wm.PresentAll();
 
 		//计算睡眠
 		uint64_t _CurFrameTick = SDL_GetTicksNS() - currentTick;

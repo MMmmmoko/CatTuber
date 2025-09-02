@@ -174,6 +174,12 @@
     <ClInclude Include="include\Util\SDL_LockGuard.h">
       <Filter>头文件\Util</Filter>
     </ClInclude>
+    <ClInclude Include="include\Input\InputParser.h">
+      <Filter>头文件\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="include\UserEvent.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -247,6 +253,12 @@
     </ClCompile>
     <ClCompile Include="src\Item\SceneItem.cpp">
       <Filter>源文件\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Input\InputParser.cpp">
+      <Filter>源文件\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UserEvent.cpp">
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

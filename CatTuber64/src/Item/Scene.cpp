@@ -103,10 +103,7 @@ void Scene::ApplyAttributes(const Json::Value& jsonvalue)
 
 void Scene::Reset()
 {
-	//只能主线程调用？
-	//TODO/FIXME 执行时锁定渲染线程
-
-
+	//仅在渲染线程调用
 	for (auto& x: _itemList)
 	{
 		ISceneItem::FreeItem(x);

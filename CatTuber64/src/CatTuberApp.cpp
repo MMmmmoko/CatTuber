@@ -12,7 +12,7 @@
 #include"Input/InputManager.h"
 
 #include "CatTuberApp.h"
-
+#include"UserEvent.h"
 
 
 
@@ -92,7 +92,16 @@ bool CatTuberApp::Init(int argC, char* argV[])
 		SDL_Log("Can not init SDL: %s", SDL_GetError());
 		return false;
 	}
-	
+	UserEvent::Init();
+
+
+
+
+
+
+
+
+
 	bool b_debug = false;
 #ifdef _DEBUG
 	b_debug = true;
@@ -214,6 +223,11 @@ void CatTuberApp::Run()
 			loopRunning = false;
 			Quit();
 		}
+		if (event.type >= SDL_EVENT_USER && event.type < SDL_EVENT_LAST)
+		{
+			UserEvent::HandleUserEvent(&event.user);
+		}
+
 		wm.HandleEvent(event);
 	}
 

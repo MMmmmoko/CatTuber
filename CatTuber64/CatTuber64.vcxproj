@@ -139,6 +139,7 @@
     <ClInclude Include="include\Graphic.h" />
     <ClInclude Include="include\Input\InputCommon.h" />
     <ClInclude Include="include\Input\InputManager.h" />
+    <ClInclude Include="include\Input\InputParser.h" />
     <ClInclude Include="include\Input\KeyboardInput.h" />
     <ClInclude Include="include\Input\MouseInput.h" />
     <ClInclude Include="include\Item\MainSceneItem.h" />
@@ -151,6 +152,7 @@
     <ClInclude Include="include\Pack\Pack.h" />
     <ClInclude Include="include\RenderThread.h" />
     <ClInclude Include="include\RenderWindowManager.h" />
+    <ClInclude Include="include\UserEvent.h" />
     <ClInclude Include="include\Util\json\allocator.h" />
     <ClInclude Include="include\Util\json\assertions.h" />
     <ClInclude Include="include\Util\json\config.h" />
@@ -180,6 +182,7 @@
     <ClCompile Include="src\CatTuberApp.cpp" />
     <ClCompile Include="src\Input\InputCommon.cpp" />
     <ClCompile Include="src\Input\InputManager.cpp" />
+    <ClCompile Include="src\Input\InputParser.cpp" />
     <ClCompile Include="src\Item\MainSceneItem.cpp" />
     <ClCompile Include="src\Item\Scene.cpp" />
     <ClCompile Include="src\Item\SceneItem.cpp" />
@@ -190,6 +193,7 @@
     <ClCompile Include="src\Pack\Pack.cpp" />
     <ClCompile Include="src\RenderThread.cpp" />
     <ClCompile Include="src\RenderWindowManager.cpp" />
+    <ClCompile Include="src\UserEvent.cpp" />
     <ClCompile Include="src\Util\json\json_reader.cpp" />
     <ClCompile Include="src\Util\json\json_value.cpp" />
     <ClCompile Include="src\Util\json\json_writer.cpp" />

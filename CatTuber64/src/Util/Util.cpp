@@ -89,6 +89,26 @@ bool util::IsStringEndsWith(const std::string& str, const char* end)
     return std::equal(ending.rbegin(), ending.rend(), str.rbegin());
 }
 
+bool util::IsStringStartWith(const std::string& str, const char* end)
+{
+    if (end == NULL)return false;
+    size_t len = SDL_strlen(end)-1;
+    if (str.size() < len)
+    {
+        return false;
+    }
+    return 0==SDL_memcmp(str.data(), end, len);
+}
+
+std::string util::StringToUpper(const std::string& str)
+{
+    std::string temStr = str;
+    for (char& c : temStr) {
+        c = std::toupper(static_cast<unsigned char>(c));
+    }
+    return temStr;
+}
+
 std::string& util::ReplaceString(std::string& org, const char* strToBeReplace, const char* newstr)
 {
     // TODO: 在此处插入 return 语句

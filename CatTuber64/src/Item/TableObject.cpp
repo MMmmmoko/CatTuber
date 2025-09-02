@@ -3,7 +3,7 @@
 #include"Pack/Pack.h"
 #include"Util/Util.h"
 #include"Input/InputManager.h"
-
+#include"Input/InputParser.h"
 
 #include"Model/Live2DModelBase.h"
 
@@ -229,12 +229,16 @@ void TableObject::ReleaseObj(TableObject* obj)
 {
 	//上面怎么创建，这里就怎么释放
 	if (!obj)return;
+	obj->working = false;
+	//移除绑定
+	obj->ClearBinding();
+
 	if (obj->_model)
 	{
 		obj->_model->Release();
 		obj->_model = nullptr;
 	}
-	//TODO/FixMe 移除绑定
+
 
 	delete obj;
 }
@@ -304,23 +308,38 @@ void TableObject::LoadBinding()
 	}
 	//如果没有成功加载于App中保存的绑定，则查询Pack文件夹内中
 
-	//defaultbinding;
-	Pack pack;
-	if (pack.Open(resourcePath.c_str()))
+	//defaultbinding已经在其他地方(_SetUpControlAndAnimation)读取进入modelButtonVec
+	//将binding从vec元素的defaultbingding复制到binding即可
+	for (auto& x : modelButtonVec)
 	{
-		size_t size;
-		uint8_t* jsonmem=pack.LoadFile("DefaultBinding.json",&size);
-		if (jsonmem)
-		{
-			Json::Value json=util::BuildJsonFromMem((const char*)jsonmem, size);
-			_SetUpJsonBinding(json);
-			pack.ReleaseMem(jsonmem);
-			return;
-		}
+		x.binding=x.defaultBinding;
 	}
-	//根据模型参数自动设置绑定
-	std::string defaultBindingFile = resourcePath + "/DefaultBinding.json";
-	//std::string defaultBindingFile = resourcePath + "/Desc.json";??????????????
+	for (auto& x : modelAxisVec)
+	{
+		x.binding = x.defaultBinding;
+	}
+	for (auto& x : modelAnimationVec)
+	{
+		x.binding = x.defaultBinding;
+	}
+}
+
+void TableObject::ClearBinding()
+{
+	for (auto& x : modelButtonVec)
+	{
+		x.binding.UnRegisterBinding();
+	}
+	for (auto& x : modelAxisVec)
+	{
+		x.binding.UnRegisterBinding();
+	}	
+	for (auto& x : modelAnimationVec)
+	{
+		for(auto&y:x.binding)
+			y.UnRegisterBinding();
+	}
+
 
 
 }
@@ -432,12 +451,21 @@ void TableObject::_SetUpControlAndAnimation(const Json::Value& descItemInfo)
 	}
 	else
 	{
-		//Todo/FixMe无按钮信息，尝试读取模型参数
 
+		std::vector<std::string> paramVec=_model->GetParamList();
+		//判断按钮前缀KEYBOARD BUTTON CTB_KEYBOARD CAT_KEY  ex: CAT_KEY_A
 
-
-
-
+		for (auto&  x: paramVec)
+		{
+			const char* keyBaseName = InputParser::ParamNameToButtonBaseName(x);
+			if (keyBaseName)
+			{
+				auto& button = modelButtonVec.emplace_back();
+				button.uiName = InputParser::ButtonBaseNameToUIName(keyBaseName);
+				button.defaultBinding.type = BindingInfo::Button_ActualButton;
+				button.defaultBinding.controllList.push_back(keyBaseName);
+			}
+		}
 	}
 
 
@@ -541,11 +569,20 @@ void TableObject::_SetUpControlAndAnimation(const Json::Value& descItemInfo)
 	else
 	{
 		//无轴信息，尝试读取模型参数
+		std::vector<std::string> paramVec = _model->GetParamList();
+		//判断按钮前缀KEYBOARD BUTTON CTB_KEYBOARD CAT_KEY  ex: CAT_KEY_A
 
-
-
-
-
+		for (auto& x : paramVec)
+		{
+			const char* axisBaseName = InputParser::ParamNameToAxisBaseName(x);
+			if (axisBaseName)
+			{
+				auto& axis = modelAxisVec.emplace_back();
+				axis.uiName = axisBaseName;
+				axis.defaultBinding.type = BindingInfo::Axis_ActualAxis;
+				axis.defaultBinding.controllList.push_back(axisBaseName);
+			}
+		}
 	}
 
 
@@ -685,11 +722,19 @@ void TableObject::_SetUpControlAndAnimation(const Json::Value& descItemInfo)
 	else
 	{
 		//无动画信息，尝试读取模型动画列表
+		//读取除Idle以外的所有待机动画
+		std::vector<std::string> animationVec = _model->GetAnimationList();
+		//判断按钮前缀KEYBOARD BUTTON CTB_KEYBOARD CAT_KEY  ex: CAT_KEY_A
 
-
-
-
-
+		for (auto& x : animationVec)
+		{
+			if (x != "Idle")
+			{
+				auto& animation = modelAnimationVec.emplace_back();
+				animation.uiName = x;
+				//动画不提供初始绑定
+			}
+		}
 	}
 
 }

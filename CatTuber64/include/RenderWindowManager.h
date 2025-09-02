@@ -14,12 +14,16 @@ class RenderWindowController
 {
     friend class RenderWindowManager;
 public:
-    RenderWindowController(const char* title, int x, int y, int w, int h);
-    RenderWindowController() :RenderWindowController("CatTuber", 100, 100, 400, 300) {};
+    RenderWindowController(const char* title, int w, int h,int x=SDL_WINDOWPOS_UNDEFINED, int y = SDL_WINDOWPOS_UNDEFINED);
+    RenderWindowController() :RenderWindowController("CatTuber", 400, 300) {};
     ~RenderWindowController();
 
-    // 初始化窗口和渲染器
-    bool Init();
+
+    bool _CreateWindow();
+
+    // 初始化窗口和渲染器//重设尺寸
+    bool ResetGraphic(int W,int H);
+
 
     // 处理针对本窗口的事件
     void HandleEvent(const SDL_Event& event);
@@ -28,12 +32,14 @@ public:
     void Update(uint64_t deltaTicksNS);
     // 渲染本窗口内容
     void Render(/*SDL_GPUCommandBuffer* cmd*/);
+    //Present
+    void Present();
 
     // 清理资源
     void Shutdown();
 
     // 获取窗口ID用于事件路由
-    Uint32 GetWindowID() const { return windowID; }
+    Uint32 _GetWindowID() const { return windowID; }
 
     
     //只能在主线程中调用
@@ -48,10 +54,25 @@ public:
     void SetLock(bool b);
     void SetClearColor(SDL_Color color);
 
+    void SetWindowSize(int W,int H);
+
     void GetRenderSize(int* pw, int* ph) ;
+    void GetAspectSize(int* aw, int* ah) ;
+    void SetAspectSize(int aw, int ah) ;
+
+    //GET
+    SDL_Window* GetSDLWindow() { return window; };
+
+
+    //仅供内部使用
+    // 窗口尺寸变化回调,参数是渲染区域而不是整个窗口大小
+    void _OnResize(int newW, int newH);
 private:
+    //各平台在创建窗口后的特殊处理
+    //Windows使用此函数监听原WM_SIZING信息
+    void _AfterCreateWindow();
+    bool _ResizeSwapchain(SDL_GPUCommandBuffer* commandBuffer, SDL_Window* window);
     const char* title;
-    //int x, y, w, h;
 
     //窗口尺寸变化变化
     int targetX;
@@ -62,11 +83,13 @@ private:
     int renderW;
     int renderH;
 
+    int aspectRatioW;
+    int aspectRatioH;
 
     //可设置项
     static SDL_FColor clearColor;
     bool isTransparent=false;
-
+    bool deviceClaimed = false;
 
     SDL_Window* window = nullptr;
     //SDL_Renderer* renderer = nullptr;
@@ -79,11 +102,9 @@ private:
     SDL_GPUTransferBuffer* offscreenTexTb = NULL;
     SDL_Texture* offscreenTex_2D = NULL;
 
+    SDL_GPUCommandBuffer* cmdCurframe = NULL;
 
 
-
-    // 窗口尺寸变化回调,参数是渲染区域而不是整个窗口大小
-    void OnResize(int newW, int newH);
 
 };
 
@@ -113,8 +134,8 @@ public:
 
     // 创建一个新窗口并注册控制器
     bool CreateRenderWindow(const char* title,
-        int x, int y,
-        int w, int h);
+        int w, int h,
+        int x= SDL_WINDOWPOS_UNDEFINED, int y = SDL_WINDOWPOS_UNDEFINED);
 
     //// 主循环：事件处理 + 渲染
     //void Run();
@@ -129,8 +150,9 @@ public:
     void HandleEvent(const SDL_Event& event);
 
     // 渲染所有窗口
-    void RenderAll();
     void UpdateAll(uint64_t deltaTicksNS);
+    void RenderAll();
+    void PresentAll();
 
     // 清理所有窗口控制器
     void ShutdownAll();
@@ -159,6 +181,7 @@ private:
     SDL_FColor _clearColor = {};//透明度值永远为0
     std::vector<std::unique_ptr<RenderWindowController>> controllers;
     bool running = true;
+    bool canStartFrame = true;
 };
 
 

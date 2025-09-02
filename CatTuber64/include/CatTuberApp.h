@@ -39,7 +39,12 @@ public:
 	//void RenderLoop();
 	//
 	void Quit();
-	 
+
+
+	//向主线程投递task
+	//void PostTaskToMainThread(void(*task)(void* userdata, uint64_t userdata2), void* userdata = NULL, uint64_t userdata2 = 0);
+	//void SendTaskToMainThread(void(*task)(void* userdata, uint64_t userdata2), void* userdata = NULL, uint64_t userdata2 = 0);
+
 private:
 	void ShutDown();
 

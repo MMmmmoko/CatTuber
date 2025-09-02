@@ -176,7 +176,7 @@ bool KeyboardInput::Init()
 		buttnList[DIK_POWER] = im.GetButton("Keyboard.POWER");
 		buttnList[DIK_SLEEP] = im.GetButton("Keyboard.SLEEP");
 		buttnList[DIK_WAKE] = im.GetButton("Keyboard.WAKE");
-		buttnList[DIK_WEBSEARCH]= im.GetButton("Keyboard.WEBSEARCH");//不确定SDL_SCANCODE_AC_HOME
+		buttnList[DIK_WEBSEARCH]= im.GetButton("Keyboard.WEBSEARCH");//不确定SDL_SCANCODE_AC_SEARCH
 		buttnList[DIK_WEBFAVORITES] = im.GetButton("Keyboard.BOOKMARKS");//不确定SDL_SCANCODE_AC_BOOKMARKS
 		buttnList[DIK_WEBREFRESH] = im.GetButton("Keyboard.WEBREFRESH");
 		buttnList[DIK_WEBSTOP] = im.GetButton("Keyboard.WEBSTOP");//SDL_SCANCODE_AC_STOP

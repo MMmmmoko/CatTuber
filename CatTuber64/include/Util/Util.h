@@ -25,6 +25,10 @@ namespace util {
 
 	//std::string GetModelFilePathInPack(Pack* pack,const char* foldPathInPack, );
 	bool IsStringEndsWith(const std::string& str,const char* end);
+	bool IsStringStartWith(const std::string& str,const char* end);
+
+	std::string StringToUpper(const std::string& str);
+
 	
 	std::string& ReplaceString(std::string& org,const char* strToBeReplace,const char* newstr);
 	std::string GetFileNameFromPath(const std::string& path);

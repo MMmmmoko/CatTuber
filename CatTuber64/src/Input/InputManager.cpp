@@ -12,6 +12,15 @@ InputManager::InputManager()
 	_buttonPool.reserve(383);
 	axisMap.reserve(179);
 	_axisPool.reserve(179);
+
+
+	_axis_mouse_posX = GetAxis("Mouse.Pos.X");
+	_axis_mouse_posY = GetAxis("Mouse.Pos.Y");
+	_axis_mouse_posMoveX = GetAxis("Mouse.Pos.MoveX");
+	_axis_mouse_posMoveY = GetAxis("Mouse.Pos.MoveY");
+	_axis_mouse_posCoordX = GetAxis("Mouse.Pos.CoordinateX");
+	_axis_mouse_posCoordY = GetAxis("Mouse.Pos.CoordinateY");
+
 }
 
 

@@ -11,60 +11,183 @@
 #include"Util/Util.h"
 #include"RenderThread.h"
 #include"RenderWindowManager.h"
-
+#include"UserEvent.h"
 
 SDL_FColor RenderWindowController::clearColor = { 0.f,0.f, 0.f, 0.f };
 
 
 
-RenderWindowController::RenderWindowController(const char* t, int px, int py, int width, int height)
+RenderWindowController::RenderWindowController(const char* t,int width, int height, int px, int py)
     : title(t), targetX(px), targetY(py), targetW(width), targetH(height), renderW(width), renderH(height){
+
+
+
+
+
 }
 
 RenderWindowController::~RenderWindowController() {
     Shutdown();
 }
 
+bool RenderWindowController::_CreateWindow()
+{
+    SDL_PropertiesID props = SDL_CreateProperties();
+    if (props == 0) {
+        SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Unable to create properties: %s", SDL_GetError());
+        throw std::runtime_error(SDL_GetError());
+    }
+    //根据信息创建窗口
+    SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_WIDTH_NUMBER, targetW);
+    SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_HEIGHT_NUMBER, targetH);
+    SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_X_NUMBER, targetX);
+    SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_Y_NUMBER, targetY);
+    SDL_SetBooleanProperty(props, SDL_PROP_WINDOW_CREATE_RESIZABLE_BOOLEAN, true);
 
-bool RenderWindowController::Init() {
-    
-    
-    if (!SDL_CreateWindowAndRenderer(title, targetX, targetY,/* SDL_WINDOW_HIDDEN |*/ SDL_WINDOW_RESIZABLE | SDL_WINDOW_TRANSPARENT,
-    &window,&renderer
-    ))
+
+
+    isTransparent = AppSettings::GetIns().GetWindowTransparent();
+    SetClearColor(AppSettings::GetIns().GetWindowBackgroundColor());
+
+    if (AppSettings::GetIns().GetWindowTransparent())
     {
-        return false;
+        SDL_SetBooleanProperty(props, SDL_PROP_WINDOW_CREATE_BORDERLESS_BOOLEAN, false);
+        SDL_SetBooleanProperty(props, SDL_PROP_WINDOW_CREATE_TRANSPARENT_BOOLEAN, true);
+    }
 
+    if (AppSettings::GetIns().GetWindowTop())
+    {
+        SDL_SetBooleanProperty(props,SDL_PROP_WINDOW_CREATE_ALWAYS_ON_TOP_BOOLEAN,true);
+    }
+
+
+    window = SDL_CreateWindowWithProperties(props);
+    if (!window)
+    {
+        SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Unable to create window: %s", SDL_GetError());
+        return false;
     }
     
+
+    _AfterCreateWindow();
+    
+    SetAspectSize(targetW, targetH);
+
+
+    windowID = SDL_GetWindowID(window);
+    return true;
+}
+
+
+bool RenderWindowController::ResetGraphic(int W, int H) {
     
 
-    SDL_GPUTextureCreateInfo textureDesc = {};
-    textureDesc.type = SDL_GPU_TEXTURETYPE_2D;
-    //textureDesc.format = SDL_GPU_TEXTUREFORMAT_R8G8B8A8_UNORM;
-    textureDesc.format = SDL_GPU_TEXTUREFORMAT_B8G8R8A8_UNORM;
-    textureDesc.usage = SDL_GPU_TEXTUREUSAGE_COLOR_TARGET;
-    textureDesc.width = 1920;
-    textureDesc.height = 1080;
-    textureDesc.layer_count_or_depth = 1;
-    textureDesc.num_levels = 1;
+    if (offscreenTex_2D)
+    {
+        SDL_DestroyTexture(offscreenTex_2D);
+        offscreenTex_2D = nullptr;
+    }
+    //if (renderer)
+    //{
+    //    SDL_ReleaseGPUTexture(AppContext::GetGraphicDevice(), offscreenTex);
+    //    offscreenTex = nullptr;
+    //}
+    if (depthStencil)
+    {
+        SDL_ReleaseGPUTexture(AppContext::GetGraphicDevice(), depthStencil);
+        depthStencil = nullptr;
+    }
+    if (offscreenTex)
+    {
+        SDL_ReleaseGPUTexture(AppContext::GetGraphicDevice(), offscreenTex);
+        offscreenTex = nullptr;
+    }
+    if (offscreenTexTb)
+    {
+        SDL_ReleaseGPUTransferBuffer(AppContext::GetGraphicDevice(), offscreenTexTb);
+        offscreenTexTb = nullptr;
+    }
 
-    offscreenTex = SDL_CreateGPUTexture(AppContext::GetGraphicDevice(), &textureDesc);
-    if (!offscreenTex)return false;
-
-    SDL_GPUTransferBufferCreateInfo tbinfo = {};
-    tbinfo.size = 1920 * 1080 * 4;
-    tbinfo.usage = SDL_GPU_TRANSFERBUFFERUSAGE_DOWNLOAD;
-    offscreenTexTb=SDL_CreateGPUTransferBuffer(AppContext::GetGraphicDevice(),&tbinfo);
-
-
-    offscreenTex_2D=SDL_CreateTexture(renderer,SDL_PIXELFORMAT_BGRA32,SDL_TEXTUREACCESS_STREAMING,1920,1080);
-
-    scene.SetCanvasSize(renderW,renderH);
 
 
 
-    return true;
+    do
+    {
+        //if (!SDL_CreateWindowAndRenderer(title, targetX, targetY,/* SDL_WINDOW_HIDDEN |*/ SDL_WINDOW_RESIZABLE | SDL_WINDOW_TRANSPARENT,
+        //    &window, &renderer
+        //))
+        //{
+        //    SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION,"Call CreateWindowAndRenderer() failed! %s",SDL_GetError());
+        //    break;
+        //}
+        //2D renderer
+
+
+        SDL_GPUTextureCreateInfo textureDesc = {};
+        textureDesc.type = SDL_GPU_TEXTURETYPE_2D;
+        //textureDesc.format = SDL_GPU_TEXTUREFORMAT_R8G8B8A8_UNORM;
+        textureDesc.format = SDL_GPU_TEXTUREFORMAT_B8G8R8A8_UNORM;
+        textureDesc.usage = SDL_GPU_TEXTUREUSAGE_COLOR_TARGET;
+        textureDesc.width = W;
+        textureDesc.height = H;
+        textureDesc.layer_count_or_depth = 1;
+        textureDesc.num_levels = 1;
+
+        offscreenTex = SDL_CreateGPUTexture(AppContext::GetGraphicDevice(), &textureDesc);
+        if (!offscreenTex)
+        {
+            SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Call CreateGPUTexture() failed! %s", SDL_GetError());
+            break;
+        }
+
+
+        //offscreenTexTb 在需要的时候才开始创建
+        /*
+        SDL_GPUTransferBufferCreateInfo tbinfo = {};
+        tbinfo.size = 1920 * 1080 * 4;
+        tbinfo.usage = SDL_GPU_TRANSFERBUFFERUSAGE_DOWNLOAD;
+        offscreenTexTb = SDL_CreateGPUTransferBuffer(AppContext::GetGraphicDevice(), &tbinfo);
+        if (!offscreenTexTb)
+        {
+            SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Call CreateGPUTransferBuffer() failed! %s", SDL_GetError());
+            break;
+        }*/
+
+
+
+        if (isTransparent)
+        {
+            renderer = SDL_CreateRenderer(window, NULL);
+            if (!renderer)
+            {
+                SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Call CreateWindowAndRenderer() failed! %s", SDL_GetError());
+                break;
+            }
+            offscreenTex_2D = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_BGRA32, SDL_TEXTUREACCESS_STREAMING, W, H);
+            if (!offscreenTex_2D)
+            {
+                SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Call SDL_CreateTexture() failed! %s", SDL_GetError());
+                break;
+            }
+        }else
+        {
+            if (!deviceClaimed)
+            {
+                if (!SDL_ClaimWindowForGPUDevice(AppContext::GetGraphicDevice(), window))
+                {
+                    SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Call ClaimWindowForGPUDevice() failed! %s", SDL_GetError());
+                    break;
+                }
+                deviceClaimed = true;
+            }
+        }
+
+
+        scene.SetCanvasSize(renderW, renderH);
+        return true;
+    } while (false);
+    Shutdown();
+    return false;
     /*
 #if defined SDL_PLATFORM_WINDOWS
     window = SDL_CreateWindow(title, x, y, SDL_WINDOW_HIDDEN|SDL_WINDOW_RESIZABLE|SDL_WINDOW_TRANSPARENT);
@@ -105,8 +228,10 @@ void RenderWindowController::HandleEvent(const SDL_Event& event) {
     if (event.window.windowID != windowID)
         return;
 
-    if (event.type == SDL_EVENT_WINDOW_RESIZED) {
-        OnResize(event.window.data1, event.window.data2);
+    if (event.type == SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED) {
+        int pxW, pxH;
+        if(SDL_GetWindowSizeInPixels(window, &pxW, &pxH))
+        _OnResize(pxW, pxH);
     }
 
 
@@ -123,7 +248,8 @@ void RenderWindowController::SetTitle(const char* title)
 
 void RenderWindowController::SetTransparent(bool t)
 {
-    assert(false);
+    //TODO/FIXME
+    //assert(false);
 }
 
 void RenderWindowController::SetTop(bool b)
@@ -141,13 +267,45 @@ void RenderWindowController::SetClearColor(SDL_Color color)
     clearColor.a = 0.f;
 }
 
+void RenderWindowController::SetWindowSize(int W, int H)
+{
+    SDL_SetWindowSize(window,W,H);
+    aspectRatioW = W;
+    aspectRatioH = H;
+}
+
 void RenderWindowController::GetRenderSize(int* pw, int* ph)
 {
     if (pw)*pw = renderW;
     if (ph)*ph = renderH;
 }
 
+void RenderWindowController::GetAspectSize(int* aw, int* ah)
+{
+    if (aw)*aw = aspectRatioW;
+    if (ah)*ah = aspectRatioH;
+}
 
+void RenderWindowController::SetAspectSize(int aw, int ah)
+{
+    aspectRatioW = aw;
+    aspectRatioH = ah;
+}
+
+
+//void RenderWindowController::_OnResizing(int newW, int newH)
+//{
+//
+//    //SDL_SendWindowEvent(window,SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED, newW, newH);
+//    
+//    
+//    //提取并处理task事件
+//    SDL_Event event;
+//    if (SDL_PeepEvents(&event, 1, SDL_GETEVENT, SDL_EVENT_USER + UserEvent::TASK, SDL_EVENT_USER + UserEvent::TASK) > 0)
+//    {
+//        UserEvent::HandleUserEvent(&event.user);
+//    }
+//}
 
 
 
@@ -158,60 +316,66 @@ void RenderWindowController::Update(uint64_t deltaTicksNS) {
 
 void RenderWindowController::Render() {
 
-    auto millionSecond=SDL_GetTicks();
-    uint8_t u8clearValue = static_cast<uint8_t>((0.5f*sinf(millionSecond / 1000.f)+0.5f) * 255);
-    float clearValue = ((0.5f*sinf(millionSecond / 1000.f)+0.5f) );
 
 
 
 
-    //如果窗口不透明，则使用swapchainTexture
-    //后续再改
-    //SDL_GPUTexture* swapchainTexture;
-    //unsigned int swapchainTextureWidth, swapchainTextureHeight;
-    //SDL_WaitAndAcquireGPUSwapchainTexture(cmd, window, &swapchainTexture, &swapchainTextureWidth, &swapchainTextureHeight);
-    ////SDL_AcquireGPUSwapchainTexture(cmd, window, &swapchainTexture, &swapchainTextureWidth, &swapchainTextureHeight);
-    //if (!swapchainTexture)
-    //{
-    //    SDL_LogWarn(SDL_LOG_CATEGORY_GPU, "SDL3 AcquireGPUSwapchainTexture Failed");
-    //    return;
-    //}
-
-    
 
 
     Csm::Rendering::CubismRenderContext_SDL3* pContext = AppContext::GetLive2DRenderContext();
-
-
-
-
-
-
-
-
-
 
     //窗口的渲染
 
     //好像这个cmd还是放外面好点
     //创建当前帧的命令缓存
-    auto cmd = SDL_AcquireGPUCommandBuffer(AppContext::GetGraphicDevice());
+    cmdCurframe = SDL_AcquireGPUCommandBuffer(AppContext::GetGraphicDevice());
+    if (!cmdCurframe)
+    {
+        return;
+    }
+    auto cmd = cmdCurframe;
+
+
     //暂无问题，后续再实验多开
     //auto cmd_copyAndOfscren = SDL_AcquireGPUCommandBuffer(AppContext::GetGraphicDevice());
 
 
+    //如果窗口不透明，则使用swapchainTexture
+    //SDL_GPUTexture* swapchainTexture = nullptr;
+    //unsigned int swapchainTextureWidth, swapchainTextureHeight;
+    //if (!isTransparent)
+    //{
+    //    //SDL_WaitAndAcquireGPUSwapchainTexture(cmd, window, &swapchainTexture, &swapchainTextureWidth, &swapchainTextureHeight);
+    //    SDL_AcquireGPUSwapchainTexture(cmd, window, &swapchainTexture, &swapchainTextureWidth, &swapchainTextureHeight);
+    //    if (!swapchainTexture)
+    //    {
+    //        SDL_LogWarn(SDL_LOG_CATEGORY_GPU, "SDL3 AcquireGPUSwapchainTexture Failed");
+    //        return;
+    //    }
+    //}
+    
+
+
+    auto millionSecond = SDL_GetTicks();
+    uint8_t u8clearValue = static_cast<uint8_t>((0.5f * sinf(millionSecond / 1000.f) + 0.5f) * 255);
+    float clearValue = ((0.5f * sinf(millionSecond / 1000.f) + 0.5f));
+
+
+
+
 
     //创建ClearRenderPass清理
-
     {
     SDL_GPUColorTargetInfo colorTargetInfo = {};
     //colorTargetInfo.texture = swapchainTexture;
+    //colorTargetInfo.texture = isTransparent?offscreenTex:swapchainTexture;
     colorTargetInfo.texture = offscreenTex;
     colorTargetInfo.load_op = SDL_GPU_LOADOP_CLEAR;
     if (isTransparent)
         colorTargetInfo.clear_color = { 0.f,0.f,0.f ,0.F };
     else
-        colorTargetInfo.clear_color = clearColor;//没有透明的时候设置特定背景色
+        //colorTargetInfo.clear_color = clearColor;//没有透明的时候设置特定背景色
+        colorTargetInfo.clear_color = { clearValue,clearValue,clearValue ,0.F };//没有透明的时候设置特定背景色
     colorTargetInfo.store_op = SDL_GPU_STOREOP_STORE;
 
 
@@ -280,91 +444,142 @@ void RenderWindowController::Render() {
 
 
 
-    //仅窗口透明时执行
-    //完成后下载图像到内存
-    SDL_GPUCopyPass* copyPass = SDL_BeginGPUCopyPass(cmd);
-    SDL_GPUTextureRegion texRegion = {};
-    texRegion.texture = offscreenTex;
-    texRegion.w = renderW;
-    texRegion.h = renderH;
-    texRegion.d = 1;
-
-    SDL_GPUTextureTransferInfo srcInfo{};
-    srcInfo.transfer_buffer = offscreenTexTb;    // 要下载的纹理
-    srcInfo.offset = 0;            // 第 0 级 MIP
-    srcInfo.pixels_per_row = renderW;            // 第 0 层
-    srcInfo.rows_per_layer = renderH;
-
-    SDL_DownloadFromGPUTexture(copyPass,&texRegion,&srcInfo);
-    SDL_EndGPUCopyPass(copyPass);
-    SDL_SubmitGPUCommandBuffer(cmd);
-    //SDL_GPUFence* fence = SDL_SubmitGPUCommandBufferAndAcquireFence(cmd);
-    //SDL_WaitForGPUFences(AppContext::GetGraphicDevice(), true,&fence, 1);
-    //SDL_ReleaseGPUFence(AppContext::GetGraphicDevice(), fence);
-
-
-
-
-    // 映射时传 true 可确保映射时下载已完成
-    void* pixelData = SDL_MapGPUTransferBuffer(AppContext::GetGraphicDevice(), offscreenTexTb,false);
-
-    SDL_Rect rect;
-    rect.x = 0;
-    rect.y = 0;
-    rect.w = renderW;
-    rect.h = renderH;
-
-    SDL_UpdateTexture(offscreenTex_2D, &rect, pixelData, renderW * 4);
-    SDL_UnmapGPUTransferBuffer(AppContext::GetGraphicDevice(), offscreenTexTb);
-
-
-
-
-
-
-
-    SDL_SetRenderDrawColor(renderer, u8clearValue, u8clearValue, u8clearValue, 0);
-    SDL_RenderClear(renderer);
-
-        // 在此添加用户绘制逻辑
-        // e.g., SDL_RenderDrawLine(renderer, ...)
-    SDL_RenderTexture(renderer, offscreenTex_2D, NULL, NULL);
-	SDL_RenderPresent(renderer);
-
-
-
-	//在一帧结束的时候进行纹理的或窗口尺寸变化的处理
-	//
-	// 
-	// 
-	// 
-	// 
-	// 
-	//
-
-	if (renderW != targetW || renderH != targetH)
-	{
-
-
-
-
-
-        renderW = targetW;
-        renderH = targetH;
-        scene.SetCanvasSize(renderW, renderH);
-	}
-
-
 
 
 
     return;
 }
 
-void RenderWindowController::OnResize(int newW, int newH) 
+
+
+void RenderWindowController::Present()
+{
+    if (!cmdCurframe)return;
+    auto cmd = cmdCurframe;
+
+    if (isTransparent)
+    {
+
+        //仅窗口透明时执行
+        //完成后下载图像到内存
+        SDL_GPUCopyPass* copyPass = SDL_BeginGPUCopyPass(cmd);
+        SDL_GPUTextureRegion texRegion = {};
+        texRegion.texture = offscreenTex;
+        texRegion.w = renderW;
+        texRegion.h = renderH;
+        texRegion.d = 1;
+
+        SDL_GPUTextureTransferInfo srcInfo{};
+        srcInfo.transfer_buffer = offscreenTexTb;    // 要下载的纹理
+        srcInfo.offset = 0;            // 第 0 级 MIP
+        srcInfo.pixels_per_row = renderW;            // 第 0 层
+        srcInfo.rows_per_layer = renderH;
+
+        SDL_DownloadFromGPUTexture(copyPass, &texRegion, &srcInfo);
+        SDL_EndGPUCopyPass(copyPass);
+        SDL_SubmitGPUCommandBuffer(cmd);
+        //SDL_GPUFence* fence = SDL_SubmitGPUCommandBufferAndAcquireFence(cmd);
+        //SDL_WaitForGPUFences(AppContext::GetGraphicDevice(), true,&fence, 1);
+        //SDL_ReleaseGPUFence(AppContext::GetGraphicDevice(), fence);
+
+
+
+
+        // 映射时传 true 可确保映射时下载已完成
+        void* pixelData = SDL_MapGPUTransferBuffer(AppContext::GetGraphicDevice(), offscreenTexTb, false);
+
+        SDL_Rect rect;
+        rect.x = 0;
+        rect.y = 0;
+        rect.w = renderW;
+        rect.h = renderH;
+
+        SDL_UpdateTexture(offscreenTex_2D, &rect, pixelData, renderW * 4);
+        SDL_UnmapGPUTransferBuffer(AppContext::GetGraphicDevice(), offscreenTexTb);
+
+
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+        SDL_RenderClear(renderer);
+
+        // 在此添加用户绘制逻辑
+        // e.g., SDL_RenderDrawLine(renderer, ...)
+        SDL_RenderTexture(renderer, offscreenTex_2D, NULL, NULL);
+        SDL_RenderPresent(renderer);
+    }
+    else
+    {
+        uint32_t swapchainTextureWidth, swapchainTextureHeight;
+        SDL_GPUTexture* swapchainTexture;
+        SDL_WaitAndAcquireGPUSwapchainTexture(cmd, window, &swapchainTexture, &swapchainTextureWidth, &swapchainTextureHeight);
+
+
+        SDL_GPUCopyPass* copyPass = SDL_BeginGPUCopyPass(cmd);
+        SDL_GPUTextureLocation source = {};
+        source.texture = offscreenTex;
+
+
+
+		//SDL_AcquireGPUSwapchainTexture(cmd, window, &swapchainTexture, &swapchainTextureWidth, &swapchainTextureHeight);
+		if (!swapchainTexture)
+		{
+			//SDL_LogWarn(SDL_LOG_CATEGORY_GPU, "SDL3 AcquireGPUSwapchainTexture Failed");
+            SDL_EndGPUCopyPass(copyPass);
+			return;
+		}
+
+        SDL_GPUTextureLocation destination = {};
+        destination.texture = swapchainTexture;
+        SDL_CopyGPUTextureToTexture(copyPass,&source,&destination,
+            SDL_min(static_cast<Uint32>(renderW), swapchainTextureWidth), SDL_min(static_cast<Uint32>(renderH), swapchainTextureHeight),1,false);
+        SDL_EndGPUCopyPass(copyPass);
+        SDL_SubmitGPUCommandBuffer(cmd);
+    }
+
+
+
+
+
+
+    //在一帧结束的时候进行纹理的或窗口尺寸变化的处理
+    //
+    // 
+    // 
+    // 
+    // 
+    // 
+    //
+
+    if (renderW != targetW || renderH != targetH)
+    {
+        
+        if (_ResizeSwapchain(cmd, window))
+        {
+            //仅在交换链重建成功时设置数据
+            if (!ResetGraphic(targetW, targetH))
+            {
+                throw(std::runtime_error("Can not Reset Window Graphic!"));
+            }
+
+            renderW = targetW;
+            renderH = targetH;
+            
+
+
+            scene.SetCanvasSize(renderW, renderH);
+        }
+
+    }
+
+}
+
+void RenderWindowController::_OnResize(int newW, int newH)
 {
     //窗口已经发生Resize的时候调用这个函数
     //会在主线程调用，所以用post的方法？、
+
+    SDL_Log("Window Resize %d,%d", newW, newH);
+
+
     uint64_t taskParam;
     UTIL_SETLOW32VALUE(taskParam, newW);
     UTIL_SETHIGH32VALUE(taskParam, newH);
@@ -624,39 +839,38 @@ void RenderWindowController::Load(const Json::Value& json)
 
 
 
-    SDL_PropertiesID props = SDL_CreateProperties();
-    if (props == 0) {
-        SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION,"Unable to create properties: %s", SDL_GetError());
-        throw std::runtime_error(SDL_GetError());
-    }
 
-    //根据信息创建窗口
-    SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_WIDTH_NUMBER, windowSizeX);
-    SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_HEIGHT_NUMBER, windowSizeY);
-    SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_X_NUMBER, hasWindowPos? windowPosX:SDL_WINDOWPOS_UNDEFINED);
-    SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_Y_NUMBER, hasWindowPos? windowPosY:SDL_WINDOWPOS_UNDEFINED);
-
-    SDL_SetBooleanProperty(props, SDL_PROP_WINDOW_CREATE_RESIZABLE_BOOLEAN, false);
+    targetW = windowSizeX;
+    targetH = windowSizeY;
+    targetX = hasWindowPos ? windowPosX : SDL_WINDOWPOS_UNDEFINED;
+    targetY = hasWindowPos ? windowPosY : SDL_WINDOWPOS_UNDEFINED;
 
 
 
-    isTransparent = AppSettings::GetIns().GetWindowTransparent();
-    SetClearColor(AppSettings::GetIns().GetWindowBackgroundColor());
-    if (AppSettings::GetIns().GetWindowTransparent())
-    {
-        SDL_SetBooleanProperty(props, SDL_PROP_WINDOW_CREATE_BORDERLESS_BOOLEAN, false);
-        SDL_SetBooleanProperty(props, SDL_PROP_WINDOW_CREATE_TRANSPARENT_BOOLEAN, true);
-    }
+    
 
-   window= SDL_CreateWindowWithProperties(props);
-   if (!window)
+
+
+   if (!_CreateWindow())
    {
        SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION,"Unable to create window: %s", SDL_GetError());
        throw std::runtime_error(SDL_GetError());
    }
 
-
    //创建创建后创建其余各种资源
+   if (!SDL_GetWindowSizeInPixels(window,&renderW,&renderH))
+   {
+       SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Unable to get window px size: %s", SDL_GetError());
+       throw std::runtime_error(SDL_GetError());
+   }
+   if (!ResetGraphic(renderW, renderH))
+   {
+       SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Unable to init window graphic!");
+       throw std::runtime_error("Unable to init window graphic!");
+   }
+
+
+
    SetTransparent(isTransparent);
    SetLock(AppSettings::GetIns().GetWindowLock());
    SetTop(AppSettings::GetIns().GetWindowTop());
@@ -717,13 +931,27 @@ RenderWindowManager::~RenderWindowManager() {
 }
 
 bool RenderWindowManager::CreateRenderWindow(const char* title,
-    int x, int y,
-    int w, int h)
+    int w, int h, int x, int y)
 {
-    auto wc = std::make_unique<RenderWindowController>(title, x, y, w, h);
-    if (!wc->Init()) {
+    auto wc = std::make_unique<RenderWindowController>(title, w, h, x, y);
+
+    
+    if (!wc->_CreateWindow())
+    {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,
-            "WindowController Init Failed: %s", SDL_GetError());
+            "WindowController Create Failed!");
+        return false;
+    }
+
+    if (!SDL_GetWindowSizeInPixels(wc->window, &wc->renderW, &wc->renderH))
+    {
+        SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Unable to get window px size: %s", SDL_GetError());
+        return false;
+    }
+
+    if (!wc->ResetGraphic(wc->renderW, wc->renderH)) {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,
+            "WindowController Init Failed");
         return false;
     }
     controllers.emplace_back(std::move(wc));
@@ -741,7 +969,7 @@ void RenderWindowManager::HandleEvent(const SDL_Event& event) {
             auto targetWindowID=event.window.windowID;
 
             auto it = std::find_if(controllers.begin(), controllers.end(),
-                [targetWindowID](std::unique_ptr<RenderWindowController>& target) {return target->GetWindowID() == targetWindowID; });
+                [targetWindowID](std::unique_ptr<RenderWindowController>& target) {return target->_GetWindowID() == targetWindowID; });
             
             if (it != controllers.end())
             {
@@ -753,16 +981,6 @@ void RenderWindowManager::HandleEvent(const SDL_Event& event) {
                 controllers.erase(it);
             }
 
-        }
-
-        else if (event.type == SDL_EVENT_MOUSE_MOTION) {
-            SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION,
-                "Mouse Move: %f", event.motion.xrel, event.motion.yrel);
-        }
-
-        else if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN) {
-            SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION,
-                "Mouse Button: %d", event.button.button);
         }
 
 
@@ -784,6 +1002,31 @@ void RenderWindowManager::RenderAll() {
     }
 
     //SDL_SubmitGPUCommandBuffer(cmd);
+}
+
+void RenderWindowManager::PresentAll() {
+    //主线程同步
+
+    for (auto& wc : controllers) {
+        wc->Present();
+    }
+    return;
+    canStartFrame = false;
+    void(*task)(void*) = [](void* data) {
+        auto& rm= *((RenderWindowManager*)data);
+
+        for (auto& wc : rm.controllers) {
+            wc->Present();
+        }
+        //告知渲染线程Present完毕 canStartFrame=TRUE
+        RenderThread::GetIns().PostTask([](void* userData, uint64_t userData2) {
+            auto& rm = *((RenderWindowManager*)userData);
+            rm.canStartFrame = true;
+            }, &rm);
+        };
+
+    while (!UserEvent::PushEvent(UserEvent::TASK, task, this)) { SDL_DelayNS(1); };
+
 }
 
 void RenderWindowManager::UpdateAll(uint64_t deltaTicksNS)

@@ -42,7 +42,7 @@ public:
 	 
 
 
-	//完全清理资源
+	//完全清理资源//仅在渲染线程调用
 	void Reset();
 	//这个函数只会在帧绘制完时重建缓冲区的时候才调用(渲染线程中)
 	void SetCanvasSize(int witdh, int height);

@@ -175,7 +175,7 @@ public:
 
 	bool LoadBindingByName(const char* bindingName);//读取手动保存的绑定
 	void LoadBinding();//先尝试读取被App保存的用户设置的绑定，然后尝试读取Pack文件中缓存的绑定，如果没有则根据模型参数名生成绑定
-	//void ClearBinding();//模型卸载、其他模型预览的时候移除绑定的回调//目前应该是不需要这个，因为有个working判断
+	void ClearBinding();//模型卸载的时候移除绑定的回调//预览其他模型时不需要这个，因为有个working判断，仅在删除此对象时调用
 
 private:
 	//这个函数设置好模型的按钮、轴、动画信息以及默认的绑定信息，可以传入空json
@@ -189,7 +189,8 @@ private:
 
 	//注册按钮、轴等数据，即将具体函数绑定到对应Action上
 	void RegisterAllActionFunc(bool falseToUnregister=true);
-	void UnregisterAllActionFunc();
+	void UnregisterAllActionFunc();//Action与实际成员函数的绑定
+
 
 	void OnButtonDown(int btnIndex);//控制参数的同时还要触发按钮上绑定的动画//发送一个TableButtonDown的Action（当Event用）
 	void OnButtonUp(int btnIndex);//发送一个TableButtonUp的Action（当Event用）
