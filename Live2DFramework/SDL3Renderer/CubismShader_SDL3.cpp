@@ -8,7 +8,7 @@
 
 
 
-//◊≈…´∆˜Õ∑Œƒº˛
+//ÁùÄËâ≤Âô®Â§¥Êñá‰ª∂
 typedef  uint8_t BYTE;
 #include"PixelMasked.h"
 #include"PixelMaskedInverted.h"
@@ -63,7 +63,7 @@ namespace Live2D {
 
                 CubismShader_SDL3::CubismShader_SDL3()
                 {
-                    // ∆˜◊˜≥…
+                    // Âô®‰ΩúÊàê
                     for (csmInt32 i = 0; i < ShaderNames_Max; i++)
                     {
                         _shaderSetsVS.PushBack(NULL);
@@ -75,18 +75,18 @@ namespace Live2D {
                 {
                     ReleaseShaderProgram();
 
-                    // ∆˜§Œœ˜≥˝
+                    // Âô®„ÅÆÂâäÈô§
                     _shaderSetsVS.Clear();
                     _shaderSetsPS.Clear();
                 }
 
                 void CubismShader_SDL3::GenerateShaders(SDL_GPUDevice* device)
                 {
-                    //∑¿÷π∑¥∏¥…˙≥…
+                    //Èò≤Ê≠¢ÂèçÂ§çÁîüÊàê
                     if (_device)
                         return;
 
-                    //»Áπ˚…˙≥…‘Úœ»«Â¿Ì
+                    //Â¶ÇÊûúÁîüÊàêÂàôÂÖàÊ∏ÖÁêÜ
                     ReleaseShaderProgram();
                     _device = device;
 
@@ -95,12 +95,12 @@ namespace Live2D {
                     csmBool isSuccess = false;
 
 
-                    //…Ò√ÿ∑¿goto–¥∑®
+                    //Á•ûÁßòÈò≤gotoÂÜôÊ≥ï
                     do
                     {
-                        //º”‘ÿ◊≈…´∆˜‘¥¬Î
+                        //Âä†ËΩΩÁùÄËâ≤Âô®Ê∫êÁ†Å
                         
-                        //Õ®π˝SDLº”‘ÿŒƒº˛
+                        //ÈÄöËøáSDLÂä†ËΩΩÊñá‰ª∂
                         //std::string u8path=SDL_GetBasePath();
                         //std::string shaderPath = u8path + "Shader/Live2d.Shader";
                         //
@@ -115,17 +115,17 @@ namespace Live2D {
                         //void* buffer = SDL_malloc(size);
                         //SDL_ReadIO(shaderCodeStream, buffer, size);
 
-                        ////∏¥÷∆µΩª∫¥Ê÷–
+                        ////Â§çÂà∂Âà∞ÁºìÂ≠ò‰∏≠
                         //_shaderSrc.Resize(size);
                         //memcpy(_shaderSrc.GetPtr(), buffer,size);
 
                         //SDL_free(buffer);
-                        //SDL_CloseIO(shaderCodeStream); // πÿ±’Œƒº˛¡˜
+                        //SDL_CloseIO(shaderCodeStream); // ÂÖ≥Èó≠Êñá‰ª∂ÊµÅ
 
 
 
 
-                        //º”‘ÿ◊≈…´∆˜
+                        //Âä†ËΩΩÁùÄËâ≤Âô®
                         //mask
 
                        ;
@@ -134,12 +134,12 @@ namespace Live2D {
                         {
                             break;
                         }
-                        if (!LoadShaderProgram(device, true, ShaderNames_SetupMask, g_PixelSetupMask,sizeof(g_PixelSetupMask), static_cast<const csmChar*>("PixelSetupMask")))
+                        if (!LoadShaderProgram(device, true, ShaderNames_SetupMask, g_PixelSetupMask,sizeof(g_PixelSetupMask), static_cast<const csmChar*>("PixelSetupMask"),1))
                         {
                             break;
                         }
                         
-                        //∂•µ„
+                        //È°∂ÁÇπ
                         if (!LoadShaderProgram(device, false, ShaderNames_Normal, g_VertNormal, sizeof(g_VertNormal), static_cast<const csmChar*>("VertNormal")))
                         {
                             break;
@@ -149,33 +149,33 @@ namespace Live2D {
                             break;
                         }
 
-                        //œÒÀÿ
-                        if (!LoadShaderProgram(device, true, ShaderNames_Normal,g_PixelNormal,sizeof(g_PixelNormal), static_cast<const csmChar*>("PixelNormal")))
+                        //ÂÉèÁ¥†
+                        if (!LoadShaderProgram(device, true, ShaderNames_Normal,g_PixelNormal,sizeof(g_PixelNormal), static_cast<const csmChar*>("PixelNormal"), 1))
                         {
                             break;
                         }
-                        if (!LoadShaderProgram(device, true, ShaderNames_NormalMasked,g_PixelMasked,sizeof(g_PixelMasked), static_cast<const csmChar*>("PixelMasked")))
+                        if (!LoadShaderProgram(device, true, ShaderNames_NormalMasked,g_PixelMasked,sizeof(g_PixelMasked), static_cast<const csmChar*>("PixelMasked"), 2))
                         {
                             break;
                         }
-                        if (!LoadShaderProgram(device, true, ShaderNames_NormalMaskedInverted,g_PixelMaskedInverted,sizeof(g_PixelMaskedInverted), static_cast<csmChar*>("PixelMaskedInverted")))
+                        if (!LoadShaderProgram(device, true, ShaderNames_NormalMaskedInverted,g_PixelMaskedInverted,sizeof(g_PixelMaskedInverted), static_cast<csmChar*>("PixelMaskedInverted"), 2))
                         {
                             break;
                         }
-                        if (!LoadShaderProgram(device, true, ShaderNames_NormalPremultipliedAlpha,g_PixelNormalPremult,sizeof(g_PixelNormalPremult), static_cast<csmChar*>("PixelNormalPremult")))
+                        if (!LoadShaderProgram(device, true, ShaderNames_NormalPremultipliedAlpha,g_PixelNormalPremult,sizeof(g_PixelNormalPremult), static_cast<csmChar*>("PixelNormalPremult"), 1))
                         {
                             break;
                         }
-                        if (!LoadShaderProgram(device, true, ShaderNames_NormalMaskedPremultipliedAlpha,g_PixelMaskedPremult,sizeof(g_PixelMaskedPremult), static_cast<const csmChar*>("PixelMaskedPremult")))
+                        if (!LoadShaderProgram(device, true, ShaderNames_NormalMaskedPremultipliedAlpha,g_PixelMaskedPremult,sizeof(g_PixelMaskedPremult), static_cast<const csmChar*>("PixelMaskedPremult"), 2))
                         {
                             break;
                         }
-                        if (!LoadShaderProgram(device, true, ShaderNames_NormalMaskedInvertedPremultipliedAlpha,g_PixelMaskedInvertedPremult,sizeof(g_PixelMaskedInvertedPremult), static_cast<csmChar*>("PixelMaskedInvertedPremult")))
+                        if (!LoadShaderProgram(device, true, ShaderNames_NormalMaskedInvertedPremultipliedAlpha,g_PixelMaskedInvertedPremult,sizeof(g_PixelMaskedInvertedPremult), static_cast<csmChar*>("PixelMaskedInvertedPremult"), 2))
                         {
                             break;
                         }
 
-                        // ≥…π¶
+                        // ÊàêÂäü
                         isSuccess = true;
                     } while (0);
 
@@ -187,7 +187,7 @@ namespace Live2D {
                         return;
                     }
                    
-                    //∂•µ„≤ºæ÷
+                    //È°∂ÁÇπÂ∏ÉÂ±Ä
                     _vertexFormat = {};
                     _vertexBufferDesc = {};
 
@@ -220,7 +220,7 @@ namespace Live2D {
 
 
 
-                Csm::csmBool CubismShader_SDL3::LoadShaderProgram(SDL_GPUDevice* device, bool isPs, csmInt32 assign, const uint8_t* bytes, size_t size, const csmChar* entryPoint)
+                Csm::csmBool CubismShader_SDL3::LoadShaderProgram(SDL_GPUDevice* device, bool isPs, csmInt32 assign, const uint8_t* bytes, size_t size, const csmChar* entryPoint, csmInt32 samplerNum)
                 {
                     if (!device) return false;
 
@@ -231,7 +231,8 @@ namespace Live2D {
                     shaderDesc.entrypoint = entryPoint;
                     shaderDesc.format = SDL_SHADERFORMAT_AUTO;
                     shaderDesc.stage = isPs ? SDL_GPU_SHADERSTAGE_FRAGMENT : SDL_GPU_SHADERSTAGE_VERTEX;
-                    shaderDesc.num_samplers = isPs ? 2:0;
+                    //shaderDesc.num_samplers = isPs ? 2:0;
+                    shaderDesc.num_samplers = samplerNum;
                     shaderDesc.num_storage_textures = 0;
                     shaderDesc.num_storage_buffers = 0;
                     shaderDesc.num_uniform_buffers = 1;

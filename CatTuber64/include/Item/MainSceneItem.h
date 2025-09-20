@@ -5,7 +5,7 @@
 
 #include"SceneItem.h"
 
-//³¡¾°Ö÷ÎïÆ·   Îª½ÇÉ«×À×ÓÊó±ê×é »òÕß¶ÀÁ¢Ä£ĞÍ£¨Ò»Ìå»¯Ä£ĞÍIntegralItem£© »òÕßBongo Cat
+//åœºæ™¯ä¸»ç‰©å“   ä¸ºè§’è‰²æ¡Œå­é¼ æ ‡ç»„ æˆ–è€…ç‹¬ç«‹æ¨¡å‹ï¼ˆä¸€ä½“åŒ–æ¨¡å‹IntegralItemï¼‰ æˆ–è€…Bongo Cat
 
 
 
@@ -20,7 +20,7 @@ class MainSceneItem :public ISceneItem
 
 
 
-//¾­µäCatTuber×éºÏ ½ÇÉ«×À×ÓÊó±ê
+//ç»å…¸CatTuberç»„åˆ è§’è‰²æ¡Œå­é¼ æ ‡
 class TableObject;
 class CharacterObject;
 class HandheldItemObject;
@@ -36,28 +36,34 @@ public:
 
 
 	virtual void Update(uint64_t deltaTicksNS)override;
-	virtual void Draw(SDL_GPUTexture* renderTarget, SDL_GPUTexture* depth, int width, int height, SDL_GPUCommandBuffer* mainCmdBuffer, SDL_GPUCommandBuffer* copyCmdBuffer)override;
+	//virtual void Draw(SDL_GPUTexture* renderTarget, SDL_GPUTexture* depth, int width, int height, SDL_GPUCommandBuffer* mainCmdBuffer, SDL_GPUCommandBuffer* copyCmdBuffer)override;
+	virtual void Draw(SDL_GPURenderPass*, int width, int height, SDL_GPUCommandBuffer* mainCmdBuffer, SDL_GPUCommandBuffer* copyCmdBuffer)override;
+	virtual void DrawMix(MixDrawList* mix);
+
 
 	virtual Json::Value GenerateAttributes()override;
 	virtual void ApplyAttributes(const Json::Value& applyJson)override;
 
 
-	//Ô¤ÀÀ¹¦ÄÜ°üÀ¨ÔÚItemÄÚ
+	//é¢„è§ˆåŠŸèƒ½åŒ…æ‹¬åœ¨Itemå†…
 	
 private:
-	//ÖØÖÃ²¢ÊÍ·Å×ÊÔ´
+	//é‡ç½®å¹¶é‡Šæ”¾èµ„æº
 	void Reset();
 
-	//±ä»»²ÎÊı
+	//å˜æ¢å‚æ•°
 	float offsetX=0.f;
 	float offsetY=0.f;
-	float offsetZ=0.f;//3dÔ¤Áô£¿
+	float offsetZ=0.f;//3dé¢„ç•™ï¼Ÿ
 	float scale=1.f;
 
 	TableObject* _table = nullptr;
 	CharacterObject* _character = nullptr;
-	//QUESTION ÊÖ³ÖÎïÆ·µ½µ×ÓĞÃ»ÓĞ±ØÒªÓë×À×Ó·Ö¿ªÉèÖÃ£¿
+	//QUESTION æ‰‹æŒç‰©å“åˆ°åº•æœ‰æ²¡æœ‰å¿…è¦ä¸æ¡Œå­åˆ†å¼€è®¾ç½®ï¼Ÿ
 	HandheldItemObject* _handHeldItem = nullptr;
+
+	MixDrawList mixDraw;//ä»…å†…éƒ¨è¿›è¡Œæ··åˆç»˜åˆ¶?
+
 
 };
 

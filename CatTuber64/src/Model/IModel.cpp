@@ -10,9 +10,9 @@
 //bool IModel::LoadFromFile(const char* path)
 //{
 //
-//    //¼ÓÔØ×ÅÉ«Æ÷Ô´Âë
+//    //åŠ è½½ç€è‰²å™¨æºç 
 //
-////Í¨¹ıSDL¼ÓÔØÎÄ¼ş
+////é€šè¿‡SDLåŠ è½½æ–‡ä»¶
 //    SDL_IOStream* modelFileStream = SDL_IOFromFile(path, "r");
 //    if (!modelFileStream)
 //    {
@@ -24,7 +24,7 @@
 //    SDL_ReadIO(modelFileStream, buffer, size);
 //    bool result=LoadFromMemFile((unsigned char*)buffer);
 //    SDL_free(buffer);
-//    SDL_CloseIO(modelFileStream); // ¹Ø±ÕÎÄ¼şÁ÷
+//    SDL_CloseIO(modelFileStream); // å…³é—­æ–‡ä»¶æµ
 //	return result;
 //}
 IModel* IModel::CreateFromFolder(const char* packPath, const char* folderInpack)

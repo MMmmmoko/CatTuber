@@ -1,4 +1,4 @@
-﻿#include "CubismRenderer_SDL3.hpp"
+#include "CubismRenderer_SDL3.hpp"
 
 
 #include "Math/CubismMatrix44.hpp"
@@ -45,6 +45,31 @@ namespace Live2D {namespace Cubism {namespace Framework { namespace Rendering {
         glMat[3][2]= mtx.GetArray()[14];
         glMat[3][3]= mtx.GetArray()[15];
         return glMat;
+    }
+
+    CubismMatrix44 ConvertToCsmMat(glm::mat4x4& glMat)
+    {
+        CubismMatrix44 mtx;
+		mtx.GetArray()[0] = glMat[0][0];
+		mtx.GetArray()[1] = glMat[0][1];
+		mtx.GetArray()[2] = glMat[0][2];
+		mtx.GetArray()[3] = glMat[0][3];
+
+		mtx.GetArray()[4] = glMat[1][0];
+		mtx.GetArray()[5] = glMat[1][1];
+		mtx.GetArray()[6] = glMat[1][2];
+		mtx.GetArray()[7] = glMat[1][3];
+
+		mtx.GetArray()[8] = glMat[2][0];
+		mtx.GetArray()[9] = glMat[2][1];
+		mtx.GetArray()[10] = glMat[2][2];
+		mtx.GetArray()[11] = glMat[2][3];
+
+		mtx.GetArray()[12] = glMat[3][0];
+		mtx.GetArray()[13] = glMat[3][1];
+		mtx.GetArray()[14] = glMat[3][2];
+		mtx.GetArray()[15] = glMat[3][3];
+        return mtx;
     }
 
 
@@ -341,6 +366,9 @@ CubismRenderer_SDL3::~CubismRenderer_SDL3()
         _offscreenSurfaces.Clear();
     }
 
+
+
+
     const csmInt32 drawableCount = _drawableNum; //GetModel()->GetDrawableCount();
 
     for (csmUint32 buffer = 0; buffer < _commandBufferNum; buffer++)
@@ -362,16 +390,25 @@ CubismRenderer_SDL3::~CubismRenderer_SDL3()
                 SDL_ReleaseGPUBuffer(s_device, _vertexBuffers[buffer][drawAssign]);
                 _vertexBuffers[buffer][drawAssign] = NULL;
             }
+            if (_vertexBuffers_tb[buffer][drawAssign])
+            {
+                SDL_ReleaseGPUTransferBuffer(s_device, _vertexBuffers_tb[buffer][drawAssign]);
+                _vertexBuffers_tb[buffer][drawAssign] = NULL;
+            }
+
+
         }
 
         CSM_FREE(_constantBuffers[buffer]);
         CSM_FREE(_indexBuffers[buffer]);
         CSM_FREE(_vertexBuffers[buffer]);
+        CSM_FREE(_vertexBuffers_tb[buffer]);
     }
 
     CSM_FREE(_constantBuffers);
     CSM_FREE(_indexBuffers);
     CSM_FREE(_vertexBuffers);
+    CSM_FREE(_vertexBuffers_tb);
 
     CSM_DELETE_SELF(CubismClippingManager_SDL3, _clippingManager);
 }
@@ -380,6 +417,7 @@ void CubismRenderer_SDL3::DoStaticRelease()
 {
     DeleteRenderStateManager();
     DeleteShaderManager();
+
 }
 
 
@@ -421,17 +459,36 @@ void Live2D::Cubism::Framework::Rendering::CubismRenderer_SDL3::Initialize(Frame
         
         
         //确保backbuffer
+        //for (csmUint32 i = 0; i < s_bufferSetNum; i++)
+        //{
+        //    csmVector<CubismOffscreenSurface_SDL3> vector;
+        //    _offscreenSurfaces.PushBack(vector);
+        //    for (csmUint32 j = 0; j < maskBufferCount; j++)
+        //    {
+        //        CubismOffscreenSurface_SDL3 offscreenSurface;
+        //        offscreenSurface.CreateOffscreenSurface(s_device, bufferWidth, bufferHeight);
+        //        _offscreenSurfaces[i].PushBack(offscreenSurface);
+        //    }
+        //}
+        
+        //确保backbuffer
+       
         for (csmUint32 i = 0; i < s_bufferSetNum; i++)
         {
             csmVector<CubismOffscreenSurface_SDL3> vector;
             _offscreenSurfaces.PushBack(vector);
-            for (csmUint32 j = 0; j < maskBufferCount; j++)
+            for (csmUint32 j = 0; j < model->GetDrawableCount(); j++)
             {
+                
+
                 CubismOffscreenSurface_SDL3 offscreenSurface;
-                offscreenSurface.CreateOffscreenSurface(s_device, bufferWidth, bufferHeight);
+                //需要时创建和绘制
+                if (GetClippingContextBufferForDelayDraw(j))
+                    offscreenSurface.CreateOffscreenSurface(s_device, bufferWidth, bufferHeight);
                 _offscreenSurfaces[i].PushBack(offscreenSurface);
             }
         }
+
 
 
     }
@@ -641,15 +698,32 @@ void CubismRenderer_SDL3::DoDrawModel()
     if (_clippingManager != NULL)
     {
         //如果大小不同，在此处重新创建
-        for (csmInt32 i = 0; i < _clippingManager->GetRenderTextureCount(); ++i)
+        //for (csmInt32 i = 0; i < _clippingManager->GetRenderTextureCount(); ++i)
+        //{
+        //    if (_offscreenSurfaces[_commandBufferCurrent][i].GetBufferWidth() != static_cast<csmUint32>(_clippingManager->GetClippingMaskBufferSize().X) ||
+        //        _offscreenSurfaces[_commandBufferCurrent][i].GetBufferHeight() != static_cast<csmUint32>(_clippingManager->GetClippingMaskBufferSize().Y))
+        //    {
+        //        _offscreenSurfaces[_commandBufferCurrent][i].CreateOffscreenSurface(s_device,
+        //            static_cast<csmUint32>(_clippingManager->GetClippingMaskBufferSize().X), static_cast<csmUint32>(_clippingManager->GetClippingMaskBufferSize().Y));
+        //    }
+        //}
+        
+
+        for (csmInt32 i = 0; i < _offscreenSurfaces.GetSize(); ++i)
         {
-            if (_offscreenSurfaces[_commandBufferCurrent][i].GetBufferWidth() != static_cast<csmUint32>(_clippingManager->GetClippingMaskBufferSize().X) ||
-                _offscreenSurfaces[_commandBufferCurrent][i].GetBufferHeight() != static_cast<csmUint32>(_clippingManager->GetClippingMaskBufferSize().Y))
+            for (csmInt32 j = 0; j < _offscreenSurfaces[i].GetSize(); ++j)
             {
-                _offscreenSurfaces[_commandBufferCurrent][i].CreateOffscreenSurface(s_device,
-                    static_cast<csmUint32>(_clippingManager->GetClippingMaskBufferSize().X), static_cast<csmUint32>(_clippingManager->GetClippingMaskBufferSize().Y));
+                if(_offscreenSurfaces[i][j].IsValid())
+                if (_offscreenSurfaces[i][j].GetBufferWidth() != static_cast<csmUint32>(_clippingManager->GetClippingMaskBufferSize().X) ||
+                    _offscreenSurfaces[i][j].GetBufferHeight() != static_cast<csmUint32>(_clippingManager->GetClippingMaskBufferSize().Y))
+                {
+                    _offscreenSurfaces[i][j].CreateOffscreenSurface(s_device,
+                        static_cast<csmUint32>(_clippingManager->GetClippingMaskBufferSize().X), static_cast<csmUint32>(_clippingManager->GetClippingMaskBufferSize().Y));
+                }
             }
         }
+
+
         //是否使用高精度蒙版
         if (IsUsingHighPrecisionMask())
         {
@@ -686,6 +760,11 @@ void CubismRenderer_SDL3::DoDrawModel()
         _sortedDrawableIndexList[order] = i;
     }
 
+    //MIXDRAW
+    if (bMixDraw)
+    {
+        _drawOrderList = Core::csmGetDrawableDrawOrders(GetModel()->GetModel());
+    }
 
 
     //绘制
@@ -699,73 +778,91 @@ void CubismRenderer_SDL3::DoDrawModel()
             continue;
         }
 
-
-        //设置剪贴蒙版
-        CubismClippingContext_SDL3* clipContext = (_clippingManager != NULL)
-            ? (*_clippingManager->GetClippingContextListForDraw())[drawableIndex]
-            : NULL;
-
-        if (clipContext != NULL && IsUsingHighPrecisionMask()) //绘制蒙版
-        {
-            if (clipContext->_isUsing) //
+        //绘制前的准备阶段
+        auto readyFunc = [](void* _pthis, uint64_t drawableIndex)
             {
-                CubismRenderer_SDL3::GetRenderStateManager()->SetViewport(s_context,
-                    0,
-                    0,
-                    static_cast<float>(_clippingManager->GetClippingMaskBufferSize().X),
-                    static_cast<float>(_clippingManager->GetClippingMaskBufferSize().Y),
-                    0.0f, 1.0f);
+                CubismRenderer_SDL3* pthis = (CubismRenderer_SDL3*)_pthis;
+                //设置剪贴蒙版
+                CubismClippingContext_SDL3* clipContext = (pthis->_clippingManager != NULL)
+                    ? (*pthis->_clippingManager->GetClippingContextListForDraw())[drawableIndex]
+                    : NULL;
 
-                //调用具有正确渲染目标的离屏表面缓冲区
-                CubismOffscreenSurface_SDL3* currentHighPrecisionMaskColorBuffer = &_offscreenSurfaces[_commandBufferCurrent][clipContext->_bufferIndex];
-
-                currentHighPrecisionMaskColorBuffer->BeginDraw(s_context);
-                currentHighPrecisionMaskColorBuffer->Clear(s_context, 1.0f, 1.0f, 1.0f, 1.0f);
-
-                const csmInt32 clipDrawCount = clipContext->_clippingIdCount;
-                for (csmInt32 ctx = 0; ctx < clipDrawCount; ctx++)
+                if (clipContext != NULL && pthis->IsUsingHighPrecisionMask()) //绘制蒙版
                 {
-                    const csmInt32 clipDrawIndex = clipContext->_clippingIdList[ctx];
-
-                    // 如果顶点信息未更新，则跳过绘制
-                    if (!GetModel()->GetDrawableDynamicFlagVertexPositionsDidChange(clipDrawIndex))
+                    if (clipContext->_isUsing) //
                     {
-                        continue;
+                        CubismRenderer_SDL3::GetRenderStateManager()->SetViewport(s_context,
+                            0,
+                            0,
+                            static_cast<float>(pthis->_clippingManager->GetClippingMaskBufferSize().X),
+                            static_cast<float>(pthis->_clippingManager->GetClippingMaskBufferSize().Y),
+                            0.0f, 1.0f);
+
+                        //调用具有正确渲染目标的离屏表面缓冲区
+                        //CubismOffscreenSurface_SDL3* currentHighPrecisionMaskColorBuffer = &pthis->_offscreenSurfaces[pthis->_commandBufferCurrent][clipContext->_bufferIndex];
+                        CubismOffscreenSurface_SDL3* currentHighPrecisionMaskColorBuffer = &pthis->_offscreenSurfaces[pthis->_commandBufferCurrent][drawableIndex];
+
+
+                        currentHighPrecisionMaskColorBuffer->BeginDraw(s_context);
+                        currentHighPrecisionMaskColorBuffer->Clear(s_context, 1.0f, 1.0f, 1.0f, 1.0f);
+
+                        const csmInt32 clipDrawCount = clipContext->_clippingIdCount;
+                        for (csmInt32 ctx = 0; ctx < clipDrawCount; ctx++)
+                        {
+                            const csmInt32 clipDrawIndex = clipContext->_clippingIdList[ctx];
+
+                            // 如果顶点信息未更新，则跳过绘制
+                            if (!pthis->GetModel()->GetDrawableDynamicFlagVertexPositionsDidChange(clipDrawIndex))
+                            {
+                                continue;
+                            }
+
+                            //是否裁剪背面（单面绘制）
+                            pthis->IsCulling(pthis->GetModel()->GetDrawableCulling(clipDrawIndex) != 0);
+
+                            // 今回専用の変換を適用して描く
+                            // 频道也需要切换(A,R,G,B)
+                            pthis->SetClippingContextBufferForMask(clipContext);
+                            pthis->DrawMeshSDL3(*pthis->GetModel(), clipDrawIndex);
+                        }
+
+                        {
+                            //后处理
+                            currentHighPrecisionMaskColorBuffer->EndDraw(s_context);
+                            pthis->SetClippingContextBufferForMask(NULL);
+
+                            // 恢复viewport
+                            GetRenderStateManager()->SetViewport(s_context,
+                                0.0f,
+                                0.0f,
+                                static_cast<float>(s_viewportWidth),
+                                static_cast<float>(s_viewportHeight),
+                                0.0f, 1.0f);
+
+                            pthis->PreDraw(); // バッファをクリアする
+                        }
                     }
-
-                    //是否裁剪背面（单面绘制）
-                    IsCulling(GetModel()->GetDrawableCulling(clipDrawIndex) != 0);
-
-                    // 今回専用の変換を適用して描く
-                    // 频道也需要切换(A,R,G,B)
-                    SetClippingContextBufferForMask(clipContext);
-                    DrawMeshSDL3(*GetModel(), clipDrawIndex);
                 }
 
-                {
-                    //后处理
-                    currentHighPrecisionMaskColorBuffer->EndDraw(s_context);
-                    SetClippingContextBufferForMask(NULL);
+                // クリッピングマスクをセットする
+                pthis->SetClippingContextBufferForDraw(clipContext);
 
-                    // 恢复viewport
-                    GetRenderStateManager()->SetViewport(s_context,
-                        0.0f,
-                        0.0f,
-                        static_cast<float>(s_viewportWidth),
-                        static_cast<float>(s_viewportHeight),
-                        0.0f, 1.0f);
 
-                    PreDraw(); // バッファをクリアする
-                }
-            }
+
+                pthis->IsCulling(pthis->GetModel()->GetDrawableCulling(drawableIndex) != 0);
+            };
+        if (!bMixDraw)
+        {
+            readyFunc(this, drawableIndex);
+            DrawMeshSDL3(*GetModel(), drawableIndex);
+        }
+        else
+        {
+            DrawMeshSDL3(*GetModel(), drawableIndex, bMixDraw, readyFunc);
         }
 
-        // クリッピングマスクをセットする
-        SetClippingContextBufferForDraw(clipContext);
 
-        IsCulling(GetModel()->GetDrawableCulling(drawableIndex) != 0);
 
-        DrawMeshSDL3(*GetModel(), drawableIndex);
     }
 
     PostDraw();
@@ -849,6 +946,9 @@ void CubismRenderer_SDL3::ExecuteDrawForMask(const CubismModel& model, const csm
 
 void CubismRenderer_SDL3::ExecuteDrawForDraw(const CubismModel& model, const csmInt32 index)
 {
+    //if (bMixDraw);
+    //return ExecuteDrawForMixDraw(model, index);
+
     CubismShader_SDL3* shaderManager = Live2D::Cubism::Framework::Rendering::CubismRenderer_SDL3::GetShaderManager();
     if (!shaderManager)
     {
@@ -915,10 +1015,272 @@ void CubismRenderer_SDL3::ExecuteDrawForDraw(const CubismModel& model, const csm
     DrawDrawableIndexed(model, index);
 
 
+    s_context->EndRender();
+}
+
+void CubismRenderer_SDL3::ExecuteDrawForMixDraw(const CubismModel& model, const csmInt32 index, void(*beforeDrawCallback)(void* userData, uint64_t userData2))
+{
+
+    //MixDraw要注意不要设置了SDL渲染状态，而是把渲染数据传给MixDraw函数
+
+    if (!mixDrawCallFunc)return;
+
+
+    CubismShader_SDL3* shaderManager = Live2D::Cubism::Framework::Rendering::CubismRenderer_SDL3::GetShaderManager();
+    if (!shaderManager)
+    {
+        return;
+    }
+
+
+    //需要传递给MixDraw函数的数值
+    SDL_GPUGraphicsPipeline* pipeLine;
+
+    uint32_t vsStartSlot; 
+    uint32_t vsBufferNum;
+    SDL_GPUBufferBinding vsBuffers[1];
+
+    SDL_GPUIndexElementSize indexElementSize;
+    SDL_GPUBufferBinding indexBuffer;
+    uint32_t indexCount;
+    uint32_t indexStart;
+
+    uint32_t texStartSlot;
+    uint32_t texNum;
+    SDL_GPUTextureSamplerBinding textures[2];//Live2D纹理数不会超过2
+
+    uint32_t vsUniformSlot;
+    void* vsUniformData; 
+    uint32_t vsUniformDataLength;
+
+    uint32_t psUniformSlot;
+    const void* psUniformData;
+    uint32_t psUniformDataLength;
+
+    SDL_GPUViewport viewPort = {};
+
+    auto __clippingContextBufferForDelayDraw=GetClippingContextBufferForDelayDraw(index);
+    //顶点
+    {
+        vsStartSlot = 0;
+        vsBufferNum = 1;
+        vsBuffers[0] = {_vertexBuffers[_commandBufferCurrent][index],0};
+    }
+    //索引
+    {
+        indexElementSize = SDL_GPU_INDEXELEMENTSIZE_16BIT;
+        indexBuffer = { _indexBuffers[_commandBufferCurrent][index],0 };
+        indexCount = model.GetDrawableVertexIndexCount(index);
+        indexStart = 0;
+    }
+    //纹理和采样器
+    {
+    
+        SetSamplerAccordingToAnisotropy();//根据各向异性数值设置采样器
+
+        //根据状态设置着色器纹理资源
+        //const csmBool masked = GetClippingContextBufferForDraw() != NULL;
+        const csmBool masked = __clippingContextBufferForDelayDraw != NULL;;
+        const csmBool drawing = !IsGeneratingMask();
+
+        SDL_GPUTexture* textureView = GetTextureViewWithIndex(model, index);
+
+
+        //BUG的原因应该是模型会共用蒙版。X
+        //无法识别蒙版的原因是延迟绘制触发的时候_clippingContextBufferForDraw已经被恢复为空，而空值导致被判定为当前图层不使用mask
+        //把mask绘制的过程也移动到mix里可能能解决这个问题
+        //SDL_GPUTexture* maskView = (masked && drawing ? _offscreenSurfaces[_commandBufferCurrent][GetClippingContextBufferForDraw()->_bufferIndex].GetTextureView() : NULL);
+        SDL_GPUTexture* maskView = (masked && drawing ? _offscreenSurfaces[_commandBufferCurrent][index].GetTextureView() : NULL);
+
+
+        textures[0] = { textureView,textureView ? s_context->GetFragmentSampler() : NULL };
+        textures[1] = { maskView ,maskView ? s_context->GetFragmentSampler() : NULL };
+
+        texStartSlot = 0;
+        texNum = 0;
+        if (textureView)
+        {
+            if (maskView)
+            {
+                texNum = 2;
+            }
+            else
+            {
+                texNum = 1;
+            }
+        }
+    }
+    //常数
+    {
+        CubismConstantBufferSDL3 cb;
+        memset(&cb, 0, sizeof(cb));
+
+
+        //const csmBool masked = GetClippingContextBufferForDraw() != NULL;
+
+            //const csmBool masked = _offscreenSurfaces[_commandBufferCurrent][index].IsValid();
+            const csmBool masked = __clippingContextBufferForDelayDraw !=NULL;
+        if (masked)
+        {
+            //设置矩阵以将View坐标转换为ClippingContext坐标
+            //cb.clipMatrix = glm::transpose(ConvertToGLM(GetClippingContextBufferForDraw()->_matrixForDraw));
+            //cb.clipMatrix = glm::transpose(ConvertToGLM(_clipMatVec[index]));
+            cb.clipMatrix = glm::transpose(ConvertToGLM(__clippingContextBufferForDelayDraw->_matrixForDraw));
+
+            //设置要使用的颜色通道
+            //CubismClippingContext_SDL3* contextBuffer = GetClippingContextBufferForDraw();
+            SetColorChannel(cb, __clippingContextBufferForDelayDraw);
+        }
+
+        // 色
+        CubismTextureColor baseColor = GetModelColorWithOpacity(model.GetDrawableOpacity(index));
+        CubismTextureColor multiplyColor = model.GetMultiplyColor(index);
+        CubismTextureColor screenColor = model.GetScreenColor(index);
+        SetColorConstantBuffer(cb, model, index, baseColor, multiplyColor, screenColor);
+
+        SetProjectionMatrix(cb, GetMvpMatrix());
+    
+        *_constantBuffers[_commandBufferCurrent][index] = cb;
+
+
+        vsUniformSlot=0;
+        vsUniformData= _constantBuffers[_commandBufferCurrent][index];
+        vsUniformDataLength=sizeof(cb);
+
+        psUniformSlot = 0;
+        psUniformData = _constantBuffers[_commandBufferCurrent][index];
+        psUniformDataLength = sizeof(cb);
+    }
+
+    //PipeLile
+    {
+        CubismBlendMode colorBlendMode = model.GetDrawableBlendMode(index);
+        SetBlendState(colorBlendMode);
+
+        if (!SetShader(model, index))
+        {
+            return;
+        }
+
+        s_context->SetTopology(SDL_GPUPrimitiveType::SDL_GPU_PRIMITIVETYPE_TRIANGLELIST);
+    
+        pipeLine=s_context->GetPipelineFromCurState();
+    }
+    //VIEWPORT
+    {
+        viewPort.x = 0;
+        viewPort.y = 0;
+        viewPort.w =static_cast<float>( s_viewportWidth);
+        viewPort.h = static_cast<float>(s_viewportHeight);
+        viewPort.min_depth = 0.f;
+        viewPort.max_depth = 1.f;
+    }
+
+    //填充数据
+    {
+        Csm::Rendering::MixRenderData renderData;
+        renderData.sizeOfThisStruct = sizeof(renderData);
+        renderData.layerZ = _drawOrderList[index];
+        renderData.pipeLine = pipeLine;
+
+        renderData.vsStartSlot = vsStartSlot;
+        renderData.vsBufferNum = vsBufferNum;
+        renderData.vsBuffers = vsBuffers;
+
+        renderData.indexElementSize = indexElementSize;
+        renderData.indexBuffer = &indexBuffer;
+        renderData.indexCount = indexCount;
+        renderData.indexStart = indexStart;
+
+        renderData.texStartSlot = texStartSlot;
+        renderData.texNum = texNum;
+        renderData.textures = textures;
+
+        renderData.vsUniformSlot = vsUniformSlot;
+        renderData.vsUniformData = vsUniformData;
+        renderData.vsUniformDataLength = vsUniformDataLength;
+
+        renderData.psUniformSlot = psUniformSlot;
+        renderData.psUniformData = psUniformData;
+        renderData.psUniformDataLength = psUniformDataLength;
+
+        renderData.beforeDrawCallback = beforeDrawCallback;
+        renderData.callbackUserData = this;
+        renderData.callbackUserData2 = index;
+
+        renderData.viewport = viewPort;
+        mixDrawCallFunc(mixDrawFuncData,&renderData);
+    
+    }
+    return;
+
+
+    //////////////////////////////////////////////////////
+    //纹理和采样器
+    SetSamplerAccordingToAnisotropy();//根据各向异性数值设置采样器
+
+
+
+    SetTextureView(model, index);
+
+    //SDL3不能像D3d11那样灵活设置着色器，而应该根据着色器组合创建多个渲染管线，然后按需绑定资源到不同管线
+    if (!SetShader(model, index))
+    {
+        return;
+    }
+
+
+
+    //BlendMode
+    {
+        CubismBlendMode colorBlendMode = model.GetDrawableBlendMode(index);
+        SetBlendState(colorBlendMode);
+    }
+
+    //常数缓存（uniform data）
+    {
+        CubismConstantBufferSDL3 cb;
+        memset(&cb, 0, sizeof(cb));
+
+
+        const csmBool masked = GetClippingContextBufferForDraw() != NULL;
+        if (masked)
+        {
+            //设置矩阵以将View坐标转换为ClippingContext坐标
+            cb.clipMatrix = glm::transpose(ConvertToGLM(GetClippingContextBufferForDraw()->_matrixForDraw));
+
+            //设置要使用的颜色通道
+            CubismClippingContext_SDL3* contextBuffer = GetClippingContextBufferForDraw();
+            SetColorChannel(cb, contextBuffer);
+        }
+
+        // 色
+        CubismTextureColor baseColor = GetModelColorWithOpacity(model.GetDrawableOpacity(index));
+        CubismTextureColor multiplyColor = model.GetMultiplyColor(index);
+        CubismTextureColor screenColor = model.GetScreenColor(index);
+        SetColorConstantBuffer(cb, model, index, baseColor, multiplyColor, screenColor);
+
+
+        SetProjectionMatrix(cb, GetMvpMatrix());
+        UpdateConstantBuffer(cb, index);
+
+
+    }
+
+
+    //设置顶点几何布局为TRIANGLELIST
+    s_context->SetTopology(SDL_GPUPrimitiveType::SDL_GPU_PRIMITIVETYPE_TRIANGLELIST);
+    DrawDrawableIndexed(model, index);
+
 
     s_context->EndRender();
 
+
+
 }
+
+
+
 
 
 void CubismRenderer_SDL3::DrawDrawableIndexed(const CubismModel& model, const csmInt32 index)
@@ -946,7 +1308,7 @@ void CubismRenderer_SDL3::DrawDrawableIndexed(const CubismModel& model, const cs
 
 
 
-void CubismRenderer_SDL3::DrawMeshSDL3(const CubismModel& model, const csmInt32 index)
+void CubismRenderer_SDL3::DrawMeshSDL3(const CubismModel& model, const csmInt32 index, bool mixDraw, void(*beforeDrawCallback)(void* userData, uint64_t userData2))
 {
     if (s_device == NULL) 
         return;
@@ -982,7 +1344,10 @@ void CubismRenderer_SDL3::DrawMeshSDL3(const CubismModel& model, const csmInt32 
     }
     else
     {
-        ExecuteDrawForDraw(model, index);
+        if(mixDraw)
+            ExecuteDrawForMixDraw(model, index, beforeDrawCallback);
+        else
+            ExecuteDrawForDraw(model, index);
     }
 
 
@@ -1100,6 +1465,13 @@ CubismClippingContext_SDL3* CubismRenderer_SDL3::GetClippingContextBufferForDraw
     return _clippingContextBufferForDraw;
 }
 
+CubismClippingContext_SDL3* CubismRenderer_SDL3::GetClippingContextBufferForDelayDraw(const csmInt32 index) const
+{
+    return (_clippingManager != NULL)
+        ? (*_clippingManager->GetClippingContextListForDraw())[index]
+        : NULL;
+}
+
 void CubismRenderer_SDL3::SetClippingContextBufferForMask(CubismClippingContext_SDL3* clip)
 {
     _clippingContextBufferForMask = clip;
@@ -1135,7 +1507,7 @@ void CubismRenderer_SDL3::CopyToBuffer(CubismRenderContext_SDL3* renderContext, 
             SDL_UnmapGPUTransferBuffer(renderContext->GetDevice(), transferBuffer);
 
             // 创建命令缓冲区并开始复制过程
-            SDL_GPUCommandBuffer* cmd = renderContext->GetCommandBuffer();
+            SDL_GPUCommandBuffer* cmd = renderContext->GetCopyCommandBuffer();
             SDL_GPUCopyPass* copyPass = SDL_BeginGPUCopyPass(cmd);
             
             SDL_GPUTransferBufferLocation bufferLocation = { transferBuffer,0};
@@ -1207,7 +1579,8 @@ void CubismRenderer_SDL3::SetBlendState(const CubismBlendMode blendMode)
 Csm::csmBool CubismRenderer_SDL3::SetShader(const CubismModel& model, const csmInt32 index)
 {
     //根据状态设置着色器
-    const csmBool masked = GetClippingContextBufferForDraw() != NULL;
+    //const csmBool masked = GetClippingContextBufferForDraw() != NULL;
+    const csmBool masked = GetClippingContextBufferForDelayDraw(index) != NULL;
     const csmBool premult = IsPremultipliedAlpha();
     const csmBool invertedMask = model.GetDrawableInvertedMask(index);
 
@@ -1272,26 +1645,25 @@ Csm::csmBool CubismRenderer_SDL3::SetShader(const CubismModel& model, const csmI
 void CubismRenderer_SDL3::SetTextureView(const CubismModel& model, const csmInt32 index)
 {
     //根据状态设置着色器纹理资源
-    const csmBool masked = GetClippingContextBufferForDraw() != NULL;
+    //const csmBool masked = GetClippingContextBufferForDraw() != NULL;
+    const csmBool masked = GetClippingContextBufferForDelayDraw(index) != NULL;
     const csmBool drawing = !IsGeneratingMask();
 
     SDL_GPUTexture* textureView = GetTextureViewWithIndex(model, index);
-    SDL_GPUTexture* maskView = (masked && drawing ? _offscreenSurfaces[_commandBufferCurrent][GetClippingContextBufferForDraw()->_bufferIndex].GetTextureView() : NULL);
+    //SDL_GPUTexture* maskView = (masked && drawing ? _offscreenSurfaces[_commandBufferCurrent][GetClippingContextBufferForDraw()->_bufferIndex].GetTextureView() : NULL);
+    SDL_GPUTexture* maskView = (masked && drawing ? _offscreenSurfaces[_commandBufferCurrent][index].GetTextureView() : NULL);
     SDL_GPUTextureSamplerBinding viewArray[2] = { 
         {textureView,textureView ? s_context->GetFragmentSampler():NULL },
-        maskView ,maskView ? s_context->GetFragmentSampler() : NULL
+        {maskView ,maskView ? s_context->GetFragmentSampler() : NULL}
     };
     uint32_t numViews = 0;
     if (textureView)
     {
-        if (maskView)
-        {
-            numViews = 2;
-        }
-        else
-        {
-            numViews = 1;
-        }
+        numViews++;
+    }
+    if (maskView)
+    {
+        numViews++;
     }
     //s_context->SetFragmentTextureResources(0,2, viewArray);
     s_context->SetFragmentTextureResources(0, numViews, viewArray);
@@ -1309,7 +1681,7 @@ void CubismRenderer_SDL3::SetColorChannel(CubismConstantBufferSDL3& cb, CubismCl
 {
     const csmInt32 channelIndex = contextBuffer->_layoutChannelIndex;
     CubismRenderer::CubismTextureColor* colorChannel = contextBuffer->GetClippingManager()->GetChannelFlagAsColor(channelIndex);
-    cb.channelFlag= glm::vec4(colorChannel->R, colorChannel->G, colorChannel->B, colorChannel->A);
+    cb.channelFlag= glm::vec4(colorChannel->R, colorChannel->G, colorChannel->B, colorChannel->A);\
 }
 void CubismRenderer_SDL3::SetProjectionMatrix(CubismConstantBufferSDL3& cb, CubismMatrix44 matrix)
 {

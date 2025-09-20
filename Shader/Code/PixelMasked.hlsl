@@ -22,6 +22,8 @@ Texture2D mainTexture : register(t0, space2);
 SamplerState mainSampler : register(s0, space2);
 Texture2D maskTexture : register(t1, space2);
 
+//需要声明采样器，虽然不用
+SamplerState maskSampler : register(s1, space2);
 
 
 // Pixel Shader

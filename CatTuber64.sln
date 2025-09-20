@@ -15,6 +15,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SDL3_image", "..\ThirdPart\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{3B3D925B-41CF-4FC3-B6C5-661248FB2518}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "duilib", "..\ThirdPart\nim_duilib-main\duilib\duilib.vcxproj", "{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -55,6 +57,14 @@ Global
 		{2BD5534E-00E2-4BEA-AC96-D9A92EA24696}.Release|x64.Build.0 = Release|x64
 		{2BD5534E-00E2-4BEA-AC96-D9A92EA24696}.Release|x86.ActiveCfg = Release|Win32
 		{2BD5534E-00E2-4BEA-AC96-D9A92EA24696}.Release|x86.Build.0 = Release|Win32
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.Debug|x64.ActiveCfg = Debug|x64
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.Debug|x64.Build.0 = Debug|x64
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.Debug|x86.ActiveCfg = Debug|Win32
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.Debug|x86.Build.0 = Debug|Win32
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.Release|x64.ActiveCfg = Release|x64
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.Release|x64.Build.0 = Release|x64
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.Release|x86.ActiveCfg = Release|Win32
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -63,6 +73,7 @@ Global
 		{81CE8DAF-EBB2-4761-8E45-B71ABCCA8C68} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{3B372482-8D89-3F80-A7BC-9C34DD4070B6} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{2BD5534E-00E2-4BEA-AC96-D9A92EA24696} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {670056E3-45A0-472E-9A85-FBF7029B1493}

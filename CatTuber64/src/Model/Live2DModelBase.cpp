@@ -1,4 +1,4 @@
-﻿
+
 
 #include<SDL3_image/SDL_image.h>
 #include <Utils/CubismString.hpp>
@@ -20,7 +20,8 @@
 
 
 #include"AppContext.h"
-
+#include"Renderer/MixDrawList.h"
+#include"Item/Scene.h"
 //屏蔽C4276
 //DISABLE_WARNING_PUSH
 //DISABLE_WARNING_MSVC(4267)
@@ -32,7 +33,7 @@ CubismLive2DModel::~CubismLive2DModel()
 {
 	ReleaseMotions();
 	ReleaseExpressions();
-
+	if(_modelSetting)
 	for (csmInt32 i = 0; i < _modelSetting->GetMotionGroupCount(); i++)
 	{
 		const csmChar* group = _modelSetting->GetMotionGroupName(i);
@@ -45,6 +46,7 @@ CubismLive2DModel::~CubismLive2DModel()
 	}
 	_bindTexture.Clear();
 	delete _modelSetting;
+	_modelSetting = NULL;
 
 	//释放motionManagers
 	for (auto it = _motionManagers.begin(); it != _motionManagers.end(); it++)
@@ -57,27 +59,29 @@ CubismLive2DModel::~CubismLive2DModel()
 
 }
 
-bool CubismLive2DModel::LoadFromFile(const char* packPath, const char* fullpath)
+bool CubismLive2DModel::LoadFromFile(const char* packPath, const char* pathInPack)
 {
 	if (!_pack.Open(packPath))
 	{
-		SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, "Failed to LoadAssets:%s", packPath);
+		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to LoadAssets:%s", packPath);
 		return false;
 	}
 
 
 	//判断path类型？？
-	SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION,"Loading model at %s", fullpath);
+	SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION,"Loading model at %s:%s", packPath, pathInPack);
 
-	std::filesystem::path _tempath= fullpath;
-	
+	std::filesystem::path _tempath= pathInPack;
 	_modelHomeDir = _tempath.remove_filename().u8string().c_str();
+
+
+
 	//_modelHomeDir = path;
 	size_t size;
-	uint8_t*  filemem=CreateBuffer(fullpath,&size);
+	uint8_t*  filemem=CreateBuffer(pathInPack,&size);
 	if (filemem == NULL)
 	{
-		SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, "Failed to LoadAssets:%s", fullpath);
+		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to LoadAssets %s:%s", packPath, pathInPack);
 		return false;
 	}
 
@@ -90,7 +94,7 @@ bool CubismLive2DModel::LoadFromFile(const char* packPath, const char* fullpath)
 
 	if (_model == NULL)
 	{
-		SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION,"Failed to LoadAssets:%s", fullpath);
+		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,"Failed to LoadAssets %s:%s", packPath, pathInPack);
 		return false;
 	}
 
@@ -486,12 +490,29 @@ void CubismLive2DModel::SetupTexture()
 
 
 		//从文件读纹理,后续修改读取方式的时候也要改这里
+		//这个是相对路径，
 		csmString texturePath = _modelSetting->GetTextureFileName(modelTextureNumber);
+		
 		texturePath = _modelHomeDir + texturePath;
-		SDL_Surface* surface = IMG_Load(texturePath.GetRawString());
+		//从PACK加载文件
+		size_t fileSize;
+		uint8_t* texMem=_pack.LoadFile(texturePath.GetRawString(),&fileSize);
+		if (!texMem)
+		{
+			SDL_LogError(SDL_LOG_CATEGORY_RENDER, "[L2D] WARNING: Can not find texture: %s,%s", _pack.GetPath(),texturePath.GetRawString());
+			//continue;
+		}
+
+		SDL_IOStream* io = SDL_IOFromConstMem(texMem, fileSize);
+		if (!io) {
+			SDL_LogError(SDL_LOG_CATEGORY_RENDER, "SDL_IOFromConstMem failed: %s", SDL_GetError());
+			//continue;
+		}
+		SDL_Surface* surface=IMG_Load_IO(io,true);
+		if (texMem)_pack.ReleaseMem(texMem);
 		if (!surface)
 		{
-			SDL_LogWarn(SDL_LOG_CATEGORY_RENDER,"[L2D] WARNING: Can not find texture: %s", texturePath.GetRawString());
+			SDL_LogError(SDL_LOG_CATEGORY_RENDER,"[L2D] WARNING: Can not find texture: %s", texturePath.GetRawString());
 		}
 		if (isPreMult)
 		{
@@ -504,12 +525,13 @@ void CubismLive2DModel::SetupTexture()
 			texInfo.width = (surface!=NULL)?static_cast<uint32_t>(surface->w):10,
 			texInfo.height = (surface != NULL) ? static_cast<uint32_t>(surface->h) : 10,
 			texInfo.layer_count_or_depth = 1,
-			texInfo.num_levels = 1,
-			texInfo.usage = SDL_GPU_TEXTUREUSAGE_SAMPLER;
+			//texInfo.num_levels = 1,
+			texInfo.num_levels = (uint32_t)floor(log2((double)(texInfo.width > texInfo.height ? texInfo.width : texInfo.height))) + 1; 
+			texInfo.usage = (texInfo.num_levels==1)? SDL_GPU_TEXTUREUSAGE_SAMPLER:(SDL_GPU_TEXTUREUSAGE_SAMPLER|SDL_GPU_TEXTUREUSAGE_COLOR_TARGET);
 		//SDL_GPUTexture* s
 
 		SDL_GPUTexture* gpuTexture = SDL_CreateGPUTexture(AppContext::GetGraphicDevice(), &texInfo);
-
+		
 		GetRenderer<Rendering::CubismRenderer_SDL3>()->BindTexture(modelTextureNumber, gpuTexture);
 
 		if (gpuTexture)
@@ -547,8 +569,12 @@ void CubismLive2DModel::SetupTexture()
 				
 
 				SDL_UploadToGPUTexture(copyPass, &src, &dst, false);
-
 				SDL_EndGPUCopyPass(copyPass);
+
+				//MIPMAP
+				if(texInfo.num_levels>1)
+					SDL_GenerateMipmapsForGPUTexture(cmd, gpuTexture);
+
 				SDL_SubmitGPUCommandBuffer(cmd);
 
 				SDL_ReleaseGPUTransferBuffer(AppContext::GetGraphicDevice(), transferBuffer);
@@ -701,7 +727,7 @@ void CubismLive2DModel::Update(float deltaTimeSeconds)
 void CubismLive2DModel::Draw()
 {
 	Rendering::CubismRenderer_SDL3* renderer = GetRenderer<Rendering::CubismRenderer_SDL3>();
-
+	renderer->UseHighPrecisionMask(true);
 	if (_model == NULL /*|| _deleteModel*/ || renderer == NULL)
 	{
 		return;
@@ -725,10 +751,29 @@ void CubismLive2DModel::Draw()
 
 	//renderer->UseHighPrecisionMask(true);
 
+
+
+
 	renderer->DrawModel();
 }
 
+void CubismLive2DModel::DrawMix(MixDrawList* pMix, glm::mat4x4& view_projMat)
+{
+	Rendering::CubismRenderer_SDL3* renderer = GetRenderer<Rendering::CubismRenderer_SDL3>();
 
+	//auto projMat=Csm::Rendering::ConvertToCsmMat(view_projMat);
+
+	//目前没有设置model矩阵， 直接传入view-proj矩阵
+	renderer->SetMvpMatrix(view_projMat);
+	
+
+
+	renderer->SetMixCallback(MixDrawList::InsertDrawCommandCallback, pMix);
+	renderer->SetMixDraw(true);
+	Draw();
+	renderer->SetMixDraw(false);
+
+}
 
 
 
@@ -835,6 +880,12 @@ void Live2DModelBase::Update(uint64_t deltaTicksNS)
 void Live2DModelBase::Draw()
 {
 	l2dmodel.Draw();
+}
+
+void Live2DModelBase::DrawMix(MixDrawList* pMix)
+{
+
+	l2dmodel.DrawMix(pMix,GetScene()->Get2DProj());
 }
 
 void Live2DModelBase::PlayAnimation(const std::string& name, bool loop)

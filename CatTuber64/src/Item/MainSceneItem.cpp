@@ -1,16 +1,15 @@
 
 
+#include"Item/Scene.h"
 #include"Item/MainSceneItem.h"
-
 #include"Item/TableObject.h"
-
 
 
 
 void ClassicItem::Update(uint64_t deltaTicksNS)
 {
-	//TODO ´¦Àí¡°Ô¤ÀÀ¡±
-	//ÏÈË¢ÐÂ×À×Ó
+	//TODO å¤„ç†â€œé¢„è§ˆâ€
+	//å…ˆåˆ·æ–°æ¡Œå­
 	if(_table)
 		_table->Update(deltaTicksNS);
 	//if(_character)
@@ -19,11 +18,32 @@ void ClassicItem::Update(uint64_t deltaTicksNS)
 	//	_handHeldItem->Update(deltatime);
 }
 
-void ClassicItem::Draw(SDL_GPUTexture* renderTarget, SDL_GPUTexture* depth, int width, int height, SDL_GPUCommandBuffer* mainCmdBuffer, SDL_GPUCommandBuffer* copyCmdBuffer)
+//void ClassicItem::Draw(SDL_GPUTexture* renderTarget, SDL_GPUTexture* depth, int width, int height, SDL_GPUCommandBuffer* mainCmdBuffer, SDL_GPUCommandBuffer* copyCmdBuffer)
+void ClassicItem::Draw(SDL_GPURenderPass* mainRenderPass, int width, int height, SDL_GPUCommandBuffer* mainCmdBuffer, SDL_GPUCommandBuffer* copyCmdBuffer)
 {
+	auto& _2dMat = GetScene()->Get2DProj();
 
+
+	if (_table)
+	{
+		_table->GetModel()->SetScene(scene);
+		//_table->Draw();
+		_table->Draw(&mixDraw);
+	}
+
+
+	mixDraw.DoDraw(mainCmdBuffer,mainRenderPass);
 
 }
+void ClassicItem::DrawMix(MixDrawList* mix)
+{
+	if (_table)
+	{
+		_table->Draw(mix);
+	}
+}
+
+
 
 Json::Value ClassicItem::GenerateAttributes()
 {
@@ -100,7 +120,8 @@ void ClassicItem::Reset()
 
 	if (_table)
 	{
-		delete _table;
+		//delete _table;
+		TableObject::ReleaseObj(_table);
 		_table = nullptr;
 	}
 	//TODO/FIXME

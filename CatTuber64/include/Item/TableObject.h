@@ -2,7 +2,7 @@
 #define _TableObject_h
 
 
-//×À×Ó¶ÔÏó³ıÁË×ÔÉíÖ®Íâ»¹½«Îª±ÊºÍ½ÇÉ«Ìá¹©ÔË¶¯Êı¾İ
+//æ¡Œå­å¯¹è±¡é™¤äº†è‡ªèº«ä¹‹å¤–è¿˜å°†ä¸ºç¬”å’Œè§’è‰²æä¾›è¿åŠ¨æ•°æ®
 
 
 #include"json/json.h"
@@ -26,12 +26,12 @@ struct BindingInfo
 		Animation_ActualAxisInactive,
 		Animation_Action,
 		TypeMax
-	};//Ìí¼ÓÏîÄ¿µÄÊ±ºòÒªĞŞ¸ÄGetTypeJsonStr
+	};//æ·»åŠ é¡¹ç›®çš„æ—¶å€™è¦ä¿®æ”¹GetTypeJsonStr
 	Type type= Undefined;
-	std::vector<std::string> controllList;//Èç¹ûÊÇ°´Å¥Ïà¹ØÔò±íÊ¾Õâ¸ö°ó¶¨Ïà¹ØµÄ°´Å¥ÁĞ±í£¬ÖáÏà¹ØÔò±íÊ¾µÄÊÇÖáÁĞ±í
-	float controlValue = 0.38268343236508f;//Ä³Ğ©ÌØÊâÀàĞÍµÄ°ó¶¨ĞèÒªÓÃµ½Ò»Ğ©²ÎÊı//¿ÉÄÜµÃÊ¹ÓÃunion//ÊıÖµÎªsin22.5
+	std::vector<std::string> controllList;//å¦‚æœæ˜¯æŒ‰é’®ç›¸å…³åˆ™è¡¨ç¤ºè¿™ä¸ªç»‘å®šç›¸å…³çš„æŒ‰é’®åˆ—è¡¨ï¼Œè½´ç›¸å…³åˆ™è¡¨ç¤ºçš„æ˜¯è½´åˆ—è¡¨
+	float controlValue = 0.38268343236508f;//æŸäº›ç‰¹æ®Šç±»å‹çš„ç»‘å®šéœ€è¦ç”¨åˆ°ä¸€äº›å‚æ•°//å¯èƒ½å¾—ä½¿ç”¨union//æ•°å€¼ä¸ºsin22.5
 
-	void RegisterBinding(int index);//²ÎÊıÎª°´Å¥¡¢Öá¡¢¶¯»­µÄË÷Òı£¿
+	void RegisterBinding(int index);//å‚æ•°ä¸ºæŒ‰é’®ã€è½´ã€åŠ¨ç”»çš„ç´¢å¼•ï¼Ÿ
 	void UnRegisterBinding();
 	static const char* GetTypeJsonStr(Type type);
 private:
@@ -46,26 +46,26 @@ struct ModelButtonControl
 	//std::string iconPath;
 	std::string downAnimation;
 	std::string upAnimation;
-	//std::string downAction;//×¢ÒâÕâ¸öÊÇ´¥·¢°´Å¥Ê±²úÉúµÄAction£¬²»ÊÇÎïÀí°´¼ü²úÉúµÄaciton
+	//std::string downAction;//æ³¨æ„è¿™ä¸ªæ˜¯è§¦å‘æŒ‰é’®æ—¶äº§ç”Ÿçš„Actionï¼Œä¸æ˜¯ç‰©ç†æŒ‰é”®äº§ç”Ÿçš„aciton
 	//std::string upAction;
 
-	//²»ÔÊĞíÓÃ»§¶àÖØ°ó¶¨°É
-	BindingInfo defaultBinding;//Ä¬ÈÏ°ó¶¨
-	BindingInfo binding;//µ±Ç°Ó¦ÓÃµÄ°ó¶¨
+	//ä¸å…è®¸ç”¨æˆ·å¤šé‡ç»‘å®šå§
+	BindingInfo defaultBinding;//é»˜è®¤ç»‘å®š
+	BindingInfo binding;//å½“å‰åº”ç”¨çš„ç»‘å®š
 
 
 
-	//ÉÏ·½ÊÇÓÃÓÚUIµÄ
-	//ÏÂ·½ÊÇÓÃÓÚ³ÌĞò¿ØÖÆµÄ
+	//ä¸Šæ–¹æ˜¯ç”¨äºUIçš„
+	//ä¸‹æ–¹æ˜¯ç”¨äºç¨‹åºæ§åˆ¶çš„
 	ParamHandle paramHandle;
 	ActionProxy downAction;
 	ActionProxy upAction;
 	bool isDown=false;
-	float recoveryDuration=0.4f;//°´¼üµ¯ÆğĞèÒªµÄÊ±¼ä
-	Uint64 upTickMs=0;//°´ÏÂµÄºÁÃëÊ±¼ä´Á
+	float recoveryDuration=0.4f;//æŒ‰é”®å¼¹èµ·éœ€è¦çš„æ—¶é—´
+	Uint64 upTickMs=0;//æŒ‰ä¸‹çš„æ¯«ç§’æ—¶é—´æˆ³
 
-	//std::vector <BindingInfo> defaultBinding;//Ä¬ÈÏ°ó¶¨
-	//std::vector<BindingInfo> bindings;//µ±Ç°Ó¦ÓÃµÄ°ó¶¨
+	//std::vector <BindingInfo> defaultBinding;//é»˜è®¤ç»‘å®š
+	//std::vector<BindingInfo> bindings;//å½“å‰åº”ç”¨çš„ç»‘å®š
 }; 
 struct ModelAxisControl
 {
@@ -81,11 +81,11 @@ struct ModelAxisControl
 
 	float actionActiveValue=1.f;
 
-	BindingInfo defaultBinding;//Ä¬ÈÏ°ó¶¨
-	BindingInfo binding;//µ±Ç°Ó¦ÓÃµÄ°ó¶¨
+	BindingInfo defaultBinding;//é»˜è®¤ç»‘å®š
+	BindingInfo binding;//å½“å‰åº”ç”¨çš„ç»‘å®š
 
-	//ÉÏ·½ÊÇÓÃÓÚUIµÄ
-//ÏÂ·½ÊÇÓÃÓÚ³ÌĞò¿ØÖÆµÄ
+	//ä¸Šæ–¹æ˜¯ç”¨äºUIçš„
+//ä¸‹æ–¹æ˜¯ç”¨äºç¨‹åºæ§åˆ¶çš„
 
 
 	ParamHandle paramHandle;
@@ -98,17 +98,17 @@ struct ModelAxisControl
 
 struct ModelAnimationControl
 {
-	std::string uiName;//ÓÃÓÚUIÕ¹Ê¾µÄÃû³Æ
-	std::string controlName;//ÓÃÓÚÈí¼ş¿ØÖÆµÄÃû³Æ
-	std::string imageFile;//ÓÃÓÚUIÕ¹Ê¾µÄ·½ĞÎÍ¼Æ¬ÔÚ×ÊÔ´°üÖĞµÄÂ·¾¶
-	//int track = 0;//ÓÃÓÚ»ìºÏ¶¯»­  TRACKÖ±½ÓÓÉÄ£ĞÍ½øĞĞ¹ÜÀí¡£
+	std::string uiName;//ç”¨äºUIå±•ç¤ºçš„åç§°
+	std::string controlName;//ç”¨äºè½¯ä»¶æ§åˆ¶çš„åç§°
+	std::string imageFile;//ç”¨äºUIå±•ç¤ºçš„æ–¹å½¢å›¾ç‰‡åœ¨èµ„æºåŒ…ä¸­çš„è·¯å¾„
+	//int track = 0;//ç”¨äºæ··åˆåŠ¨ç”»  TRACKç›´æ¥ç”±æ¨¡å‹è¿›è¡Œç®¡ç†ã€‚
 
 
-	//std::string endAction;//¶¯»­½áÊøÊ±µÄaction
+	//std::string endAction;//åŠ¨ç”»ç»“æŸæ—¶çš„action
 
-	//¶¯»­ÔÊĞí°ó¶¨¶àÖÖ´¥·¢·½Ê½
-	std::vector<BindingInfo> defaultBinding;//Ä¬ÈÏ°ó¶¨
-	std::vector<BindingInfo> binding;//µ±Ç°Ó¦ÓÃµÄ°ó¶¨
+	//åŠ¨ç”»å…è®¸ç»‘å®šå¤šç§è§¦å‘æ–¹å¼
+	std::vector<BindingInfo> defaultBinding;//é»˜è®¤ç»‘å®š
+	std::vector<BindingInfo> binding;//å½“å‰åº”ç”¨çš„ç»‘å®š
 };
 
 
@@ -120,30 +120,31 @@ class TableObject
 
 public:
 
-	//Question:´´Òâ¹¤·»Â·¾¶ºÍpreferPathÊÇÓĞºÜĞ¡µÄ¿ÉÄÜ»á±ä»¯µÄ£¬ĞèÒª¶ÔÂ·¾¶½øĞĞÒ»ÏÂ°ü×°·ÀÖ¹Â·¾¶¹ıÓÚ¾ø¶ÔÂğ£¿
-	//°ü×°Ò²¿ÉÄÜ·´¶øµ¼ÖÂÑ°ÕÒ²»µ½ÎÄ¼ş(ÇĞ»»Â·¾¶¶ø²»°áÔËÎÄ¼ş).
-	bool LoadFromPath(const char* u8PackPath,const Json::Value& bindingJson= Json::Value());//Èë²ÎÓ¦¸ÃÊÇ¸öÎÄ¼ş¼Ğ»òÕß×ÊÔ´°ü
+	//Question:åˆ›æ„å·¥åŠè·¯å¾„å’ŒpreferPathæ˜¯æœ‰å¾ˆå°çš„å¯èƒ½ä¼šå˜åŒ–çš„ï¼Œéœ€è¦å¯¹è·¯å¾„è¿›è¡Œä¸€ä¸‹åŒ…è£…é˜²æ­¢è·¯å¾„è¿‡äºç»å¯¹å—ï¼Ÿ
+	//åŒ…è£…ä¹Ÿå¯èƒ½åè€Œå¯¼è‡´å¯»æ‰¾ä¸åˆ°æ–‡ä»¶(åˆ‡æ¢è·¯å¾„è€Œä¸æ¬è¿æ–‡ä»¶).
+	bool LoadFromPath(const char* u8PackPath,const Json::Value& bindingJson= Json::Value());//å…¥å‚åº”è¯¥æ˜¯ä¸ªæ–‡ä»¶å¤¹æˆ–è€…èµ„æºåŒ…
 	const char* GetPackPath() { return resourcePath.c_str(); };
+	IModel* GetModel() { return _model; };
 	//
 	//static const char* GetType();
 
 
 
 	void Update(uint64_t deltaTicksNS);
-	//ÆäÊµÊÇ½«Ä£ĞÍÍÆËÍµ½DrawList
+	//å…¶å®æ˜¯å°†æ¨¡å‹æ¨é€åˆ°DrawList
 	void Draw(MixDrawList* drawList);
 
-	//ÓĞÊ±Ï£Íû²»ÏÔÊ¾Ä£ĞÍÈÃÄ£ĞÍ²»¹¤×÷£¬µ«ÔİÊ±²»Ï£ÍûÉ¾³ıÄ£ĞÍ£¨ÈçÔ¤ÀÀÆäËûÄ£Ê½Ê±£©£¬
-	// ËùÒÔÊ¹ÓÃÕâ¸ö·½·¨ÉèÖÃÍ£Ö¹¹¤×÷µÄ±êÊ¶
+	//æœ‰æ—¶å¸Œæœ›ä¸æ˜¾ç¤ºæ¨¡å‹è®©æ¨¡å‹ä¸å·¥ä½œï¼Œä½†æš‚æ—¶ä¸å¸Œæœ›åˆ é™¤æ¨¡å‹ï¼ˆå¦‚é¢„è§ˆå…¶ä»–æ¨¡å¼æ—¶ï¼‰ï¼Œ
+	// æ‰€ä»¥ä½¿ç”¨è¿™ä¸ªæ–¹æ³•è®¾ç½®åœæ­¢å·¥ä½œçš„æ ‡è¯†
 	void SetWorkingFlag(bool bWorking) { working = bWorking; };
 
 
 
 
 	virtual Json::Value GenerateAttributes();
-	//Èç¹û³öÏÖÎÊÌâ·µ»Ø¿Õ
+	//å¦‚æœå‡ºç°é—®é¢˜è¿”å›ç©º
 	static TableObject* CreateFromAttributes(const Json::Value& applyJson);
-	static void ReleaseObj(TableObject*);//ReleaseĞèÒªºÍCreate´îÅä£¬ÃâµÃÆäËûÈË²»ÖªµÀÔõÃ´ÕıÈ·ÊÍ·Å×ÊÔ´
+	static void ReleaseObj(TableObject*);//Releaseéœ€è¦å’ŒCreateæ­é…ï¼Œå…å¾—å…¶ä»–äººä¸çŸ¥é“æ€ä¹ˆæ­£ç¡®é‡Šæ”¾èµ„æº
 
 
 
@@ -156,15 +157,15 @@ public:
 
 
 
-	//ÎïÀí°´¼üµ½Ä£ĞÍ°´Å¥£¨Ë÷Òı£©ÓëactionµÄ°ó¶¨£¿
-	//ÎïÀí°´¼üµ½actionNameµÄ°ó¶¨£¿
-	//ÎïÀí°´¼üµ½Ä£ĞÍ°´Å¥actionNameµÄ°ó¶¨£¿
-	//ĞèÒªÌí¼ÓÄ£ĞÍ²ÎÊıÂğ£¿
-	//JsonRoot[PackPath]= [AppBasePath]/... [AppPrefPath]/...  [WorkshopPath]/..  ´´Òâ¹¤·»Â·¾¶ĞèÒªÔÚÈí¼şÍË³öÊ±±£´æÒÔ±ãÔÚÀëÏßÊ±¶ÁÈ¡
-	//JsonRoot[PackName]//Ä£ĞÍÃûĞèÒªÌá¹©Á½·İ£¿Ò»·İÌá¹©¸øÈí¼şÑéÖ¤£¿Ò»·İ¶àÓïÑÔÌá¹©¸øUIÏÔÊ¾£¿
-	//JsonRoot[BindingName]="²âÊÔÖĞÎÄ"
-	//²Î¿¼_SetUpControlAndAnimationº¯Êı£¬µ«²»ÍêÈ«Ò»ÖÂ
-	//Ö±½Ó°´Ë÷ÒıÀ´Âğ£¿
+	//ç‰©ç†æŒ‰é”®åˆ°æ¨¡å‹æŒ‰é’®ï¼ˆç´¢å¼•ï¼‰ä¸actionçš„ç»‘å®šï¼Ÿ
+	//ç‰©ç†æŒ‰é”®åˆ°actionNameçš„ç»‘å®šï¼Ÿ
+	//ç‰©ç†æŒ‰é”®åˆ°æ¨¡å‹æŒ‰é’®actionNameçš„ç»‘å®šï¼Ÿ
+	//éœ€è¦æ·»åŠ æ¨¡å‹å‚æ•°å—ï¼Ÿ
+	//JsonRoot[PackPath]= [AppBasePath]/... [AppPrefPath]/...  [WorkshopPath]/..  åˆ›æ„å·¥åŠè·¯å¾„éœ€è¦åœ¨è½¯ä»¶é€€å‡ºæ—¶ä¿å­˜ä»¥ä¾¿åœ¨ç¦»çº¿æ—¶è¯»å–
+	//JsonRoot[PackName]//æ¨¡å‹åéœ€è¦æä¾›ä¸¤ä»½ï¼Ÿä¸€ä»½æä¾›ç»™è½¯ä»¶éªŒè¯ï¼Ÿä¸€ä»½å¤šè¯­è¨€æä¾›ç»™UIæ˜¾ç¤ºï¼Ÿ
+	//JsonRoot[BindingName]="æµ‹è¯•ä¸­æ–‡"
+	//å‚è€ƒ_SetUpControlAndAnimationå‡½æ•°ï¼Œä½†ä¸å®Œå…¨ä¸€è‡´
+	//ç›´æ¥æŒ‰ç´¢å¼•æ¥å—ï¼Ÿ
 	//JsonRoot[Buttons][0][Type]="ButtonToAction"
 	//JsonRoot[Buttons][0][Button][0]="Keyborad.A"//WinKeyboardInput.cpp
 	//JsonRoot[Buttons][0][DownAction]="Table.Button.0.Down"
@@ -173,28 +174,28 @@ public:
 	
 
 
-	bool LoadBindingByName(const char* bindingName);//¶ÁÈ¡ÊÖ¶¯±£´æµÄ°ó¶¨
-	void LoadBinding();//ÏÈ³¢ÊÔ¶ÁÈ¡±»App±£´æµÄÓÃ»§ÉèÖÃµÄ°ó¶¨£¬È»ºó³¢ÊÔ¶ÁÈ¡PackÎÄ¼şÖĞ»º´æµÄ°ó¶¨£¬Èç¹ûÃ»ÓĞÔò¸ù¾İÄ£ĞÍ²ÎÊıÃûÉú³É°ó¶¨
-	void ClearBinding();//Ä£ĞÍĞ¶ÔØµÄÊ±ºòÒÆ³ı°ó¶¨µÄ»Øµ÷//Ô¤ÀÀÆäËûÄ£ĞÍÊ±²»ĞèÒªÕâ¸ö£¬ÒòÎªÓĞ¸öworkingÅĞ¶Ï£¬½öÔÚÉ¾³ı´Ë¶ÔÏóÊ±µ÷ÓÃ
+	bool LoadBindingByName(const char* bindingName);//è¯»å–æ‰‹åŠ¨ä¿å­˜çš„ç»‘å®š
+	void LoadBinding();//å…ˆå°è¯•è¯»å–è¢«Appä¿å­˜çš„ç”¨æˆ·è®¾ç½®çš„ç»‘å®šï¼Œç„¶åå°è¯•è¯»å–Packæ–‡ä»¶ä¸­ç¼“å­˜çš„ç»‘å®šï¼Œå¦‚æœæ²¡æœ‰åˆ™æ ¹æ®æ¨¡å‹å‚æ•°åç”Ÿæˆç»‘å®š
+	void ClearBinding();//æ¨¡å‹å¸è½½çš„æ—¶å€™ç§»é™¤ç»‘å®šçš„å›è°ƒ//é¢„è§ˆå…¶ä»–æ¨¡å‹æ—¶ä¸éœ€è¦è¿™ä¸ªï¼Œå› ä¸ºæœ‰ä¸ªworkingåˆ¤æ–­ï¼Œä»…åœ¨åˆ é™¤æ­¤å¯¹è±¡æ—¶è°ƒç”¨
 
 private:
-	//Õâ¸öº¯ÊıÉèÖÃºÃÄ£ĞÍµÄ°´Å¥¡¢Öá¡¢¶¯»­ĞÅÏ¢ÒÔ¼°Ä¬ÈÏµÄ°ó¶¨ĞÅÏ¢£¬¿ÉÒÔ´«Èë¿Õjson
+	//è¿™ä¸ªå‡½æ•°è®¾ç½®å¥½æ¨¡å‹çš„æŒ‰é’®ã€è½´ã€åŠ¨ç”»ä¿¡æ¯ä»¥åŠé»˜è®¤çš„ç»‘å®šä¿¡æ¯ï¼Œå¯ä»¥ä¼ å…¥ç©ºjson
 	void _SetUpControlAndAnimation(const Json::Value& descItemInfo);
-	//ËùÓĞcontrol£¨°´Å¥Öá¶¯»­£©µÄÉèÖÃÒÑ¾­Íê±Ï£¬ÏòInputManager½øĞĞ×¢²á
+	//æ‰€æœ‰controlï¼ˆæŒ‰é’®è½´åŠ¨ç”»ï¼‰çš„è®¾ç½®å·²ç»å®Œæ¯•ï¼Œå‘InputManagerè¿›è¡Œæ³¨å†Œ
 	void _ApplyControlBindings();
 
-	//´ÓJSONÖĞ¼ÓÔØ°ó¶¨¸²Ğ´ModelButtonControl.Binding
+	//ä»JSONä¸­åŠ è½½ç»‘å®šè¦†å†™ModelButtonControl.Binding
 	void _SetUpJsonBinding(const Json::Value&);
 	Json::Value _GenerateJsonBinding();
 
-	//×¢²á°´Å¥¡¢ÖáµÈÊı¾İ£¬¼´½«¾ßÌåº¯Êı°ó¶¨µ½¶ÔÓ¦ActionÉÏ
+	//æ³¨å†ŒæŒ‰é’®ã€è½´ç­‰æ•°æ®ï¼Œå³å°†å…·ä½“å‡½æ•°ç»‘å®šåˆ°å¯¹åº”Actionä¸Š
 	void RegisterAllActionFunc(bool falseToUnregister=true);
-	void UnregisterAllActionFunc();//ActionÓëÊµ¼Ê³ÉÔ±º¯ÊıµÄ°ó¶¨
+	void UnregisterAllActionFunc();//Actionä¸å®é™…æˆå‘˜å‡½æ•°çš„ç»‘å®š
 
 
-	void OnButtonDown(int btnIndex);//¿ØÖÆ²ÎÊıµÄÍ¬Ê±»¹Òª´¥·¢°´Å¥ÉÏ°ó¶¨µÄ¶¯»­//·¢ËÍÒ»¸öTableButtonDownµÄAction£¨µ±EventÓÃ£©
-	void OnButtonUp(int btnIndex);//·¢ËÍÒ»¸öTableButtonUpµÄAction£¨µ±EventÓÃ£©
-	void OnAxisValueChange(int axisIndex,float value);//¿ØÖÆ¶ÔÓ¦²ÎÊı
+	void OnButtonDown(int btnIndex);//æ§åˆ¶å‚æ•°çš„åŒæ—¶è¿˜è¦è§¦å‘æŒ‰é’®ä¸Šç»‘å®šçš„åŠ¨ç”»//å‘é€ä¸€ä¸ªTableButtonDownçš„Actionï¼ˆå½“Eventç”¨ï¼‰
+	void OnButtonUp(int btnIndex);//å‘é€ä¸€ä¸ªTableButtonUpçš„Actionï¼ˆå½“Eventç”¨ï¼‰
+	void OnAxisValueChange(int axisIndex,float value);//æ§åˆ¶å¯¹åº”å‚æ•°
 	void OnAnimationPlay(int animationIndex);
 
 
@@ -202,7 +203,7 @@ private:
 	IModel* _model=NULL;
 	std::string resourcePath;
 
-	//Ä£ĞÍ¿Ø¼ş
+	//æ¨¡å‹æ§ä»¶
 	std::vector<ModelButtonControl> modelButtonVec;
 	std::vector<ModelAxisControl> modelAxisVec;
 	std::vector<ModelAnimationControl> modelAnimationVec;

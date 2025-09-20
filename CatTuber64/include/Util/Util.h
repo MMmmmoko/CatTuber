@@ -12,16 +12,16 @@ class Pack;
 namespace util {
 
 
-	//Ê¹ÓÃSDLµÄÎÄ¼ş½Ó¿Ú£¬ËùÒÔĞèÒªµ÷ÓÃSDL_free
+	//ä½¿ç”¨SDLçš„æ–‡ä»¶æ¥å£ï¼Œæ‰€ä»¥éœ€è¦è°ƒç”¨SDL_free
 	unsigned char* SDL_LoadFileToMem(const char* path,size_t* size);
 	void SDL_FreeMem(unsigned char* mem);
 	
-	//´ÓÄÚ´æ¶Ájson
+	//ä»å†…å­˜è¯»json
 	Json::Value BuildJsonFromMem(const char* mem, size_t memSize);
 	Json::Value BuildJsonFromFile(const char* filePath);
 	bool SaveJsonToFile(const Json::Value& json, const char* filePath);
 
-	//·µ»ØpackÖĞÄ³ÎÄ¼ş¼ĞµÄÄ£ĞÍÀàĞÍÓëÎÄ¼şÃû
+	//è¿”å›packä¸­æŸæ–‡ä»¶å¤¹çš„æ¨¡å‹ç±»å‹ä¸æ–‡ä»¶å
 
 	//std::string GetModelFilePathInPack(Pack* pack,const char* foldPathInPack, );
 	bool IsStringEndsWith(const std::string& str,const char* end);
@@ -33,10 +33,11 @@ namespace util {
 	std::string& ReplaceString(std::string& org,const char* strToBeReplace,const char* newstr);
 	std::string GetFileNameFromPath(const std::string& path);
 	std::string RemoveExtension(const std::string& path);
+	void AppendSeparator(std::string& path);
 	bool PathEqual(const std::string& path1, const std::string& path2);
 
 
-	//JSONÖĞ°´ÓïÑÔ¶ÁÈ¡×Ö·û´®£¬ÓĞfullback£¬ÎŞ·¨¶ÁÈ¡·µ»Ø"",ĞèÒªÅĞ¶ÏjsonÊÇ·ñÎª¿Õ´®
+	//JSONä¸­æŒ‰è¯­è¨€è¯»å–å­—ç¬¦ä¸²ï¼Œæœ‰fullbackï¼Œæ— æ³•è¯»å–è¿”å›"",éœ€è¦åˆ¤æ–­jsonæ˜¯å¦ä¸ºç©ºä¸²
 	std::string GetStringFromMultiLangJsonNode(const Json::Value& json);
 
 	
@@ -45,14 +46,22 @@ namespace util {
 }
 
 
-//¹¤¾ßºê
+//å·¥å…·å®
 #define UTIL_IS_CSTR_EMPTY(cstr) (!cstr||0==SDL_strcmp(cstr,""))
 #define UTIL_SETLOW32VALUE(dest,value32) *(uint32_t*)(&dest)=static_cast<uint32_t>(value32)
 #define UTIL_SETHIGH32VALUE(dest,value32) ((uint32_t*)(&dest))[1]=static_cast<uint32_t>(value32)
 #define UTIL_GETLOW32VALUE(dest) (*(uint32_t*)(&dest))
 #define UTIL_GETHIGH32VALUE(dest) (((uint32_t*)(&dest))[1])
 
-//ÄÚÁªÊµÏÖ
+//ä¿è¯å­—ç¬¦ä¸²ä»¥åˆ†éš”ç¬¦ç»“å°¾
+#define UTIL_FOLDER_PATH_WITH_SEPARATOR(cstrDir) \
+((cstrDir[SDL_strlen(cstrDir)-2]=='/'||cstrDir[SDL_strlen(cstrDir)-2]=='\\')?(cstrDir):((std::string(cstrDir)+"/").c_str()))
+
+
+
+
+
+//å†…è”å®ç°
 inline float util::NanoTicksToSeconds(uint64_t ticks)
 {
 	return static_cast<float>(ticks) / 1'000'000'000.0f;

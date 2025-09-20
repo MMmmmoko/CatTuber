@@ -10,7 +10,7 @@ const char* InputParser::KeyNameToBaseName(const std::string& keyName)
 
 const char* InputParser::ParamNameToButtonBaseName(const std::string& paramName)
 {
-	//Í³Ò»×ª´óĞ´
+	//ç»Ÿä¸€è½¬å¤§å†™
 	std::string upper = util::StringToUpper(paramName);
 
 
@@ -35,7 +35,7 @@ const char* InputParser::ParamNameToButtonBaseName(const std::string& paramName)
 
 const char* InputParser::ParamNameToAxisBaseName(const std::string& paramName)
 {
-	//Ô­cattuberÄ£ĞÍ
+	//åŸcattuberæ¨¡å‹
 	if (paramName == "CAT_MouseX")return "Mouse.Pos.X";
 	if (paramName == "CAT_MouseY")return "Mouse.Pos.Y";
 	return nullptr;
@@ -51,7 +51,7 @@ const char* InputParser::ButtonBaseNameToUIName(const char* buttonBaseName)
 	}
 	else
 	{
-		//Èç¹ûÊÇÊó±êÏà¹Ø
+		//å¦‚æœæ˜¯é¼ æ ‡ç›¸å…³
 		if (0 == SDL_strncmp(buttonBaseName, "Mouse", 5))
 		{
 			if (0 == SDL_strcmp(buttonBaseName, "Mouse.Left"))
@@ -297,7 +297,7 @@ keyTable[_TOSTR(NUM_##X)]=_TOSTR(Keyboard.KP_##X)
 
 
 
-		//Êó±ê°´¼ü
+		//é¼ æ ‡æŒ‰é”®
 		keyTable["MB1"] = "Mouse.Left";
 		keyTable["MB2"] = "Mouse.Right";
 		keyTable["MB3"] = "Mouse.Middle";
@@ -411,8 +411,8 @@ keyTable[_TOSTR(NUM_##X)]=_TOSTR(Keyboard.KP_##X)
 	PUSHSCANCODE(F14);
 	PUSHSCANCODE(F15);
 
-	baseNameToScanCodeMap["Keyboard.KANA"] = SDL_Scancode::SDL_SCANCODE_LANG3;//TODO´ıÑéÖ¤
-	baseNameToScanCodeMap["Keyboard.YEN"] = SDL_Scancode::SDL_SCANCODE_INTERNATIONAL3;//TODO´ıÑéÖ¤
+	baseNameToScanCodeMap["Keyboard.KANA"] = SDL_Scancode::SDL_SCANCODE_LANG3;//TODOå¾…éªŒè¯
+	baseNameToScanCodeMap["Keyboard.YEN"] = SDL_Scancode::SDL_SCANCODE_INTERNATIONAL3;//TODOå¾…éªŒè¯
 	PUSHSCANCODE(KP_EQUALS);
 	baseNameToScanCodeMap["Keyboard.MEDIA_PREVTRACK"] = SDL_Scancode::SDL_SCANCODE_MEDIA_PREVIOUS_TRACK;
 	PUSHSCANCODE(KP_AT);
@@ -426,7 +426,7 @@ keyTable[_TOSTR(NUM_##X)]=_TOSTR(Keyboard.KP_##X)
 	PUSHSCANCODE(MEDIA_STOP);
 	PUSHSCANCODE(VOLUMEDOWN);
 	PUSHSCANCODE(VOLUMEUP);
-	baseNameToScanCodeMap["Keyboard.WEBHOME"] = SDL_Scancode::SDL_SCANCODE_AC_HOME;//TODO´ıÑéÖ¤
+	baseNameToScanCodeMap["Keyboard.WEBHOME"] = SDL_Scancode::SDL_SCANCODE_AC_HOME;//TODOå¾…éªŒè¯
 	PUSHSCANCODE(KP_COMMA);
 	PUSHSCANCODE(KP_DIVIDE);
 	PUSHSCANCODE(SYSREQ);
@@ -447,18 +447,18 @@ keyTable[_TOSTR(NUM_##X)]=_TOSTR(Keyboard.KP_##X)
 	PUSHSCANCODE(POWER);
 	PUSHSCANCODE(SLEEP);
 	PUSHSCANCODE(WAKE);
-	baseNameToScanCodeMap["Keyboard.WEBSEARCH"] = SDL_Scancode::SDL_SCANCODE_AC_SEARCH;//TODO´ıÑéÖ¤
-	baseNameToScanCodeMap["Keyboard.BOOKMARKS"] = SDL_Scancode::SDL_SCANCODE_AC_BOOKMARKS;//TODO´ıÑéÖ¤
-	baseNameToScanCodeMap["Keyboard.WEBREFRESH"] = SDL_Scancode::SDL_SCANCODE_AC_REFRESH;//TODO´ıÑéÖ¤
-	baseNameToScanCodeMap["Keyboard.WEBSTOP"] = SDL_Scancode::SDL_SCANCODE_AC_STOP;//TODO´ıÑéÖ¤
-	baseNameToScanCodeMap["Keyboard.WEBFORWARD"] = SDL_Scancode::SDL_SCANCODE_AC_FORWARD;//TODO´ıÑéÖ¤
-	baseNameToScanCodeMap["Keyboard.WEBBACK"] = SDL_Scancode::SDL_SCANCODE_AC_BACK;//TODO´ıÑéÖ¤
+	baseNameToScanCodeMap["Keyboard.WEBSEARCH"] = SDL_Scancode::SDL_SCANCODE_AC_SEARCH;//TODOå¾…éªŒè¯
+	baseNameToScanCodeMap["Keyboard.BOOKMARKS"] = SDL_Scancode::SDL_SCANCODE_AC_BOOKMARKS;//TODOå¾…éªŒè¯
+	baseNameToScanCodeMap["Keyboard.WEBREFRESH"] = SDL_Scancode::SDL_SCANCODE_AC_REFRESH;//TODOå¾…éªŒè¯
+	baseNameToScanCodeMap["Keyboard.WEBSTOP"] = SDL_Scancode::SDL_SCANCODE_AC_STOP;//TODOå¾…éªŒè¯
+	baseNameToScanCodeMap["Keyboard.WEBFORWARD"] = SDL_Scancode::SDL_SCANCODE_AC_FORWARD;//TODOå¾…éªŒè¯
+	baseNameToScanCodeMap["Keyboard.WEBBACK"] = SDL_Scancode::SDL_SCANCODE_AC_BACK;//TODOå¾…éªŒè¯
 	PUSHSCANCODE(MEDIA_SELECT);
 
 
 
 
-	//Êó±ê²»ÔÚ´ËÁĞ
+	//é¼ æ ‡ä¸åœ¨æ­¤åˆ—
 
 
 

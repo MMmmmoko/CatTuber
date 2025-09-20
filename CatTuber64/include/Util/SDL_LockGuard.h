@@ -2,7 +2,7 @@
 #define _SDL_LockGuard_h
 
 #include<SDL3/SDL.h>
-//¶ÔSDLµÄLockÌí¼ÓÒ»²ã·â×°ÒÔÊÊÓ¦C++µÄÒì³£»úÖÆ
+//å¯¹SDLçš„Lockæ·»åŠ ä¸€å±‚å°è£…ä»¥é€‚åº”C++çš„å¼‚å¸¸æœºåˆ¶
 
 
 class SDL_LockGuard {

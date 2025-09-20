@@ -4,10 +4,10 @@
 
 
 
-//ÊäÈë¹ÜÀíÆ÷
-//¼ò»¯ÉèÖÃ£¬Ö±½ÓÓëÉè±¸Ïà¹Ø£¬ËùÒÔÓ¦¸ÃÊÇµ¥Àı
-//CatTuber»ñÈ¡Óë´¦ÀíºóÌ¨ÊäÈëÓ¦¸ÃÓëSDLÄÇ±ßµÄ´°¿ÚÄÚµÄÊäÈëÇø·Ö¿ª¡£
-//CatTuberµÄÌåÁ¿Ó¦¸Ã²»ĞèÒª½«ÓÎÏ·Âß¼­ÓëäÖÈ¾Ïß³ÌÇø·Ö¿ª¡£
+//è¾“å…¥ç®¡ç†å™¨
+//ç®€åŒ–è®¾ç½®ï¼Œç›´æ¥ä¸è®¾å¤‡ç›¸å…³ï¼Œæ‰€ä»¥åº”è¯¥æ˜¯å•ä¾‹
+//CatTuberè·å–ä¸å¤„ç†åå°è¾“å…¥åº”è¯¥ä¸SDLé‚£è¾¹çš„çª—å£å†…çš„è¾“å…¥åŒºåˆ†å¼€ã€‚
+//CatTuberçš„ä½“é‡åº”è¯¥ä¸éœ€è¦å°†æ¸¸æˆé€»è¾‘ä¸æ¸²æŸ“çº¿ç¨‹åŒºåˆ†å¼€ã€‚
 
 
 #include<unordered_map>
@@ -26,7 +26,7 @@
 
 
 
-//ÊÂ¼şÏà¹Ø
+//äº‹ä»¶ç›¸å…³
 class InputManager
 {
 	friend class AppSettings;
@@ -41,17 +41,17 @@ public:
 
 	bool InitInput();
 
-	//Ã¿Ö¡´¦ÀíÊÂ¼ş£¨update£©Ê±µ÷ÓÃ
-	//¶ÁÈ¡À´×ÔÉè±¸»òÍøÂçµÄÊäÈëÊÂ¼ş
+	//æ¯å¸§å¤„ç†äº‹ä»¶ï¼ˆupdateï¼‰æ—¶è°ƒç”¨
+	//è¯»å–æ¥è‡ªè®¾å¤‡æˆ–ç½‘ç»œçš„è¾“å…¥äº‹ä»¶
 	void PumpDeviceOrNetworkInputEvents();
 	
 
 
 
 
-	//×¢²áÓÉ°´¼ü´¥·¢µÄAction// EG actionName: Table.Button.1
-	//ÎªÃ¿¸ö¼üÉèÖÃ¼àÌı£¿
-	//¿ÉÄÜĞèÒª½«buttonBaseNameµÄ¸ñÊ½»»Îªstring
+	//æ³¨å†Œç”±æŒ‰é”®è§¦å‘çš„Action// EG actionName: Table.Button.1
+	//ä¸ºæ¯ä¸ªé”®è®¾ç½®ç›‘å¬ï¼Ÿ
+	//å¯èƒ½éœ€è¦å°†buttonBaseNameçš„æ ¼å¼æ¢ä¸ºstring
 	ActionBindingHandle RegisterButtonActionBinding(const char* downActionName, const char* upActionName, std::string* strArray, int buttonCount = 1);
 	ActionBindingHandle RegisterAxisChangeActionBinding(const char* actionName,const char* axisBaseName);
 
@@ -59,11 +59,11 @@ public:
 	ActionBindingHandle RegisterAxisDroppedActionBinding(const char* actionName, const char* axisBaseName,float targetValue);
 
 	ActionBindingHandle RegisterButtonToAxisActionBinding(const char* axisActionName, const char* buttonName,float axisTargetValue);
-	//×¢²áºó£¬origAction´¥·¢Ê±£¬Ë³´ø´¥·¢actionToBeTriggered
+	//æ³¨å†Œåï¼ŒorigActionè§¦å‘æ—¶ï¼Œé¡ºå¸¦è§¦å‘actionToBeTriggered
 	ActionBindingHandle RegisterActionByActionBinding(const char* actionToBeTriggered, const char* origAction,float paramValue=0.f);
 
 
-	void UnregisterActionBinding(ActionBindingHandle bindinghandle);//Ö´ĞĞºóHandle²»ÔÙ¿ÉÓÃ
+	void UnregisterActionBinding(ActionBindingHandle bindinghandle);//æ‰§è¡ŒåHandleä¸å†å¯ç”¨
 
 
 	void RegisterActionCallback(const char* actionName, ActionCallback callback);
@@ -72,33 +72,33 @@ public:
 
 
 
-	//Ìõ¼ş°ó¶¨£¬ÈçÄ³¸öÖµ´óÓÚ0.5µÄÊ±ºò´¥·¢
+	//æ¡ä»¶ç»‘å®šï¼Œå¦‚æŸä¸ªå€¼å¤§äº0.5çš„æ—¶å€™è§¦å‘
 	//void RegisterActionConditionalBinding
-	//ĞòÁĞ°ó¶¨£¬±ÈÈç¸ñ¶·ÓÎÏ·Àï´ê¼¼ÄÜ
+	//åºåˆ—ç»‘å®šï¼Œæ¯”å¦‚æ ¼æ–—æ¸¸æˆé‡Œæ“æŠ€èƒ½
 	//void RegisterActionSequenceBinding
 
 
-	//´¥·¢Ò»¸öAction
-	//×¢²áµÄaction²»´òËã´Ó³ØÀïÉ¾³ı£¬µ«Ê¹ÓÃactionName´¥·¢Î´×¢²áµÄaction²»»áµ¼ÖÂĞÂÔöactionÊµÀı
-	// £¨ÒòÎªÎ´À´¿ÉÄÜÓĞÓëµ¯Ä»Ïà¹ØµÄÄÚÈİ»òÕßÊµÏÖÒ»¸öÔ¶³Ìaction·¢Æğ¹¦ÄÜ£©
-	void RiseAction(const char* actionName, float value=0.f);//¶ÔÓÚÄ£ÄâÊÂ¼ş£¨ÈçÖáÏà¹ØµÄÊÂ¼ş£©ÓÃµÚ¶ş¸ö²ÎÊı´«µİÊıÖµ
-	void RiseAction(ActionProxy action, float value=0.f);//¶ÔÓÚÄ£ÄâÊÂ¼ş£¨ÈçÖáÏà¹ØµÄÊÂ¼ş£©ÓÃµÚ¶ş¸ö²ÎÊı´«µİÊıÖµ
+	//è§¦å‘ä¸€ä¸ªAction
+	//æ³¨å†Œçš„actionä¸æ‰“ç®—ä»æ± é‡Œåˆ é™¤ï¼Œä½†ä½¿ç”¨actionNameè§¦å‘æœªæ³¨å†Œçš„actionä¸ä¼šå¯¼è‡´æ–°å¢actionå®ä¾‹
+	// ï¼ˆå› ä¸ºæœªæ¥å¯èƒ½æœ‰ä¸å¼¹å¹•ç›¸å…³çš„å†…å®¹æˆ–è€…å®ç°ä¸€ä¸ªè¿œç¨‹actionå‘èµ·åŠŸèƒ½ï¼‰
+	void RiseAction(const char* actionName, float value=0.f);//å¯¹äºæ¨¡æ‹Ÿäº‹ä»¶ï¼ˆå¦‚è½´ç›¸å…³çš„äº‹ä»¶ï¼‰ç”¨ç¬¬äºŒä¸ªå‚æ•°ä¼ é€’æ•°å€¼
+	void RiseAction(ActionProxy action, float value=0.f);//å¯¹äºæ¨¡æ‹Ÿäº‹ä»¶ï¼ˆå¦‚è½´ç›¸å…³çš„äº‹ä»¶ï¼‰ç”¨ç¬¬äºŒä¸ªå‚æ•°ä¼ é€’æ•°å€¼
 
 
 
 
 
-	//AppÉèÖÃÏî
-	//XXXXXX   AllDisplays»òÕßÏÔÊ¾Æ÷Ãû
-	//XXXXXX    Ê¹ÓÃDisplayID
-	//SDL_GetDisplays×îºÃÔÚÖ÷Ïß³ÌÊ¹ÓÃ£¬ËùÒÔÖ±½ÓÔÚAppSettingÀï¼ÆËãÆÁÄ»·¶Î§
-	//È»ºóÕâ¸öº¯Êı¾ÍÔÚÊäÈëÏß³Ìµ÷ÓÃ
+	//Appè®¾ç½®é¡¹
+	//XXXXXX   AllDisplaysæˆ–è€…æ˜¾ç¤ºå™¨å
+	//XXXXXX    ä½¿ç”¨DisplayID
+	//SDL_GetDisplaysæœ€å¥½åœ¨ä¸»çº¿ç¨‹ä½¿ç”¨ï¼Œæ‰€ä»¥ç›´æ¥åœ¨AppSettingé‡Œè®¡ç®—å±å¹•èŒƒå›´
+	//ç„¶åè¿™ä¸ªå‡½æ•°å°±åœ¨è¾“å…¥çº¿ç¨‹è°ƒç”¨
 	void SetMouseInputArea(SDL_Rect* displayRect);
 
 	void ShutDown();
 private:
 	InputManager();
-	//ĞèÒª¸ù¾İÈí¼şÉèÖÃµ¥¶À½øĞĞ´¦Àí
+	//éœ€è¦æ ¹æ®è½¯ä»¶è®¾ç½®å•ç‹¬è¿›è¡Œå¤„ç†
 	bool isMousePosMove=true;
 	AxisProxy _axis_mouse_posX;
 	AxisProxy _axis_mouse_posY;
@@ -114,13 +114,13 @@ private:
 	std::unordered_map<std::string, ButtonProxy> buttonMap;
 	std::unordered_map<std::string, AxisProxy> axisMap;
 
-	//ÎªÁË½ô´ÕÄÚ´æ£¬Ê¹ÓÃ³Ø
+	//ä¸ºäº†ç´§å‡‘å†…å­˜ï¼Œä½¿ç”¨æ± 
 	ObjectPool<input::InputButton> _buttonPool;
 	ObjectPool<input::InputAxis> _axisPool;
 	ObjectPool<Action> _actionPool;
 
 
-	//ÊäÈë¶ÔÏó
+	//è¾“å…¥å¯¹è±¡
 	MouseInput mouseInput;
 	KeyboardInput kerboardInput;
 

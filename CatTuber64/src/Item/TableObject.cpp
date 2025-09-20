@@ -7,20 +7,21 @@
 
 #include"Model/Live2DModelBase.h"
 
+#include"Item/Scene.h"
 #include"Item/TableObject.h"
-//Èë²ÎÓ¦¸ÃÊÇ¸öÎÄ¼ş¼Ğ»òÕß×ÊÔ´°ü
+//å…¥å‚åº”è¯¥æ˜¯ä¸ªæ–‡ä»¶å¤¹æˆ–è€…èµ„æºåŒ…
 
-//PACKÖĞÓĞÒ»¸öModelÎÄ¼ş¼ĞºÍÒ»Ğ©¹ØÓÚ´Ë×ÊÔ´µÄĞÅÏ¢£¨·âÃæ¡¢×÷ÕßĞÅÏ¢µÈ£©
+//PACKä¸­æœ‰ä¸€ä¸ªModelæ–‡ä»¶å¤¹å’Œä¸€äº›å…³äºæ­¤èµ„æºçš„ä¿¡æ¯ï¼ˆå°é¢ã€ä½œè€…ä¿¡æ¯ç­‰ï¼‰
 bool TableObject::LoadFromPath(const char* u8PackPath, const Json::Value& bindingJson)
 {
-	//Èç¹ûÖØĞÂ¼ÓÔØ
+	//å¦‚æœé‡æ–°åŠ è½½
 	if (_model)
 	{
 		delete _model;
 		_model = NULL;
 	}
 
-	//ÎÄ¼şÍêÕûĞÔ¼ì²é£ºĞèÒªÓĞModelÎÄ¼ş¼ĞºÍÄ£ĞÍÃèÊöjson
+	//æ–‡ä»¶å®Œæ•´æ€§æ£€æŸ¥ï¼šéœ€è¦æœ‰Modelæ–‡ä»¶å¤¹å’Œæ¨¡å‹æè¿°json
 
 	std::string packPath = u8PackPath;
 
@@ -31,8 +32,8 @@ bool TableObject::LoadFromPath(const char* u8PackPath, const Json::Value& bindin
 		return false;
 	}
 
-	//¼ì²éModelÎÄ¼ş¼ĞÖĞÊÇ·ñ´æÔÚÍêÕûÄ£ĞÍ
-	//ºóĞøÌí¼ÓspineÄ£ĞÍµÄÊ±ºò
+	//æ£€æŸ¥Modelæ–‡ä»¶å¤¹ä¸­æ˜¯å¦å­˜åœ¨å®Œæ•´æ¨¡å‹
+	//åç»­æ·»åŠ spineæ¨¡å‹çš„æ—¶å€™
 	if (!_model)
 	{
 		_model = IModel::CreateFromFolder(u8PackPath, CATTUBER_MODEL_FOLDERDIR);
@@ -46,7 +47,7 @@ bool TableObject::LoadFromPath(const char* u8PackPath, const Json::Value& bindin
 
 
 
-	//Ê¹ÓÃjsonÍ³Ò»´æ´¢ÃèÊöÎÄ¼ş£¬²»ÔÙ²ÉÓÃÖ±½ÓĞ´Èë°üÌåµÄĞÎÊ½
+	//ä½¿ç”¨jsonç»Ÿä¸€å­˜å‚¨æè¿°æ–‡ä»¶ï¼Œä¸å†é‡‡ç”¨ç›´æ¥å†™å…¥åŒ…ä½“çš„å½¢å¼
 	Json::Value desc;
 	size_t memSize;
 	if (pack.IsFileExist(CATTUBER_MODELRESOURCE_PROPERTIES_FILENAME))
@@ -60,14 +61,15 @@ bool TableObject::LoadFromPath(const char* u8PackPath, const Json::Value& bindin
 	bool axisHandled=false;
 
 	_SetUpControlAndAnimation(desc);
-	//Èç¹ûÌá¹©µÄ°ó¶¨ĞÅÏ¢£¬ÔòÖ±½ÓÓ¦ÓÃ£¨±ÈÈçÀ´×Ô³ÌĞòÍË³öÊ±µÄ×Ô¶¯±£´æ£©
+	//å¦‚æœæä¾›çš„ç»‘å®šä¿¡æ¯ï¼Œåˆ™ç›´æ¥åº”ç”¨ï¼ˆæ¯”å¦‚æ¥è‡ªç¨‹åºé€€å‡ºæ—¶çš„è‡ªåŠ¨ä¿å­˜ï¼‰
 	if (!bindingJson.empty())
 		_SetUpJsonBinding(bindingJson);
 	else
 		LoadBinding();
-	//´ËÊ±µ±Ç°Ó¦¸ÃÊ¹ÓÃµÄ°ó¶¨ÒÑ¾­Ğ´Èë¸÷vecÖĞÁË£¬ÏòInputManagerÀï×¢²á¸÷¸ö°ó¶¨
+	//æ­¤æ—¶å½“å‰åº”è¯¥ä½¿ç”¨çš„ç»‘å®šå·²ç»å†™å…¥å„vecä¸­äº†ï¼Œå‘InputManageré‡Œæ³¨å†Œå„ä¸ªç»‘å®š
 	_ApplyControlBindings();
 	resourcePath = u8PackPath;
+	working = true;
 	return true;
 
 
@@ -75,33 +77,33 @@ bool TableObject::LoadFromPath(const char* u8PackPath, const Json::Value& bindin
 	/*
 	if (!desc.empty())
 	{
-		//1¶ÁÈ¡Ä£ĞÍ°´Å¥Óë²ÎÊıÓë¶¯»­ĞÅÏ¢£¿
+		//1è¯»å–æ¨¡å‹æŒ‰é’®ä¸å‚æ•°ä¸åŠ¨ç”»ä¿¡æ¯ï¼Ÿ
 		// 
-		//2¶ÁÈ¡±£´æµÄ°ó¶¨£¬ÎŞµÄ»°¶ÁÈ¡descÄÚÖÃµÄÄ¬ÈÏ°ó¶¨£¬ÎŞµÄ»°³¢ÊÔ´ÓÄ£ĞÍ²ÎÊı¹¹½¨Ä¬ÈÏ°ó¶¨
+		//2è¯»å–ä¿å­˜çš„ç»‘å®šï¼Œæ— çš„è¯è¯»å–descå†…ç½®çš„é»˜è®¤ç»‘å®šï¼Œæ— çš„è¯å°è¯•ä»æ¨¡å‹å‚æ•°æ„å»ºé»˜è®¤ç»‘å®š
 
-		//Õâ¸öº¯ÊıÉèÖÃºÃÄ£ĞÍµÄ°´Å¥¡¢Öá¡¢¶¯»­ĞÅÏ¢ÒÔ¼°Ä¬ÈÏµÄ°ó¶¨ĞÅÏ¢
+		//è¿™ä¸ªå‡½æ•°è®¾ç½®å¥½æ¨¡å‹çš„æŒ‰é’®ã€è½´ã€åŠ¨ç”»ä¿¡æ¯ä»¥åŠé»˜è®¤çš„ç»‘å®šä¿¡æ¯
 
 
 
 		//desc["ItemInfo"]
 
-		//desc["Button"]´æ·ÅÃ¿¸ö°´Å¥½¨Ä£µÄUIÃû¡¢Ä£ĞÍµÄ¿ØÖÆ²ÎÊı¡¢²ÎÊı¿ØÖÆ±íÏÖ¡¢ÉõÖÁÍ¼±êÂ·¾¶µÈĞÅÏ¢
+		//desc["Button"]å­˜æ”¾æ¯ä¸ªæŒ‰é’®å»ºæ¨¡çš„UIåã€æ¨¡å‹çš„æ§åˆ¶å‚æ•°ã€å‚æ•°æ§åˆ¶è¡¨ç°ã€ç”šè‡³å›¾æ ‡è·¯å¾„ç­‰ä¿¡æ¯
 		//desc["Animation"]["Name"]
 		//desc["Animation"]["Track"]=1;
 		// 
 		// 
-		//desc[DefaultBinding]´æ·ÅÎïÀí°´¼üÓë½¨Ä£°´¼üµÄ°ó¶¨TableObject.h
+		//desc[DefaultBinding]å­˜æ”¾ç‰©ç†æŒ‰é”®ä¸å»ºæ¨¡æŒ‰é”®çš„ç»‘å®šTableObject.h
 
-		//ÔÚÕâ¸öLoadmodelÀï¼´Íê³É°ó¶¨µÄ¼ÓÔØ¡£
+		//åœ¨è¿™ä¸ªLoadmodelé‡Œå³å®Œæˆç»‘å®šçš„åŠ è½½ã€‚
 
 
 		// 
-		//°´Å¥µÄUIÓë¿ØÖÆ£¨¸æËßÈí¼şÕâ¸öÄ£ĞÍÌá¹©ÁË¶àÉÙ°´¼ü£¨UIÕ¹Ê¾£©£¬ÒÔ¼°ÕâĞ©°´¼üÓ¦¸ÃÈçºÎ±íÏÖ£¨Èí¼ş¿ØÖÆ£©£©
-		//desc["Button"][0]["UiName"]["ch"]="°´Å¥1"
+		//æŒ‰é’®çš„UIä¸æ§åˆ¶ï¼ˆå‘Šè¯‰è½¯ä»¶è¿™ä¸ªæ¨¡å‹æä¾›äº†å¤šå°‘æŒ‰é”®ï¼ˆUIå±•ç¤ºï¼‰ï¼Œä»¥åŠè¿™äº›æŒ‰é”®åº”è¯¥å¦‚ä½•è¡¨ç°ï¼ˆè½¯ä»¶æ§åˆ¶ï¼‰ï¼‰
+		//desc["Button"][0]["UiName"]["ch"]="æŒ‰é’®1"
 		//desc["Button"][0]["ParamID"]="Keyboard_A"
-		//desc["Button"][0]["Icon"]="*.png"/¿ÉÑ¡
-		//desc["Button"][0]["DownAnimation"]="Down"/¿ÉÑ¡
-		//desc["Button"][0]["UpAnimation"]="Up"/¿ÉÑ¡
+		//desc["Button"][0]["Icon"]="*.png"/å¯é€‰
+		//desc["Button"][0]["DownAnimation"]="Down"/å¯é€‰
+		//desc["Button"][0]["UpAnimation"]="Up"/å¯é€‰
 		// 
 		//
 		//desc[DefaultBinding]["ButtonAction"][i]["Mapping"][x]?
@@ -114,11 +116,11 @@ bool TableObject::LoadFromPath(const char* u8PackPath, const Json::Value& bindin
 		int axisIndex = 0;
 		for (auto& paramStr : paramVec)
 		{
-			//Í³Ò»´óĞ´
+			//ç»Ÿä¸€å¤§å†™
 			ui::StringUtil::UpperString(paramStr);
 
 
-			//°´Å¥Ç°×ºBUTTON_ eg BUTTON_F2
+			//æŒ‰é’®å‰ç¼€BUTTON_ eg BUTTON_F2
 			if (buttonHandled==false&&paramStr.substr(0, sizeof(CATTUBER_MODEL_BUTTON_PARAM_HEAD) - 1) == CATTUBER_MODEL_BUTTON_PARAM_HEAD)
 			{
 				std::string keyName=paramStr.substr(sizeof(CATTUBER_MODEL_BUTTON_PARAM_HEAD)-1);
@@ -131,14 +133,14 @@ bool TableObject::LoadFromPath(const char* u8PackPath, const Json::Value& bindin
 
 				if (!baseName.empty())
 				{
-					//ÄÜ´Ó²ÎÊıÖĞ¶ÁÈ¡Ó³ÉäµÄ°´¼üµÄ»°¾ÍÖ±½Ó½øĞĞ×¢²á
+					//èƒ½ä»å‚æ•°ä¸­è¯»å–æ˜ å°„çš„æŒ‰é”®çš„è¯å°±ç›´æ¥è¿›è¡Œæ³¨å†Œ
 					InputManager::GetIns().RegisterButtonActionBinding(actionName.c_str(),&baseName);
 				}
 				//InputManager::RegisterButtonActionBinding();
 				buttonIndex++;
 			}
 			
-			//ÖáÇ°×º
+			//è½´å‰ç¼€
 			else if (axisHandled == false && paramStr.substr(0, sizeof(CATTUBER_MODEL_AXIS_PARAM_HEAD) - 1) == CATTUBER_MODEL_AXIS_PARAM_HEAD)
 			{
 				std::string axisName = paramStr.substr(sizeof(CATTUBER_MODEL_AXIS_PARAM_HEAD) - 1);
@@ -149,13 +151,13 @@ bool TableObject::LoadFromPath(const char* u8PackPath, const Json::Value& bindin
 
 				if (baseName)
 				{
-					//ÄÜ´Ó²ÎÊıÖĞ¶ÁÈ¡Ó³ÉäµÄ°´¼üµÄ»°¾ÍÖ±½Ó½øĞĞ×¢²á
+					//èƒ½ä»å‚æ•°ä¸­è¯»å–æ˜ å°„çš„æŒ‰é”®çš„è¯å°±ç›´æ¥è¿›è¡Œæ³¨å†Œ
 					InputManager::GetIns().RegisterAxisActionBinding(actionName.c_str(), &baseName);
 				}
 				axisIndex++;
 			}
 
-			//ÎŞ·¨ÒÔÄ¬ÈÏµÄĞÎÊ½°ó¶¨±íÇé
+			//æ— æ³•ä»¥é»˜è®¤çš„å½¢å¼ç»‘å®šè¡¨æƒ…
 
 				
 		}
@@ -175,7 +177,7 @@ void TableObject::Update(uint64_t deltaTicksNS)
 	if (working)
 	{
 		_model->Update(deltaTicksNS);
-		//·¢ËÍÊı¾İ¸ø½ÇÉ«£¿
+		//å‘é€æ•°æ®ç»™è§’è‰²ï¼Ÿ
 	}
 }
 
@@ -184,7 +186,7 @@ void TableObject::Draw(MixDrawList* drawList)
 {
 	if (working)
 	{
-
+		_model->DrawMix(drawList);
 	}
 }
 
@@ -199,7 +201,7 @@ Json::Value TableObject::GenerateAttributes()
 	json["PackPath"] = resourcePath;
 	json["Bindings"] = _GenerateJsonBinding();
 
-	//todo/FIXME ²¹ÍêÆäËûĞè±£´æµÄÄÚÈİ 
+	//todo/FIXME è¡¥å®Œå…¶ä»–éœ€ä¿å­˜çš„å†…å®¹ 
 	return json;
 }
 
@@ -211,7 +213,8 @@ TableObject* TableObject::CreateFromAttributes(const Json::Value& applyJson)
 		return nullptr;
 	}
 	auto resultObj = new TableObject;
-	std::string pathStr = applyJson["PackPath"].asString();
+	
+	std::string pathStr = AppContext::ResolvePathToAbsolute(applyJson["PackPath"].asString());
 	if (!resultObj->LoadFromPath(pathStr.c_str(), applyJson["Bindings"]))
 	{
 		SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Can not create Table at path: %s.", pathStr.c_str());
@@ -227,10 +230,10 @@ TableObject* TableObject::CreateFromAttributes(const Json::Value& applyJson)
 
 void TableObject::ReleaseObj(TableObject* obj)
 {
-	//ÉÏÃæÔõÃ´´´½¨£¬ÕâÀï¾ÍÔõÃ´ÊÍ·Å
+	//ä¸Šé¢æ€ä¹ˆåˆ›å»ºï¼Œè¿™é‡Œå°±æ€ä¹ˆé‡Šæ”¾
 	if (!obj)return;
 	obj->working = false;
-	//ÒÆ³ı°ó¶¨
+	//ç§»é™¤ç»‘å®š
 	obj->ClearBinding();
 
 	if (obj->_model)
@@ -246,9 +249,9 @@ void TableObject::ReleaseObj(TableObject* obj)
 bool TableObject::LoadBindingByName(const char* bindingName)
 {
 	//preferpath/Bindings/88KTable_0.binding
-	//PackÎÄ¼şÃû_id Èç 88KKeyboard_0 
+	//Packæ–‡ä»¶å_id å¦‚ 88KKeyboard_0 
 	
-	//¹¹½¨ÒªÑ°ÕÒµÄÄ¿±êÂ·¾¶
+	//æ„å»ºè¦å¯»æ‰¾çš„ç›®æ ‡è·¯å¾„
 	std::string packFileName = util::RemoveExtension((util::GetFileNameFromPath(resourcePath)));
 	
 	std::string bindingFileFolder = AppContext::GetPrefPath();
@@ -271,12 +274,12 @@ bool TableObject::LoadBindingByName(const char* bindingName)
 	for (int i = 0; i < count; i++)
 	{
 		Json::Value json= util::BuildJsonFromFile(fileList[i]);
-		//ÏÈÆ¥Åä°ó¶¨Ãû
+		//å…ˆåŒ¹é…ç»‘å®šå
 		if (json.isMember("BindingName") && json["BindingName"].isString())
 		{
 			if (json["BindingName"].asString() == bindingName)
 			{
-				//°ó¶¨ÃûÆ¥Åä£¬²é¿´Â·¾¶ÊÇ·ñÆ¥Åä
+				//ç»‘å®šååŒ¹é…ï¼ŒæŸ¥çœ‹è·¯å¾„æ˜¯å¦åŒ¹é…
 				if (json.isMember("PackPath") && json["PackPath"].isString())
 				{
 					std::string packPathInJson=json["PackPath"].asString();
@@ -294,7 +297,7 @@ bool TableObject::LoadBindingByName(const char* bindingName)
 		}
 	}
 
-	SDL_LogWarn(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Can not find binding %s, pack path: %s", bindingName, resourcePath.c_str());
+	SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Can not find binding %s, pack path: %s", bindingName, resourcePath.c_str());
 	SDL_free(fileList);
 	return false;
 
@@ -306,10 +309,10 @@ void TableObject::LoadBinding()
 	{
 		return;
 	}
-	//Èç¹ûÃ»ÓĞ³É¹¦¼ÓÔØÓÚAppÖĞ±£´æµÄ°ó¶¨£¬Ôò²éÑ¯PackÎÄ¼ş¼ĞÄÚÖĞ
+	//å¦‚æœæ²¡æœ‰æˆåŠŸåŠ è½½äºAppä¸­ä¿å­˜çš„ç»‘å®šï¼Œåˆ™æŸ¥è¯¢Packæ–‡ä»¶å¤¹å†…ä¸­
 
-	//defaultbindingÒÑ¾­ÔÚÆäËûµØ·½(_SetUpControlAndAnimation)¶ÁÈ¡½øÈëmodelButtonVec
-	//½«binding´ÓvecÔªËØµÄdefaultbingding¸´ÖÆµ½binding¼´¿É
+	//defaultbindingå·²ç»åœ¨å…¶ä»–åœ°æ–¹(_SetUpControlAndAnimation)è¯»å–è¿›å…¥modelButtonVec
+	//å°†bindingä»vecå…ƒç´ çš„defaultbingdingå¤åˆ¶åˆ°bindingå³å¯
 	for (auto& x : modelButtonVec)
 	{
 		x.binding=x.defaultBinding;
@@ -344,34 +347,34 @@ void TableObject::ClearBinding()
 
 }
 
-//ÔÚ´ÓÎÄ¼ş¼ÓÔØÄ£ĞÍÊ±µ÷ÓÃ£¬Èç¹ûjsonÎŞĞ§Ôò³¢ÊÔÖ±½ÓÔÚÄ£ĞÍ²ÎÊıÖĞ¶ÁÈ¡
-//°´Å¥µÄUIÓë¿ØÖÆ£¨¸æËßÈí¼şÕâ¸öÄ£ĞÍÌá¹©ÁË¶àÉÙ°´¼ü£¨UIÕ¹Ê¾£©£¬ÒÔ¼°ÕâĞ©°´¼üÓ¦¸ÃÈçºÎ±íÏÖ£¨Èí¼ş¿ØÖÆ£©£©
-//desc["Button"][0]["UiName"]["ch"]="°´Å¥1"
+//åœ¨ä»æ–‡ä»¶åŠ è½½æ¨¡å‹æ—¶è°ƒç”¨ï¼Œå¦‚æœjsonæ— æ•ˆåˆ™å°è¯•ç›´æ¥åœ¨æ¨¡å‹å‚æ•°ä¸­è¯»å–
+//æŒ‰é’®çš„UIä¸æ§åˆ¶ï¼ˆå‘Šè¯‰è½¯ä»¶è¿™ä¸ªæ¨¡å‹æä¾›äº†å¤šå°‘æŒ‰é”®ï¼ˆUIå±•ç¤ºï¼‰ï¼Œä»¥åŠè¿™äº›æŒ‰é”®åº”è¯¥å¦‚ä½•è¡¨ç°ï¼ˆè½¯ä»¶æ§åˆ¶ï¼‰ï¼‰
+//desc["Button"][0]["UiName"]["ch"]="æŒ‰é’®1"
 //desc["Button"][0]["ParamID"]="Keyboard_A"
-//desc["Button"][0]["Icon"]="*.png"/¿ÉÑ¡
-//desc["Button"][0]["DownAnimation"]="Down"/¿ÉÑ¡
-//desc["Button"][0]["UpAnimation"]="Up"/¿ÉÑ¡
+//desc["Button"][0]["Icon"]="*.png"/å¯é€‰
+//desc["Button"][0]["DownAnimation"]="Down"/å¯é€‰
+//desc["Button"][0]["UpAnimation"]="Up"/å¯é€‰
 //desc["Button"][0]["DefaultBinding"][Type]="KeyBoardButton"
 //desc["Button"][0]["DefaultBinding"][Button][0]="Keyborad.A"
 void TableObject::_SetUpControlAndAnimation(const Json::Value& descItemInfo)
 {
-	//´«ÈëµÄÊÇÄ£ĞÍdesc.jsonµÄdesc["Controls"]
+	//ä¼ å…¥çš„æ˜¯æ¨¡å‹desc.jsonçš„desc["Controls"]
 	auto& im=InputManager::GetIns();
-	//°´Å¥
-	//°´Å¥
-	//°´Å¥
-	//°´Å¥
-	//°´Å¥
+	//æŒ‰é’®
+	//æŒ‰é’®
+	//æŒ‰é’®
+	//æŒ‰é’®
+	//æŒ‰é’®
 	if (descItemInfo.isMember("Buttons") && descItemInfo["Buttons"].isArray())
 	{
 		for (unsigned int i = 0; i < descItemInfo["Buttons"].size(); i++)
 		{
 			const Json::Value& curButtonJson = descItemInfo["Buttons"][i];
 			auto& button = modelButtonVec.emplace_back();
-			//°´Å¥µÄÏÔÊ¾Ãû
+			//æŒ‰é’®çš„æ˜¾ç¤ºå
 			if(curButtonJson.isMember("UiName"))
 				button.uiName =  util::GetStringFromMultiLangJsonNode(curButtonJson["UiName"]);
-			//°´Å¥µÄ²ÎÊıID
+			//æŒ‰é’®çš„å‚æ•°ID
 			if (curButtonJson.isMember("ParamID") && curButtonJson["ParamID"].isString())
 			{
 				button.paramID = curButtonJson["ParamID"].asString();
@@ -381,7 +384,7 @@ void TableObject::_SetUpControlAndAnimation(const Json::Value& descItemInfo)
 			{
 				button.uiName = button.paramID;
 			}
-			//°´Å¥µÄ¶¯»­²ÎÊı,×¢ÒâÕâ¸ö¶¯»­²ÎÊıÊÇ°´Å¥ÓÃµÄÓÃÀ´±í´ï°´¼üµÄ£¬ ²»Ó¦ÓÃÓÚÆäËûÈç×´Ì¬×ª»»Ö®ÀàµÄÓÃÍ¾
+			//æŒ‰é’®çš„åŠ¨ç”»å‚æ•°,æ³¨æ„è¿™ä¸ªåŠ¨ç”»å‚æ•°æ˜¯æŒ‰é’®ç”¨çš„ç”¨æ¥è¡¨è¾¾æŒ‰é”®çš„ï¼Œ ä¸åº”ç”¨äºå…¶ä»–å¦‚çŠ¶æ€è½¬æ¢ä¹‹ç±»çš„ç”¨é€”
 			if (curButtonJson.isMember("DownAnimation") && curButtonJson["DownAnimation"].isString())
 			{
 				button.downAnimation = curButtonJson["DownAnimation"].asString();
@@ -400,7 +403,7 @@ void TableObject::_SetUpControlAndAnimation(const Json::Value& descItemInfo)
 			}
 
 
-			//Ä¬ÈÏ°ó¶¨
+			//é»˜è®¤ç»‘å®š
 			if (curButtonJson.isMember("DefaultBinding") && curButtonJson["DefaultBinding"].isMember("Type") && curButtonJson["DefaultBinding"]["Type"].isString())
 			{
 				std::string bindingStr = curButtonJson["DefaultBinding"]["Type"].asString();
@@ -417,7 +420,7 @@ void TableObject::_SetUpControlAndAnimation(const Json::Value& descItemInfo)
 							}
 							else
 							{
-								SDL_LogWarn(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION,"Warn: No value or incorrect value in [Button][%d][DefaultBinding][Button][%d]",i, buttonNameIndex);
+								SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION,"Warn: No value or incorrect value in [Button][%d][DefaultBinding][Button][%d]",i, buttonNameIndex);
 							}
 						}
 					}
@@ -436,11 +439,11 @@ void TableObject::_SetUpControlAndAnimation(const Json::Value& descItemInfo)
 					}
 					else
 					{
-						SDL_LogWarn(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Warn: No value or incorrect value in [Button][%d][DefaultBinding][Axis]",i);
+						SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Warn: No value or incorrect value in [Button][%d][DefaultBinding][Axis]",i);
 					}
 				}
 
-				//Öá°ó¶¨²»Ğ´ÔÚButtonÀï
+				//è½´ç»‘å®šä¸å†™åœ¨Buttoné‡Œ
 			}
 			
 			
@@ -453,7 +456,7 @@ void TableObject::_SetUpControlAndAnimation(const Json::Value& descItemInfo)
 	{
 
 		std::vector<std::string> paramVec=_model->GetParamList();
-		//ÅĞ¶Ï°´Å¥Ç°×ºKEYBOARD BUTTON CTB_KEYBOARD CAT_KEY  ex: CAT_KEY_A
+		//åˆ¤æ–­æŒ‰é’®å‰ç¼€KEYBOARD BUTTON CTB_KEYBOARD CAT_KEY  ex: CAT_KEY_A
 
 		for (auto&  x: paramVec)
 		{
@@ -469,22 +472,22 @@ void TableObject::_SetUpControlAndAnimation(const Json::Value& descItemInfo)
 	}
 
 
-	//Öá
-	//Öá
-	//Öá
-	//Öá
-	//Öá
+	//è½´
+	//è½´
+	//è½´
+	//è½´
+	//è½´
 	if (descItemInfo.isMember("Axes") && descItemInfo["Axes"].isArray())
 	{
 		for (unsigned int i = 0; i < descItemInfo["Axes"].size(); i++)
 		{
 			const Json::Value& curAxisJson = descItemInfo["Axes"][i];
 			auto& axis = modelAxisVec.emplace_back();
-			//°´Å¥µÄÏÔÊ¾Ãû
+			//æŒ‰é’®çš„æ˜¾ç¤ºå
 			if (curAxisJson.isMember("UiName"))
 				axis.uiName = util::GetStringFromMultiLangJsonNode(curAxisJson["UiName"]);
 
-			//ÖáµÄ²ÎÊıID
+			//è½´çš„å‚æ•°ID
 			if (curAxisJson.isMember("ParamID") && curAxisJson["ParamID"].isString())
 			{
 				axis.paramID = curAxisJson["ParamID"].asString();
@@ -495,7 +498,7 @@ void TableObject::_SetUpControlAndAnimation(const Json::Value& descItemInfo)
 			}
 
 
-			//ÖáµÄ¶¯»­²ÎÊı,×¢ÒâÕâ¸ö¶¯»­²ÎÊıÊÇ°´Å¥ÓÃµÄÓÃÀ´±í´ï°´¼üµÄ£¬ ²»Ó¦ÓÃÓÚÆäËûÈç×´Ì¬×ª»»Ö®ÀàµÄÓÃÍ¾
+			//è½´çš„åŠ¨ç”»å‚æ•°,æ³¨æ„è¿™ä¸ªåŠ¨ç”»å‚æ•°æ˜¯æŒ‰é’®ç”¨çš„ç”¨æ¥è¡¨è¾¾æŒ‰é”®çš„ï¼Œ ä¸åº”ç”¨äºå…¶ä»–å¦‚çŠ¶æ€è½¬æ¢ä¹‹ç±»çš„ç”¨é€”
 			if (curAxisJson.isMember("ActiveAnimation") && curAxisJson["ActiveAnimation"].isString())
 			{
 				axis.activeAnimation = curAxisJson["ActiveAnimation"].asString();
@@ -521,7 +524,7 @@ void TableObject::_SetUpControlAndAnimation(const Json::Value& descItemInfo)
 				axis.actionActiveValue = static_cast<float>(curAxisJson["ActionActiveValue"].asDouble());
 			}
 
-			//Ä¬ÈÏ°ó¶¨
+			//é»˜è®¤ç»‘å®š
 			if (curAxisJson.isMember("DefaultBinding") && curAxisJson["DefaultBinding"].isMember("Type") && curAxisJson["DefaultBinding"]["Type"].isString())
 			{
 				std::string bindingStr = curAxisJson["DefaultBinding"]["Type"].asString();
@@ -536,7 +539,7 @@ void TableObject::_SetUpControlAndAnimation(const Json::Value& descItemInfo)
 					}
 					else
 					{
-						SDL_LogWarn(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Warn: No value or incorrect value in [Axis][%d][DefaultBinding][Axis]", i);
+						SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Warn: No value or incorrect value in [Axis][%d][DefaultBinding][Axis]", i);
 					}
 				}
 				else if (bindingStr == "ActualButtonToAxis")
@@ -552,7 +555,7 @@ void TableObject::_SetUpControlAndAnimation(const Json::Value& descItemInfo)
 							}
 							else
 							{
-								SDL_LogWarn(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Warn: No value or incorrect value in [Axis][%d][DefaultBinding][Button][%d]", i, buttonNameIndex);
+								SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Warn: No value or incorrect value in [Axis][%d][DefaultBinding][Button][%d]", i, buttonNameIndex);
 							}
 						}
 					}
@@ -568,9 +571,9 @@ void TableObject::_SetUpControlAndAnimation(const Json::Value& descItemInfo)
 	}
 	else
 	{
-		//ÎŞÖáĞÅÏ¢£¬³¢ÊÔ¶ÁÈ¡Ä£ĞÍ²ÎÊı
+		//æ— è½´ä¿¡æ¯ï¼Œå°è¯•è¯»å–æ¨¡å‹å‚æ•°
 		std::vector<std::string> paramVec = _model->GetParamList();
-		//ÅĞ¶Ï°´Å¥Ç°×ºKEYBOARD BUTTON CTB_KEYBOARD CAT_KEY  ex: CAT_KEY_A
+		//åˆ¤æ–­æŒ‰é’®å‰ç¼€KEYBOARD BUTTON CTB_KEYBOARD CAT_KEY  ex: CAT_KEY_A
 
 		for (auto& x : paramVec)
 		{
@@ -587,23 +590,23 @@ void TableObject::_SetUpControlAndAnimation(const Json::Value& descItemInfo)
 
 
 
-	//¶¯»­
-	//¶¯»­
-	//¶¯»­
-	//¶¯»­
-	//¶¯»­
-	//¶¯»­
+	//åŠ¨ç”»
+	//åŠ¨ç”»
+	//åŠ¨ç”»
+	//åŠ¨ç”»
+	//åŠ¨ç”»
+	//åŠ¨ç”»
 	if (descItemInfo.isMember("Animations") && descItemInfo["Animations"].isArray())
 	{
 		for (unsigned int i = 0; i < descItemInfo["Animations"].size(); i++)
 		{
 			const Json::Value& curAnimationJson = descItemInfo["Animations"][i];
 			auto& animation = modelAnimationVec.emplace_back();
-			//¶¯»­µÄUIÏÔÊ¾Ãû
+			//åŠ¨ç”»çš„UIæ˜¾ç¤ºå
 			if (curAnimationJson.isMember("UiName"))
 				animation.uiName = util::GetStringFromMultiLangJsonNode(curAnimationJson["UiName"]);
 
-			//¶¯»­µÄÊµ¼Ê¿ØÖÆÃû
+			//åŠ¨ç”»çš„å®é™…æ§åˆ¶å
 			if (curAnimationJson.isMember("Name") && curAnimationJson["Name"].isString())
 			{
 				animation.controlName = curAnimationJson["Name"].asString();
@@ -613,18 +616,18 @@ void TableObject::_SetUpControlAndAnimation(const Json::Value& descItemInfo)
 				animation.uiName = animation.controlName;
 			}
 
-			//¶¯»­µÄÔ¤ÀÀÍ¼Â·¾¶
+			//åŠ¨ç”»çš„é¢„è§ˆå›¾è·¯å¾„
 			if (curAnimationJson.isMember("ImageFile") && curAnimationJson["ImageFile"].isString())
 			{
 				animation.imageFile = curAnimationJson["ImageFile"].asString();
 			}
-			////¶¯»­µÄ²¥·Å¹ìµÀ ¹ìµÀÓÉÄ£ĞÍÖ±½Ó¹ÜÀí
+			////åŠ¨ç”»çš„æ’­æ”¾è½¨é“ è½¨é“ç”±æ¨¡å‹ç›´æ¥ç®¡ç†
 			//if (curAnimationJson.isMember("Track") && curAnimationJson["Track"].isInt())
 			//{
 			//	animation.track = curAnimationJson["Track"].asInt();
 			//}
 
-			//Ä¬ÈÏ°ó¶¨
+			//é»˜è®¤ç»‘å®š
 			if (curAnimationJson.isMember("DefaultBinding") && curAnimationJson["DefaultBinding"].isArray())
 			{
 				for (unsigned int bindingIndex = 0; bindingIndex < curAnimationJson["DefaultBinding"].size(); bindingIndex++)
@@ -647,7 +650,7 @@ void TableObject::_SetUpControlAndAnimation(const Json::Value& descItemInfo)
 									}
 									else
 									{
-										SDL_LogWarn(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Warn: No value or incorrect value in [Animations][%d][DefaultBinding][%d][Button][%d]", i, bindingIndex, buttonNameIndex);
+										SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Warn: No value or incorrect value in [Animations][%d][DefaultBinding][%d][Button][%d]", i, bindingIndex, buttonNameIndex);
 									}
 								}
 							}
@@ -667,7 +670,7 @@ void TableObject::_SetUpControlAndAnimation(const Json::Value& descItemInfo)
 							}
 							else
 							{
-								SDL_LogWarn(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Warn: No axis name in [Animations][%d][DefaultBinding][%d][Axis]", i, bindingIndex);
+								SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Warn: No axis name in [Animations][%d][DefaultBinding][%d][Axis]", i, bindingIndex);
 							}
 						}
 						else if (bindingStr=="AxisInactive")
@@ -684,7 +687,7 @@ void TableObject::_SetUpControlAndAnimation(const Json::Value& descItemInfo)
 							}
 							else
 							{
-								SDL_LogWarn(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Warn: No axis name in [Animations][%d][DefaultBinding][%d][Axis]", i, bindingIndex);
+								SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Warn: No axis name in [Animations][%d][DefaultBinding][%d][Axis]", i, bindingIndex);
 							}
 						}
 						else if (bindingStr=="Action")
@@ -701,12 +704,12 @@ void TableObject::_SetUpControlAndAnimation(const Json::Value& descItemInfo)
 							}
 							else
 							{
-								SDL_LogWarn(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Warn: No action name in [Animations][%d][DefaultBinding][%d][Action]", i, bindingIndex);
+								SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Warn: No action name in [Animations][%d][DefaultBinding][%d][Action]", i, bindingIndex);
 							}
 						}
 						else
 						{
-							SDL_LogWarn(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Warn: Can not match binding type in [Animations][%d][DefaultBinding][%d]: %s", i, bindingIndex, bindingStr.c_str());
+							SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Warn: Can not match binding type in [Animations][%d][DefaultBinding][%d]: %s", i, bindingIndex, bindingStr.c_str());
 						}
 
 
@@ -721,10 +724,10 @@ void TableObject::_SetUpControlAndAnimation(const Json::Value& descItemInfo)
 	}
 	else
 	{
-		//ÎŞ¶¯»­ĞÅÏ¢£¬³¢ÊÔ¶ÁÈ¡Ä£ĞÍ¶¯»­ÁĞ±í
-		//¶ÁÈ¡³ıIdleÒÔÍâµÄËùÓĞ´ı»ú¶¯»­
+		//æ— åŠ¨ç”»ä¿¡æ¯ï¼Œå°è¯•è¯»å–æ¨¡å‹åŠ¨ç”»åˆ—è¡¨
+		//è¯»å–é™¤Idleä»¥å¤–çš„æ‰€æœ‰å¾…æœºåŠ¨ç”»
 		std::vector<std::string> animationVec = _model->GetAnimationList();
-		//ÅĞ¶Ï°´Å¥Ç°×ºKEYBOARD BUTTON CTB_KEYBOARD CAT_KEY  ex: CAT_KEY_A
+		//åˆ¤æ–­æŒ‰é’®å‰ç¼€KEYBOARD BUTTON CTB_KEYBOARD CAT_KEY  ex: CAT_KEY_A
 
 		for (auto& x : animationVec)
 		{
@@ -732,7 +735,7 @@ void TableObject::_SetUpControlAndAnimation(const Json::Value& descItemInfo)
 			{
 				auto& animation = modelAnimationVec.emplace_back();
 				animation.uiName = x;
-				//¶¯»­²»Ìá¹©³õÊ¼°ó¶¨
+				//åŠ¨ç”»ä¸æä¾›åˆå§‹ç»‘å®š
 			}
 		}
 	}
@@ -744,7 +747,7 @@ void TableObject::_ApplyControlBindings()
 	//std::vector<ModelButtonControl> modelButtonVec;
 	//std::vector<ModelAxisControl> modelAxisVec;
 	//std::vector<ModelAnimationControl> modelAnimationVec;
-	//½«ÉÏÃævecÖĞ´æ´¢µÄbinding×¢²áµ½inputmanagerÀï
+	//å°†ä¸Šé¢vecä¸­å­˜å‚¨çš„bindingæ³¨å†Œåˆ°inputmanageré‡Œ
 	
 	for (int i=0;i< modelButtonVec.size();i++)
 	{
@@ -769,7 +772,7 @@ void TableObject::_SetUpJsonBinding(const Json::Value& bindingJson)
 
 	if (bindingJson.isMember("Buttons") && bindingJson["Buttons"].isArray())
 	{
-		//i²»¿É´óÓÚ°´Å¥Êı
+		//iä¸å¯å¤§äºæŒ‰é’®æ•°
 		for (unsigned int i = 0; i < bindingJson["Buttons"].size()&&i< modelButtonVec.size(); i++)
 		{
 			auto& curButtonBindingJson=bindingJson["Buttons"][i];
@@ -790,7 +793,7 @@ void TableObject::_SetUpJsonBinding(const Json::Value& bindingJson)
 							}
 							else
 							{
-								SDL_LogWarn(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Warn: No value or incorrect value in [Buttons][%d][ActualButton][%d]", i, buttonNameIndex);
+								SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Warn: No value or incorrect value in [Buttons][%d][ActualButton][%d]", i, buttonNameIndex);
 							}
 						}
 					}
@@ -809,7 +812,7 @@ void TableObject::_SetUpJsonBinding(const Json::Value& bindingJson)
 					}
 					else
 					{
-						SDL_LogWarn(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Warn: No value or incorrect value in [Buttons][%d][ActualAxisToButton][Axis]", i);
+						SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Warn: No value or incorrect value in [Buttons][%d][ActualAxisToButton][Axis]", i);
 					}
 
 				}
@@ -819,7 +822,7 @@ void TableObject::_SetUpJsonBinding(const Json::Value& bindingJson)
 
 	if (bindingJson.isMember("Axes") && bindingJson["Axes"].isArray())
 	{
-		//i²»¿É´óÓÚÖáÊı
+		//iä¸å¯å¤§äºè½´æ•°
 		for (unsigned int i = 0; i < bindingJson["Axes"].size() && i < modelAxisVec.size(); i++)
 		{
 			auto& curAxisBindingJson = bindingJson["Axes"][i];
@@ -837,7 +840,7 @@ void TableObject::_SetUpJsonBinding(const Json::Value& bindingJson)
 					}
 					else
 					{
-						SDL_LogWarn(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Warn: No value or incorrect value in [Axes][%d][ActualAxis][Axis]", i);
+						SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Warn: No value or incorrect value in [Axes][%d][ActualAxis][Axis]", i);
 					}
 				}
 				else if (bindingStr == "ActualButtonToAxis")
@@ -853,7 +856,7 @@ void TableObject::_SetUpJsonBinding(const Json::Value& bindingJson)
 							}
 							else
 							{
-								SDL_LogWarn(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Warn: No value or incorrect value in [Axes][%d][ActualButtonToAxis][Button][%d]", i, buttonNameIndex);
+								SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Warn: No value or incorrect value in [Axes][%d][ActualButtonToAxis][Button][%d]", i, buttonNameIndex);
 							}
 						}
 					}
@@ -868,7 +871,7 @@ void TableObject::_SetUpJsonBinding(const Json::Value& bindingJson)
 	//Animations
 	if (bindingJson.isMember("Animations") && bindingJson["Animations"].isArray())
 	{
-		//i²»¿É´óÓÚ¶¯»­Êı
+		//iä¸å¯å¤§äºåŠ¨ç”»æ•°
 		for (unsigned int i = 0; i < bindingJson["Animations"].size() && i < modelAnimationVec.size(); i++)
 		{
 
@@ -894,7 +897,7 @@ void TableObject::_SetUpJsonBinding(const Json::Value& bindingJson)
 									}
 									else
 									{
-										SDL_LogWarn(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Warn: No value or incorrect value in [Animations][%d][%d][ActualButton][%d]", i, bindingIndex, buttonNameIndex);
+										SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Warn: No value or incorrect value in [Animations][%d][%d][ActualButton][%d]", i, bindingIndex, buttonNameIndex);
 									}
 								}
 							}
@@ -914,7 +917,7 @@ void TableObject::_SetUpJsonBinding(const Json::Value& bindingJson)
 							}
 							else
 							{
-								SDL_LogWarn(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Warn: No axis name in [Animations][%d][%d][AxisActive]", i, bindingIndex);
+								SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Warn: No axis name in [Animations][%d][%d][AxisActive]", i, bindingIndex);
 							}
 						}
 						else if (bindingStr == "AxisInactive")
@@ -931,7 +934,7 @@ void TableObject::_SetUpJsonBinding(const Json::Value& bindingJson)
 							}
 							else
 							{
-								SDL_LogWarn(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Warn: No axis name in [Animations][%d][%d][AxisInactive]", i, bindingIndex);
+								SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Warn: No axis name in [Animations][%d][%d][AxisInactive]", i, bindingIndex);
 							}
 						}
 						else if (bindingStr == "Action")
@@ -948,12 +951,12 @@ void TableObject::_SetUpJsonBinding(const Json::Value& bindingJson)
 							}
 							else
 							{
-								SDL_LogWarn(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Warn: No action name in [Animations][%d][%d][Action]", i, bindingIndex);
+								SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Warn: No action name in [Animations][%d][%d][Action]", i, bindingIndex);
 							}
 						}
 						else
 						{
-							SDL_LogWarn(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Warn: Can not match binding type in [Animations][%d][%d]: %s", i, bindingIndex, bindingStr.c_str());
+							SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Warn: Can not match binding type in [Animations][%d][%d]: %s", i, bindingIndex, bindingStr.c_str());
 						}
 
 
@@ -996,7 +999,7 @@ Json::Value TableObject::_GenerateJsonBinding()
 		else
 		{
 			curButton["Type"] = "Undefined";
-			SDL_LogWarn(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Warn: GenerateJsonBinding with Undefined Button[%d]", i);
+			SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Warn: GenerateJsonBinding with Undefined Button[%d]", i);
 		}
 	}
 	for (int i = 0; i < modelAxisVec.size(); i++)
@@ -1022,7 +1025,7 @@ Json::Value TableObject::_GenerateJsonBinding()
 		else
 		{
 			curAxis["Type"] = "Undefined";
-			SDL_LogWarn(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Warn: GenerateJsonBinding with Undefined Axis[%d]", i);
+			SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Warn: GenerateJsonBinding with Undefined Axis[%d]", i);
 		}
 	}
 	for (int i = 0; i < modelAnimationVec.size(); i++)
@@ -1061,7 +1064,7 @@ Json::Value TableObject::_GenerateJsonBinding()
 				if (!curBinding.controllList.empty())
 					curAnimation[bindingIndex]["Action"] = curBinding.controllList[0];
 				else
-					SDL_LogWarn(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Warn: No action name in Animation[%d]", i);
+					SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Warn: No action name in Animation[%d]", i);
 			}
 		}
 
@@ -1076,10 +1079,10 @@ Json::Value TableObject::_GenerateJsonBinding()
 	return bindingRoot;
 }
 
-//¾ßÌåactionµ½º¯Êı³ÉÔ±·½·¨
+//å…·ä½“actionåˆ°å‡½æ•°æˆå‘˜æ–¹æ³•
 void TableObject::RegisterAllActionFunc(bool falseToUnregister)
 {
-	//Ä£ĞÍ¿Ø¼şÏà¹Ø
+	//æ¨¡å‹æ§ä»¶ç›¸å…³
 	auto& im = InputManager::GetIns();
 	{
 		ActionCallback downActionCallBack;
@@ -1256,7 +1259,7 @@ void TableObject::OnAnimationPlay(int animationIndex)
 
 
 
-//ÎïÀí°´¼üµ½¾ßÌåaction
+//ç‰©ç†æŒ‰é”®åˆ°å…·ä½“action
 void BindingInfo::RegisterBinding(int index)
 {
 	UnRegisterBinding();
@@ -1270,9 +1273,9 @@ void BindingInfo::RegisterBinding(int index)
 		break;
 	case BindingInfo::Button_ActualButton:
 	{
-		//ÏòInputManager×¢²á¹ØÓÚÎïÀí°´¼üµÄ°ó¶¨
+		//å‘InputManageræ³¨å†Œå…³äºç‰©ç†æŒ‰é”®çš„ç»‘å®š
 		
-		//¹¹Ôìactionname  Table.Button.0.Down
+		//æ„é€ actionname  Table.Button.0.Down
 		std::string downActionName = "Table.Button." + std::to_string(index) + ".Down";
 		std::string upActionName = "Table.Button." + std::to_string(index) + ".Up";
 		_bindingHandleList.push_back(
@@ -1283,7 +1286,7 @@ void BindingInfo::RegisterBinding(int index)
 	}
 	case BindingInfo::Button_ActualAxisToButton:
 	{
-		//¹¹Ôìactionname  Table.Button.0.Down
+		//æ„é€ actionname  Table.Button.0.Down
 		std::string downActionName = "Table.Button." + std::to_string(index) + ".Down";
 		std::string upActionName = "Table.Button." + std::to_string(index) + ".Up";
 
@@ -1306,7 +1309,7 @@ void BindingInfo::RegisterBinding(int index)
 	}
 	case BindingInfo::Axis_ActualAxis:
 	{
-		//¹¹Ôìactionname  Table.Axis.0.Change
+		//æ„é€ actionname  Table.Axis.0.Change
 		std::string axisActionName= "Table.Axis."+ std::to_string(index) + ".Change";
 		_bindingHandleList.push_back(
 		im.RegisterAxisChangeActionBinding(axisActionName.c_str(), controllList[0].c_str()));
@@ -1314,7 +1317,7 @@ void BindingInfo::RegisterBinding(int index)
 	}
 	case BindingInfo::Axis_ActualButtonToAxis:
 	{
-		//¹¹Ôìactionname  Table.Axis.0.Change
+		//æ„é€ actionname  Table.Axis.0.Change
 		std::string axisActionName = "Table.Axis." + std::to_string(index) + ".Change";
 
 		_bindingHandleList.push_back(
@@ -1323,7 +1326,7 @@ void BindingInfo::RegisterBinding(int index)
 	}
 	case BindingInfo::Animation_ActualButton:
 	{
-		//ÓÃÎïÀí°´¼ü´¥·¢¶¯»­ Table.Animation.animationName.Start
+		//ç”¨ç‰©ç†æŒ‰é”®è§¦å‘åŠ¨ç”» Table.Animation.animationName.Start
 		std::string animationActionName = "Table.Animation." + std::to_string(index) + ".Start";
 		_bindingHandleList.push_back(
 			im.RegisterButtonActionBinding(animationActionName.c_str(), NULL, controllList.data(), static_cast<int>(controllList.size()))
@@ -1383,7 +1386,7 @@ void BindingInfo::RegisterBinding(int index)
 
 void BindingInfo::UnRegisterBinding()
 {
-	//È¡Ïû×¢²á
+	//å–æ¶ˆæ³¨å†Œ
 	auto& im = InputManager::GetIns();
 	for (auto& bindingHandle : _bindingHandleList)
 	{

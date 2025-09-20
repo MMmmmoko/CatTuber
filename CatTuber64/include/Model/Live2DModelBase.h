@@ -1,6 +1,7 @@
 #ifndef _Live2DModelBase_h
 #define _Live2DModelBase_h
 
+#include<glm/glm.hpp>
 #include<unordered_map>
 #include <CubismFramework.hpp>
 #include"IModel.h"
@@ -8,7 +9,7 @@
 #include"Pack/Pack.h"
 
 
-//¶¯×÷µÄÓÅÏÈ¼¶
+//åŠ¨ä½œçš„ä¼˜å…ˆçº§
 namespace Live2D
 {
 	namespace Cubism
@@ -26,7 +27,7 @@ namespace Live2D
 	}
 }
 
-//ÎªÁË¿ØÖÆ²¿·ÖÎŞ·ÃÎÊÈ¨ÏŞµÄ±äÁ¿
+//ä¸ºäº†æ§åˆ¶éƒ¨åˆ†æ— è®¿é—®æƒé™çš„å˜é‡
 class CubismLive2DModel :public Csm::CubismUserModel
 {
 public:
@@ -38,22 +39,23 @@ public:
 	void Update(float time);
 
 	void Draw();
+	void DrawMix(MixDrawList* pMix,glm::mat4x4& view_projMat);
 
-	//ÒòÎª²ÉÓÃ´ÓÎÄ¼ş¼Ğ¼ÓÔØµÄ²ßÂÔ£¬ËùÒÔÊ¹ÓÃÁËÒ»¸öÑ°ÕÒÎÄ¼ş¼ĞÖĞÄ£ĞÍµÄº¯Êı
+	//å› ä¸ºé‡‡ç”¨ä»æ–‡ä»¶å¤¹åŠ è½½çš„ç­–ç•¥ï¼Œæ‰€ä»¥ä½¿ç”¨äº†ä¸€ä¸ªå¯»æ‰¾æ–‡ä»¶å¤¹ä¸­æ¨¡å‹çš„å‡½æ•°
 	//static std::vector<std::string> FindModelFileInDir(Pack* pPack, const char* dirPath);
 
 
-	//·µ»ØÒ»¸ö¶¯×÷±êÊ¶£¬¸øIsFinished()µ÷ÓÃÀ´È·¶¨¶¯×÷ÊÇ·ñ½áÊø¡£Èç¹û¶¯×÷ÎŞ·¨¿ªÊ¼£¬·µ»Ø-1
+	//è¿”å›ä¸€ä¸ªåŠ¨ä½œæ ‡è¯†ï¼Œç»™IsFinished()è°ƒç”¨æ¥ç¡®å®šåŠ¨ä½œæ˜¯å¦ç»“æŸã€‚å¦‚æœåŠ¨ä½œæ— æ³•å¼€å§‹ï¼Œè¿”å›-1
 	Csm::CubismMotionQueueEntryHandle StartMotion(const Csm::csmChar* group, Csm::csmInt32 no, Csm::csmInt32 priority,
 		Csm::ACubismMotion::FinishedMotionCallback onFinishedMotionHandler = NULL, Csm::ACubismMotion::BeganMotionCallback onBeganMotionHandler = NULL
 		);
-	//CatTuber²ÉÓÃ×éÄÚËæ»úµÄ·½Ê½²¥·Å¶¯»­£¬×éÃû¼´¶¯»­Ãû
+	//CatTuberé‡‡ç”¨ç»„å†…éšæœºçš„æ–¹å¼æ’­æ”¾åŠ¨ç”»ï¼Œç»„åå³åŠ¨ç”»å
 	Csm::CubismMotionQueueEntryHandle StartRandomMotion(const Csm::csmChar* group,Csm::csmInt32 priority, 
 		Csm::ACubismMotion::FinishedMotionCallback onFinishedMotionHandler = NULL, Csm::ACubismMotion::BeganMotionCallback onBeganMotionHandler = NULL
 		);
 
 
-	//»ñÈ¡µÄÊÇCatTuber¿É¿ØµÄ²ÎÊıºÍ¶¯»­
+	//è·å–çš„æ˜¯CatTuberå¯æ§çš„å‚æ•°å’ŒåŠ¨ç”»
 	std::vector<std::string> GetParamList();
 	std::vector<std::string> GetAnimationList();
 	
@@ -81,28 +83,28 @@ private:
 
 
 	Csm::ICubismModelSetting* _modelSetting = NULL;
-	Csm::csmString _modelHomeDir;//Õâ¸öÄ©Î²°üº¬ÓĞ"/"×Ö·û
+	Csm::csmString _modelHomeDir;//è¿™ä¸ªæœ«å°¾åŒ…å«æœ‰"/"å­—ç¬¦
 	Pack _pack;
 
 
-	//Ä£ĞÍÖĞËùÉèÖÃµÄÕ£ÑÛºÍ×ì´½Í¬²½µÄ²ÎÊı
+	//æ¨¡å‹ä¸­æ‰€è®¾ç½®çš„çœ¨çœ¼å’Œå˜´å”‡åŒæ­¥çš„å‚æ•°
 	Csm::csmVector<Csm::CubismIdHandle> _eyeBlinkIds;
 	Csm::csmVector<Csm::CubismIdHandle> _lipSyncIds;
 
 
-	//±£´æ¶¯×÷ºÍ±íÇéÁĞ±í£¬¹©µ÷ÓÃºÍÊı¾İÇåÀí
+	//ä¿å­˜åŠ¨ä½œå’Œè¡¨æƒ…åˆ—è¡¨ï¼Œä¾›è°ƒç”¨å’Œæ•°æ®æ¸…ç†
 	Csm::csmMap<Csm::csmString, Csm::ACubismMotion*>   _motions; 
 	Csm::csmMap<Csm::csmString, Csm::ACubismMotion*>   _expressions;
 
-	//Csm::csmVector<Csm::csmUint64> _bindTextureId; ///< ÎÆÀíID
-	Csm::csmVector<SDL_GPUTexture*> _bindTexture; ///< ÎÆÀí
+	//Csm::csmVector<Csm::csmUint64> _bindTextureId; ///< çº¹ç†ID
+	Csm::csmVector<SDL_GPUTexture*> _bindTexture; ///< çº¹ç†
 
 
-	//´´½¨¸ü¶àµÄmotionmanagerÓÃÓÚÊµÏÖ¶à¹ìÍ¬Ê±²¥·Å¶¯»­
-	//Csm::csmMapµÄ²éÑ¯Ğ§ÂÊÓĞÎÊÌâ..
+	//åˆ›å»ºæ›´å¤šçš„motionmanagerç”¨äºå®ç°å¤šè½¨åŒæ—¶æ’­æ”¾åŠ¨ç”»
+	//Csm::csmMapçš„æŸ¥è¯¢æ•ˆç‡æœ‰é—®é¢˜..
 	std::unordered_map<Csm::csmInt32, Csm::CubismMotionManager*>   _motionManagers;
 	std::unordered_map<std::string, int>   _animationTrackMap;
-	int _idleMotionTrack = 0;//´ı»ú¶¯×÷µÄ¹ìµÀ
+	int _idleMotionTrack = 0;//å¾…æœºåŠ¨ä½œçš„è½¨é“
 	//std::unordered_map<>
 
 
@@ -132,9 +134,11 @@ public:
 
 	virtual void Update(uint64_t deltaTicksNS)override;
 	virtual void Draw()override;
+	virtual void DrawMix(MixDrawList* pMix)override;
+	
 
 
-	//ºóĞøÔÙÊµÏÖhit
+	//åç»­å†å®ç°hit
 	//virtual void Hit(float x, float y)override {};
 
 

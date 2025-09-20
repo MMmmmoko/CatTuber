@@ -7,7 +7,6 @@
 #include"RenderWindowManager.h"
 #include"UserEvent.h"
 
-
 static std::unordered_map<HWND, RenderWindowController*> hwnd2SDL_Window;
 
 
@@ -15,7 +14,7 @@ static std::unordered_map<HWND, RenderWindowController*> hwnd2SDL_Window;
 void RenderWindowController::SetLock(bool b)
 {
 
-    //ÏÈ³¢ÊÔSDL_SetWindowShapeÊÇ·ñ¿ÉĞĞ£¬²»¿ÉĞĞÔÙÖ±½Óµ÷ÓÃÆ½Ì¨API
+    //å…ˆå°è¯•SDL_SetWindowShapeæ˜¯å¦å¯è¡Œï¼Œä¸å¯è¡Œå†ç›´æ¥è°ƒç”¨å¹³å°API
 
 
 
@@ -24,20 +23,20 @@ void RenderWindowController::SetLock(bool b)
     //
     //for (auto& wc : controllers)
     //{
-    //    // 1. »ñÈ¡´°¿ÚÊôĞÔ¼¯
+    //    // 1. è·å–çª—å£å±æ€§é›†
     //    SDL_PropertiesID props = SDL_GetWindowProperties(wc->window);
 
-    //    // 2. ´ÓÊôĞÔ¼¯ÖĞ¶ÁÈ¡ HWND
-    //    //    Ö±½Ó·µ»ØÖ¸ÕëÖµ£¬ÈôÆ½Ì¨²»Ö§³Ö¸ÃÊôĞÔÔòÎª nullptr
+    //    // 2. ä»å±æ€§é›†ä¸­è¯»å– HWND
+    //    //    ç›´æ¥è¿”å›æŒ‡é’ˆå€¼ï¼Œè‹¥å¹³å°ä¸æ”¯æŒè¯¥å±æ€§åˆ™ä¸º nullptr
     //    HWND hwnd = (HWND)SDL_GetPointerProperty(
     //        props,
     //        SDL_PROP_WINDOW_WIN32_HWND_POINTER,
-    //        nullptr       // ¿ÉÑ¡£º´«Èë SDL_bool* »ñÈ¡ÊÇ·ñ²éÑ¯³É¹¦
+    //        nullptr       // å¯é€‰ï¼šä¼ å…¥ SDL_bool* è·å–æ˜¯å¦æŸ¥è¯¢æˆåŠŸ
     //    );
     //}
 }
 
-//CatTuberĞèÒªÀ¹½Ø´¦ÀíWM_SizingÊÂ¼ş
+//CatTuberéœ€è¦æ‹¦æˆªå¤„ç†WM_Sizingäº‹ä»¶
 
 typedef  LRESULT(CALLBACK* __WINDOWSPROC)(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 static __WINDOWSPROC SDL_WindowProc=NULL;
@@ -64,6 +63,12 @@ LRESULT CALLBACK RenderWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPara
     //    }
     //}
 
+    //if (uMsg == WM_SIZE) {
+    //    UINT width = LOWORD(lParam);
+    //    UINT height = HIWORD(lParam);
+    //    RenderWindowController* _this = hwnd2SDL_Window[hwnd];
+    //    _this->_OnResize(width, height);
+    //}
     if (uMsg == WM_SIZING) {
         do
         {
@@ -80,7 +85,7 @@ LRESULT CALLBACK RenderWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPara
             crect.top = prect->top + prect->top - crect.top;
             crect.bottom = prect->bottom + prect->bottom - crect.bottom;
 
-            //¸ù¾İ±ÈÀı¼ÆËã×îĞ¡¿í¸ß
+            //æ ¹æ®æ¯”ä¾‹è®¡ç®—æœ€å°å®½é«˜
             int minWidth, minHeight;
             if (aspectRatio_width > aspectRatio_height)
             {
@@ -106,7 +111,7 @@ LRESULT CALLBACK RenderWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPara
                 }
 
                 int width = height* aspectRatio_width/ aspectRatio_height;
-                //Ë®Æ½ÖĞµã
+                //æ°´å¹³ä¸­ç‚¹
                 int dW =static_cast<int>( (width - (crect.right - crect.left)) * 0.5);
                 crect.left -= dW;
                 crect.right += dW;
@@ -119,7 +124,7 @@ LRESULT CALLBACK RenderWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPara
                 int temHeight= width* aspectRatio_height / aspectRatio_width;
                 if (temHeight > crect.bottom - crect.top)
                 {
-                    //temHeight:Ó¦¸Ã´ïµ½µÄ¸ß¶È£¬¿Í»§Çø¸ß¶È±ÈÓ¦¸Ã´ïµ½µÄ¸ß¶ÈĞ¡£¬ËµÃ÷·½ÏòÎª¡û¡ú
+                    //temHeight:åº”è¯¥è¾¾åˆ°çš„é«˜åº¦ï¼Œå®¢æˆ·åŒºé«˜åº¦æ¯”åº”è¯¥è¾¾åˆ°çš„é«˜åº¦å°ï¼Œè¯´æ˜æ–¹å‘ä¸ºâ†â†’
                     if (width < minWidth)
                     {
                         (wParam == WMSZ_BOTTOMLEFT) ? (crect.left = crect.right - minWidth) : (crect.right = crect.left + minWidth);
@@ -163,7 +168,7 @@ LRESULT CALLBACK RenderWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPara
                 int temHeight = width * aspectRatio_height / aspectRatio_width;
                 if (temHeight > crect.bottom - crect.top)
                 {
-                    //temHeight:Ó¦¸Ã´ïµ½µÄ¸ß¶È£¬¿Í»§Çø¸ß¶È±ÈÓ¦¸Ã´ïµ½µÄ¸ß¶ÈĞ¡£¬ËµÃ÷·½ÏòÎª¡û¡ú
+                    //temHeight:åº”è¯¥è¾¾åˆ°çš„é«˜åº¦ï¼Œå®¢æˆ·åŒºé«˜åº¦æ¯”åº”è¯¥è¾¾åˆ°çš„é«˜åº¦å°ï¼Œè¯´æ˜æ–¹å‘ä¸ºâ†â†’
                     if (width < minWidth)
                     {
                         (wParam == WMSZ_TOPLEFT) ? (crect.left = crect.right - minWidth) : (crect.right = crect.left + minWidth);
@@ -193,39 +198,50 @@ LRESULT CALLBACK RenderWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPara
             if(!AdjustWindowRectEx(&crect,_style,NULL,_exstyle))break;
             *prect = crect;
 
-            //²âÊÔWM_PAINTÄÜ·ñ´¦Àí
-            //InvalidateRect(hwnd, NULL, FALSE);
+            //æµ‹è¯•WM_PAINTèƒ½å¦å¤„ç†
+            InvalidateRect(hwnd, NULL, FALSE);
+
 
         } while (false);
         
 
-        return TRUE;
+        //return TRUE;
+
+
     }
 
-    // ÆäËûÏûÏ¢½»¸øÔ­´°¿Ú¹ı³Ì
+    // å…¶ä»–æ¶ˆæ¯äº¤ç»™åŸçª—å£è¿‡ç¨‹
     return CallWindowProc(SDL_WindowProc, hwnd, uMsg, wParam, lParam);
 }
 
 void RenderWindowController::_AfterCreateWindow()
 {
-    //»ñÈ¡HWND
+    //è·å–HWND
     SDL_PropertiesID props = SDL_GetWindowProperties(window);
     HWND hwnd = (HWND)SDL_GetPointerProperty(
                 props,
                 SDL_PROP_WINDOW_WIN32_HWND_POINTER,
-                nullptr       // ¿ÉÑ¡£º´«Èë SDL_bool* »ñÈ¡ÊÇ·ñ²éÑ¯³É¹¦
+                nullptr       // å¯é€‰ï¼šä¼ å…¥ SDL_bool* è·å–æ˜¯å¦æŸ¥è¯¢æˆåŠŸ
             );
     if (!hwnd)return;
 
-    //ÒòÎªSDL¿âÄÚ²¿¿ÉÄÜ»áÊ¹ÓÃUserData£¬ËùÒÔÕâÀïÊ¹ÓÃ²é±íµÄ·½Ê½´Óhwnd»ñÈ¡sdlwindow¶ø²»ÊÇĞ´ÈëGWLP_USERDATA
+    //å› ä¸ºSDLåº“å†…éƒ¨å¯èƒ½ä¼šä½¿ç”¨UserDataï¼Œæ‰€ä»¥è¿™é‡Œä½¿ç”¨æŸ¥è¡¨çš„æ–¹å¼ä»hwndè·å–sdlwindowè€Œä¸æ˜¯å†™å…¥GWLP_USERDATA
     hwnd2SDL_Window[hwnd] = this;
     
     SDL_WindowProc =(__WINDOWSPROC)GetWindowLongPtr(hwnd, GWLP_WNDPROC);
     
 
+
+
     SetWindowLongPtr(hwnd, GWLP_WNDPROC, (LONG_PTR)RenderWndProc);
 
 
+    //ç¦ç”¨æœ€å¤§åŒ–æŒ‰é’®
+    LONG style = GetWindowLong(hwnd, GWL_STYLE);
+    style &= ~WS_MAXIMIZEBOX;
+    SetWindowLong(hwnd, GWL_STYLE, style);
+    SetWindowPos(hwnd, NULL, 0, 0, 0, 0,
+        SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
 
 }
 

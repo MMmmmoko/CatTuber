@@ -3,7 +3,7 @@
 #include<SDL3/SDL.h>
 #include<string>
 #include<unordered_map>
-//解析按钮名，因为比较长所以单独开文件
+//瑙ｆ瀽鎸夐挳鍚嶏紝鍥犱负姣旇緝闀挎墍浠ュ崟鐙紑鏂囦欢
 class InputParser
 {
 public:

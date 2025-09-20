@@ -14,7 +14,7 @@ namespace Live2D {
 				static CubismRenderContext_SDL3 rc = {};
 				CubismRenderContext_SDL3* CubismRenderContext_SDL3::CreateSDLGpuRenderContext(SDL_GPUDevice* device)
 				{
-					//Live2DÄÚ²¿Ê¹ÓÃµÄ»°£¬ÕâÑù¾Í¹»ÁË£¬ÒÔºóÓĞĞèÒªÔÙ¸ÄÕâÀï
+					//Live2Då†…éƒ¨ä½¿ç”¨çš„è¯ï¼Œè¿™æ ·å°±å¤Ÿäº†ï¼Œä»¥åæœ‰éœ€è¦å†æ”¹è¿™é‡Œ
 					//static CubismRenderContext_SDL3 rc = {};
 					rc._device = device;
 					return &rc;
@@ -23,7 +23,7 @@ namespace Live2D {
 				void CubismRenderContext_SDL3::ReleaseSDLGpuRenderContext(CubismRenderContext_SDL3* context)
 				{
 					
-					//ÊÍ·ÅRenderContext,½«²»ÔÙ¿ÉÓÃ
+					//é‡Šæ”¾RenderContext,å°†ä¸å†å¯ç”¨
 					if (!rc._device)return;
 					for (auto& x : rc.pipelinePool)
 					{
@@ -38,55 +38,18 @@ namespace Live2D {
 				}
 
 
-				void CubismRenderContext_SDL3::_RebuildRenderPass(bool isStartFrame)
-				{
-
-					//Ö®Ç°¶ÔCommander bufferÀí½â²»×ã£¬ÀëÆÁäÖÈ¾²»¸ÃÇĞ»»×´Ì¬¶øÓ¦¸Ã·Ö¿ªÔÚÁ½¸öcommand bufferÖĞÖ´ĞĞ
-					//ºóĞø¶ÔÕâÀï×öµãĞŞ¸Ä
-
-
-					if (!isStartFrame)
-					{
-						//_colorTargetInfo.clear_color = _clearColor;
-						//ÇĞ»»»ØÀ´äÖÈ¾Ê±²»ÔÙ½øĞĞclear
-						_colorTargetInfo.load_op = SDL_GPU_LOADOP_LOAD;
-						_depthStencilTargetInfo.load_op = SDL_GPU_LOADOP_LOAD;
-						_depthStencilTargetInfo.stencil_load_op = SDL_GPU_LOADOP_LOAD;
-						//_depthStencilTargetInfo.clear_depth = _clearDepth;
-					}
-
-
-					if (_depthStencilTargetInfo.texture)
-					{
-						_pass_orig = SDL_BeginGPURenderPass(_cmd,&_colorTargetInfo,1,&_depthStencilTargetInfo);
-					}
-					else
-					{
-						_pass_orig = SDL_BeginGPURenderPass(_cmd, &_colorTargetInfo,1, NULL);
-					}
-					_pass = _pass_orig;
-				}
-
-				void CubismRenderContext_SDL3::StartFrame(SDL_GPUCommandBuffer* cmdCurFrame, SDL_GPUColorTargetInfo* colorTargetInfo, SDL_GPUDepthStencilTargetInfo* depthStencilTargetInfo)
+				void CubismRenderContext_SDL3::StartFrame(SDL_GPUCommandBuffer* cmdCurFrame, SDL_GPURenderPass* mainRenderPass, SDL_GPUCommandBuffer* copyBuffer)
 				{
 
 					_cmd = cmdCurFrame;
+					_cmd_copy = copyBuffer;
 
-
-					_colorTargetInfo = *colorTargetInfo;
-					if (depthStencilTargetInfo)
-						_depthStencilTargetInfo = *depthStencilTargetInfo;
-					else
-						_depthStencilTargetInfo = {};
-
-
-					_RebuildRenderPass(true);
-					_pass = _pass_orig;
+					_pass_orig = mainRenderPass;
 				}
 
 				void CubismRenderContext_SDL3::EndFrame()
 				{
-					//Ã¿Ö¡ÖØÉèäÖÈ¾Ä¿±ê
+					//æ¯å¸§é‡è®¾æ¸²æŸ“ç›®æ ‡
 					_renderTarget = NULL;
 					_depthStencil = NULL;
 
@@ -94,10 +57,10 @@ namespace Live2D {
 					if(_pass_orig)
 						SDL_EndGPURenderPass(_pass_orig);
 
-					//RenderPassºÍCommandBufferÊÇÍâÃæ´«½øÀ´µÄ£¬ÔÚÍâÃæÌá½»
+					//RenderPasså’ŒCommandBufferæ˜¯å¤–é¢ä¼ è¿›æ¥çš„ï¼Œåœ¨å¤–é¢æäº¤
 					//SDL_EndGPURenderPass(_pass_orig);
 
-					//// Ìá½»ÃüÁî»º³åÇø
+					//// æäº¤å‘½ä»¤ç¼“å†²åŒº
 					//SDL_SubmitGPUCommandBuffer(_cmd);
 					_pass_orig = NULL;
 				}
@@ -107,48 +70,9 @@ namespace Live2D {
 				void CubismRenderContext_SDL3::StartRender()
 				{
 
-					//if (!_renderTarget)
-					//	return;
-
-
-					//_RenderPassState renderPassState = {};
-					//SDL_GPUColorTargetInfo& colorTargetInfo = renderPassState.colorTargetInfo;
-					//colorTargetInfo.texture = _renderTarget;
-					//colorTargetInfo.load_op = _needClearColor?SDL_GPU_LOADOP_CLEAR:SDL_GPU_LOADOP_LOAD;
-					//colorTargetInfo.clear_color = _clearColor;
-					//colorTargetInfo.store_op = SDL_GPU_STOREOP_STORE;
-
-					//SDL_GPUDepthStencilTargetInfo& depthStencilTargetInfo = renderPassState.depthStencilTargetInfo;
-					//depthStencilTargetInfo.texture = _depthStencil;
-					//depthStencilTargetInfo.load_op= _needClearDepth ? SDL_GPU_LOADOP_CLEAR : SDL_GPU_LOADOP_LOAD;
-					//depthStencilTargetInfo.store_op= SDL_GPU_STOREOP_STORE;
-					//depthStencilTargetInfo.clear_depth = _clearDepth;
-					//depthStencilTargetInfo.stencil_load_op= _needClearStencil ? SDL_GPU_LOADOP_CLEAR : SDL_GPU_LOADOP_LOAD;
-					//depthStencilTargetInfo.stencil_store_op= SDL_GPU_STOREOP_STORE;
-					//depthStencilTargetInfo.clear_stencil = _clearStencil;
-
-					//auto& pass = renderPassPool[renderPassState];
-					//if (pass == NULL)
-					//{
-					//    pass= SDL_BeginGPURenderPass(_cmd, &colorTargetInfo, 1, &depthStencilTargetInfo);
-					//}
-
-
-					//_pass = pass;
-
-
-
-					//ÉÏ·½ÊÇhashĞÎÊ½µÄ¼ìË÷renderPassµÄ·½Ê½
-					//°´ÀíÀ´ËµÀëÆÁÎÆÀíÃ¿Ö¡Ö»äÖÈ¾Ò»´ÎËùÒÔÓ¦¸Ã²»ĞèÒªÈ¥Î¬»¤renderPass map
-					//Èç¹ûÎ´ÉèÖÃ_renderTarget _depthStencilËµÃ÷Ê¹ÓÃ_pass_orig;
-
+					//
 					if (_renderTarget || _depthStencil)
 					{
-						if (_pass_orig)
-						{
-							SDL_EndGPURenderPass(_pass_orig);
-							_pass_orig = 0;
-						}
 						SDL_GPUColorTargetInfo colorTargetInfo = {};
 						colorTargetInfo.texture = _renderTarget;
 						colorTargetInfo.load_op = _needClearColor ? SDL_GPU_LOADOP_CLEAR : SDL_GPU_LOADOP_LOAD;
@@ -158,7 +82,9 @@ namespace Live2D {
 						if (!_depthStencil)
 						{
 
-							_pass = SDL_BeginGPURenderPass(_cmd, &colorTargetInfo, 1, NULL);
+							//_pass = SDL_BeginGPURenderPass(_cmd, &colorTargetInfo, 1, NULL);
+							//ç¦»å±æ¸²æŸ“ç”¨copycmd
+							_pass = SDL_BeginGPURenderPass(_cmd_copy, &colorTargetInfo, 1, NULL);
 						}
 						else
 						{
@@ -171,17 +97,60 @@ namespace Live2D {
 							depthStencilTargetInfo.stencil_store_op = SDL_GPU_STOREOP_STORE;
 							depthStencilTargetInfo.clear_stencil = _clearStencil;
 
-							_pass = SDL_BeginGPURenderPass(_cmd, &colorTargetInfo, 1, &depthStencilTargetInfo);
+							_pass = SDL_BeginGPURenderPass(_cmd_copy, &colorTargetInfo, 1, &depthStencilTargetInfo);
 						}
 					}
 					else
 					{
-						if (!_pass_orig)
-							_RebuildRenderPass();
-
-						//_renderTargetºÍ_depthStencilÎª¿ÕËµÃ÷ÔÚÔ­Ä¿±êÉÏäÖÈ¾
+						//_renderTargetå’Œ_depthStencilåŒæ—¶ä¸ºç©ºæ—¶è¡¨æ˜åœ¨ä¸»RenderPassä¸Šæ¸²æŸ“
 						_pass = _pass_orig;
 					}
+
+
+
+
+
+
+					//if (_renderTarget || _depthStencil)
+					//{
+					//	if (_pass_orig)
+					//	{
+					//		SDL_EndGPURenderPass(_pass_orig);
+					//		_pass_orig = 0;
+					//	}
+					//	SDL_GPUColorTargetInfo colorTargetInfo = {};
+					//	colorTargetInfo.texture = _renderTarget;
+					//	colorTargetInfo.load_op = _needClearColor ? SDL_GPU_LOADOP_CLEAR : SDL_GPU_LOADOP_LOAD;
+					//	colorTargetInfo.clear_color = _clearColor;
+					//	colorTargetInfo.store_op = SDL_GPU_STOREOP_STORE;
+
+					//	if (!_depthStencil)
+					//	{
+
+					//		_pass = SDL_BeginGPURenderPass(_cmd, &colorTargetInfo, 1, NULL);
+					//	}
+					//	else
+					//	{
+					//		SDL_GPUDepthStencilTargetInfo depthStencilTargetInfo = {};
+					//		depthStencilTargetInfo.texture = _depthStencil;
+					//		depthStencilTargetInfo.load_op = _needClearDepth ? SDL_GPU_LOADOP_CLEAR : SDL_GPU_LOADOP_LOAD;
+					//		depthStencilTargetInfo.store_op = SDL_GPU_STOREOP_STORE;
+					//		depthStencilTargetInfo.clear_depth = _clearDepth;
+					//		depthStencilTargetInfo.stencil_load_op = _needClearStencil ? SDL_GPU_LOADOP_CLEAR : SDL_GPU_LOADOP_LOAD;
+					//		depthStencilTargetInfo.stencil_store_op = SDL_GPU_STOREOP_STORE;
+					//		depthStencilTargetInfo.clear_stencil = _clearStencil;
+
+					//		_pass = SDL_BeginGPURenderPass(_cmd, &colorTargetInfo, 1, &depthStencilTargetInfo);
+					//	}
+					//}
+					//else
+					//{
+					//	if (!_pass_orig)
+					//		_RebuildRenderPass();
+
+					//	//_renderTargetå’Œ_depthStencilä¸ºç©ºè¯´æ˜åœ¨åŸç›®æ ‡ä¸Šæ¸²æŸ“
+					//	_pass = _pass_orig;
+					//}
 
 
 
@@ -190,18 +159,25 @@ namespace Live2D {
 
 				void CubismRenderContext_SDL3::EndRender()
 				{
-					//½öendÀëÆÁäÖÈ¾
-					if (_pass && !_pass_orig)
+					//ä»…endç¦»å±æ¸²æŸ“
+					//if (_pass && !_pass_orig)
+					//{
+					//	SDL_EndGPURenderPass(_pass);
+					//	_RebuildRenderPass();
+					//}
+					////_pass = NULL;
+					////_cmd = NULL;
+					//_needClearColor = false;
+					//_needClearDepth = false;
+					//_needClearStencil = false;
+
+					//ä»…endç¦»å±æ¸²æŸ“
+
+					if (_renderTarget || _depthStencil)
 					{
 						SDL_EndGPURenderPass(_pass);
-						_RebuildRenderPass();
+						_pass = NULL;
 					}
-					//_pass = NULL;
-					//_cmd = NULL;
-					_needClearColor = false;
-					_needClearDepth = false;
-					_needClearStencil = false;
-
 				}
 
 				void CubismRenderContext_SDL3::SetRenderTarget(SDL_GPUTexture* renderTex, SDL_GPUTexture* _depthTex)
@@ -255,19 +231,23 @@ namespace Live2D {
 				{
 					SDL_GPUBufferBinding binding;
 					binding.buffer = indexBuffer;
-					binding.offset = 0;
+					binding.offset = offset;
 					SDL_BindGPUIndexBuffer(_pass, &binding, index_element_size);
 				}
 
 				void CubismRenderContext_SDL3::SetVertexUniformData(uint32_t slot, const void* data, uint32_t datalength)
 				{
 					//SDL_assert(_cmd&&"command buffer should not be null");
-					SDL_PushGPUVertexUniformData(_cmd, slot, data, datalength);
+					//ä¿®æ”¹ä¸ºå¤šç¼“å†²åï¼Œéœ€è¦åŒºåˆ†ç¼“å†²åŒº.....
+					if(_renderTarget || _depthStencil)
+						SDL_PushGPUVertexUniformData(_cmd_copy, slot, data, datalength);
+					else
+						SDL_PushGPUVertexUniformData(_cmd, slot, data, datalength);
 				}
 
 				void CubismRenderContext_SDL3::SetInputLayout(SDL_GPUVertexInputState* inputstate)
 				{
-					//Éî¸´ÖÆ
+					//æ·±å¤åˆ¶
 					_pipelineState._vertexInputState.num_vertex_attributes = inputstate->num_vertex_attributes;
 					_pipelineState._vertexInputState.num_vertex_buffers = inputstate->num_vertex_buffers;
 					for (int i = 0; i < inputstate->num_vertex_attributes; i++)
@@ -275,7 +255,7 @@ namespace Live2D {
 						_pipelineState._vertexAttr[i] = inputstate->vertex_attributes[i];
 					}
 
-					//Îª·ÀÖ¹¼ìË÷»ìÂÒ£¨unordered map¿ÉÄÜ»áÒòÎª_vertexAttrºó¶àÓàµÄÎŞĞ§Êı¾İ¶ø¼ìË÷µ½²»Í¬Î»ÖÃ£©¶ÔÎŞĞ§µÄÊı¾İ¾ù½øĞĞÇå³ı
+					//ä¸ºé˜²æ­¢æ£€ç´¢æ··ä¹±ï¼ˆunordered mapå¯èƒ½ä¼šå› ä¸º_vertexAttråå¤šä½™çš„æ— æ•ˆæ•°æ®è€Œæ£€ç´¢åˆ°ä¸åŒä½ç½®ï¼‰å¯¹æ— æ•ˆçš„æ•°æ®å‡è¿›è¡Œæ¸…é™¤
 					for (int i = inputstate->num_vertex_attributes; i < 2; i++)
 					{
 						_pipelineState._vertexAttr[i] = {};
@@ -301,7 +281,10 @@ namespace Live2D {
 
 				void CubismRenderContext_SDL3::SetFragmentUniformData(uint32_t slot, const void* data, uint32_t datalength)
 				{
-					SDL_PushGPUFragmentUniformData(_cmd, slot, data, datalength);
+					if (_renderTarget || _depthStencil)
+						SDL_PushGPUFragmentUniformData(_cmd_copy, slot, data, datalength);
+					else
+						SDL_PushGPUVertexUniformData(_cmd, slot, data, datalength);
 				}
 
 				SDL_GPUSampler* CubismRenderContext_SDL3::GetFragmentSampler()
@@ -332,12 +315,12 @@ namespace Live2D {
 				{
 					if (count == 0)return;
 
-					//¸ù¾İ_PipelineState¼ìË÷Pipeline
+					//æ ¹æ®_PipelineStateæ£€ç´¢Pipeline
 
 					auto& targetPipeline = pipelinePool[_pipelineState];
 					if (targetPipeline == NULL)
 					{
-						//Îª¿Õ£¬¸ù¾İpipelineStates´´½¨
+						//ä¸ºç©ºï¼Œæ ¹æ®pipelineStatesåˆ›å»º
 
 						SDL_GPUGraphicsPipelineCreateInfo pipelineCreateInfo = {};
 						pipelineCreateInfo.vertex_shader = _pipelineState._vertexShader;
@@ -360,7 +343,7 @@ namespace Live2D {
 
 						SDL_GPUGraphicsPipeline* pipeline = SDL_CreateGPUGraphicsPipeline(_device, &pipelineCreateInfo);
 						if (pipeline == NULL) {
-							SDL_LogError(SDL_LOG_CATEGORY_RENDER, "pipeline create failed");
+							SDL_LogError(SDL_LOG_CATEGORY_RENDER, "pipeline create failed! %s",SDL_GetError());
 							//SDL_assert(_cmd && "pipeline create failed");
 							return;
 						}
@@ -373,7 +356,43 @@ namespace Live2D {
 
 					SDL_BindGPUGraphicsPipeline(_pass, targetPipeline);
 					SDL_DrawGPUIndexedPrimitives(_pass,count,1, startIndex,0,0 );
+				}
 
+				SDL_GPUGraphicsPipeline* CubismRenderContext_SDL3::GetPipelineFromCurState()
+				{
+					auto& targetPipeline = pipelinePool[_pipelineState];
+					if (targetPipeline == NULL)
+					{
+						//ä¸ºç©ºï¼Œæ ¹æ®pipelineStatesåˆ›å»º
+
+						SDL_GPUGraphicsPipelineCreateInfo pipelineCreateInfo = {};
+						pipelineCreateInfo.vertex_shader = _pipelineState._vertexShader;
+						pipelineCreateInfo.fragment_shader = _pipelineState._fragmentShader;
+						pipelineCreateInfo.vertex_input_state = _pipelineState._vertexInputState;
+						pipelineCreateInfo.primitive_type = _pipelineState._topology;
+
+
+						CubismRenderState_SDL3* rsm = CubismRenderer_SDL3::GetRenderStateManager();
+						pipelineCreateInfo.rasterizer_state = rsm->_rasterizeStateObjects[_pipelineState._cullmode];
+						pipelineCreateInfo.depth_stencil_state = rsm->_depthStencilState[_pipelineState._depthEnable];
+
+						SDL_GPUColorTargetDescription colorDesc = {};
+						colorDesc.blend_state = rsm->_blendStateObjects[_pipelineState._blend];
+						colorDesc.format = (_renderTarget == NULL) ? SDL_GPU_TEXTUREFORMAT_B8G8R8A8_UNORM : SDL_GPU_TEXTUREFORMAT_R8G8B8A8_UNORM;
+						pipelineCreateInfo.target_info.color_target_descriptions = &colorDesc;
+						pipelineCreateInfo.target_info.depth_stencil_format = SDL_GPU_TEXTUREFORMAT_D24_UNORM_S8_UINT;
+						pipelineCreateInfo.target_info.num_color_targets = 1;
+						pipelineCreateInfo.target_info.has_depth_stencil_target = _pipelineState._depthEnable == CubismRenderState_SDL3::Depth_Enable;
+
+						SDL_GPUGraphicsPipeline* pipeline = SDL_CreateGPUGraphicsPipeline(_device, &pipelineCreateInfo);
+						if (pipeline == NULL) {
+							SDL_LogError(SDL_LOG_CATEGORY_RENDER, "pipeline create failed");
+							//SDL_assert(_cmd && "pipeline create failed");
+							return NULL;
+						}
+						targetPipeline = pipeline;
+					}
+					return targetPipeline;
 
 				}
 
@@ -385,10 +404,8 @@ namespace Live2D {
 
 
 
-
-
 				//inline void hash_combine(size_t& seed, size_t h) {
-				//    // 0x9e3779b97f4a7c15 ÊÇ 64 Î»»Æ½ğ·Ö¸î³£Á¿
+				//    // 0x9e3779b97f4a7c15 æ˜¯ 64 ä½é»„é‡‘åˆ†å‰²å¸¸é‡
 				//    seed ^= h + 0x9e3779b97f4a7c15ULL
 				//        + (seed << 6)
 				//        + (seed >> 2);
@@ -404,8 +421,8 @@ namespace Live2D {
 				//    hash_combine(seed, std::hash<void*>()(s._vertexShader));
 				//    hash_combine(seed, std::hash<void*>()(s._fragmentShader));
 
-				//    //Ê£ÏÂµÄ²ÎÊıÓ¦¸ÃÊÇ²»ĞèÒª²ÎÓë¹şÏ£¼ÆËãµÄ£¨ÊäÈë²¼¾ÖÓë¶¥µã×ÅÉ«Æ÷Ç¿°ó¶¨£©
-				//    //_topology¿ÉÒÔ¼ÆËãÒ»ÏÂ£¨µ«ÔÚlive2DÖĞÃ»ÓĞÓÃµ½¹ıÈı½ÇĞÎlistÒÔÍâµÄtopology£¬ËùÒÔÕâÀïºöÂÔ£©
+				//    //å‰©ä¸‹çš„å‚æ•°åº”è¯¥æ˜¯ä¸éœ€è¦å‚ä¸å“ˆå¸Œè®¡ç®—çš„ï¼ˆè¾“å…¥å¸ƒå±€ä¸é¡¶ç‚¹ç€è‰²å™¨å¼ºç»‘å®šï¼‰
+				//    //_topologyå¯ä»¥è®¡ç®—ä¸€ä¸‹ï¼ˆä½†åœ¨live2Dä¸­æ²¡æœ‰ç”¨åˆ°è¿‡ä¸‰è§’å½¢listä»¥å¤–çš„topologyï¼Œæ‰€ä»¥è¿™é‡Œå¿½ç•¥ï¼‰
 				//    //hash_combine(seed, std::hash<int>()(int(s._topology)));
 				//    return seed;
 				//}

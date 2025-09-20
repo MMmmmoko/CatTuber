@@ -1,5 +1,5 @@
-#ifndef IModel_h
-#define IModel_h
+#ifndef _IModel_h
+#define _IModel_h
 
 
 #include<SDL3/SDL.h>
@@ -9,8 +9,8 @@
 
 
 
-//¶¯»­Çø·ÖÎª°´Å¥´¥·¢¡¢ÊÂ¼ş´¥·¢
-//¶ÔÓÚLive2D£¬Ãû³ÆÇ°×º½«ÓÃÓÚÇø·Ö¶¯×÷¹ÜÀíÆ÷
+//åŠ¨ç”»åŒºåˆ†ä¸ºæŒ‰é’®è§¦å‘ã€äº‹ä»¶è§¦å‘
+//å¯¹äºLive2Dï¼Œåç§°å‰ç¼€å°†ç”¨äºåŒºåˆ†åŠ¨ä½œç®¡ç†å™¨
 enum ModelType
 {
 	ModelType_Unknown,
@@ -20,6 +20,8 @@ enum ModelType
 
 
 typedef uintptr_t ParamHandle;
+class MixDrawList;
+class Scene;
 class IModel
 {
 public:
@@ -28,39 +30,45 @@ public:
 	static IModel* CreateFromFolder(const char* packPath,const char* folderInpack);
 	virtual void Release()=0;
 
-	////ÄÚ²¿¼ÓÔØÎÄ¼ş²¢µ÷ÓÃLoadFromMemFile£¬µ±È»Ò²¿ÉÒÔ¼Ì³ĞÊµÏÖ×Ô¼ºµÄÎÄ¼ş¶ÁÈ¡
+	////å†…éƒ¨åŠ è½½æ–‡ä»¶å¹¶è°ƒç”¨LoadFromMemFileï¼Œå½“ç„¶ä¹Ÿå¯ä»¥ç»§æ‰¿å®ç°è‡ªå·±çš„æ–‡ä»¶è¯»å–
 	//virtual bool LoadFromFile(const char* packPath, const char* filePath) { return false; };
-	////ÈÃ¶ÔÏó×Ô¼ºÔÚÎÄ¼ş¼ĞÖĞÑ°ÕÒÄ£ĞÍÎÄ¼ş. ÈçLive2DµÄÄ£ĞÍºó×ºÃûÎª.model3.json
+	////è®©å¯¹è±¡è‡ªå·±åœ¨æ–‡ä»¶å¤¹ä¸­å¯»æ‰¾æ¨¡å‹æ–‡ä»¶. å¦‚Live2Dçš„æ¨¡å‹åç¼€åä¸º.model3.json
 	//virtual bool LoadFromFolder(const char* packPath, const char* foldPath) { return false; };
 
 	//virtual bool LoadFromMemFile(unsigned char* mem) = 0;
 
 	virtual void Update(uint64_t deltaTicksNS) = 0;
 	virtual void Draw()=0;
+	virtual void DrawMix(MixDrawList* pMix) {};//ä¸ä¸€å®šæ‰€æœ‰æ¨¡å‹éƒ½æ”¯æŒæ··åˆç»˜åˆ¶ï¼Œæ‰€ä»¥è¿™é‡Œä¸çº¯è™š
 
-	//xyÔİÊ±¶¨Î»Ä£ĞÍ¿Õ¼äÖĞµÄ×ø±ê
+	//xyæš‚æ—¶å®šä½æ¨¡å‹ç©ºé—´ä¸­çš„åæ ‡
 	virtual bool Hit(float x, float y) { return false; };
 
 
 
-	//¶ÔÓÚLive2D£¬×éÃû¼´¶¯»­Ãû£¬²¥·Å¶¯»­Ê±ÔÚ×éÀïËæ»ú²¥·Å
-	//ºÃÏñÔİÊ±²»ĞèÒªÉèÖÃ¶¯»­¹ìµÀ£¨¼´¶¯»­»ìºÏ£©
-	//Ä£ĞÍ×ÔÉí¹ÜÀí¶¯»­¹ìµÀ¡°Track¡±
+	//å¯¹äºLive2Dï¼Œç»„åå³åŠ¨ç”»åï¼Œæ’­æ”¾åŠ¨ç”»æ—¶åœ¨ç»„é‡Œéšæœºæ’­æ”¾
+	//å¥½åƒæš‚æ—¶ä¸éœ€è¦è®¾ç½®åŠ¨ç”»è½¨é“ï¼ˆå³åŠ¨ç”»æ··åˆï¼‰
+	//æ¨¡å‹è‡ªèº«ç®¡ç†åŠ¨ç”»è½¨é“â€œTrackâ€
 	virtual void PlayAnimation(const std::string& name, bool loop=false)=0;
 	virtual ParamHandle GetParamHandle(const std::string& param)=0;
-	virtual void SetParamValue(ParamHandle param,float value,bool longTerm=false)=0;//Î´ÉèÖÃ³¤ÆÚlongTermµÄ»°£¬ĞŞ¸ÄÖ»¶Ôµ±Ç°Ö¡ÓĞĞ§
+	virtual void SetParamValue(ParamHandle param,float value,bool longTerm=false)=0;//æœªè®¾ç½®é•¿æœŸlongTermçš„è¯ï¼Œä¿®æ”¹åªå¯¹å½“å‰å¸§æœ‰æ•ˆ
 	virtual void AddParamValue(ParamHandle param,float value,bool longTerm = false)=0;
 	
 
 
 
-	//»ñÈ¡ËùÓĞÈí¼ş¿É¿Ø²ÎÊı
+	//è·å–æ‰€æœ‰è½¯ä»¶å¯æ§å‚æ•°
 	virtual std::vector<std::string> GetParamList() { return std::vector<std::string>(); };
-	//»ñÈ¡µÄÊÇCatTuber¿É¿ØµÄ¶¯»­
+	//è·å–çš„æ˜¯CatTuberå¯æ§çš„åŠ¨ç”»
 	virtual std::vector<std::string> GetAnimationList() { return std::vector<std::string>(); };
 
 
 
+	//å…¶ä»–æ¥å£
+	Scene* GetScene() { return _scene; }
+	void SetScene(Scene* scene) { _scene = scene; };
+protected:
+	Scene* _scene;
 };
 
 

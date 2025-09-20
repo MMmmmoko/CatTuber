@@ -26,7 +26,7 @@ const char* AppContext::GetAppBasePath()
 
 const char* AppContext::GetWorkShopPath()
 {
-	//TODD/Fixme:���⹤��
+	//TODD/Fixme:创意工坊
 	SDL_assert(false);
 	return nullptr;
 }
@@ -49,12 +49,13 @@ std::string AppContext::ResolvePathToAbsolute(const std::string& pathToResolve)
 		util::ReplaceString(path, "[AppBasePath]", basePath.c_str());
 	}
 
-	std::string workShopPath = GetWorkShopPath();
-	if (!workShopPath.empty())
-	{
-		workShopPath.pop_back();
-		util::ReplaceString(path, "[WorkshopPath]", workShopPath.c_str());
-	}
+	//TODO/FIXEME 添加创意工坊功能时取消注释
+	//std::string workShopPath = GetWorkShopPath();
+	//if (!workShopPath.empty())
+	//{
+	//	workShopPath.pop_back();
+	//	util::ReplaceString(path, "[WorkshopPath]", workShopPath.c_str());
+	//}
 
 	return path;
 }
@@ -115,7 +116,7 @@ void AppContext::LogFunc(const char* log)
 
 unsigned char* AppContext::LoadFileFunc(const std::string filePath, size_t* outSize)
 {
-	//����Fullback
+	//后续Fullback
 	return util::SDL_LoadFileToMem(filePath.c_str(), outSize);;
 }
 

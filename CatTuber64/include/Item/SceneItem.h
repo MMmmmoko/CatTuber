@@ -2,29 +2,32 @@
 #define _SceneItem_h
 
 #include <SDL3/SDL.h>
+#include"Renderer/MixDrawList.h"
 #include"json/json.h"
 #include<iostream>
-//场景中的物件
+//鍦烘櫙涓殑鐗╀欢
 
 
 
 class ISceneItem
 {
+	friend class Scene;
 public:
+	virtual ~ISceneItem() = default;
 
-
-	static ISceneItem* CreateItem(const char* type,const Json::Value& json= Json::Value());
+	static ISceneItem* CreateItem(const char* type,Scene* scene,const Json::Value& json= Json::Value());
 	static void FreeItem(ISceneItem* item);
 
-	//核心功能
+	//鏍稿績鍔熻兘
 	virtual void Update(uint64_t deltaTicksNS)=0;
-	virtual void Draw(SDL_GPUTexture* renderTarget, SDL_GPUTexture* depth, int width, int height, SDL_GPUCommandBuffer* mainCmdBuffer, SDL_GPUCommandBuffer* copyCmdBuffer)=0;
-
+	//virtual void Draw(SDL_GPUTexture* renderTarget, SDL_GPUTexture* depth, int width, int height, SDL_GPUCommandBuffer* mainCmdBuffer, SDL_GPUCommandBuffer* copyCmdBuffer)=0;
+	virtual void Draw(SDL_GPURenderPass* mainPass, int width, int height, SDL_GPUCommandBuffer* mainCmdBuffer, SDL_GPUCommandBuffer* copyCmdBuffer)=0;
+	virtual void DrawMix(MixDrawList* mix) {};
 	
 
 
-	//其他信息
-	//GetType将用于工厂创建ISceneItem
+	//鍏朵粬淇℃伅
+	//GetType灏嗙敤浜庡伐鍘傚垱寤篒SceneItem
 	virtual const char* GetType() = 0;
 	virtual Json::Value GenerateAttributes() = 0;
 	virtual void ApplyAttributes(const Json::Value& applyJson) = 0;
@@ -35,9 +38,10 @@ public:
 
 
 
-
-
-
+	
+	Scene* GetScene() { return scene; }
+protected:
+	Scene* scene;
 };
 
 

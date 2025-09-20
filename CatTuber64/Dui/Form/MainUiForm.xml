@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Window size="1056,670" min_size="1056,670"
+        caption="0,0,0,36" use_system_caption="false" snap_layout_menu="true" sys_menu="true" sys_menu_rect="0,0,36,36"
+        shadow_type="default" shadow_attached="true" shadow_snap="true" layered_window="true"
+        alpha="255" size_box="4,4,4,4" icon="public/caption/logo.ico"
+
+   		xmlns:xs="http://www.w3.org/2001/XMLSchema"
+		xmlns="http://tempuri.org/NIMDUISchema.xsd"
+		>
+	<VBox bkcolor="bk_wnd_darkcolor" visible="true">
+		<!-- 标题栏区域 -->
+		<HBox name="window_caption_bar" width="stretch" height="36" bkcolor="bk_wnd_lightcolor">
+			<Control />
+			<Button class="btn_wnd_fullscreen_11" height="32" width="40" name="fullscreenbtn" margin="0,2,0,2" tooltip_text="全屏，按ESC键可退出全屏"/>
+			<Button class="btn_wnd_min_11" height="32" width="40" name="minbtn" margin="0,2,0,2" tooltip_text="最小化"/>
+			<Box height="stretch" width="40" margin="0,2,0,2">
+				<Button class="btn_wnd_max_11" height="32" width="stretch" name="maxbtn" tooltip_text="最大化"/>
+				<Button class="btn_wnd_restore_11" height="32" width="stretch" name="restorebtn" visible="false" tooltip_text="还原"/>
+			</Box>
+			<Button class="btn_wnd_close_11" height="stretch" width="40" name="closebtn" margin="0,0,0,2" tooltip_text="关闭"/>
+		</HBox>
+
+		<!-- 工作区域，除了标题栏外的内容都放在这个大的Box区域 -->
+		<HBox>
+			<!-- 基础面板左侧，场景设置区域与基本控制区 有固定宽度 -->
+			<VBox margin="0,0,0,0" width="210">
+				<!-- 场景设置区域VBOX -->
+				<VBox>
+					
+			<Label name="tooltip" text="场景设置区" height="100%" width="100%" text_align="hcenter,vcenter"/>
+		
+				</VBox>
+				<!-- 基础控制区VBOX 有固定高度-->
+				<VBox height="220">
+					<Label name="tooltip" text="基础控制区" height="100%" width="100%" text_align="hcenter,vcenter"/>
+				</VBox>
+			</VBox>
+			
+			<!-- 工作区容器-->
+			<!-- 点场景中的物品时工作区显示对应的设置项-->
+			<Box name="box_workSpaceContainer"/>
+		</HBox>
+	</VBox>
+</Window>

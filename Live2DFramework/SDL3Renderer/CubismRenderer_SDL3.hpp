@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Copyright(c) Live2D Inc. All rights reserved.
  *
  * Use of this source code is governed by the Live2D Open Software license
@@ -26,7 +26,8 @@ namespace Live2D {
 	namespace Cubism {
 		namespace Framework {
 			namespace Rendering {
-
+				extern glm::mat4x4 ConvertToGLM(CubismMatrix44& mtx);
+				extern CubismMatrix44 ConvertToCsmMat(glm::mat4x4& glMat);
 
 
 				//  前方宣言
@@ -35,8 +36,26 @@ namespace Live2D {
 				class CubismClippingContext_SDL3;
 
 
-
-
+				//有点丑陋...
+				//typedef void(*MixDrawCall)(void* pThis, int layerZ, SDL_GPUGraphicsPipeline* pipeLine,
+				//	uint32_t vsStartSlot, uint32_t vsBufferNum, SDL_GPUBufferBinding* vsBuffers,
+				//	SDL_GPUIndexElementSize indexElementSize, SDL_GPUBufferBinding* indexBuffer, uint32_t indexCount, uint32_t indexStart,
+				//	uint32_t texStartSlot, uint32_t texNum, SDL_GPUTextureSamplerBinding* textures,
+				//	uint32_t vsUniformSlot, const void* vsUniformData, uint32_t vsUniformDataLength,
+				//	uint32_t psUniformSlot, const void* psUniformData, uint32_t psUniformDataLength
+				//);
+				struct MixRenderData
+				{
+					uint32_t sizeOfThisStruct; int layerZ; SDL_GPUGraphicsPipeline* pipeLine;
+					uint32_t vsStartSlot; uint32_t vsBufferNum; SDL_GPUBufferBinding* vsBuffers;
+					SDL_GPUIndexElementSize indexElementSize; SDL_GPUBufferBinding* indexBuffer; uint32_t indexCount; uint32_t indexStart;
+					uint32_t texStartSlot; uint32_t texNum; SDL_GPUTextureSamplerBinding* textures;
+					uint32_t vsUniformSlot; const void* vsUniformData; uint32_t vsUniformDataLength;
+					uint32_t psUniformSlot; const void* psUniformData; uint32_t psUniformDataLength;
+					SDL_GPUViewport viewport;
+					void(*beforeDrawCallback)(void* userData, uint64_t userData2)=NULL; void* callbackUserData; uint64_t callbackUserData2;
+				};					//由于一些绘制需要额外绘制蒙版，这里也提供函数让一些动作在绘制前执行
+				typedef void(*MixDrawCall)(void* pMix,void* pRenderData);
 
 				class CubismClippingManager_SDL3 : public CubismClippingManager<CubismClippingContext_SDL3, CubismOffscreenSurface_SDL3>
 				{
@@ -108,6 +127,13 @@ namespace Live2D {
 					CubismVector2 GetClippingMaskBufferSize() const;
 					CubismOffscreenSurface_SDL3* GetMaskBuffer(csmUint32 backbufferNum, csmInt32 offscreenIndex);
 
+
+					//CatTuber某些功能需要新的Draw函数
+					void SetMvpMatrix(glm::mat4x4& mvpMat) { auto mat = ConvertToCsmMat(mvpMat); CubismRenderer::SetMvpMatrix(&mat); };
+					void SetMixDraw(bool mixDraw) { bMixDraw= mixDraw; };
+					void SetMixCallback(MixDrawCall mixDrawFunc, void* _mixDrawFuncData) {
+						mixDrawCallFunc = mixDrawFunc; mixDrawFuncData = _mixDrawFuncData;
+					};
 				protected:
 					CubismRenderer_SDL3();
 					virtual ~CubismRenderer_SDL3();
@@ -120,13 +146,14 @@ namespace Live2D {
 
 					virtual void DoDrawModel() override;//实际的绘制动作
 
-					void DrawMeshSDL3(const CubismModel& model, const csmInt32 index);
+					void DrawMeshSDL3(const CubismModel& model, const csmInt32 index,bool mixDraw=false, void(*beforeDrawCallback)(void* userData, uint64_t userData2)=NULL);
 
 
 				private:
 					//设定着色器等各种渲染管线资源并绘制
 					void ExecuteDrawForMask(const CubismModel& model, const csmInt32 index);
 					void ExecuteDrawForDraw(const CubismModel& model, const csmInt32 index);
+					void ExecuteDrawForMixDraw(const CubismModel& model, const csmInt32 index, void(*beforeDrawCallback)(void* userData, uint64_t userData2));
 
 					void DrawDrawableIndexed(const CubismModel& model, const csmInt32 index);
 
@@ -151,6 +178,9 @@ namespace Live2D {
 					CubismClippingContext_SDL3* GetClippingContextBufferForMask() const;
 					void SetClippingContextBufferForDraw(CubismClippingContext_SDL3* clip);
 					CubismClippingContext_SDL3* GetClippingContextBufferForDraw() const;
+					CubismClippingContext_SDL3* GetClippingContextBufferForDelayDraw(const csmInt32 index) const;
+
+
 
 					void CopyToBuffer(CubismRenderContext_SDL3* renderContext, csmInt32 drawAssign, const csmInt32 vcount, const csmFloat32* varray, const csmFloat32* uvarray);
 					SDL_GPUTexture* GetTextureViewWithIndex(const CubismModel& model, const csmInt32 index);
@@ -178,6 +208,8 @@ namespace Live2D {
 					SDL_GPUBuffer*** _indexBuffers;          ///< インデックスのバッファ
 					//SDL_GPUBuffer*** _indexBuffers_tb;          ///< indexbuffer不会每帧更新，不复用transfer buffer
 					CubismConstantBufferSDL3*** _constantBuffers;       ///< 定数のバッファ
+					//虽然SDL库能实时绑定uniform data，但CatTuber中的混合绘制不是当场绘制，需要有地方保持常数缓存的数据，所以这个结构保留
+
 					csmUint32 _drawableNum;           ///< _vertexBuffers, _indexBuffersの確保数
 
 					csmInt32 _commandBufferNum;
@@ -185,14 +217,26 @@ namespace Live2D {
 
 
 					csmVector<csmInt32> _sortedDrawableIndexList;       ///< 按绘制顺序排序后的绘图对象索引
+					
+					const int* _drawOrderList;       ///< 用于MixDraw的绘制顺序索引
+
+
 
 					csmMap<csmInt32, SDL_GPUTexture*> _textures;
 
 					csmVector<csmVector<CubismOffscreenSurface_SDL3>> _offscreenSurfaces;//用于蒙版绘制的帧缓冲区
 
+
 					CubismClippingManager_SDL3* _clippingManager;               ///< 剪贴蒙版管理对象
 					CubismClippingContext_SDL3* _clippingContextBufferForMask;  ///< 用于在遮罩纹理上绘制的剪裁上下文
 					CubismClippingContext_SDL3* _clippingContextBufferForDraw;  ///< 用于在画面上绘制的裁剪上下文
+
+
+
+
+					MixDrawCall mixDrawCallFunc=NULL;
+					void* mixDrawFuncData = NULL;
+					bool bMixDraw=false;
 				};
 
 

@@ -1,7 +1,7 @@
-//ÓÉÓÚÒ»Ğ©Ô­Òò£¬CatTuber±ØĞë¸Ä¶¯SDLµÄ²¿·Ö´úÂë
-//ÎªÁË·½±ã¸üĞÂÎ¬»¤£¬ĞŞ¸ÄµÄ´úÂë²»´æ·ÅÔÚÔ´ÎÄ¼şÖĞ¡£
+//ç”±äºä¸€äº›åŸå› ï¼ŒCatTuberå¿…é¡»æ”¹åŠ¨SDLçš„éƒ¨åˆ†ä»£ç 
+//ä¸ºäº†æ–¹ä¾¿æ›´æ–°ç»´æŠ¤ï¼Œä¿®æ”¹çš„ä»£ç ä¸å­˜æ”¾åœ¨æºæ–‡ä»¶ä¸­ã€‚
 
-//ĞŞ¸Ä·½Ê½£ºÔ­´úÂëÖĞÓÃ#ifndef #else×¢ÊÍÔ´´úÂë
+//ä¿®æ”¹æ–¹å¼ï¼šåŸä»£ç ä¸­ç”¨#ifndef #elseæ³¨é‡Šæºä»£ç ,ç„¶åå°†æœ¬æ–‡ä»¶includeåˆ°éœ€è¦ä¿®æ”¹çš„æ–‡ä»¶ä¸­
 
 
 static bool D3D12_INTERNAL_AcquireSwapchainTexture(
@@ -31,20 +31,20 @@ static bool D3D12_INTERNAL_AcquireSwapchainTexture(
         SET_STRING_ERROR_AND_RETURN("Cannot acquire swapchain texture from an unclaimed window!", false);
     }
 
-    //ÕâÀïÊÇCatTuberĞŞ¸Ä²¿·Ö£¡
-    //ÕâÀïÊÇCatTuberĞŞ¸Ä²¿·Ö£¡
-    //ÕâÀïÊÇCatTuberĞŞ¸Ä²¿·Ö£¡
-    //ÕâÀïÊÇCatTuberĞŞ¸Ä²¿·Ö£¡
-    //CatTuber²»Ï£ÍûÓÉSDLÀ´¿ØÖÆ½»»»Á´Resize£¬ËùÒÔ½«ÏÂÃæ´úÂë×¢ÊÍµôÁË£¬ÒòÎªCatTuber²»ÔÚÖ÷Ïß³Ì½øĞĞäÖÈ¾
+    //è¿™é‡Œæ˜¯CatTuberä¿®æ”¹éƒ¨åˆ†ï¼
+    //è¿™é‡Œæ˜¯CatTuberä¿®æ”¹éƒ¨åˆ†ï¼
+    //è¿™é‡Œæ˜¯CatTuberä¿®æ”¹éƒ¨åˆ†ï¼
+    //è¿™é‡Œæ˜¯CatTuberä¿®æ”¹éƒ¨åˆ†ï¼
+    //CatTuberä¸å¸Œæœ›ç”±SDLæ¥æ§åˆ¶äº¤æ¢é“¾Resizeï¼Œæ‰€ä»¥å°†ä¸‹é¢ä»£ç æ³¨é‡Šæ‰äº†ï¼Œå› ä¸ºCatTuberä¸åœ¨ä¸»çº¿ç¨‹è¿›è¡Œæ¸²æŸ“
     //if (windowData->needsSwapchainRecreate) {
     //    if (!D3D12_INTERNAL_ResizeSwapchain(renderer, windowData)) {
     //        return false;
     //    }
     //}
-    //ÉÏÃæÊÇCatTuberĞŞ¸Ä²¿·Ö£¡
-    //ÉÏÃæÊÇCatTuberĞŞ¸Ä²¿·Ö£¡
-    //ÉÏÃæÊÇCatTuberĞŞ¸Ä²¿·Ö£¡
-    //ÉÏÃæÊÇCatTuberĞŞ¸Ä²¿·Ö£¡
+    //ä¸Šé¢æ˜¯CatTuberä¿®æ”¹éƒ¨åˆ†ï¼
+    //ä¸Šé¢æ˜¯CatTuberä¿®æ”¹éƒ¨åˆ†ï¼
+    //ä¸Šé¢æ˜¯CatTuberä¿®æ”¹éƒ¨åˆ†ï¼
+    //ä¸Šé¢æ˜¯CatTuberä¿®æ”¹éƒ¨åˆ†ï¼
     if (swapchainTextureWidth) {
         *swapchainTextureWidth = windowData->width;
     }
@@ -128,8 +128,8 @@ static bool D3D12_INTERNAL_AcquireSwapchainTexture(
 
 
 
-//Ìí¼ÓÒ»¸öÓÃÓÚCatTuberÖĞ×ÔÖ÷resize SwapchainµÄ½Ó¿Ú
-//Íâ²¿ÓÃextern bool SDL_D3D12_ResizeSwapchain(SDL_GPUCommandBuffer* commandBuffer, SDL_Window* window)½øĞĞÒıÓÃ
+//æ·»åŠ ä¸€ä¸ªç”¨äºCatTuberä¸­è‡ªä¸»resize Swapchainçš„æ¥å£
+//å¤–éƒ¨ç”¨extern bool SDL_D3D12_ResizeSwapchain(SDL_GPUCommandBuffer* commandBuffer, SDL_Window* window)è¿›è¡Œå¼•ç”¨
 
 /* Some compilers use a special export keyword */
 #define SDL_PLATFORM_WINDOWS

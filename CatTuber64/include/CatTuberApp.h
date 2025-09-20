@@ -26,7 +26,7 @@ public:
 	{
 		static CatTuberApp app;
 		return app;
-	};//»ñÈ¡Î¨Ò»ÊµÀı
+	};//è·å–å”¯ä¸€å®ä¾‹
 
 
 private:
@@ -35,20 +35,20 @@ private:
 public:
 	bool Init(int argC, char* argV[]);
 	void Run();
-	//RenderLoopÔÚäÖÈ¾Ïß³ÌÀàÖĞ
+	//RenderLoopåœ¨æ¸²æŸ“çº¿ç¨‹ç±»ä¸­
 	//void RenderLoop();
 	//
 	void Quit();
 
 
-	//ÏòÖ÷Ïß³ÌÍ¶µİtask
+	//å‘ä¸»çº¿ç¨‹æŠ•é€’task
 	//void PostTaskToMainThread(void(*task)(void* userdata, uint64_t userdata2), void* userdata = NULL, uint64_t userdata2 = 0);
 	//void SendTaskToMainThread(void(*task)(void* userdata, uint64_t userdata2), void* userdata = NULL, uint64_t userdata2 = 0);
 
 private:
 	void ShutDown();
 
-
+	bool loopRunning = false;
 	RenderThread& renderThread;
 };
 

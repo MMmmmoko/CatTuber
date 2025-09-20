@@ -64,6 +64,21 @@
     <Filter Include="头文件\Base">
       <UniqueIdentifier>{c65e8924-1003-4b03-b65a-3a786609de9d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\Renderer">
+      <UniqueIdentifier>{aee89686-578b-4de5-b228-3eea44eb887c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Renderer">
+      <UniqueIdentifier>{81dc46f6-2b28-4d51-9330-7c95ccb86c4d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dui">
+      <UniqueIdentifier>{a63ecfd3-e88d-4848-8eef-7fe4e602d04e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dui\Form">
+      <UniqueIdentifier>{93af5c8a-088f-42e6-8cd7-9c95768c85b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dui\Lang">
+      <UniqueIdentifier>{6108c887-363c-4f89-9e28-67ee750a7a09}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -180,6 +195,30 @@
     <ClInclude Include="include\UserEvent.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="include\Renderer\CatRendererContext.h">
+      <Filter>头文件\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Renderer\CatRenderState.h">
+      <Filter>头文件\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Renderer\MixDrawList.h">
+      <Filter>头文件\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Tray.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Dui\DuiCommon.h">
+      <Filter>Dui</Filter>
+    </ClInclude>
+    <ClInclude Include="Dui\UiThread.h">
+      <Filter>Dui</Filter>
+    </ClInclude>
+    <ClInclude Include="Dui\Form\MainUiForm.h">
+      <Filter>Dui\Form</Filter>
+    </ClInclude>
+    <ClInclude Include="Dui\Dui.h">
+      <Filter>Dui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -260,6 +299,21 @@
     <ClCompile Include="src\UserEvent.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\Renderer\MixDrawList.cpp">
+      <Filter>源文件\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tray.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Dui\UiThread.cpp">
+      <Filter>Dui</Filter>
+    </ClCompile>
+    <ClCompile Include="Dui\Form\MainUiForm.cpp">
+      <Filter>Dui\Form</Filter>
+    </ClCompile>
+    <ClCompile Include="Dui\Dui.cpp">
+      <Filter>Dui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CatTuber64.rc">
@@ -278,5 +332,23 @@
     <None Include="src\Util\json\json_valueiterator.inl">
       <Filter>源文件\Util\json</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="Dui\Form\MainUiForm.xml">
+      <Filter>Dui\Form</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Dui\Lang\schinese.ini">
+      <Filter>Dui\Lang</Filter>
+    </CopyFileToFolders>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Dui\Lang\en_US.txt">
+      <Filter>Dui\Lang</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <Xsd Include="Dui\NIMDUISchema.xsd">
+      <Filter>Dui</Filter>
+    </Xsd>
   </ItemGroup>
 </Project>

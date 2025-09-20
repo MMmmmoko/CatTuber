@@ -9,7 +9,9 @@
 
 #include"AppSettings.h"
 #include"AppContext.h"
+#include"Tray.h"
 #include"Input/InputManager.h"
+#include"Dui.h"
 
 #include "CatTuberApp.h"
 #include"UserEvent.h"
@@ -22,23 +24,23 @@ Live2DModelBase* model;
 
 bool CatTuberApp::Init(int argC, char* argV[])
 {
-	//TODO:ÃüÁîĞĞ´¦Àí
+	//TODO:å‘½ä»¤è¡Œå¤„ç†
 	if (false)
 	{
 		return false;
 	}
 
 
-	//Èí¼şÏà¹ØµÄ³õÊ¼»¯
+	//è½¯ä»¶ç›¸å…³çš„åˆå§‹åŒ–
 
 
 
-	//ÏÈ½øĞĞAppSettingsµÄ¼ÓÔØ,ÒòÎªÓĞÒ»Ğ©¹¦ÄÜĞèÒªºÜÔç»ñÈ¡ÉèÖÃÏî
-	//±ÈÈç»ñÈ¡ÊÇ·ñÔÚ¹ÜÀíÔ±Éí·İÖĞÔËĞĞµÄÏî£¬¾¡ÔçÒÔ¹ÜÀíÔ±Éí·İÖØÆôÈí¼ş
+	//å…ˆè¿›è¡ŒAppSettingsçš„åŠ è½½,å› ä¸ºæœ‰ä¸€äº›åŠŸèƒ½éœ€è¦å¾ˆæ—©è·å–è®¾ç½®é¡¹
+	//æ¯”å¦‚è·å–æ˜¯å¦åœ¨ç®¡ç†å‘˜èº«ä»½ä¸­è¿è¡Œçš„é¡¹ï¼Œå°½æ—©ä»¥ç®¡ç†å‘˜èº«ä»½é‡å¯è½¯ä»¶
 	AppSettings::GetIns().Load();
 
 	//************************************
-	//todoÅĞ¶ÏÊÇ·ñĞèÒªÒÔ¹ÜÀíÔ±Éí·İÖØÆô
+	//todoåˆ¤æ–­æ˜¯å¦éœ€è¦ä»¥ç®¡ç†å‘˜èº«ä»½é‡å¯
 	//
 	//
 	//**************************************
@@ -47,7 +49,7 @@ bool CatTuberApp::Init(int argC, char* argV[])
 
 
 	//************************************
-	//todo½«SDL´òÓ¡ĞÅÏ¢Êä³öµ½ÎÄ¼ş
+	//todoå°†SDLæ‰“å°ä¿¡æ¯è¾“å‡ºåˆ°æ–‡ä»¶
 	//
 	//
 	//**************************************
@@ -58,13 +60,14 @@ bool CatTuberApp::Init(int argC, char* argV[])
 
 
 
-	//°æ±¾´òÓ¡
+	//ç‰ˆæœ¬æ‰“å°
 	//CatTuber
-	SDL_Log("CatTuber Version: %d", SDL_VERSION);
+	SDL_Log("CatTuber Version: %d", CATTUBER_VER);
+	SDL_Log("CatTuber Version: %s", CATTUBER_VER_STR);
 	SDL_Log("Platform: %s", SDL_GetPlatform());
 
 	//SDL
-	SDL_VERSION;  // »ñÈ¡±àÒëÊ±µÄ°æ±¾ºÅ
+	SDL_VERSION;  // è·å–ç¼–è¯‘æ—¶çš„ç‰ˆæœ¬å·
 	SDL_Log("SDL Compiled Version: %d", SDL_VERSION);
 	SDL_Log("SDL Linked Version: %d", SDL_GetVersion());
 	SDL_Log("SDL_image Compiled Version: %d", SDL_IMAGE_VERSION);
@@ -77,8 +80,8 @@ bool CatTuberApp::Init(int argC, char* argV[])
 		const uint32_t minor = static_cast<uint32_t>((version & 0x00FF0000) >> 16);
 		const uint32_t patch = static_cast<uint32_t>((version & 0x0000FFFF));
 		const uint32_t versionNumber = version;
-		//²»È·¶¨ºËĞÄ°æ±¾ºÍSDK°æ±¾ÊÇ·ñÍêÈ«Ò»ÖÂ£¬
-		//Ã»ÓĞ»ñÈ¡SDK°æ±¾µÄ±È½Ï·½±ãµÄ·½·¨£¬ÊÖ¶¯Ğ´°É...
+		//ä¸ç¡®å®šæ ¸å¿ƒç‰ˆæœ¬å’ŒSDKç‰ˆæœ¬æ˜¯å¦å®Œå…¨ä¸€è‡´ï¼Œ
+		//æ²¡æœ‰è·å–SDKç‰ˆæœ¬çš„æ¯”è¾ƒæ–¹ä¾¿çš„æ–¹æ³•ï¼Œæ‰‹åŠ¨å†™å§...
 		SDL_Log("Live2D Cubism Core version: %02d.%02d.%04d (%d)", major, minor, patch, versionNumber);
 		SDL_Log("Live2D SDK version: 5-r4.1");
 	}
@@ -87,7 +90,7 @@ bool CatTuberApp::Init(int argC, char* argV[])
 
 
 
-	//SDL³õÊ¼»¯
+	//SDLåˆå§‹åŒ–
 	if (!SDL_Init(SDL_INIT_VIDEO)) {
 		SDL_Log("Can not init SDL: %s", SDL_GetError());
 		return false;
@@ -120,7 +123,7 @@ bool CatTuberApp::Init(int argC, char* argV[])
 
 	if (NULL == pdevice)
 	{
-		//Éè±¸ÎŞĞ§Å×³öÒì³£
+		//è®¾å¤‡æ— æ•ˆæŠ›å‡ºå¼‚å¸¸
 		SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_GPU,"Can not create a GPU Device. %s",SDL_GetError());
 		
 		//THROW;
@@ -132,6 +135,12 @@ bool CatTuberApp::Init(int argC, char* argV[])
 
 
 
+	//åˆå§‹åŒ–å¤šè¯­è¨€?
+	Dui::Init();
+
+
+	//åˆ›å»ºæ‰˜ç›˜
+	Tray::GetIns().CreateTray();
 
 
 
@@ -143,7 +152,7 @@ bool CatTuberApp::Init(int argC, char* argV[])
 
 
 
-	//³õÊ¼»¯Live2D
+	//åˆå§‹åŒ–Live2D
 	{
 		static Csm::CubismFramework::Option _cubismOption;
 		_cubismOption.LogFunction = &AppContext::LogFunc;
@@ -151,7 +160,7 @@ bool CatTuberApp::Init(int argC, char* argV[])
 #ifdef _DEBUG
 		_cubismOption.LoggingLevel = Csm::CubismFramework::Option::LogLevel_Debug;
 #endif // _DEBUG
-		//LIVE2D ApiÒªµÄÊÇ32Î»µÄsize£¬ÕâÀï×ª»»Ò»ÏÂ
+		//LIVE2D Apiè¦çš„æ˜¯32ä½çš„sizeï¼Œè¿™é‡Œè½¬æ¢ä¸€ä¸‹
 		_cubismOption.LoadFileFunction = [](const std::string filePath, uint32_t* outSize) {
 			size_t size = 0;
 			auto result = AppContext::LoadFileFunc(filePath, &size);
@@ -160,7 +169,7 @@ bool CatTuberApp::Init(int argC, char* argV[])
 			};
 		_cubismOption.ReleaseBytesFunction = &AppContext::ReleaseBytesFunc;
 
-		//Live2dµÄÄÚ´æÉêÇëÆ÷
+		//Live2dçš„å†…å­˜ç”³è¯·å™¨
 		static class Live2DAllocator :public Csm::ICubismAllocator
 		{
 			virtual void* Allocate(const Csm::csmSizeType size)override { return AppContext::AllocFunc(size); }
@@ -180,9 +189,9 @@ bool CatTuberApp::Init(int argC, char* argV[])
 
 		Csm::CubismFramework::Initialize();
 
-		//¼ÓÔØÄ£ĞÍÇ°³õÊ¼»¯äÖÈ¾Æ÷
+		//åŠ è½½æ¨¡å‹å‰åˆå§‹åŒ–æ¸²æŸ“å™¨
 		Live2D::Cubism::Framework::Rendering::CubismRenderer_SDL3::InitializeConstantSettings(1, AppContext::GetGraphicDevice());
-		//´´½¨Live2dÓÃµÄSDL3 render context
+		//åˆ›å»ºLive2dç”¨çš„SDL3 render context
 		Csm::Rendering::CubismRenderContext_SDL3* context = Csm::Rendering::CubismRenderContext_SDL3::CreateSDLGpuRenderContext(AppContext::GetGraphicDevice());
 		AppContext::_ref()._l2dRenderContext = context;
 
@@ -191,9 +200,11 @@ bool CatTuberApp::Init(int argC, char* argV[])
 
 
 
-	//´´½¨´°¿Ú
+
+
+	//åˆ›å»ºçª—å£
 	 //RenderWindowManager::GetIns().CreateRenderWindow("CatTuber1", 1920, 1080, 100, 100);
-	//ÔØÈëÉÏ´ÎÔËĞĞÊ±µÄÉèÖÃ
+	//è½½å…¥ä¸Šæ¬¡è¿è¡Œæ—¶çš„è®¾ç½®
 	RenderWindowManager::GetIns().LoadScene("#LastExit");
 
 
@@ -203,7 +214,7 @@ bool CatTuberApp::Init(int argC, char* argV[])
 
 
 
-	//´´½¨äÖÈ¾Ïß³Ì
+	//åˆ›å»ºæ¸²æŸ“çº¿ç¨‹
 	renderThread.Start();
 
 	return true;
@@ -211,16 +222,18 @@ bool CatTuberApp::Init(int argC, char* argV[])
 
 void CatTuberApp::Run()
 {
-	//Ö÷Ïß³Ì£¬´¦Àí´°¿ÚÊÂ¼ş
+	//ä¸»çº¿ç¨‹ï¼Œå¤„ç†çª—å£äº‹ä»¶
 
 	auto& wm = RenderWindowManager::GetIns();
 
 	SDL_Event event;
-	bool loopRunning = true;
+	loopRunning = true;
 	while(loopRunning&&SDL_WaitEvent(&event))
 	{
 		if (event.type == SDL_EVENT_QUIT) {
-			loopRunning = false;
+			Quit();
+		}
+		if (event.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED&& wm.controllers.size() == 1) {
 			Quit();
 		}
 		if (event.type >= SDL_EVENT_USER && event.type < SDL_EVENT_LAST)
@@ -231,21 +244,21 @@ void CatTuberApp::Run()
 		wm.HandleEvent(event);
 	}
 
-	//²»¹ÜÔõÃ´Ñù¶¼ĞèÒªÍ¨ÖªäÖÈ¾Ïß³Ì½áÊø
+	//ä¸ç®¡æ€ä¹ˆæ ·éƒ½éœ€è¦é€šçŸ¥æ¸²æŸ“çº¿ç¨‹ç»“æŸ
 
 
 
 
 
-	//Èí¼ş½áÊøÔËĞĞ£¬Ö´ĞĞÒ»Ğ©½áÊøÊ±µÄ¶¯×÷
+	//è½¯ä»¶ç»“æŸè¿è¡Œï¼Œæ‰§è¡Œä¸€äº›ç»“æŸæ—¶çš„åŠ¨ä½œ
 	ShutDown();
 }
 
-//RenderLoopÔÚäÖÈ¾Ïß³ÌÀàÖĞ
+//RenderLoopåœ¨æ¸²æŸ“çº¿ç¨‹ç±»ä¸­
 /*
 void CatTuberApp::RenderLoop()
 {
-	//Âß¼­+äÖÈ¾Ïß³Ì
+	//é€»è¾‘+æ¸²æŸ“çº¿ç¨‹
 	
 	try {
 		auto& wm = RenderWindowManager::GetIns();
@@ -255,7 +268,7 @@ void CatTuberApp::RenderLoop()
 		while (wm.IsRunning())
 		{
 			uint64_t currentTick = SDL_GetTicksNS();
-			//´¦ÀíÂß¼­ÊÂ¼ş
+			//å¤„ç†é€»è¾‘äº‹ä»¶
 
 			uint64_t deltaTick = currentTick - savedTick;
 			savedTick = currentTick;
@@ -265,11 +278,11 @@ void CatTuberApp::RenderLoop()
 			wm.RenderAll();
 
 
-			//¼ÆËãË¯Ãß
+			//è®¡ç®—ç¡çœ 
 			uint64_t _CurFrameTick = SDL_GetTicksNS() - currentTick;
-			//µ½ÏÂÒ»Ö¡µÄºÁÃëÖµ
+			//åˆ°ä¸‹ä¸€å¸§çš„æ¯«ç§’å€¼
 			float sleepTime = ((1.f / wm._frameLimit) - _CurFrameTick * 0.000000001F) * 1000.F;
-			//½öÔÚĞèÒª½øĞĞsleepµÄÊ±ºòË¯Ãß,Èç¹û²»ÄÜË¯ÃßÒ»¶¨Ê±¼äÄÇ¾Í²»Ë¯
+			//ä»…åœ¨éœ€è¦è¿›è¡Œsleepçš„æ—¶å€™ç¡çœ ,å¦‚æœä¸èƒ½ç¡çœ ä¸€å®šæ—¶é—´é‚£å°±ä¸ç¡
 			if (sleepTime > 1.f)
 				SDL_Delay(sleepTime);
 		}
@@ -305,20 +318,21 @@ void CatTuberApp::RenderLoop()
 
 void CatTuberApp::Quit()
 {
-	//ÊÕµ½ÍË³öÃüÁîµÄÊ±ºò½øĞĞÎÄ¼ş±£´æ
-	//Ó¦¸ÃÖ»ÓĞÖ÷Ïß³Ì¿ÉÒÔµ÷ÓÃµ½Õâ¸öº¯Êı
-	//QuitÊÇ¸öÃüÁî£¬ÏÈ´¦ÀíÃüÁî£¨ÈçÍË³öÇ°±£´æ×´Ì¬£©£¬ÏÂ·½µÄShutDownÊÇ×îÖÕ¹Ø±Õ³ÌĞòÊ±Ö´ĞĞµÄÒ»Ğ©¶¯×÷
+	//æ”¶åˆ°é€€å‡ºå‘½ä»¤çš„æ—¶å€™è¿›è¡Œæ–‡ä»¶ä¿å­˜
+	//åº”è¯¥åªæœ‰ä¸»çº¿ç¨‹å¯ä»¥è°ƒç”¨åˆ°è¿™ä¸ªå‡½æ•°
+	//Quitæ˜¯ä¸ªå‘½ä»¤ï¼Œå…ˆå¤„ç†å‘½ä»¤ï¼ˆå¦‚é€€å‡ºå‰ä¿å­˜çŠ¶æ€ï¼‰ï¼Œä¸‹æ–¹çš„ShutDownæ˜¯æœ€ç»ˆå…³é—­ç¨‹åºæ—¶æ‰§è¡Œçš„ä¸€äº›åŠ¨ä½œ
+	if (!loopRunning)return;///åªæ‰§è¡Œä¸€æ¬¡
+	loopRunning = false;
 
 
-
-	//¶ÔÊÇ·ñÄÜÍË³ö½øĞĞÅĞ¶Ï£¬²¢µ¯³öÏàÓ¦µÄ¶Ô»°¿ò
+	//å¯¹æ˜¯å¦èƒ½é€€å‡ºè¿›è¡Œåˆ¤æ–­ï¼Œå¹¶å¼¹å‡ºç›¸åº”çš„å¯¹è¯æ¡†
 	{
 	
 	}
 
 	AppSettings::GetIns().Save();
 	RenderWindowManager::GetIns().SaveScene("#LastExist",true);
-	//ÏÈÍ£Ö¹äÖÈ¾Ïß³Ì
+	//å…ˆåœæ­¢æ¸²æŸ“çº¿ç¨‹
 	renderThread.Stop();
 
 	RenderWindowManager::GetIns().Quit();
@@ -327,29 +341,41 @@ void CatTuberApp::Quit()
 
 void CatTuberApp::ShutDown()
 {
-	//ĞèÒªµÈ´ıäÖÈ¾Ïß³Ì½áÊø£¿
+	//éœ€è¦ç­‰å¾…æ¸²æŸ“çº¿ç¨‹ç»“æŸï¼Ÿ
 	RenderWindowManager::GetIns().ShutdownAll();
 	InputManager::GetIns().ShutDown();
 
 
-	//²»ĞèÒª¶ÔLive2DÏà¹Ø×ÊÔ´½øĞĞÇåÀí(Live2DµÄdemoÖĞÃ»ÓĞ½øĞĞÇåÀí)
-	//Èç¹ûÒ»Ğ©×ÊÔ´ÓëÏß³ÌÇ¿°ó¶¨µÄ»°£¨ÔÚÄÄ¸öÏß³Ì´´½¨¾ÍÔÚÄÄ¸öÏß³ÌÇå³ı£©
-	//ÄÇÃ´¿ÉÄÜ»¹ĞèÒª·ÖÏß³Ì½øĞĞÇåÀí
+	//ä¸éœ€è¦å¯¹Live2Dç›¸å…³èµ„æºè¿›è¡Œæ¸…ç†(Live2Dçš„demoä¸­æ²¡æœ‰è¿›è¡Œæ¸…ç†)
+	//å¦‚æœä¸€äº›èµ„æºä¸çº¿ç¨‹å¼ºç»‘å®šçš„è¯ï¼ˆåœ¨å“ªä¸ªçº¿ç¨‹åˆ›å»ºå°±åœ¨å“ªä¸ªçº¿ç¨‹æ¸…é™¤ï¼‰
+	//é‚£ä¹ˆå¯èƒ½è¿˜éœ€è¦åˆ†çº¿ç¨‹è¿›è¡Œæ¸…ç†
 	if (AppContext::_ref()._l2dRenderContext)
 	{
 		Csm::Rendering::CubismRenderContext_SDL3::ReleaseSDLGpuRenderContext(AppContext::_ref()._l2dRenderContext);
 		AppContext::_ref()._l2dRenderContext = NULL;
 	}
 
+	//Live2Dçš„å„ç§manager
+	Csm::Rendering::CubismRenderer_SDL3::DeleteShaderManager();
+	Csm::Rendering::CubismRenderer_SDL3::DeleteRenderStateManager();
+	Csm::Rendering::CubismRenderer::StaticRelease();
 
 
-
-	//×îºóÇåÀíGpu
+	//æœ€åæ¸…ç†Gpu
 	if (AppContext::_ref()._gpudevice)
 	{
 		SDL_DestroyGPUDevice(AppContext::_ref()._gpudevice);
 		AppContext::_ref()._gpudevice = NULL;
 	}
 
+
+	//åˆ é™¤æ‰˜ç›˜
+	Tray::GetIns().DestroyTray();
+
+
+	Dui::ShutDown();
+
+	SDL_Quit();
+	//
 
 }

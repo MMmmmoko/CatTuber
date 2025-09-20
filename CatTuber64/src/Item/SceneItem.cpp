@@ -2,15 +2,16 @@
 #include"Util/Util.h"
 #include"Item/MainSceneItem.h"
 
-ISceneItem* ISceneItem::CreateItem(const char* type, const Json::Value& json)
+ISceneItem* ISceneItem::CreateItem(const char* type, Scene* _scene, const Json::Value& json)
 {
 	if (UTIL_IS_CSTR_EMPTY(type))
 		return nullptr;
-	//¸ù¾Ýtype×Ö·û´®È·ÈÏÀàÐÍ
+	//æ ¹æ®typeå­—ç¬¦ä¸²ç¡®è®¤ç±»åž‹
 	if (0 == SDL_strcmp(type, ClassicItem::_GetType()))
 	{
 		ClassicItem* item = new ClassicItem;
 		item->ApplyAttributes(json);
+		item->scene = _scene;
 		return item;
 	}
 	//

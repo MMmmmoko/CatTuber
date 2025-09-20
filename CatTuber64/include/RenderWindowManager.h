@@ -8,7 +8,13 @@
 
 #include"Item/Scene.h"
 
-
+//æ™ºèƒ½æŒ‡é’ˆ
+#ifdef SDL_PLATFORM_WINDOWS
+#include <windows.h>
+#include <d3d11_1.h>
+#include <d3d12.h>
+#include <wrl.h>
+#endif
 
 class RenderWindowController
 {
@@ -21,34 +27,34 @@ public:
 
     bool _CreateWindow();
 
-    // ³õÊ¼»¯´°¿ÚºÍäÖÈ¾Æ÷//ÖØÉè³ß´ç
+    // åˆå§‹åŒ–çª—å£å’Œæ¸²æŸ“å™¨//é‡è®¾å°ºå¯¸
     bool ResetGraphic(int W,int H);
 
 
-    // ´¦ÀíÕë¶Ô±¾´°¿ÚµÄÊÂ¼ş
+    // å¤„ç†é’ˆå¯¹æœ¬çª—å£çš„äº‹ä»¶
     void HandleEvent(const SDL_Event& event);
 
 
     void Update(uint64_t deltaTicksNS);
-    // äÖÈ¾±¾´°¿ÚÄÚÈİ
+    // æ¸²æŸ“æœ¬çª—å£å†…å®¹
     void Render(/*SDL_GPUCommandBuffer* cmd*/);
     //Present
     void Present();
 
-    // ÇåÀí×ÊÔ´
+    // æ¸…ç†èµ„æº
     void Shutdown();
 
-    // »ñÈ¡´°¿ÚIDÓÃÓÚÊÂ¼şÂ·ÓÉ
+    // è·å–çª—å£IDç”¨äºäº‹ä»¶è·¯ç”±
     Uint32 _GetWindowID() const { return windowID; }
 
     
-    //Ö»ÄÜÔÚÖ÷Ïß³ÌÖĞµ÷ÓÃ
+    //åªèƒ½åœ¨ä¸»çº¿ç¨‹ä¸­è°ƒç”¨
     Json::Value Save();
-    //²»¿Éµ÷ÓÃ¶à´Î
+    //ä¸å¯è°ƒç”¨å¤šæ¬¡
     void Load(const Json::Value& json);
 
-    //´°¿ÚÉèÖÃÏîÄ¿
-    void SetTitle(const char* title);    //Õâ¸öº¯ÊıÖ»ÄÜÔÚÖ÷Ïß³ÌÖĞ±»µ÷ÓÃ
+    //çª—å£è®¾ç½®é¡¹ç›®
+    void SetTitle(const char* title);    //è¿™ä¸ªå‡½æ•°åªèƒ½åœ¨ä¸»çº¿ç¨‹ä¸­è¢«è°ƒç”¨
     void SetTransparent(bool t);
     void SetTop(bool b);
     void SetLock(bool b);
@@ -64,17 +70,21 @@ public:
     SDL_Window* GetSDLWindow() { return window; };
 
 
-    //½ö¹©ÄÚ²¿Ê¹ÓÃ
-    // ´°¿Ú³ß´ç±ä»¯»Øµ÷,²ÎÊıÊÇäÖÈ¾ÇøÓò¶ø²»ÊÇÕû¸ö´°¿Ú´óĞ¡
+    //ä»…ä¾›å†…éƒ¨ä½¿ç”¨
+    // çª—å£å°ºå¯¸å˜åŒ–å›è°ƒ,å‚æ•°æ˜¯æ¸²æŸ“åŒºåŸŸè€Œä¸æ˜¯æ•´ä¸ªçª—å£å¤§å°
     void _OnResize(int newW, int newH);
 private:
-    //¸÷Æ½Ì¨ÔÚ´´½¨´°¿ÚºóµÄÌØÊâ´¦Àí
-    //WindowsÊ¹ÓÃ´Ëº¯Êı¼àÌıÔ­WM_SIZINGĞÅÏ¢
+    //å„å¹³å°åœ¨åˆ›å»ºçª—å£åçš„ç‰¹æ®Šå¤„ç†
+    //Windowsä½¿ç”¨æ­¤å‡½æ•°ç›‘å¬åŸWM_SIZINGä¿¡æ¯
     void _AfterCreateWindow();
     bool _ResizeSwapchain(SDL_GPUCommandBuffer* commandBuffer, SDL_Window* window);
+
+    void _ResetOffscreenTex();
+    
+
     const char* title;
 
-    //´°¿Ú³ß´ç±ä»¯±ä»¯
+    //çª—å£å°ºå¯¸å˜åŒ–å˜åŒ–
     int targetX;
     int targetY;
     int targetW;
@@ -86,25 +96,44 @@ private:
     int aspectRatioW;
     int aspectRatioH;
 
-    //¿ÉÉèÖÃÏî
+    //å¯è®¾ç½®é¡¹
     static SDL_FColor clearColor;
     bool isTransparent=false;
     bool deviceClaimed = false;
+
+    //çŠ¶æ€
+    bool needResetOffscreenTex = false;
+
 
     SDL_Window* window = nullptr;
     //SDL_Renderer* renderer = nullptr;
     Uint32            windowID = 0;
 
     Scene scene;
+    //SDL3 GPU API
     SDL_GPUTexture* depthStencil = nullptr;
-    SDL_Renderer* renderer = NULL;
     SDL_GPUTexture* offscreenTex = NULL;
     SDL_GPUTransferBuffer* offscreenTexTb = NULL;
-    SDL_Texture* offscreenTex_2D = NULL;
 
     SDL_GPUCommandBuffer* cmdCurframe = NULL;
+    SDL_GPUCommandBuffer* cmdCurframeCopy = NULL;//å¤„ç†é¡¶ç‚¹ä¸Šä¼ ã€ç¦»çº¿æ¸²æŸ“ï¼ˆç”¨äºå‡†å¤‡é˜¶æ®µï¼Œå†…å®¹ç»˜åˆ¶åçš„åå¤„ç†è¿‡ç¨‹ä¸­çš„copyä¸å†ä½¿ç”¨è¿™ä¸ªï¼‰
 
 
+    //SDL3 2D Renderer API
+    SDL_Renderer* renderer = NULL;
+    SDL_Texture* offscreenTex_2D = NULL;
+
+#ifdef SDL_PLATFORM_WINDOWS
+    //D3D12 API
+    SDL_GPUTexture* d3d12ShareTex=NULL;
+    //ç”¨äºæ‹·è´åˆ°D3D11çš„D3D12çº¹ç†
+
+    //D3D11 ç”¨äºæ‹·è´çš„çº¹ç†
+    //HANDLE shareHandle=0;
+    Microsoft::WRL::ComPtr<ID3D11Device1> rendererD3d11Device;
+    //Microsoft::WRL::ComPtr<ID3D11Texture2D> texToD3D12Copy;
+    SDL_Texture* texToD3D12Copy;
+#endif 
 
 };
 
@@ -132,36 +161,36 @@ public:
 
 
 
-    // ´´½¨Ò»¸öĞÂ´°¿Ú²¢×¢²á¿ØÖÆÆ÷
+    // åˆ›å»ºä¸€ä¸ªæ–°çª—å£å¹¶æ³¨å†Œæ§åˆ¶å™¨
     bool CreateRenderWindow(const char* title,
         int w, int h,
         int x= SDL_WINDOWPOS_UNDEFINED, int y = SDL_WINDOWPOS_UNDEFINED);
 
-    //// Ö÷Ñ­»·£ºÊÂ¼ş´¦Àí + äÖÈ¾
+    //// ä¸»å¾ªç¯ï¼šäº‹ä»¶å¤„ç† + æ¸²æŸ“
     //void Run();
 
-    // Ñ¯ÎÊÊÇ·ñÈÔÔÚÔËĞĞ
+    // è¯¢é—®æ˜¯å¦ä»åœ¨è¿è¡Œ
     bool IsRunning() const { return running; }
 
-    // Á¢¼´ÖÕÖ¹ÔËĞĞ
+    // ç«‹å³ç»ˆæ­¢è¿è¡Œ
     void Quit() { running = false; }
 
-    // ÊÂ¼ş´¦Àí£ºÀ­È¡ SDL_Event ²¢Â·ÓÉ
+    // äº‹ä»¶å¤„ç†ï¼šæ‹‰å– SDL_Event å¹¶è·¯ç”±
     void HandleEvent(const SDL_Event& event);
 
-    // äÖÈ¾ËùÓĞ´°¿Ú
+    // æ¸²æŸ“æ‰€æœ‰çª—å£
     void UpdateAll(uint64_t deltaTicksNS);
     void RenderAll();
     void PresentAll();
 
-    // ÇåÀíËùÓĞ´°¿Ú¿ØÖÆÆ÷
+    // æ¸…ç†æ‰€æœ‰çª—å£æ§åˆ¶å™¨
     void ShutdownAll();
 
 
 
 
-    //ÉèÖÃÏî
-    //¾ùÔÚÖ÷Ïß³ÌÖĞµ÷ÓÃ..
+    //è®¾ç½®é¡¹
+    //å‡åœ¨ä¸»çº¿ç¨‹ä¸­è°ƒç”¨..
     void SetWindowTop(bool b);
     void SetWindowTransparent(bool b);
     void SetWindowLock(bool b);
@@ -169,16 +198,16 @@ public:
     void SetWindowBackgroundColor(SDL_Color backgroundColor);
     void SetFrameLimit(int frameLimit);
 
-    //½«ËùÓĞ´°¿ÚµÄÎ»ÖÃ´óĞ¡ ÒÔ¼°ÆäÖĞµÄÄÚÈİ±£´æÏÂÀ´
+    //å°†æ‰€æœ‰çª—å£çš„ä½ç½®å¤§å° ä»¥åŠå…¶ä¸­çš„å†…å®¹ä¿å­˜ä¸‹æ¥
     bool SaveScene(const char* sceneName,bool isQuitSave=false);
     bool LoadScene(const char* sceneName, bool isQuitSave = false);
     
 private:
     bool _BuildFromJson(const Json::Value& json);
 
-    int _frameLimit=60;//ÓÀÔ¶´óÓÚ0£¬UIÖĞÏÔÊ¾
-    //uint64_t _frameTickNs = ;//Ò»Ö¡ĞèÒªµÄÄÉÃëÊı
-    SDL_FColor _clearColor = {};//Í¸Ã÷¶ÈÖµÓÀÔ¶Îª0
+    int _frameLimit=60;//æ°¸è¿œå¤§äº0ï¼ŒUIä¸­æ˜¾ç¤º
+    //uint64_t _frameTickNs = ;//ä¸€å¸§éœ€è¦çš„çº³ç§’æ•°
+    SDL_FColor _clearColor = {};//é€æ˜åº¦å€¼æ°¸è¿œä¸º0
     std::vector<std::unique_ptr<RenderWindowController>> controllers;
     bool running = true;
     bool canStartFrame = true;

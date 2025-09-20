@@ -24,7 +24,7 @@ namespace Live2D {
                 CubismRenderState_SDL3::~CubismRenderState_SDL3()
                 {
                     _pushed.Clear();
-                    // ÊÍ·Åsamplerstates
+                    // é‡Šæ”¾samplerstates
                     for (csmUint32 i = 0; i < _samplerState.GetSize(); i++)
                     {
                         SDL_GPUSampler* sampl = _samplerState[i];
@@ -35,7 +35,7 @@ namespace Live2D {
                     }
                     _samplerState.Clear();
 
-                    // Z½â·Å
+                    // Zè§£æ”¾
                     //for (csmUint32 i = 0; i < _depthStencilState.GetSize(); i++)
                     //{
                     //    ID3D11DepthStencilState* depth = _depthStencilState[i];
@@ -46,7 +46,7 @@ namespace Live2D {
                     //}
                     _depthStencilState.Clear();
 
-                    // ¥é¥¹¥¿¥é¥¤¥¶½â·Å
+                    // ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶è§£æ”¾
                     //for (csmUint32 i = 0; i < _rasterizeStateObjects.GetSize(); i++)
                     //{
                     //    ID3D11RasterizerState* raster = _rasterizeStateObjects[i];
@@ -57,7 +57,7 @@ namespace Live2D {
                     //}
                     _rasterizeStateObjects.Clear();
 
-                    // ¥Ö¥ì¥ó¥É¥¹¥Æ©`¥È½â·Å
+                    // ãƒ–ãƒ¬ãƒ³ãƒ‰ã‚¹ãƒ†ãƒ¼ãƒˆè§£æ”¾
                     //for (csmUint32 i = 0; i < _blendStateObjects.GetSize(); i++)
                     //{
                     //    ID3D11BlendState* state = _blendStateObjects[i];
@@ -84,7 +84,7 @@ namespace Live2D {
                     _blendStateObjects.PushBack(state);
                     //zero
                     state.enable_blend = true;
-                    state.enable_color_write_mask = false;//ÉèÖÃÎªfalse¼´Ð´ÈëËùÓÐÑÕÉ«Í¨µÀ
+                    state.enable_color_write_mask = false;//è®¾ç½®ä¸ºfalseå³å†™å…¥æ‰€æœ‰é¢œè‰²é€šé“
 
                     state.src_color_blendfactor = SDL_GPU_BLENDFACTOR_ZERO;
                     state.dst_color_blendfactor = SDL_GPU_BLENDFACTOR_ZERO;
@@ -95,21 +95,21 @@ namespace Live2D {
                     _blendStateObjects.PushBack(state);
 
 
-                    // Í¨³£
+                    // é€šå¸¸
                     state.src_color_blendfactor = SDL_GPU_BLENDFACTOR_ONE;
                     state.dst_color_blendfactor = SDL_GPU_BLENDFACTOR_ONE_MINUS_SRC_ALPHA;
                     state.src_alpha_blendfactor = SDL_GPU_BLENDFACTOR_ONE;
                     state.dst_alpha_blendfactor = SDL_GPU_BLENDFACTOR_ONE_MINUS_SRC_ALPHA;
                     _blendStateObjects.PushBack(state);
 
-                    //¼ÓËã
+                    //åŠ ç®—
                     state.src_color_blendfactor = SDL_GPU_BLENDFACTOR_ONE;
                     state.dst_color_blendfactor = SDL_GPU_BLENDFACTOR_ONE;
                     state.src_alpha_blendfactor = SDL_GPU_BLENDFACTOR_ZERO;
                     state.dst_alpha_blendfactor = SDL_GPU_BLENDFACTOR_ONE;
                     _blendStateObjects.PushBack(state);
 
-                    //³ËËã
+                    //ä¹˜ç®—
                     state.src_color_blendfactor = SDL_GPU_BLENDFACTOR_DST_COLOR;
                     state.dst_color_blendfactor = SDL_GPU_BLENDFACTOR_ONE_MINUS_SRC_ALPHA;
                     state.src_alpha_blendfactor = SDL_GPU_BLENDFACTOR_ZERO;
@@ -144,20 +144,20 @@ namespace Live2D {
                     SDL_GPUDepthStencilState depthDesc = {};
                     _depthStencilState.PushBack(depthDesc);
 
-                    //ÎÞÐ§Éî¶È
+                    //æ— æ•ˆæ·±åº¦
                     depthDesc.enable_depth_test = false;
                     depthDesc.enable_stencil_test = false;
                     depthDesc.write_mask = 0xFF;
                     depthDesc.compare_op = SDL_GPU_COMPAREOP_LESS;
                     _depthStencilState.PushBack(depthDesc);
 
-                    //ÆôÓÃÉî¶È
+                    //å¯ç”¨æ·±åº¦
                     depthDesc.enable_depth_test = true;
                     depthDesc.enable_stencil_test = false;
                     _depthStencilState.PushBack(depthDesc);
 
 
-                    //²ÉÑùÆ÷
+                    //é‡‡æ ·å™¨
                     SDL_GPUSampler* sampler = NULL;
                     SDL_GPUSamplerCreateInfo samplerDesc = {};
 
@@ -188,18 +188,18 @@ namespace Live2D {
 
                 void CubismRenderState_SDL3::Save()
                 {
-                    //SaveºÍRestoreÓ¦¸ÃÊÇÓÃÓÚD3d11»Ö¸´äÖÈ¾×´Ì¬µÄ£¬µ«ÊÇSDL3äÖÈ¾²»ÒÀÀµ×´Ì¬£¨ÓÃ·Ç³£¶àµÄ¹ÜÏßÊµÀý£©£¬ËùÒÔÕâÁ½¸öº¯ÊýÓ¦¸Ã²»ÐèÒªÊµÏÖ
+                    //Saveå’ŒRestoreåº”è¯¥æ˜¯ç”¨äºŽD3d11æ¢å¤æ¸²æŸ“çŠ¶æ€çš„ï¼Œä½†æ˜¯SDL3æ¸²æŸ“ä¸ä¾èµ–çŠ¶æ€ï¼ˆç”¨éžå¸¸å¤šçš„ç®¡çº¿å®žä¾‹ï¼‰ï¼Œæ‰€ä»¥è¿™ä¸¤ä¸ªå‡½æ•°åº”è¯¥ä¸éœ€è¦å®žçŽ°
                 }
 
                 void CubismRenderState_SDL3::Restore(CubismRenderContext_SDL3* renderContext)
                 {
-                    //SaveºÍRestoreÓ¦¸ÃÊÇÓÃÓÚD3d11»Ö¸´äÖÈ¾×´Ì¬µÄ£¬µ«ÊÇSDL3äÖÈ¾²»ÒÀÀµ×´Ì¬£¨ÓÃ·Ç³£¶àµÄ¹ÜÏßÊµÀý£©£¬ËùÒÔÕâÁ½¸öº¯ÊýÓ¦¸Ã²»ÐèÒªÊµÏÖ
+                    //Saveå’ŒRestoreåº”è¯¥æ˜¯ç”¨äºŽD3d11æ¢å¤æ¸²æŸ“çŠ¶æ€çš„ï¼Œä½†æ˜¯SDL3æ¸²æŸ“ä¸ä¾èµ–çŠ¶æ€ï¼ˆç”¨éžå¸¸å¤šçš„ç®¡çº¿å®žä¾‹ï¼‰ï¼Œæ‰€ä»¥è¿™ä¸¤ä¸ªå‡½æ•°åº”è¯¥ä¸éœ€è¦å®žçŽ°
                 }
 
                 void CubismRenderState_SDL3::SetBlend(CubismRenderContext_SDL3* renderContext, Blend blendState, glm::vec4 blendFactor, uint32_t mask,
                     csmBool force)
                 {
-                    //¼ì²â²ÎÊýÒì³£
+                    //æ£€æµ‹å‚æ•°å¼‚å¸¸
                     if (!renderContext || blendState < 0 || Blend_Max <= blendState)
                     {
                         return;
@@ -210,13 +210,13 @@ namespace Live2D {
                         _stored._blendMask != mask ||
                         _stored._blendState != blendState)
                     {
-                        //OMSetBlendStateµÄblend maskºÍfactorÔÚLive2dÖÐ²»Ê¹ÓÃ£¨Êµ¼ÊÉÏSDL3ÖÐÎÒÒ²²»ÖªµÀ¸ÃÔõÃ´Åª¾ÍÊÇÁË..£©
+                        //OMSetBlendStateçš„blend maskå’Œfactoråœ¨Live2dä¸­ä¸ä½¿ç”¨ï¼ˆå®žé™…ä¸ŠSDL3ä¸­æˆ‘ä¹Ÿä¸çŸ¥é“è¯¥æ€Žä¹ˆå¼„å°±æ˜¯äº†..ï¼‰
                         renderContext->SetBlendState(blendState);
                     }
 
                     _stored._blendState = blendState;
-                    _stored._blendFactor = blendFactor;//SDL3Î´Ê¹ÓÃ
-                    _stored._blendMask = mask;//SDL3Î´Ê¹ÓÃ
+                    _stored._blendFactor = blendFactor;//SDL3æœªä½¿ç”¨
+                    _stored._blendMask = mask;//SDL3æœªä½¿ç”¨
 
                     _stored._valid[State_Blend] = true;
                 }
@@ -224,7 +224,7 @@ namespace Live2D {
                 void CubismRenderState_SDL3::SetCullMode(CubismRenderContext_SDL3* renderContext, Cull cullFace, csmBool force)
                 {
                     if (!renderContext || cullFace < 0 || Cull_Max <= cullFace)
-                    {// ¥Ñ¥é¥á©`¥¿®³£¥Á¥§¥Ã¥¯
+                    {// ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ç•°å¸¸ãƒã‚§ãƒƒã‚¯
                         return;
                     }
                     if (!_stored._valid[State_CullMode] || force ||
@@ -238,7 +238,7 @@ namespace Live2D {
 
                 void CubismRenderState_SDL3::SetViewport(CubismRenderContext_SDL3* renderContext, float left, float top, float width, float height, float zMin, float zMax, csmBool force)
                 {
-                    //¸Ð¾õ¿ÉÒÔÒÆ³ý²»ÉÙµØ·½µÄÌõ¼þÅÐ¶Ï£¬±Ï¾¹¿âÀïÒ»°ãÇé¿öÏÂ²»»á³öÏÖ·Ç·¨²ÎÊý£¨³öÏÖ¾ÍÊÇlive2dµÄ¹ø£©
+                    //æ„Ÿè§‰å¯ä»¥ç§»é™¤ä¸å°‘åœ°æ–¹çš„æ¡ä»¶åˆ¤æ–­ï¼Œæ¯•ç«Ÿåº“é‡Œä¸€èˆ¬æƒ…å†µä¸‹ä¸ä¼šå‡ºçŽ°éžæ³•å‚æ•°ï¼ˆå‡ºçŽ°å°±æ˜¯live2dçš„é”…ï¼‰
                     if (!_stored._valid[State_Blend] || force ||
                         _stored._viewportX != left || _stored._viewportY != top || _stored._viewportWidth != width || _stored._viewportHeight != height ||
                         _stored._viewportMinZ != zMin || _stored._viewportMaxZ != zMax)
@@ -266,7 +266,7 @@ namespace Live2D {
                 void CubismRenderState_SDL3::SetZEnable(CubismRenderContext_SDL3* renderContext, Depth enable, uint32_t stelcilRef, csmBool force)
                 {
                     if (!renderContext || enable < 0 || Depth_Max <= enable)
-                    {// ¥Ñ¥é¥á©`¥¿®³£¥Á¥§¥Ã¥¯
+                    {// ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ç•°å¸¸ãƒã‚§ãƒƒã‚¯
                         return;
                     }
 
@@ -286,7 +286,7 @@ namespace Live2D {
                 void CubismRenderState_SDL3::SetSampler(CubismRenderContext_SDL3* renderContext, Sampler sample, csmFloat32 anisotropy, SDL_GPUDevice* device, csmBool force)
                 {
                     if (!renderContext || sample < 0 || Sampler_Max <= sample)
-                    {// ¥Ñ¥é¥á©`¥¿®³£¥Á¥§¥Ã¥¯
+                    {// ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ç•°å¸¸ãƒã‚§ãƒƒã‚¯
                         return;
                     }
 
@@ -312,8 +312,8 @@ namespace Live2D {
                             samplerDesc.max_lod = FLT_MAX;
                             sampler=SDL_CreateGPUSampler(device, &samplerDesc);
                             _samplerState.PushBack(sampler);
-                            //ÓÐÎÊÌâÂðÕâÀïÔ­sampleÖÐÃ»ÓÐÏÞÖÆÖ»´´½¨Ò»´Î£¬ÎÒ»¹Ã»ÃþÇå³þÊµ¼ÊÖ´ÐÐÂß¼­£¬µ«Õý³£À´ËµÒªÊÇ²»¼ÓÏÞÖÆµÄ»°£¬
-                            // ÕâÀïÃ¿´ÎÒýÓÃ¸÷ÏòÒìÐÔ²ÉÑùµÄÊ±ºò¶¼»á¶îÍâpushbackÒ»¸öÓÃ²»µ½µÄ²ÉÑùÆ÷  
+                            //æœ‰é—®é¢˜å—è¿™é‡ŒåŽŸsampleä¸­æ²¡æœ‰é™åˆ¶åªåˆ›å»ºä¸€æ¬¡ï¼Œæˆ‘è¿˜æ²¡æ‘¸æ¸…æ¥šå®žé™…æ‰§è¡Œé€»è¾‘ï¼Œä½†æ­£å¸¸æ¥è¯´è¦æ˜¯ä¸åŠ é™åˆ¶çš„è¯ï¼Œ
+                            // è¿™é‡Œæ¯æ¬¡å¼•ç”¨å„å‘å¼‚æ€§é‡‡æ ·çš„æ—¶å€™éƒ½ä¼šé¢å¤–pushbackä¸€ä¸ªç”¨ä¸åˆ°çš„é‡‡æ ·å™¨  
 
 
           

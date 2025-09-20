@@ -27,7 +27,7 @@ void UserEvent::HandleUserEvent(SDL_UserEvent* event)
 	{
 	case TASK:
 	{
-	//¶ÔÓÚTASK,DATA1 Îªº¯Êı£¬ data2Îª²ÎÊı
+	//å¯¹äºTASK,DATA1 ä¸ºå‡½æ•°ï¼Œ data2ä¸ºå‚æ•°
 		void(*func)(void* data)= (void(*)(void*))event->data1;
 		func(event->data2);
 		break;

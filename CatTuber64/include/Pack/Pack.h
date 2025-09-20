@@ -5,7 +5,7 @@
 #include<vector>
 #include<iostream>
 
-//Í³Ò»ÎÄ¼ş¼ĞºÍ×ÊÔ´°ü¶ÁÈ¡
+//ç»Ÿä¸€æ–‡ä»¶å¤¹å’Œèµ„æºåŒ…è¯»å–
 
 class Pack
 {
@@ -13,7 +13,7 @@ class Pack
 	{
 		PackType_Unknown = 0,
 		PackType_Folder,
-		PackType_Pack_ver0,//¾ÉCatTuberËùÊ¹ÓÃµÄPack£¬³ıÎÄ¼şÍâ²»ÔÙ¶ÁÈ¡ÆäËûÊı¾İ
+		PackType_Pack_ver0,//æ—§CatTuberæ‰€ä½¿ç”¨çš„Packï¼Œé™¤æ–‡ä»¶å¤–ä¸å†è¯»å–å…¶ä»–æ•°æ®
 		PackType_Pack_ver1
 
 	};
@@ -23,22 +23,22 @@ class Pack
 
 
 public:
-	//ºÏ·¨ĞÔ¼ì²é
+	//åˆæ³•æ€§æ£€æŸ¥
 	bool Open(const char* packFilePath);
 	
-	//packPathÖĞÎŞ·´Ğ±¸Ü£¬ÕâÀï»á×éºÏ³ÉpackPath+/+path
+	//packPathä¸­æ— åæ–œæ ï¼Œè¿™é‡Œä¼šç»„åˆæˆpackPath+/+path
 	uint8_t* LoadFile(const char* path,size_t* size);
 	bool IsFileExist(const char* path);
-	//ÎŞ·´Ğ±¸Ü,Èç¹ûfullPathÎªtrueÔò·µ»Ø½á¹ûÎªÏà¶ÔÓÚpackrootµÄÂ·¾¶£¬·ñÔòÖ»°üº¬ÎÄ¼şÃû
-	//»ñÈ¡×ÊÔ´°üÖĞÄ³¸öÎÄ¼ş¼ĞÖĞµÄÎÄ¼ş£¬²»¶ÁÈ¡×ÓÎÄ¼ş¼Ğ
+	//æ— åæ–œæ ,å¦‚æœfullPathä¸ºtrueåˆ™è¿”å›ç»“æœä¸ºç›¸å¯¹äºpackrootçš„è·¯å¾„ï¼Œå¦åˆ™åªåŒ…å«æ–‡ä»¶å
+	//è·å–èµ„æºåŒ…ä¸­æŸä¸ªæ–‡ä»¶å¤¹ä¸­çš„æ–‡ä»¶ï¼Œä¸è¯»å–å­æ–‡ä»¶å¤¹
 	std::vector<std::string> GetFileList(const char* folerPath,bool fullPath=true);
 
 
 	void ReleaseMem(uint8_t* mem);
-
+	const char* GetPath() { return packPath.c_str(); };
 private:
 	PackType type;
-	std::string packPath;//ÎÄ¼ş¼Ğ»òÕßpackÎÄ¼ş
+	std::string packPath;//æ–‡ä»¶å¤¹æˆ–è€…packæ–‡ä»¶
 };
 
 

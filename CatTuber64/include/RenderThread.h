@@ -6,7 +6,7 @@
 
 
 
-//ÒòÎªSDLÌá¹©ÁËÒ»Ğ©»ùÓÚÆ½Ì¨µÄ¶îÍâ¹¦ÄÜ£¬ËùÒÔÊ¹ÓÃSDLµÄÏß³Ì
+//å› ä¸ºSDLæä¾›äº†ä¸€äº›åŸºäºå¹³å°çš„é¢å¤–åŠŸèƒ½ï¼Œæ‰€ä»¥ä½¿ç”¨SDLçš„çº¿ç¨‹
 
 
 class RenderThread
@@ -14,19 +14,19 @@ class RenderThread
 
 public:
     static RenderThread& GetIns() { static RenderThread ref; return ref; }
-    void Start();     // Æô¶¯Ïß³Ì²¢³õÊ¼»¯äÖÈ¾ÉÏÏÂÎÄ
-    void Stop();      // ÇëÇóÍË³ö²¢»ØÊÕ×ÊÔ´
-    void PostTask(void(* task)(void* userdata, uint64_t userdata2), void* userdata=NULL,uint64_t userdata2=0); // Í¶µİÈÎÎñµ½äÖÈ¾Ïß³Ì
-    void SendTask(void(*task)(void* userdata, uint64_t userdata2), void* userdata = NULL, uint64_t userdata2 = 0);//µÈ´ıÖ´ĞĞÍê³É¡£²»¿ÉÔÚäÖÈ¾Ïß³Ìµ÷ÓÃ
-    //void LockThread();//Ëø¶¨äÖÈ¾Ïß³ÌÒÔÖ´ĞĞÆäËû¹¤×÷
+    void Start();     // å¯åŠ¨çº¿ç¨‹å¹¶åˆå§‹åŒ–æ¸²æŸ“ä¸Šä¸‹æ–‡
+    void Stop();      // è¯·æ±‚é€€å‡ºå¹¶å›æ”¶èµ„æº
+    void PostTask(void(* task)(void* userdata, uint64_t userdata2), void* userdata=NULL,uint64_t userdata2=0); // æŠ•é€’ä»»åŠ¡åˆ°æ¸²æŸ“çº¿ç¨‹
+    void SendTask(void(*task)(void* userdata, uint64_t userdata2), void* userdata = NULL, uint64_t userdata2 = 0);//ç­‰å¾…æ‰§è¡Œå®Œæˆã€‚ä¸å¯åœ¨æ¸²æŸ“çº¿ç¨‹è°ƒç”¨
+    //void LockThread();//é”å®šæ¸²æŸ“çº¿ç¨‹ä»¥æ‰§è¡Œå…¶ä»–å·¥ä½œ
     
 private:
     
 
 
-    void ThreadLoop(); // Êµ¼ÊäÖÈ¾Ïß³ÌÂß¼­
-    void InitGraphics(); // ³õÊ¼»¯ Vulkan/OpenGL/DirectXÖĞĞèÒªÔÚäÖÈ¾Ïß³ÌÖ´ĞĞµÄ²¿·Ö
-    void ShutdownGraphics(); // ÇåÀí×ÊÔ´
+    void ThreadLoop(); // å®é™…æ¸²æŸ“çº¿ç¨‹é€»è¾‘
+    void InitGraphics(); // åˆå§‹åŒ– Vulkan/OpenGL/DirectXä¸­éœ€è¦åœ¨æ¸²æŸ“çº¿ç¨‹æ‰§è¡Œçš„éƒ¨åˆ†
+    void ShutdownGraphics(); // æ¸…ç†èµ„æº
 
     struct TaskCallback
     {
@@ -34,8 +34,8 @@ private:
         void* userData;
         uint64_t userdata2;
     };
-    std::queue<TaskCallback> taskQueueFront;//ÓÃÓÚ´¦Àícallback
-    std::queue<TaskCallback> taskQueueBack;//ÓÃÓÚpushcallback
+    std::queue<TaskCallback> taskQueueFront;//ç”¨äºå¤„ç†callback
+    std::queue<TaskCallback> taskQueueBack;//ç”¨äºpushcallback
 
 
 

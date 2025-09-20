@@ -5,15 +5,15 @@
 #include<iostream>
 #include"json/json.h"
 
-//Ãû³Æ¡¢±äÁ¿ÀàĞÍ¡¢
-//ÕâÀïÉèÖÃÆ½Ì¨ÎŞ¹ØµÄÏîÄ¿
+//åç§°ã€å˜é‡ç±»å‹ã€
+//è¿™é‡Œè®¾ç½®å¹³å°æ— å…³çš„é¡¹ç›®
 //
-// LockSaveÖ¸Ê¾ÊÇ·ñ±£´æËø¶¨×´Ì¬£¬Èç¹û²»±£´æ£¬ÔòÃ¿´ÎÆô¶¯Èí¼şÊ±ÎªÎ´Ëø¶¨×´Ì¬
+// LockSaveæŒ‡ç¤ºæ˜¯å¦ä¿å­˜é”å®šçŠ¶æ€ï¼Œå¦‚æœä¸ä¿å­˜ï¼Œåˆ™æ¯æ¬¡å¯åŠ¨è½¯ä»¶æ—¶ä¸ºæœªé”å®šçŠ¶æ€
 // 
-//×ø±ê·¶Î§Mouse_InputAreaÊÇ»ùÓÚÏÔÊ¾Æ÷
-//OtherÉèÖÃÏîÖ®ºó¿ÉÄÜĞèÒªÁíÍâÆğÒ»¸öºê»òÕßÊ¹ÓÃÆ½Ì¨Ç°×º
+//åæ ‡èŒƒå›´Mouse_InputAreaæ˜¯åŸºäºæ˜¾ç¤ºå™¨
+//Otherè®¾ç½®é¡¹ä¹‹åå¯èƒ½éœ€è¦å¦å¤–èµ·ä¸€ä¸ªå®æˆ–è€…ä½¿ç”¨å¹³å°å‰ç¼€
 
-//ÎªÁËÊ¹ÓÃºê£¬ĞèÒªÍ¬typedef°Ñstd::stringµÄÃüÃû¿Õ¼äÈ¥µô//Ö÷ÒªÊÇÈ¥µôÕâ¸ö·ûºÅ::
+//ä¸ºäº†ä½¿ç”¨å®ï¼Œéœ€è¦åŒtypedefæŠŠstd::stringçš„å‘½åç©ºé—´å»æ‰//ä¸»è¦æ˜¯å»æ‰è¿™ä¸ªç¬¦å·::
 typedef std::string _CatString;
 #define CATTUBER_APPSETTINGS_LIST(F) \
     F(Window,Top,bool,false)        \
@@ -38,14 +38,14 @@ typedef std::string _CatString;
     F(Other,ShowTaskBarIcon,bool,true)  \
     F(Other,Windows_RunAsAdmin,bool,false)
 
-//MouseInputAreaÊ¹ÓÃ×Ö·û´®£¬ĞèÒª´¦ÀíÏÔÊ¾Æ÷ÃûÏàÍ¬µÄÇé¿ö
-//ÓĞ·ÇÄ¬ÈÏ¼ÓÔØĞ´ÈëĞĞÎªµÄ
+//MouseInputAreaä½¿ç”¨å­—ç¬¦ä¸²ï¼Œéœ€è¦å¤„ç†æ˜¾ç¤ºå™¨åç›¸åŒçš„æƒ…å†µ
+//æœ‰éé»˜è®¤åŠ è½½å†™å…¥è¡Œä¸ºçš„
 //#define APPSETTINGS_LIST_NONDEFAULT(F) \
 //    F(Mouse,RelativeMove,bool,true) \
 
 
 
-//ĞèÒª¶ÔSDL_Colorº¯Êı½øĞĞÖØÔØ
+//éœ€è¦å¯¹SDL_Colorå‡½æ•°è¿›è¡Œé‡è½½
 inline bool operator!=(SDL_Color const& lhs, SDL_Color const& rhs)
 {
     return SDL_memcmp(&lhs,&rhs,sizeof(SDL_Color))!=0;
@@ -79,7 +79,7 @@ void _On##settingGroup##setting##Change(const type##& value);
 
 
 private:
-    //ÎªÁËÊ¹ÓÃºê½øĞĞÒ»²ã·â×°//Ã»ÕÒµ½boolµ½BoolµÄÓ³Éä·½·¨£¬ÇÒºóĞøÓĞÍØÕ¹ÀàĞÍµÄ¿ÉÄÜ£¬ËùÒÔÓÃº¯Êı·â×°Ò»ÏÂ
+    //ä¸ºäº†ä½¿ç”¨å®è¿›è¡Œä¸€å±‚å°è£…//æ²¡æ‰¾åˆ°boolåˆ°Boolçš„æ˜ å°„æ–¹æ³•ï¼Œä¸”åç»­æœ‰æ‹“å±•ç±»å‹çš„å¯èƒ½ï¼Œæ‰€ä»¥ç”¨å‡½æ•°å°è£…ä¸€ä¸‹
     static bool _Is_double_Type(Json::Value& json);
     static void _Save_double_Type(Json::Value& json,double value);
     static double _Get_double(Json::Value& json);
@@ -105,7 +105,7 @@ private:
     static AppSettings ins;
     static SDL_Color _defaultBackgroundColor;
     
-    //bool loaded = false;//Õâ¸ö±äÁ¿ÓÃÀ´°ïÖú½øĞĞÒ»Ğ©ÌØÊâ´¦Àí£¬±ÈÈçÅĞ¶ÏÊÇ·ñËø¶¨
+    //bool loaded = false;//è¿™ä¸ªå˜é‡ç”¨æ¥å¸®åŠ©è¿›è¡Œä¸€äº›ç‰¹æ®Šå¤„ç†ï¼Œæ¯”å¦‚åˆ¤æ–­æ˜¯å¦é”å®š
 };
 
 

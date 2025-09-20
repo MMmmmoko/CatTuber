@@ -2,7 +2,7 @@
 #include"Input/InputCommon.h"
 
 
-//¾²Ì¬±äÁ¿
+//é™æ€å˜é‡
 ObjectPool<ButtonToAxisActionBinding::BindingInfo> ButtonToAxisActionBinding::bindingList;
 
 
@@ -14,7 +14,7 @@ void input::InputButton::ButtonDown()
 	{
 		callbackData.callback(this, 1.f, callbackData.userData);
 	}
-	if(keyPressCount==1)//0µ½1£¬×´Ì¬¸Ä±äÁË
+	if(keyPressCount==1)//0åˆ°1ï¼ŒçŠ¶æ€æ”¹å˜äº†
 	for (auto& callbackData : keyStateChangeCallbackList)
 	{
 		callbackData.callback(this, 1.f, callbackData.userData);
@@ -34,7 +34,7 @@ void input::InputButton::ButtonUp()
 		callbackData.callback(this, 0.f, callbackData.userData);
 	}
 
-	if (keyPressCount == 0)//1µ½0£¬×´Ì¬±äÁË
+	if (keyPressCount == 0)//1åˆ°0ï¼ŒçŠ¶æ€å˜äº†
 	{
 		for (auto& callbackData : keyStateChangeCallbackList)
 		{
@@ -49,7 +49,7 @@ void input::InputButton::AddRef(int refCount)
 	if (_refCount <= 0)
 	{
 		_refCount = 0;
-		//ÒıÓÃÊı¹é0Ê±,ËµÃ÷Ã»ÓĞÈÎºÎÏîÄ¿ÒıÓÃÕâ¸ö°´¼ü£¬ÖØÖÃ»Øµ¯ÆğµÄ×´Ì¬:
+		//å¼•ç”¨æ•°å½’0æ—¶,è¯´æ˜æ²¡æœ‰ä»»ä½•é¡¹ç›®å¼•ç”¨è¿™ä¸ªæŒ‰é”®ï¼Œé‡ç½®å›å¼¹èµ·çš„çŠ¶æ€:
 		while (keyPressCount > 0)
 		{
 			ButtonUp();
@@ -213,7 +213,7 @@ void ButtonActionBinding::InstallBinding()
 	upCallback.callback = TryUpTrigger;
 	upCallback.userData = this;
 
-	//¸øÃ¿¸ö¼ü¶¼¼ÓÉÏcallbackÀ´¼ì²â
+	//ç»™æ¯ä¸ªé”®éƒ½åŠ ä¸Šcallbackæ¥æ£€æµ‹
 	for (auto& button : buttonVec)
 	{
 		if(downAction)
@@ -278,7 +278,7 @@ void ButtonToAxisActionBinding::UninstallBinding()
 }
 void ButtonToAxisActionBinding::TryDownTrigger(input::InputButton* button, float value, void* pThisBinding)
 {
-	//°´ÏÂÊ±
+	//æŒ‰ä¸‹æ—¶
 	ButtonToAxisActionBinding* pThis = (ButtonToAxisActionBinding*)pThisBinding;
 	pThis->bindingInfoHandle->motion = 1;
 	pThis->bindingInfoHandle->motionTriggeredTick = SDL_GetTicks();
@@ -298,7 +298,7 @@ void ButtonToAxisActionBinding::UpdateAxesValue()
 		if (x.motion == 0)
 		{
 			uint64_t deltaTick = curTicks - x.motionTriggeredTick;
-			//ÔÚ0.1sÖ´ĞĞÍæ¶¯»­  todo/fix me?ÈÃÕâ¸ö0.1s¿É¿Ø
+			//åœ¨0.1sæ‰§è¡Œç©åŠ¨ç”»  todo/fix me?è®©è¿™ä¸ª0.1så¯æ§
 			if(deltaTick>100)newValue = 0.f;
 			else
 			{
@@ -308,7 +308,7 @@ void ButtonToAxisActionBinding::UpdateAxesValue()
 		else
 		{
 			uint64_t deltaTick = curTicks - x.motionTriggeredTick;
-			//ÔÚ0.1sÖ´ĞĞÍæ¶¯»­  todo/fix me?ÈÃÕâ¸ö0.1s¿É¿Ø
+			//åœ¨0.1sæ‰§è¡Œç©åŠ¨ç”»  todo/fix me?è®©è¿™ä¸ª0.1så¯æ§
 			if (deltaTick > 100)newValue = 1.f;
 			else
 			{
@@ -325,7 +325,7 @@ void ButtonToAxisActionBinding::UpdateAxesValue()
 }
 void ButtonActionBinding::TryDownTrigger(input::InputButton* button, float value, void* pThisBinding)
 {
-	//¼ì²âÊı×éÖĞËùÓĞ°´¼üµÄ×´Ì¬
+	//æ£€æµ‹æ•°ç»„ä¸­æ‰€æœ‰æŒ‰é”®çš„çŠ¶æ€
 	ButtonActionBinding* pThis = (ButtonActionBinding*)pThisBinding;
 	std::vector<ButtonProxy>& vec = pThis->buttonVec;
 	for (auto& button : vec)
@@ -333,7 +333,7 @@ void ButtonActionBinding::TryDownTrigger(input::InputButton* button, float value
 		if (!button->IsDown())
 			return;
 	}
-	//ËùÓĞ¼ü¶¼ÊÇDown×´Ì¬£¬·¢ÆğAction
+	//æ‰€æœ‰é”®éƒ½æ˜¯DownçŠ¶æ€ï¼Œå‘èµ·Action
 	pThis->isDown = true;
 	pThis->downAction->DoAction(1.f);
 }
@@ -342,16 +342,16 @@ void ButtonActionBinding::TryUpTrigger(input::InputButton* button, float value, 
 {
 
 
-	//¼ì²âÊı×éÖĞËùÓĞ°´¼üµÄ×´Ì¬
+	//æ£€æµ‹æ•°ç»„ä¸­æ‰€æœ‰æŒ‰é”®çš„çŠ¶æ€
 	ButtonActionBinding* pThis = (ButtonActionBinding*)pThisBinding;
 	if (pThis->isDown == false)
 	{
-		//Ö»ÔÚ°´ÏÂµÄÊ±ºò³ö·¢Ì§Æğ
+		//åªåœ¨æŒ‰ä¸‹çš„æ—¶å€™å‡ºå‘æŠ¬èµ·
 		return;
 	}
 
 	
-	//µ±Ç°°´¼üup
+	//å½“å‰æŒ‰é”®up
 	pThis->isDown = false;
 	pThis->upAction->DoAction(0.f);
 }
@@ -374,7 +374,7 @@ void AxisChangeActionBinding::UninstallBinding()
 
 void AxisChangeActionBinding::TryTrigger(input::InputAxis* axis, float value, void* pThisBinding)
 {
-	//Õâ¸öº¯Êı°ó¶¨µ½ValueChangeÉÏ£¬±»µ÷ÓÃËµÃ÷ÊıÖµÒ»¶¨ÒÑ¾­¸Ä±äÁË£¬Ö±½Ó´¥·¢Action¼´¿É
+	//è¿™ä¸ªå‡½æ•°ç»‘å®šåˆ°ValueChangeä¸Šï¼Œè¢«è°ƒç”¨è¯´æ˜æ•°å€¼ä¸€å®šå·²ç»æ”¹å˜äº†ï¼Œç›´æ¥è§¦å‘Actionå³å¯
 	((AxisChangeActionBinding*)pThisBinding)->action->DoAction(value);
 }
 
@@ -397,7 +397,7 @@ void AxisExceedActionBinding::UninstallBinding()
 
 void AxisExceedActionBinding::TryTrigger(input::InputAxis* axis, float value, void* pThisBinding)
 {
-	//¼ì²âÊıÖµ±ä»¯µÄ·½Ïò£¬Èç¹û³¬Ô½ÁËtargetValueÔò´¥·¢Action
+	//æ£€æµ‹æ•°å€¼å˜åŒ–çš„æ–¹å‘ï¼Œå¦‚æœè¶…è¶Šäº†targetValueåˆ™è§¦å‘Action
 	float lastValue=axis->GetLastValue();
 	AxisExceedActionBinding* pThis = (AxisExceedActionBinding*)pThisBinding;
 	if (lastValue<= pThis->targetValue && value> pThis->targetValue)
@@ -424,7 +424,7 @@ void AxisDroppedActionBinding::UninstallBinding()
 
 void AxisDroppedActionBinding::TryTrigger(input::InputAxis* axis, float value, void* pThisBinding)
 {
-	//¼ì²âÊıÖµ±ä»¯µÄ·½Ïò£¬Èç¹ûµøÆÆÁËtargetValueÔò´¥·¢Action
+	//æ£€æµ‹æ•°å€¼å˜åŒ–çš„æ–¹å‘ï¼Œå¦‚æœè·Œç ´äº†targetValueåˆ™è§¦å‘Action
 	float lastValue = axis->GetLastValue();
 	AxisDroppedActionBinding* pThis = (AxisDroppedActionBinding*)pThisBinding;
 	if (lastValue >= pThis->targetValue && value < pThis->targetValue)

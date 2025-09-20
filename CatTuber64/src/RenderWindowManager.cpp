@@ -12,7 +12,7 @@
 #include"RenderThread.h"
 #include"RenderWindowManager.h"
 #include"UserEvent.h"
-
+#include"../Tray.h"
 SDL_FColor RenderWindowController::clearColor = { 0.f,0.f, 0.f, 0.f };
 
 
@@ -37,7 +37,7 @@ bool RenderWindowController::_CreateWindow()
         SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Unable to create properties: %s", SDL_GetError());
         throw std::runtime_error(SDL_GetError());
     }
-    //¸ù¾İĞÅÏ¢´´½¨´°¿Ú
+    //æ ¹æ®ä¿¡æ¯åˆ›å»ºçª—å£
     SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_WIDTH_NUMBER, targetW);
     SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_HEIGHT_NUMBER, targetH);
     SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_X_NUMBER, targetX);
@@ -46,10 +46,16 @@ bool RenderWindowController::_CreateWindow()
 
 
 
+
     isTransparent = AppSettings::GetIns().GetWindowTransparent();
     SetClearColor(AppSettings::GetIns().GetWindowBackgroundColor());
 
-    if (AppSettings::GetIns().GetWindowTransparent())
+
+    //å®éªŒé€æ˜
+    //isTransparent = true;
+
+
+    if (isTransparent)
     {
         SDL_SetBooleanProperty(props, SDL_PROP_WINDOW_CREATE_BORDERLESS_BOOLEAN, false);
         SDL_SetBooleanProperty(props, SDL_PROP_WINDOW_CREATE_TRANSPARENT_BOOLEAN, true);
@@ -61,23 +67,81 @@ bool RenderWindowController::_CreateWindow()
     }
 
 
+
     window = SDL_CreateWindowWithProperties(props);
     if (!window)
     {
         SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Unable to create window: %s", SDL_GetError());
         return false;
     }
-    
+
+
+
 
     _AfterCreateWindow();
     
     SetAspectSize(targetW, targetH);
+
+    //è®©æ•´ä¸ªçª—å£å¯æ‹–åŠ¨ 
+    SDL_HitTest hittestFunc = [](SDL_Window* window, const SDL_Point* point, void* userData)->SDL_HitTestResult
+        {
+            if (((RenderWindowController*)userData)->window == window)
+                return SDL_HitTestResult::SDL_HITTEST_DRAGGABLE;
+            else
+                return SDL_HitTestResult::SDL_HITTEST_NORMAL;
+        };
+    //SDL_SetWindowHitTest(window, hittestFunc,this);
 
 
     windowID = SDL_GetWindowID(window);
     return true;
 }
 
+void RenderWindowController::_ResetOffscreenTex()
+{
+//windowsä¸­ï¼Œæ”¹å˜clearé¢œè‰²æˆ–è€…è®¾ç½®transparencyçš„æ—¶å€™é‡å»ºçº¹ç†//å› ä¸ºdx12æé†’ä¸é‡å»ºçš„è¯clearé¢œè‰²å¯¹ä¸ä¸Šä¼šå¯¼è‡´æ€§èƒ½ä¸‹é™ï¼Œä¹Ÿä¼šå¯¼è‡´è­¦å‘Šåˆ·å±
+
+
+
+    if (offscreenTex)
+    {
+        SDL_ReleaseGPUTexture(AppContext::GetGraphicDevice(), offscreenTex);
+        offscreenTex = nullptr;
+    }
+
+    //é‡æ–°åˆ›å»ºä¸ºæŒ‡å®šç›®æ ‡é¢œè‰²çš„çº¹ç†
+    SDL_ReleaseGPUTexture(AppContext::GetGraphicDevice(), offscreenTex);
+    SDL_GPUTextureCreateInfo textureDesc = {};
+    textureDesc.type = SDL_GPU_TEXTURETYPE_2D;
+    //textureDesc.format = SDL_GPU_TEXTUREFORMAT_R8G8B8A8_UNORM;
+    textureDesc.format = SDL_GPU_TEXTUREFORMAT_B8G8R8A8_UNORM;
+    textureDesc.usage = SDL_GPU_TEXTUREUSAGE_COLOR_TARGET;
+    textureDesc.width = renderW;
+    textureDesc.height = renderH;
+    textureDesc.layer_count_or_depth = 1;
+    textureDesc.num_levels = 1;
+#ifdef SDL_PLATFORM_WINDOWS
+
+    if (!isTransparent)
+    {
+        auto props = SDL_CreateProperties();
+        SDL_SetFloatProperty(props, SDL_PROP_GPU_TEXTURE_CREATE_D3D12_CLEAR_R_FLOAT, clearColor.r);
+        SDL_SetFloatProperty(props, SDL_PROP_GPU_TEXTURE_CREATE_D3D12_CLEAR_G_FLOAT, clearColor.g);
+        SDL_SetFloatProperty(props, SDL_PROP_GPU_TEXTURE_CREATE_D3D12_CLEAR_B_FLOAT, clearColor.b);
+        SDL_SetFloatProperty(props, SDL_PROP_GPU_TEXTURE_CREATE_D3D12_CLEAR_A_FLOAT, clearColor.a);
+        textureDesc.props = props;
+    }
+#endif
+
+    offscreenTex = SDL_CreateGPUTexture(AppContext::GetGraphicDevice(), &textureDesc);
+    if (!offscreenTex)
+    {
+        SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Call CreateGPUTexture() failed! %s", SDL_GetError());
+        throw(std::runtime_error("Call CreateGPUTexture() failed!"));
+    }
+
+
+}
 
 bool RenderWindowController::ResetGraphic(int W, int H) {
     
@@ -123,25 +187,30 @@ bool RenderWindowController::ResetGraphic(int W, int H) {
         //2D renderer
 
 
-        SDL_GPUTextureCreateInfo textureDesc = {};
-        textureDesc.type = SDL_GPU_TEXTURETYPE_2D;
-        //textureDesc.format = SDL_GPU_TEXTUREFORMAT_R8G8B8A8_UNORM;
-        textureDesc.format = SDL_GPU_TEXTUREFORMAT_B8G8R8A8_UNORM;
-        textureDesc.usage = SDL_GPU_TEXTUREUSAGE_COLOR_TARGET;
-        textureDesc.width = W;
-        textureDesc.height = H;
-        textureDesc.layer_count_or_depth = 1;
-        textureDesc.num_levels = 1;
-
-        offscreenTex = SDL_CreateGPUTexture(AppContext::GetGraphicDevice(), &textureDesc);
-        if (!offscreenTex)
-        {
-            SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Call CreateGPUTexture() failed! %s", SDL_GetError());
-            break;
-        }
 
 
-        //offscreenTexTb ÔÚĞèÒªµÄÊ±ºò²Å¿ªÊ¼´´½¨
+        //offscreenTex
+        //_ResetOffscreenTex();
+        needResetOffscreenTex = true;
+
+        //SDL_GPUTextureCreateInfo textureDesc = {};
+        //textureDesc.type = SDL_GPU_TEXTURETYPE_2D;
+        ////textureDesc.format = SDL_GPU_TEXTUREFORMAT_R8G8B8A8_UNORM;
+        //textureDesc.format = SDL_GPU_TEXTUREFORMAT_B8G8R8A8_UNORM;
+        //textureDesc.usage = SDL_GPU_TEXTUREUSAGE_COLOR_TARGET;
+        //textureDesc.width = W;
+        //textureDesc.height = H;
+        //textureDesc.layer_count_or_depth = 1;
+        //textureDesc.num_levels = 1;
+        //offscreenTex = SDL_CreateGPUTexture(AppContext::GetGraphicDevice(), &textureDesc);
+        //if (!offscreenTex)
+        //{
+        //    SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Call CreateGPUTexture() failed! %s", SDL_GetError());
+        //    break;
+        //}
+
+
+        //offscreenTexTb åœ¨éœ€è¦çš„æ—¶å€™æ‰å¼€å§‹åˆ›å»º
         /*
         SDL_GPUTransferBufferCreateInfo tbinfo = {};
         tbinfo.size = 1920 * 1080 * 4;
@@ -157,18 +226,57 @@ bool RenderWindowController::ResetGraphic(int W, int H) {
 
         if (isTransparent)
         {
-            renderer = SDL_CreateRenderer(window, NULL);
+            //renderer = SDL_CreateRenderer(window, NULL);
+#ifdef SDL_PLATFORM_WINDOWS
+
+#ifdef _DEBUG
             if (!renderer)
             {
-                SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Call CreateWindowAndRenderer() failed! %s", SDL_GetError());
-                break;
+                renderer = SDL_CreateRenderer(window, "direct3d12");
+                if (renderer)
+                {
+                    SDL_assert(false && "Direct3D12 is support in sdl 2d transparent renderer!");
+                }
             }
+#endif // //æ£€æµ‹é€æ˜çª—å£å¯¹SDL12çš„æ”¯æŒ.  ç›®å‰SDLçš„é€æ˜çª—å£åªæ”¯æŒdirect3d11
+            //rendererä¸è¿›è¡Œå¤šæ¬¡åˆ›å»º
+            if (!renderer)
+            {
+                renderer = SDL_CreateRenderer(window, "direct3d11");
+                if (!renderer)
+                {
+                    SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Create D3d11 renderer in transparent window failed! %s", SDL_GetError());
+                    throw(std::runtime_error("Create D3d11 renderer in transparent window failed!"));
+                }
+
+
+            }
+            //2Dçš„APIå¯ä»¥éšæ—¶æ”¹å˜çª—å£å¤§å°
+            //int w, h;
+            //SDL_GetCurrentRenderOutputSize(renderer, &w, &h);
+            //SDL_Log("Renderer: %d,%d", w, h);
+#endif
+
+
             offscreenTex_2D = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_BGRA32, SDL_TEXTUREACCESS_STREAMING, W, H);
             if (!offscreenTex_2D)
             {
                 SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Call SDL_CreateTexture() failed! %s", SDL_GetError());
                 break;
             }
+
+            //ä»æ¸²æŸ“å™¨ä¸­è·å–D3D1çº¹ç†
+
+
+
+
+
+
+
+
+
+
+
         }else
         {
             if (!deviceClaimed)
@@ -224,19 +332,27 @@ bool RenderWindowController::ResetGraphic(int W, int H) {
 }
 
 void RenderWindowController::HandleEvent(const SDL_Event& event) {
-    // ½ö´¦ÀíÊôÓÚ±¾´°¿ÚµÄÊÂ¼ş
+    // ä»…å¤„ç†å±äºæœ¬çª—å£çš„äº‹ä»¶
     if (event.window.windowID != windowID)
         return;
 
     if (event.type == SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED) {
         int pxW, pxH;
         if(SDL_GetWindowSizeInPixels(window, &pxW, &pxH))
-        _OnResize(pxW, pxH);
+            _OnResize(pxW, pxH);
+    }
+    if (event.type == SDL_EVENT_MOUSE_BUTTON_UP)
+    {
+        if (event.button.button == SDL_BUTTON_RIGHT)
+        {
+            //å³é”®æŒ‰ä¸‹
+        }
     }
 
 
 
-    // ¿É¼ÌĞøÀ©Õ¹ÆäËûÊÂ¼ş£¨¼üÅÌ¡¢Êó±êµÈ£©
+
+    // å¯ç»§ç»­æ‰©å±•å…¶ä»–äº‹ä»¶ï¼ˆé”®ç›˜ã€é¼ æ ‡ç­‰ï¼‰
 }
 
 
@@ -250,6 +366,13 @@ void RenderWindowController::SetTransparent(bool t)
 {
     //TODO/FIXME
     //assert(false);
+
+
+
+    //å¦‚æœæ˜¯windowsï¼Œåˆ™é‡ç½®ä¸€ä¸‹çº¹ç†
+#ifdef SDL_PLATFORM_WINDOWS
+    needResetOffscreenTex=true;
+#endif
 }
 
 void RenderWindowController::SetTop(bool b)
@@ -265,6 +388,14 @@ void RenderWindowController::SetClearColor(SDL_Color color)
     clearColor.g = color.g / 255.f;
     clearColor.b = color.b / 255.f;
     clearColor.a = 0.f;
+
+    //å¦‚æœæ˜¯windowsï¼Œåˆ™é‡ç½®ä¸€ä¸‹çº¹ç†
+#ifdef SDL_PLATFORM_WINDOWS
+    //_ResetOffscreenTex();
+    needResetOffscreenTex = true;
+#endif
+
+    
 }
 
 void RenderWindowController::SetWindowSize(int W, int H)
@@ -299,7 +430,7 @@ void RenderWindowController::SetAspectSize(int aw, int ah)
 //    //SDL_SendWindowEvent(window,SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED, newW, newH);
 //    
 //    
-//    //ÌáÈ¡²¢´¦ÀítaskÊÂ¼ş
+//    //æå–å¹¶å¤„ç†taskäº‹ä»¶
 //    SDL_Event event;
 //    if (SDL_PeepEvents(&event, 1, SDL_GETEVENT, SDL_EVENT_USER + UserEvent::TASK, SDL_EVENT_USER + UserEvent::TASK) > 0)
 //    {
@@ -318,134 +449,157 @@ void RenderWindowController::Render() {
 
 
 
-
-
-
-
-    Csm::Rendering::CubismRenderContext_SDL3* pContext = AppContext::GetLive2DRenderContext();
-
-    //´°¿ÚµÄäÖÈ¾
-
-    //ºÃÏñÕâ¸öcmd»¹ÊÇ·ÅÍâÃæºÃµã
-    //´´½¨µ±Ç°Ö¡µÄÃüÁî»º´æ
-    cmdCurframe = SDL_AcquireGPUCommandBuffer(AppContext::GetGraphicDevice());
-    if (!cmdCurframe)
+    if (needResetOffscreenTex)
     {
-        return;
+        _ResetOffscreenTex();
+        needResetOffscreenTex = false;
     }
-    auto cmd = cmdCurframe;
-
-
-    //ÔİÎŞÎÊÌâ£¬ºóĞøÔÙÊµÑé¶à¿ª
-    //auto cmd_copyAndOfscren = SDL_AcquireGPUCommandBuffer(AppContext::GetGraphicDevice());
-
-
-    //Èç¹û´°¿Ú²»Í¸Ã÷£¬ÔòÊ¹ÓÃswapchainTexture
-    //SDL_GPUTexture* swapchainTexture = nullptr;
-    //unsigned int swapchainTextureWidth, swapchainTextureHeight;
-    //if (!isTransparent)
-    //{
-    //    //SDL_WaitAndAcquireGPUSwapchainTexture(cmd, window, &swapchainTexture, &swapchainTextureWidth, &swapchainTextureHeight);
-    //    SDL_AcquireGPUSwapchainTexture(cmd, window, &swapchainTexture, &swapchainTextureWidth, &swapchainTextureHeight);
-    //    if (!swapchainTexture)
-    //    {
-    //        SDL_LogWarn(SDL_LOG_CATEGORY_GPU, "SDL3 AcquireGPUSwapchainTexture Failed");
-    //        return;
-    //    }
-    //}
-    
-
-
-    auto millionSecond = SDL_GetTicks();
-    uint8_t u8clearValue = static_cast<uint8_t>((0.5f * sinf(millionSecond / 1000.f) + 0.5f) * 255);
-    float clearValue = ((0.5f * sinf(millionSecond / 1000.f) + 0.5f));
 
 
 
 
 
-    //´´½¨ClearRenderPassÇåÀí
+    do
     {
-    SDL_GPUColorTargetInfo colorTargetInfo = {};
-    //colorTargetInfo.texture = swapchainTexture;
-    //colorTargetInfo.texture = isTransparent?offscreenTex:swapchainTexture;
-    colorTargetInfo.texture = offscreenTex;
-    colorTargetInfo.load_op = SDL_GPU_LOADOP_CLEAR;
-    if (isTransparent)
-        colorTargetInfo.clear_color = { 0.f,0.f,0.f ,0.F };
-    else
-        //colorTargetInfo.clear_color = clearColor;//Ã»ÓĞÍ¸Ã÷µÄÊ±ºòÉèÖÃÌØ¶¨±³¾°É«
-        colorTargetInfo.clear_color = { clearValue,clearValue,clearValue ,0.F };//Ã»ÓĞÍ¸Ã÷µÄÊ±ºòÉèÖÃÌØ¶¨±³¾°É«
-    colorTargetInfo.store_op = SDL_GPU_STOREOP_STORE;
 
 
 
-    //Ö¡¿ªÊ¼Ê±µÄÇåÀí
-        SDL_GPURenderPass* _clearPass;
-        if (!depthStencil)
+        Csm::Rendering::CubismRenderContext_SDL3* pContext = AppContext::GetLive2DRenderContext();
+
+        //çª—å£çš„æ¸²æŸ“
+
+        //å¥½åƒè¿™ä¸ªcmdè¿˜æ˜¯æ”¾å¤–é¢å¥½ç‚¹
+        //åˆ›å»ºå½“å‰å¸§çš„å‘½ä»¤ç¼“å­˜
+        cmdCurframe = SDL_AcquireGPUCommandBuffer(AppContext::GetGraphicDevice());
+        cmdCurframeCopy = SDL_AcquireGPUCommandBuffer(AppContext::GetGraphicDevice());
+        if (!cmdCurframe || !cmdCurframeCopy)
         {
+            break;
+        }
+        auto cmd = cmdCurframe;
 
-            //pContext->StartFrame(cmd, & colorTargetInfo,NULL);
-            _clearPass = SDL_BeginGPURenderPass(cmd, &colorTargetInfo, 1, NULL);
+
+
+        unsigned int curRenderSizeW, curRenderSzieH;
+        SDL_GPUTexture* curTargetTex = NULL;
+        //TODO åç»­å¢åŠ æ–°åŠŸèƒ½æ—¶ï¼ˆå¦‚åå¤„ç†åŠŸèƒ½ï¼‰å°†isTransparentæ”¹ä¸ºisNeedOffscreen()
+        if (isTransparent)
+        {
+            curTargetTex = offscreenTex;
+            curRenderSizeW = renderW;
+            curRenderSzieH = renderH;
         }
         else
         {
-            SDL_GPUDepthStencilTargetInfo depthStencilTargetInfo = {};
-            depthStencilTargetInfo.texture = depthStencil;
-            depthStencilTargetInfo.load_op = SDL_GPU_LOADOP_CLEAR;
-            depthStencilTargetInfo.store_op = SDL_GPU_STOREOP_STORE;
-            depthStencilTargetInfo.clear_depth = 1.f;
-            depthStencilTargetInfo.stencil_load_op = SDL_GPU_LOADOP_CLEAR;
-            depthStencilTargetInfo.stencil_store_op = SDL_GPU_STOREOP_STORE;
-            depthStencilTargetInfo.clear_stencil = 0;
+            curTargetTex = offscreenTex;
+            curRenderSizeW = renderW;
+            curRenderSzieH = renderH;
 
-
-            //pContext->StartFrame(cmd, &colorTargetInfo, &depthStencilTargetInfo);
-            _clearPass = SDL_BeginGPURenderPass(cmd, &colorTargetInfo, 1, &depthStencilTargetInfo);
         }
-        SDL_EndGPURenderPass(_clearPass);
-    }
 
 
 
 
+        //åˆ›å»ºClearRenderPassæ¸…ç†
+        SDL_GPURenderPass* _clearPass;
+        {
+            SDL_GPUColorTargetInfo colorTargetInfo = {};
+            colorTargetInfo.texture = curTargetTex;
+            colorTargetInfo.load_op = SDL_GPU_LOADOP_CLEAR;
+            if (isTransparent)
+                colorTargetInfo.clear_color = { 0.f,0.f,0.f ,0.F };
+            else
+                colorTargetInfo.clear_color = clearColor;//æ²¡æœ‰é€æ˜çš„æ—¶å€™è®¾ç½®ç‰¹å®šèƒŒæ™¯è‰²
+            //colorTargetInfo.clear_color = { clearValue,clearValue,clearValue ,0.F };//æ²¡æœ‰é€æ˜çš„æ—¶å€™è®¾ç½®ç‰¹å®šèƒŒæ™¯è‰²
+            colorTargetInfo.store_op = SDL_GPU_STOREOP_STORE;
 
-    int renderW, renderH;
-    GetRenderSize(&renderW,&renderH);
-    Csm::Rendering::CubismRenderer_SDL3::StartFrame(
-        AppContext::GetGraphicDevice(),
-        pContext, renderW, renderH
+
+
+            //å¸§å¼€å§‹æ—¶çš„æ¸…ç†
+            //SDL_GPURenderPass* _clearPass;
+            if (!depthStencil)
+            {
+
+                //pContext->StartFrame(cmd, & colorTargetInfo,NULL);
+                _clearPass = SDL_BeginGPURenderPass(cmd, &colorTargetInfo, 1, NULL);
+            }
+            else
+            {
+                SDL_GPUDepthStencilTargetInfo depthStencilTargetInfo = {};
+                depthStencilTargetInfo.texture = depthStencil;
+                depthStencilTargetInfo.load_op = SDL_GPU_LOADOP_CLEAR;
+                depthStencilTargetInfo.store_op = SDL_GPU_STOREOP_STORE;
+                depthStencilTargetInfo.clear_depth = 1.f;
+                depthStencilTargetInfo.stencil_load_op = SDL_GPU_LOADOP_CLEAR;
+                depthStencilTargetInfo.stencil_store_op = SDL_GPU_STOREOP_STORE;
+                depthStencilTargetInfo.clear_stencil = 0;
+
+
+                //pContext->StartFrame(cmd, &colorTargetInfo, &depthStencilTargetInfo);
+                _clearPass = SDL_BeginGPURenderPass(cmd, &colorTargetInfo, 1, &depthStencilTargetInfo);
+            }
+
+
+            pContext->StartFrame(cmdCurframe,_clearPass,cmdCurframeCopy);
+            //SDL_EndGPURenderPass(_clearPass);
+        }
+
+
+
+
+        //int renderW, renderH;
+        //GetRenderSize(&renderW,&renderH);
+
+        Csm::Rendering::CubismRenderer_SDL3::StartFrame(
+            AppContext::GetGraphicDevice(),
+            pContext, renderW, renderH
         );
 
 
-    //Rendering
-    //Rendering
-    //Rendering
-    //Rendering
-    //Rendering
-    //Rendering
-    //Rendering
-    //Rendering
-    //Rendering
-    //Rendering
-    //Rendering
-    //Rendering
-    //Rendering
-
-
-
-    Csm::Rendering::CubismRenderer_SDL3::EndFrame(AppContext::GetGraphicDevice());
-
-    pContext->EndFrame();
+		//Rendering
+		//Rendering
+		//Rendering
+		//Rendering
+		//Rendering
+		//Rendering
+		//Rendering
+		//Rendering
+        //scene.Draw(curTargetTex, depthStencil, renderW, renderH, cmd, cmdCurframeCopy);
+        scene.Draw(_clearPass, renderW, renderH, cmd, cmdCurframeCopy);
+        //Rendering
+        //Rendering
+        //Rendering
+        //Rendering
+        //Rendering
 
 
 
 
+        Csm::Rendering::CubismRenderer_SDL3::EndFrame(AppContext::GetGraphicDevice());
+        //SDL_EndGPURenderPass(_clearPass);FIXMEç›®å‰åœ¨ä¸‹é¢çš„å‡½æ•°ä¸­è°ƒç”¨ï¼Œè¿™åº”è¯¥æ˜¯ä¸åˆç†çš„ï¼Œåº”è¯¥ä¿®æ”¹
+        pContext->EndFrame();
+
+        //SDL_EndGPURenderPass(_clearPass);
 
 
+        //SDL_SubmitGPUCommandBuffer
+
+        return;
 
 
+    }while (false);
 
+    //ä¸­é—´å‡ºäº†é—®é¢˜ï¼Œä¸è¿›è¡Œæ¸²æŸ“ï¼Œè¿›è¡Œå¯èƒ½çš„èµ„æºæ¸…ç†
+    if (cmdCurframe)
+    {
+        SDL_CancelGPUCommandBuffer(cmdCurframe);
+        cmdCurframe = NULL;
+    }
+    if (cmdCurframeCopy)
+    {
+        SDL_CancelGPUCommandBuffer(cmdCurframeCopy);
+        cmdCurframe = NULL;
+    }
 
     return;
 }
@@ -460,51 +614,150 @@ void RenderWindowController::Present()
     if (isTransparent)
     {
 
-        //½ö´°¿ÚÍ¸Ã÷Ê±Ö´ĞĞ
-        //Íê³ÉºóÏÂÔØÍ¼Ïñµ½ÄÚ´æ
-        SDL_GPUCopyPass* copyPass = SDL_BeginGPUCopyPass(cmd);
-        SDL_GPUTextureRegion texRegion = {};
-        texRegion.texture = offscreenTex;
-        texRegion.w = renderW;
-        texRegion.h = renderH;
-        texRegion.d = 1;
-
-        SDL_GPUTextureTransferInfo srcInfo{};
-        srcInfo.transfer_buffer = offscreenTexTb;    // ÒªÏÂÔØµÄÎÆÀí
-        srcInfo.offset = 0;            // µÚ 0 ¼¶ MIP
-        srcInfo.pixels_per_row = renderW;            // µÚ 0 ²ã
-        srcInfo.rows_per_layer = renderH;
-
-        SDL_DownloadFromGPUTexture(copyPass, &texRegion, &srcInfo);
-        SDL_EndGPUCopyPass(copyPass);
-        SDL_SubmitGPUCommandBuffer(cmd);
-        //SDL_GPUFence* fence = SDL_SubmitGPUCommandBufferAndAcquireFence(cmd);
-        //SDL_WaitForGPUFences(AppContext::GetGraphicDevice(), true,&fence, 1);
-        //SDL_ReleaseGPUFence(AppContext::GetGraphicDevice(), fence);
 
 
+        //windowsä¸­sdl renderderä½¿ç”¨direct3D11 ï¼ŒGPU APIä½¿ç”¨direct3D12
+        //è™½ç„¶SDLæœ¬èº«ä¸æä¾›è¿™ä¸ªä¸¤ä¸ªå›¾å½¢APIçš„äº’é€šï¼Œä½†å®ƒä»¬å®é™…ä¸Šæ˜¯èƒ½äº’é€šè€Œä¸éœ€è¦é€šè¿‡å†…å­˜äº’é€š
+        //æ‰€ä»¥ä¸ºäº†æ€§èƒ½è€ƒè™‘ï¼Œè¿™é‡Œéœ€è¦ç‰¹æ®Šå¤„ç†
+        
+        //åˆå§‹åŒ–èµ„æº
+        {
+            HANDLE shareHandle = 0;
+            if (!d3d12ShareTex)
+            {
+                //åˆ›å»ºå…±äº«çº¹ç†
+                SDL_GPUTextureCreateInfo textureDesc = {};
+                textureDesc.type = SDL_GPU_TEXTURETYPE_2D;
+                //textureDesc.format = SDL_GPU_TEXTUREFORMAT_R8G8B8A8_UNORM;
+                textureDesc.format = SDL_GPU_TEXTUREFORMAT_B8G8R8A8_UNORM;//åº”è¯¥ä¸åŸç¦»å±çº¹ç†ç›¸åŒ
+                textureDesc.usage = SDL_GPU_TEXTUREUSAGE_COLOR_TARGET;
+                textureDesc.width = renderW;
+                textureDesc.height = renderH;
+                textureDesc.layer_count_or_depth = 1;
+                textureDesc.num_levels = 1;
+
+                auto props = SDL_CreateProperties();
+                SDL_SetBooleanProperty(props, SDL_PROP_GPU_TEXTURE_CREATE_D3D12_SHARE_BOOL, true);
+                SDL_SetPointerProperty(props, SDL_PROP_GPU_TEXTURE_CREATE_D3D12_SHARE_HANDLE_POINTER, &shareHandle);
+                textureDesc.props = props;
+
+                d3d12ShareTex = SDL_CreateGPUTexture(AppContext::GetGraphicDevice(), &textureDesc);
+                //åœ¨å¯¹SDLä»£ç ä¿®æ”¹åï¼Œè®¾ç½®ä¸Šè¿°Propertyæ—¶ï¼Œåˆ›å»ºå…±äº«çº¹ç†æˆåŠŸåä¼šè‡ªåŠ¨è®¾ç½®handleå€¼
+                SDL_DestroyProperties(props);
+                if (!d3d12ShareTex)
+                {
+                    SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Create Share D3D12 Texture failed! %s", SDL_GetError());
+                    throw(std::runtime_error("Create Share D3D12 Texture failed!"));
+                }
+
+                if (!shareHandle)
+                {
+                    throw(std::runtime_error("Create D3D12 ShareTexture handle failed!"));
+                }
+            }
 
 
-        // Ó³ÉäÊ±´« true ¿ÉÈ·±£Ó³ÉäÊ±ÏÂÔØÒÑÍê³É
-        void* pixelData = SDL_MapGPUTransferBuffer(AppContext::GetGraphicDevice(), offscreenTexTb, false);
 
-        SDL_Rect rect;
-        rect.x = 0;
-        rect.y = 0;
-        rect.w = renderW;
-        rect.h = renderH;
+            if (!rendererD3d11Device)
+            {
+                //ä»rendererä¸­è·å–deviceæŒ‡é’ˆ
+                rendererD3d11Device = static_cast<ID3D11Device1*>(
+                    SDL_GetPointerProperty(
+                        SDL_GetRendererProperties(renderer),
+                        SDL_PROP_RENDERER_D3D11_DEVICE_POINTER,
+                        nullptr
+                    ));
+            }
 
-        SDL_UpdateTexture(offscreenTex_2D, &rect, pixelData, renderW * 4);
-        SDL_UnmapGPUTransferBuffer(AppContext::GetGraphicDevice(), offscreenTexTb);
+            if (!texToD3D12Copy)
+            {
+                //ä»å…±äº«å¥æŸ„åˆ›å»ºçº¹ç†
+                ID3D11Texture2D* ptexture;
+                if (S_OK != rendererD3d11Device->OpenSharedResource1(
+                    shareHandle,
+                    __uuidof(ID3D11Texture2D),
+                    (void**) &ptexture
+                ))
+                {
+                    throw(std::runtime_error("D3D11 OpenSharedResource Failed."));
+                };
+
+                //å°†D3D11çº¹ç†æä¾›ç»™SDLè¿›è¡Œå°è£…
+                auto props = SDL_CreateProperties();
+                SDL_SetNumberProperty(props, SDL_PROP_TEXTURE_CREATE_WIDTH_NUMBER, renderW);
+                SDL_SetNumberProperty(props, SDL_PROP_TEXTURE_CREATE_HEIGHT_NUMBER, renderH);
+                SDL_SetNumberProperty(props, SDL_PROP_TEXTURE_CREATE_FORMAT_NUMBER, SDL_PIXELFORMAT_ARGB8888);
+                SDL_SetPointerProperty(props, SDL_PROP_TEXTURE_CREATE_D3D11_TEXTURE_POINTER, ptexture);
+                texToD3D12Copy=SDL_CreateTextureWithProperties(renderer, props);
+                SDL_DestroyProperties(props);
+                if (!texToD3D12Copy)
+                {
+                    SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "D3D11 CreateTextureWithProperties Failed. %s", SDL_GetError());
+                    throw(std::runtime_error("D3D11 CreateTextureWithProperties Failed."));
+                }
+            }
+            if (shareHandle)
+            {
+                CloseHandle(shareHandle);
+            }
+        }
 
 
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-        SDL_RenderClear(renderer);
 
-        // ÔÚ´ËÌí¼ÓÓÃ»§»æÖÆÂß¼­
-        // e.g., SDL_RenderDrawLine(renderer, ...)
-        SDL_RenderTexture(renderer, offscreenTex_2D, NULL, NULL);
+
+        //èµ„æºæ‹·è´
+        {
+            //ä¸»ç¦»å±åˆ°d3d12 copyTexçš„æ‹·è´
+            SDL_GPUCopyPass* copyPass = SDL_BeginGPUCopyPass(cmd);
+            SDL_GPUTextureRegion texRegion = {};
+            texRegion.texture = offscreenTex;
+            texRegion.w = renderW;
+            texRegion.h = renderH;
+            texRegion.d = 1;
+            SDL_GPUTextureLocation source = {};
+            source.texture = offscreenTex;
+            SDL_GPUTextureLocation target = {};
+            target.texture = d3d12ShareTex;
+
+            SDL_CopyGPUTextureToTexture(copyPass,&source,&target,renderW,renderH,1,false);
+            SDL_EndGPUCopyPass(copyPass);
+        }
+
+
+
+
+
+
+
+        SDL_SubmitGPUCommandBuffer(cmdCurframeCopy);
+        //SDL_SubmitGPUCommandBuffer(cmd);
+        //ç¡®ä¿ä¸‹æ–¹çš„SDL_RenderPresentå·²ç»æ‰§è¡Œå®Œï¼Ÿ
+        SDL_GPUFence* fence= SDL_SubmitGPUCommandBufferAndAcquireFence(cmd);
+        if (!fence)
+        {
+            SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "SubmitGPUCommandBufferAndAcquireFence failed! %s", SDL_GetError());
+            return;
+        }
+
+        if (!SDL_WaitForGPUFences(AppContext::GetGraphicDevice(), 0, &fence, 1))
+        {
+            SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "WaitForGPUFences failed! %s", SDL_GetError());
+            SDL_ReleaseGPUFence(AppContext::GetGraphicDevice() ,fence);
+            return;
+        }
+        
+        //æ¸²æŸ“å®Œæˆå°†D3D11çº¹ç†copyåˆ°äº¤æ¢é“¾ä¸Š
+        SDL_RenderTexture(renderer, texToD3D12Copy, NULL, NULL);
         SDL_RenderPresent(renderer);
+        //æŒ‰ç†æ¥è¯´åº”è¯¥éœ€è¦ä¸ªæ‰‹æ®µé˜²æ­¢ä¸‹ä¸€å¸§æ¸²æŸ“åˆ°å…±äº«çº¹ç†çš„æ—¶å€™å…±äº«çº¹ç†æ²¡æœ‰ä½¿ç”¨å®Œæˆã€‚ï¼ˆD3D11\D3D12å¹¶è¡Œï¼‰
+        //ä½†è¿™é‡Œå› ä¸ºå¤ªéº»çƒ¦è€Œä¸è¿›è¡Œä»»ä½•ä½œä¸ºå—ï¼Ÿå“ˆåŸºå¦®ï¼Œä½ è¿™å®¶ä¼™
+
+        //optimize
+        //PRESENTé‡Œç­‰å¾…çš„æƒ…å†µæ¯”è¾ƒå¤š,ä¸”æ¯ä¸ªçª—å£ç›¸å¯¹è¾ƒä¸ºç‹¬ç«‹
+        //æœ‰å¿…è¦ç»™æ¯ä¸ªçª—å£å•ç‹¬å¼€ä¸ªæ¸²æŸ“çº¿ç¨‹å—ï¼Ÿ
+
+
+
     }
     else
     {
@@ -522,7 +775,7 @@ void RenderWindowController::Present()
 		//SDL_AcquireGPUSwapchainTexture(cmd, window, &swapchainTexture, &swapchainTextureWidth, &swapchainTextureHeight);
 		if (!swapchainTexture)
 		{
-			//SDL_LogWarn(SDL_LOG_CATEGORY_GPU, "SDL3 AcquireGPUSwapchainTexture Failed");
+			//SDL_LogError(SDL_LOG_CATEGORY_GPU, "SDL3 AcquireGPUSwapchainTexture Failed");
             SDL_EndGPUCopyPass(copyPass);
 			return;
 		}
@@ -532,6 +785,7 @@ void RenderWindowController::Present()
         SDL_CopyGPUTextureToTexture(copyPass,&source,&destination,
             SDL_min(static_cast<Uint32>(renderW), swapchainTextureWidth), SDL_min(static_cast<Uint32>(renderH), swapchainTextureHeight),1,false);
         SDL_EndGPUCopyPass(copyPass);
+        SDL_SubmitGPUCommandBuffer(cmdCurframeCopy);
         SDL_SubmitGPUCommandBuffer(cmd);
     }
 
@@ -540,7 +794,7 @@ void RenderWindowController::Present()
 
 
 
-    //ÔÚÒ»Ö¡½áÊøµÄÊ±ºò½øĞĞÎÆÀíµÄ»ò´°¿Ú³ß´ç±ä»¯µÄ´¦Àí
+    //åœ¨ä¸€å¸§ç»“æŸçš„æ—¶å€™è¿›è¡Œçº¹ç†çš„æˆ–çª—å£å°ºå¯¸å˜åŒ–çš„å¤„ç†
     //
     // 
     // 
@@ -549,12 +803,13 @@ void RenderWindowController::Present()
     // 
     //
 
+
     if (renderW != targetW || renderH != targetH)
     {
         
-        if (_ResizeSwapchain(cmd, window))
+        if (isTransparent)
         {
-            //½öÔÚ½»»»Á´ÖØ½¨³É¹¦Ê±ÉèÖÃÊı¾İ
+            //2DAPIä¸ä¸éœ€è¦ä¿®æ”¹äº¤æ¢é“¾ç›¸å…³çš„ä»£ç (D3D11çœŸç¥å§)
             if (!ResetGraphic(targetW, targetH))
             {
                 throw(std::runtime_error("Can not Reset Window Graphic!"));
@@ -562,20 +817,52 @@ void RenderWindowController::Present()
 
             renderW = targetW;
             renderH = targetH;
-            
-
-
             scene.SetCanvasSize(renderW, renderH);
         }
+        else
+        {
+            if (_ResizeSwapchain(cmd, window))
+            {
+                //ä»…åœ¨äº¤æ¢é“¾é‡å»ºæˆåŠŸæ—¶è®¾ç½®æ•°æ®
+                if (!ResetGraphic(targetW, targetH))
+                {
+                    throw(std::runtime_error("Can not Reset Window Graphic!"));
+                }
+
+                renderW = targetW;
+                renderH = targetH;
+
+
+
+                scene.SetCanvasSize(renderW, renderH);
+            }
+        }
+
+
+        //ä¸ç®¡æ€ä¹ˆæ ·éƒ½ç»™SDLå‘é€é‡ç»˜æ¶ˆæ¯
+        
+#ifdef SDL_PLATFORM_WINDOWS
+        SDL_PropertiesID props = SDL_GetWindowProperties(window);
+        HWND hwnd = (HWND)SDL_GetPointerProperty(
+            props,
+            SDL_PROP_WINDOW_WIN32_HWND_POINTER,
+            nullptr       // å¯é€‰ï¼šä¼ å…¥ SDL_bool* è·å–æ˜¯å¦æŸ¥è¯¢æˆåŠŸ
+        );
+        InvalidateRect(hwnd, NULL, TRUE);
+#endif // DEBUG
 
     }
 
+
+    //æ— è®ºå¦‚ä½•ä¸¤ä¸ªcmdæŒ‡é’ˆéƒ½ä¸å¯ç”¨äº†ï¼Œè®¾ç½®ä¸ºç©º
+    cmdCurframe = NULL;
+    cmdCurframeCopy = NULL;
 }
 
 void RenderWindowController::_OnResize(int newW, int newH)
 {
-    //´°¿ÚÒÑ¾­·¢ÉúResizeµÄÊ±ºòµ÷ÓÃÕâ¸öº¯Êı
-    //»áÔÚÖ÷Ïß³Ìµ÷ÓÃ£¬ËùÒÔÓÃpostµÄ·½·¨£¿¡¢
+    //çª—å£å·²ç»å‘ç”ŸResizeçš„æ—¶å€™è°ƒç”¨è¿™ä¸ªå‡½æ•°
+    //ä¼šåœ¨ä¸»çº¿ç¨‹è°ƒç”¨ï¼Œæ‰€ä»¥ç”¨postçš„æ–¹æ³•ï¼Ÿã€
 
     SDL_Log("Window Resize %d,%d", newW, newH);
 
@@ -590,6 +877,11 @@ void RenderWindowController::_OnResize(int newW, int newH)
         pThis->targetH = UTIL_GETHIGH32VALUE(taskParam);
 
         },this, taskParam);
+    //å‘é€çª—å£é‡ç»˜çš„æ¶ˆæ¯
+    //SDL_Event event = {};
+    //event.type = SDL_EVENT_WINDOW_EXPOSED;
+    //event.window.windowID = windowID;
+    //SDL_PushEvent(&event);
 }
 
 void RenderWindowController::Shutdown() {
@@ -600,6 +892,8 @@ void RenderWindowController::Shutdown() {
         SDL_ReleaseWindowFromGPUDevice(AppContext::GetGraphicDevice(),window);
     }
 
+    //æ¸…ç†scene
+    scene.Reset();
 
     if (offscreenTex_2D)
     {
@@ -637,7 +931,7 @@ void RenderWindowController::Shutdown() {
 
 Json::Value RenderWindowController::Save()
 {
-    //±£´æÓëÈí¼şÉèÖÃÎŞ¹ØµÄÏîÄ¿£¬±ÈÈçclearColorºÍisTransparent¾Í²»ĞèÒª±£´æ
+    //ä¿å­˜ä¸è½¯ä»¶è®¾ç½®æ— å…³çš„é¡¹ç›®ï¼Œæ¯”å¦‚clearColorå’ŒisTransparentå°±ä¸éœ€è¦ä¿å­˜
     
     Json::Value windowJson;
     if (!window)
@@ -645,7 +939,7 @@ Json::Value RenderWindowController::Save()
 
 
 
-    //»ñÈ¡ÏñËØµ¥Î»µÄ´°¿Ú´óĞ¡
+    //è·å–åƒç´ å•ä½çš„çª—å£å¤§å°
     int _w, _h;
     if (!SDL_GetWindowSizeInPixels(window, &_w, &_h))
     {
@@ -658,12 +952,12 @@ Json::Value RenderWindowController::Save()
     SDL_DisplayID display=SDL_GetDisplayForWindow(window);
     if (0 == display)
     {
-        //»ñÈ¡ÆÁÄ»Ê§°ÜµÄ»°£¬ÓÃ¾ø¶Ô×ø±ê´æ´¢
+        //è·å–å±å¹•å¤±è´¥çš„è¯ï¼Œç”¨ç»å¯¹åæ ‡å­˜å‚¨
         bSaveAsAbsoluteCoordinate = true;
     }
     else
     {
-        //Ñ°ÕÒÍ¬ÃûÆÁÄ»,Èç¹ûÓĞÍ¬ÃûÆÁÄ»¾ÍÓÃ¾ø¶Ô×ø±ê´æ´¢
+        //å¯»æ‰¾åŒåå±å¹•,å¦‚æœæœ‰åŒåå±å¹•å°±ç”¨ç»å¯¹åæ ‡å­˜å‚¨
         int displaysCount;
         SDL_DisplayID* displays= SDL_GetDisplays(&displaysCount);
         const char* curDispalyName = SDL_GetDisplayName(display);
@@ -687,7 +981,7 @@ Json::Value RenderWindowController::Save()
         windowJson["Display"] = SDL_GetDisplayName(display);
     }
 
-    //»ñÈ¡´°¿ÚµÄ×ø±ê
+    //è·å–çª—å£çš„åæ ‡
     int posX, posY;
     if (SDL_GetWindowPosition(window, &posX, &posY))
     {
@@ -701,13 +995,13 @@ Json::Value RenderWindowController::Save()
             SDL_Rect displayRect;
             if (SDL_GetDisplayBounds(display, &displayRect))
             {
-                //»ñÈ¡µ½ÁËÏÔÊ¾Æ÷·¶Î§£¬´æ´¢Ïà¶ÔÏÔÊ¾Æ÷µÄ×ø±ê
+                //è·å–åˆ°äº†æ˜¾ç¤ºå™¨èŒƒå›´ï¼Œå­˜å‚¨ç›¸å¯¹æ˜¾ç¤ºå™¨çš„åæ ‡
                 windowJson["PositionInDisplay"][0] = posX-displayRect.x;
                 windowJson["PositionInDisplay"][1] = posY- displayRect.y;
             }
             else
             {
-                //Î´»ñÈ¡ÏÔÊ¾Æ÷·¶Î§£¬´æ´¢¾ø¶Ô×ø±ê
+                //æœªè·å–æ˜¾ç¤ºå™¨èŒƒå›´ï¼Œå­˜å‚¨ç»å¯¹åæ ‡
                 windowJson["AbsolutePosition"][0] = posX;
                 windowJson["AbsolutePosition"][1] = posY;
             }
@@ -716,15 +1010,15 @@ Json::Value RenderWindowController::Save()
     }
     else
     {
-        //ÎŞ·¨»ñÈ¡´°¿Ú×ø±êÊ±²»½øĞĞÎ»ÖÃ±£´æ
-        SDL_LogWarn(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION,
+        //æ— æ³•è·å–çª—å£åæ ‡æ—¶ä¸è¿›è¡Œä½ç½®ä¿å­˜
+        SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION,
             "Can not get window position: %s", SDL_GetWindowTitle(window));
 
-        //ÎŞ·¨»ñÈ¡´°¿Ú×ø±êµÄ»°£¬LoadÊ±Ä¬ÈÏ½«´°¿Ú·ÅÔÚÏÔÊ¾Æ÷ÖĞĞÄ
-        // ÎŞ·¨»ñÈ¡ÏÔÊ¾Æ÷µÄ»°£¬LoadÊ±²»Ö¸¶¨ÏÔÊ¾Æ÷
+        //æ— æ³•è·å–çª—å£åæ ‡çš„è¯ï¼ŒLoadæ—¶é»˜è®¤å°†çª—å£æ”¾åœ¨æ˜¾ç¤ºå™¨ä¸­å¿ƒ
+        // æ— æ³•è·å–æ˜¾ç¤ºå™¨çš„è¯ï¼ŒLoadæ—¶ä¸æŒ‡å®šæ˜¾ç¤ºå™¨
     }
 
-    //TODO´°¿Ú³ß´ç¿¼ÂÇ²ÉÓÃäÖÈ¾³ß´ç¶ø²»ÊÇÖ±½Ó»ñÈ¡´°¿Ú³ß´ç£¿
+    //TODOçª—å£å°ºå¯¸è€ƒè™‘é‡‡ç”¨æ¸²æŸ“å°ºå¯¸è€Œä¸æ˜¯ç›´æ¥è·å–çª—å£å°ºå¯¸ï¼Ÿ
     windowJson["Size"][0]= _w;
     windowJson["Size"][1]= _h;
     
@@ -732,7 +1026,7 @@ Json::Value RenderWindowController::Save()
 
 
 
-    //±£´æ´°¿ÚµÄ³¡¾°
+    //ä¿å­˜çª—å£çš„åœºæ™¯
     windowJson["Scene"] = scene.GenerateAttributes();
 
     return windowJson;
@@ -741,11 +1035,14 @@ Json::Value RenderWindowController::Save()
 void RenderWindowController::Load(const Json::Value& json)
 {
     Shutdown();
-    //´Ójson´´½¨´°¿Ú
-    //ÏÈ¼ÆËã´°¿ÚÎ»ÖÃ
+    //ä»jsonåˆ›å»ºçª—å£
+    //å…ˆè®¡ç®—çª—å£ä½ç½®
     bool hasWindowPos = false;
     SDL_DisplayID displayID = 0;
     int windowPosX, windowPosY;
+
+    //int windowSizeX = 400;
+    //int windowSizeY = 300;
 
     int windowSizeX = 400;
     int windowSizeY = 300;
@@ -757,12 +1054,12 @@ void RenderWindowController::Load(const Json::Value& json)
     }
     else
     {
-        SDL_LogWarn(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION,
+        SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION,
             "Can not read window size, CatTuber will create window in default (400x300).");
     }
 
 
-    //Èç¹ûÖ±½Ó´æ´¢ÁË¾ø¶Ô×ø±ê
+    //å¦‚æœç›´æ¥å­˜å‚¨äº†ç»å¯¹åæ ‡
     if (json.isMember("AbsolutePosition") && json["AbsolutePosition"].isArray()
         && json["AbsolutePosition"][0].isInt() && json["AbsolutePosition"][1].isInt()
         )
@@ -771,14 +1068,14 @@ void RenderWindowController::Load(const Json::Value& json)
         windowPosX = json["AbsolutePosition"][0].asInt();
         windowPosY = json["AbsolutePosition"][1].asInt();
     }
-    //Èç¹û´æ´¢ÁËÏÔÊ¾Æ÷
+    //å¦‚æœå­˜å‚¨äº†æ˜¾ç¤ºå™¨
 
 
 
     if (json.isMember("Display") && json["Display"].isString())
     {
         std::string displayName = json["Display"].asString();
-        //ÏÈ¸ù¾İÏÔÊ¾Æ÷ÃûÑ°ÕÒ¶ÔÓ¦µÄdisplay
+        //å…ˆæ ¹æ®æ˜¾ç¤ºå™¨åå¯»æ‰¾å¯¹åº”çš„display
         int displayCount = 0;
         SDL_DisplayID* displayArray= SDL_GetDisplays(&displayCount);
        
@@ -792,7 +1089,7 @@ void RenderWindowController::Load(const Json::Value& json)
         }
         SDL_free(displayArray);
 
-        //Èç¹û´æÓĞ×ø±êÔòÓÃÏà¶Ô×ø±ê¼ÆËã£¬Èç¹ûÃ»´æ×ø±êÔò´´½¨ÓÚÖĞĞÄ
+        //å¦‚æœå­˜æœ‰åæ ‡åˆ™ç”¨ç›¸å¯¹åæ ‡è®¡ç®—ï¼Œå¦‚æœæ²¡å­˜åæ ‡åˆ™åˆ›å»ºäºä¸­å¿ƒ
         if (json.isMember("PositionInDisplay") && json["PositionInDisplay"].isArray()
             && json["PositionInDisplay"][0].isInt() && json["PositionInDisplay"][1].isInt())
         {
@@ -801,7 +1098,7 @@ void RenderWindowController::Load(const Json::Value& json)
 
             if (displayID)
             {
-                //»ñÈ¡ÏÔÊ¾Æ÷×ø±ê
+                //è·å–æ˜¾ç¤ºå™¨åæ ‡
                 SDL_Rect displayRect;
                 if (SDL_GetDisplayBounds(displayID, &displayRect))
                 {
@@ -824,7 +1121,7 @@ void RenderWindowController::Load(const Json::Value& json)
 
     if (displayID && !hasWindowPos)
     {
-        //ÓĞÏÔÊ¾Æ÷µ«ÎŞ×ø±êµÄÇé¿ö£¬ÔÚÏÔÊ¾Æ÷ÖĞĞÄ´´½¨´°¿Ú
+        //æœ‰æ˜¾ç¤ºå™¨ä½†æ— åæ ‡çš„æƒ…å†µï¼Œåœ¨æ˜¾ç¤ºå™¨ä¸­å¿ƒåˆ›å»ºçª—å£
         SDL_Rect displayRect;
         if (SDL_GetDisplayBounds(displayID, &displayRect))
         {
@@ -857,7 +1154,7 @@ void RenderWindowController::Load(const Json::Value& json)
        throw std::runtime_error(SDL_GetError());
    }
 
-   //´´½¨´´½¨ºó´´½¨ÆäÓà¸÷ÖÖ×ÊÔ´
+   //åˆ›å»ºåˆ›å»ºååˆ›å»ºå…¶ä½™å„ç§èµ„æº
    if (!SDL_GetWindowSizeInPixels(window,&renderW,&renderH))
    {
        SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Unable to get window px size: %s", SDL_GetError());
@@ -875,8 +1172,8 @@ void RenderWindowController::Load(const Json::Value& json)
    SetLock(AppSettings::GetIns().GetWindowLock());
    SetTop(AppSettings::GetIns().GetWindowTop());
 
-   //´´½¨Scene
-   //QUESTION:Éæ¼°µ½Ä£ĞÍÎÄ¼ş¼ÓÔØ£¬ĞèÒªÒÆ¶¯µ½ÆäËûÏß³Ì·ÀÖ¹ui¿¨¶ÙÂğ£¿
+   //åˆ›å»ºScene
+   //QUESTION:æ¶‰åŠåˆ°æ¨¡å‹æ–‡ä»¶åŠ è½½ï¼Œéœ€è¦ç§»åŠ¨åˆ°å…¶ä»–çº¿ç¨‹é˜²æ­¢uiå¡é¡¿å—ï¼Ÿ
    if (json.isMember("Scene"))
    {
        scene.ApplyAttributes(json["Scene"]);
@@ -960,11 +1257,11 @@ bool RenderWindowManager::CreateRenderWindow(const char* title,
 
 void RenderWindowManager::HandleEvent(const SDL_Event& event) {
     //SDL_Event event;
-        // È«¾ÖÍË³ö´¦Àí
+        // å…¨å±€é€€å‡ºå¤„ç†
         if (event.type == SDL_EVENT_QUIT) {
             running = false;
         }
-        //¼à¿Ø´°¿Ú¹Ø±ÕÊÂ¼ş
+        //ç›‘æ§çª—å£å…³é—­äº‹ä»¶
         else if (event.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED) {
             auto targetWindowID=event.window.windowID;
 
@@ -973,11 +1270,11 @@ void RenderWindowManager::HandleEvent(const SDL_Event& event) {
             
             if (it != controllers.end())
             {
-                //// ÏÈÏú»ÙäÖÈ¾Æ÷ÔÙÏú»Ù´°¿Ú
+                //// å…ˆé”€æ¯æ¸²æŸ“å™¨å†é”€æ¯çª—å£
                 //if ((*it)->renderer) SDL_DestroyRenderer(it->renderer);
                 //if ((*it)->window)   SDL_DestroyWindow(it->window);
 
-                //erase»á´¥·¢Îö¹¹£¬ËùÒÔ²»Ê¹ÓÃÉÏ·½ÇåÀí´úÂë
+                //eraseä¼šè§¦å‘ææ„ï¼Œæ‰€ä»¥ä¸ä½¿ç”¨ä¸Šæ–¹æ¸…ç†ä»£ç 
                 controllers.erase(it);
             }
 
@@ -986,7 +1283,7 @@ void RenderWindowManager::HandleEvent(const SDL_Event& event) {
 
 
 
-        // ·Ö·¢µ½Ã¿¸ö WindowController
+        // åˆ†å‘åˆ°æ¯ä¸ª WindowController
         for (auto& wc : controllers) {
             wc->HandleEvent(event);
         }
@@ -1005,7 +1302,7 @@ void RenderWindowManager::RenderAll() {
 }
 
 void RenderWindowManager::PresentAll() {
-    //Ö÷Ïß³ÌÍ¬²½
+    //ä¸»çº¿ç¨‹åŒæ­¥
 
     for (auto& wc : controllers) {
         wc->Present();
@@ -1018,7 +1315,7 @@ void RenderWindowManager::PresentAll() {
         for (auto& wc : rm.controllers) {
             wc->Present();
         }
-        //¸æÖªäÖÈ¾Ïß³ÌPresentÍê±Ï canStartFrame=TRUE
+        //å‘ŠçŸ¥æ¸²æŸ“çº¿ç¨‹Presentå®Œæ¯• canStartFrame=TRUE
         RenderThread::GetIns().PostTask([](void* userData, uint64_t userData2) {
             auto& rm = *((RenderWindowManager*)userData);
             rm.canStartFrame = true;
@@ -1047,7 +1344,7 @@ void RenderWindowManager::SetWindowTop(bool b)
 {
     for (auto& wc : controllers)
     {
-        //ÀÁµÃ×ª·¢ÁË
+        //æ‡’å¾—è½¬å‘äº†
         SDL_SetWindowAlwaysOnTop(wc->window,b);
     }
 }
@@ -1068,7 +1365,7 @@ void RenderWindowManager::SetWindowLock(bool b)
     }
 }
 
-//SDLºÃÏñ²»Ö§³Ö´°¿ÚÍ¸Ã÷µã»÷£¬·ÅÔÚÆ½Ì¨Ïà¹ØÎÄ¼ş¼ĞÖĞÊµÏÖ
+//SDLå¥½åƒä¸æ”¯æŒçª—å£é€æ˜ç‚¹å‡»ï¼Œæ”¾åœ¨å¹³å°ç›¸å…³æ–‡ä»¶å¤¹ä¸­å®ç°
 //void RenderWindowManager::SetWindowLock(bool b)
 //{
 //    for (auto& wc : controllers)
@@ -1096,7 +1393,7 @@ void RenderWindowManager::SetWindowVisible(bool b)
 
 void RenderWindowManager::SetWindowBackgroundColor(SDL_Color backgroundColor)
 {
-    //TODO:Ëø¶¨äÖÈ¾Ïß³Ì»òÕßÖ±½Ó·¢ËÍµ½äÖÈ¾Ïß³Ì:
+    //TODO:é”å®šæ¸²æŸ“çº¿ç¨‹æˆ–è€…ç›´æ¥å‘é€åˆ°æ¸²æŸ“çº¿ç¨‹:
 
     for (auto& wc : controllers)
     {
@@ -1122,24 +1419,24 @@ bool RenderWindowManager::SaveScene(const char* sceneName, bool isQuitSave)
 {
     if (!sceneName || SDL_strcmp(sceneName, "") == 0)
     {
-        //todo ¶àÓïÑÔÖ§³Ö
+        //todo å¤šè¯­è¨€æ”¯æŒ
         sceneName = "Unnamed Scene";
     }
 
 
-    //ÏÈ¹¹½¨ÎÄ¼şÃû
+    //å…ˆæ„å»ºæ–‡ä»¶å
     std::string savePath= AppContext::GetPrefPath();
     savePath = savePath + "Scenes";
-    //Èç¹û²»´æÔÚ£¬Ôò´´½¨
-    //Õâ¸öº¯Êı»áÔÚÎÄ¼ş¼ĞÒÑ¾­´æÔÚµÄÊ±ºòÒ²·µ»Øtrue
+    //å¦‚æœä¸å­˜åœ¨ï¼Œåˆ™åˆ›å»º
+    //è¿™ä¸ªå‡½æ•°ä¼šåœ¨æ–‡ä»¶å¤¹å·²ç»å­˜åœ¨çš„æ—¶å€™ä¹Ÿè¿”å›true
     if (!SDL_CreateDirectory(savePath.c_str()))
     {
         SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION,"Can not Create Dir: %s, %s", savePath.c_str(),SDL_GetError());
         return false;
     }
 
-    //¹¹½¨ÎÄ¼şÃûÒÔ¼°jsonÄÚÈİĞèÒªÓÃµ½µÄºÁÃëÊ±¼ä´Á
-    //µ±Ç°Ê±¼ä´Á×Ö·û  //SavedScene_20250721114514666
+    //æ„å»ºæ–‡ä»¶åä»¥åŠjsonå†…å®¹éœ€è¦ç”¨åˆ°çš„æ¯«ç§’æ—¶é—´æˆ³
+    //å½“å‰æ—¶é—´æˆ³å­—ç¬¦  //SavedScene_20250721114514666
     SDL_Time time;
     if (!SDL_GetCurrentTime(&time))
     {
@@ -1169,7 +1466,7 @@ bool RenderWindowManager::SaveScene(const char* sceneName, bool isQuitSave)
 
     savePath = savePath + "/" + fileName;
 
-    //¹¹½¨json
+    //æ„å»ºjson
     Json::Value saveJson;
     {
         saveJson["SceneName"] = sceneName;
@@ -1181,7 +1478,7 @@ bool RenderWindowManager::SaveScene(const char* sceneName, bool isQuitSave)
     }
 
 
-    //±£´æÎÄ¼ş
+    //ä¿å­˜æ–‡ä»¶
     if (!util::SaveJsonToFile(saveJson, savePath.c_str()))
     {
         SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Save File Failed: %s", savePath.c_str());
@@ -1192,7 +1489,7 @@ bool RenderWindowManager::SaveScene(const char* sceneName, bool isQuitSave)
 
 bool RenderWindowManager::LoadScene(const char* sceneName, bool isQuitSave)
 {
-    //´ÓÎÄ¼şÔØÈë³¡¾°
+    //ä»æ–‡ä»¶è½½å…¥åœºæ™¯
     if (isQuitSave)
     {
         std::string settingsFilePath = AppContext::GetPrefPath();
@@ -1202,7 +1499,7 @@ bool RenderWindowManager::LoadScene(const char* sceneName, bool isQuitSave)
         return true;
     }
 
-    //´ÓÊÖ¶¯±£´æµÄ³¡¾°½øĞĞÔØÈë
+    //ä»æ‰‹åŠ¨ä¿å­˜çš„åœºæ™¯è¿›è¡Œè½½å…¥
 
     Json::Value sceneJson;
     struct _TemStruct
@@ -1213,7 +1510,7 @@ bool RenderWindowManager::LoadScene(const char* sceneName, bool isQuitSave)
     
     SDL_EnumerateDirectoryCallback fileCallBack = [](void* userdata, const char* dirname, const char* fname) {
 
-        //Ö»¶ÁÈ¡ºó×ºÃûÎª.sceneµÄÎÄ¼ş
+        //åªè¯»å–åç¼€åä¸º.sceneçš„æ–‡ä»¶
         if(!util::IsStringEndsWith(fname,".scene"))
             return SDL_EnumerationResult::SDL_ENUM_CONTINUE;
         
@@ -1223,11 +1520,11 @@ bool RenderWindowManager::LoadScene(const char* sceneName, bool isQuitSave)
         pathstr +=fname;
         Json::Value json = util::BuildJsonFromFile(pathstr.c_str());
         
-        //´ÓjsonÖĞ¶ÁÈ¡±ØÒªĞÅÏ¢
+        //ä»jsonä¸­è¯»å–å¿…è¦ä¿¡æ¯
         _TemStruct* pdata = (_TemStruct*)userdata;
         if (!(json.isMember("SceneName") && json["SceneName"].isString()&& json["SceneName"].asString()== pdata->sceneName))
         {
-            //Èç¹û²»´æÔÚSceneNameÏî
+            //å¦‚æœä¸å­˜åœ¨SceneNameé¡¹
             return SDL_EnumerationResult::SDL_ENUM_CONTINUE;
         }
 
@@ -1237,7 +1534,7 @@ bool RenderWindowManager::LoadScene(const char* sceneName, bool isQuitSave)
 
 
 
-    //Í¨¹ıÎÄ¼ş±éÀúµ½Ä¿±êjson
+    //é€šè¿‡æ–‡ä»¶éå†åˆ°ç›®æ ‡json
     std::string settingsFilePath = AppContext::GetPrefPath();
     settingsFilePath = settingsFilePath + "Scenes";
     SDL_EnumerateDirectory(settingsFilePath.c_str(), fileCallBack, &dataStruct);
@@ -1247,33 +1544,34 @@ bool RenderWindowManager::LoadScene(const char* sceneName, bool isQuitSave)
 
 bool RenderWindowManager::_BuildFromJson(const Json::Value& json)
 {
-    //Èç¹ûÓĞ±£´æ´°¿Ú
+    //å¦‚æœæœ‰ä¿å­˜çª—å£
     if (json.isMember("Windows") && json["Windows"].isArray()&& json["Windows"].size()>0)
     {
         for (auto i = 0u; i < json["Windows"].size(); i++)
         {
-            //¸ù¾İjson["Windows"][i]´´½¨´°¿Ú
-            //²»Å×³öÒì³££¿
+            //æ ¹æ®json["Windows"][i]åˆ›å»ºçª—å£
+            //ä¸æŠ›å‡ºå¼‚å¸¸ï¼Ÿ
             auto& window = controllers.emplace_back(std::unique_ptr<RenderWindowController>(new RenderWindowController));
             window->Load(json["Windows"][i]);
         }
     }
     else
     {
-        //ÒÔÄ¬ÈÏ×ÊÔ´´´½¨1¸ö´°¿Ú 
+        //ä»¥é»˜è®¤èµ„æºåˆ›å»º1ä¸ªçª—å£ 
         
 
         auto& window=controllers.emplace_back(std::unique_ptr<RenderWindowController>(new RenderWindowController));
         
-        //Ä¬ÈÏµÄjson
+        //é»˜è®¤çš„json
         Json::Value defaultWindowJson;
         defaultWindowJson["Size"][0] = 400;
         defaultWindowJson["Size"][1] = 300;
 
-        //Ä¬ÈÏ¹¹ÔìÒ»¸öCatTuber¾­µä³¡¾°
-        auto& item0 = defaultWindowJson["Scene"]["Item"][0];
+        //é»˜è®¤æ„é€ ä¸€ä¸ªCatTuberç»å…¸åœºæ™¯
+        auto& item0 = defaultWindowJson["Scene"]["Items"][0];
         item0["Type"] = "ClassicItem";
-        item0["Detail"]["Table"]; 
+        //item0["Detail"]["Table"]; //TableObject::CreateFromAttributes
+        item0["Detail"]["Table"]["PackPath"] = "[AppBasePath]/Resources/Table/28kGameKeyboard";
         //TODO/FIXME
         //item0["Detail"]["Character"];
         //item0["Detail"]["HandheldItem"];

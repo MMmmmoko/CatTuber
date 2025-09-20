@@ -5,9 +5,9 @@
 #include<SDL3/SDL.h>
 
 
-//¼üÅÌÊäÈëÒÔDirectInputÖÐÌá¹©µÄÓÐÃû³ÆµÄ°´¼üÎª×¼£¬
-//¼´È¡DirectInputºÍSDL°´¼ü¶¨ÒåµÄ½»¼¯(½»¼¯º¬ÓÐ¼¸ºõÈ«²¿Í¨ÓÃ¼ü£¬Ó¦¸ÃÄÜ¸²¸ÇmacºÍLinux)£¬
-//Ãû³Æ°´SDLµÄÀ´£¨ÒòÎªDirectInput²»¿çÆ½Ì¨£¬ËùÒÔÄÇ±ßµÄÃüÃû¿ÉÄÜ²»ÊÇºÜÍ¨ÓÃ£©¡£
+//é”®ç›˜è¾“å…¥ä»¥DirectInputä¸­æä¾›çš„æœ‰åç§°çš„æŒ‰é”®ä¸ºå‡†ï¼Œ
+//å³å–DirectInputå’ŒSDLæŒ‰é”®å®šä¹‰çš„äº¤é›†(äº¤é›†å«æœ‰å‡ ä¹Žå…¨éƒ¨é€šç”¨é”®ï¼Œåº”è¯¥èƒ½è¦†ç›–macå’ŒLinux)ï¼Œ
+//åç§°æŒ‰SDLçš„æ¥ï¼ˆå› ä¸ºDirectInputä¸è·¨å¹³å°ï¼Œæ‰€ä»¥é‚£è¾¹çš„å‘½åå¯èƒ½ä¸æ˜¯å¾ˆé€šç”¨ï¼‰ã€‚
 
 class KeyboardInput
 {

@@ -19,14 +19,14 @@ namespace Live2D {
 
 					CubismOffscreenSurface_SDL3();
 
-					//Ó¦¸Ã²»ĞèÒªClear£¬Clear·¢ÉúÔÚrenderpassµÄloadopÖĞ
+					//åº”è¯¥ä¸éœ€è¦Clearï¼ŒClearå‘ç”Ÿåœ¨renderpassçš„loadopä¸­
 					//void Clear(ID3D11DeviceContext* renderContext, float r, float g, float b, float a);
 
 					void BeginDraw(CubismRenderContext_SDL3*);
 					void EndDraw(CubismRenderContext_SDL3*);
 					//void SetAsRenderTarget();
 
-					//SDL3²»Ö±½ÓClear¶øÊÇÔÚ¹ÜÇ®µÄÆğÊ¼½×¶ÎClear£¬ËùÒÔÕâ¸öClear²»»áÊµÊ±ÉúĞ§£¬²¢ÇÒ²»ÄÜ¶ÀÁ¢Ê¹ÓÃ
+					//SDL3ä¸ç›´æ¥Clearè€Œæ˜¯åœ¨ç®¡é’±çš„èµ·å§‹é˜¶æ®µClearï¼Œæ‰€ä»¥è¿™ä¸ªClearä¸ä¼šå®æ—¶ç”Ÿæ•ˆï¼Œå¹¶ä¸”ä¸èƒ½ç‹¬ç«‹ä½¿ç”¨
 					void Clear(CubismRenderContext_SDL3* renderContext, float r, float g, float b, float a);
 
 
@@ -45,7 +45,7 @@ namespace Live2D {
 				private:
 					SDL_GPUTexture* _texture;
 					SDL_GPUTexture* _depthTexture;
-					SDL_GPUTexture* _backupRender;//ÀëÆÁäÖÈ¾ÍêĞèÒª»ØÍËµ½Ô­äÖÈ¾Ä¿±ê£¬¼´´°¿Ú»òLive2DÍâµÄäÖÈ¾Ä¿±ê£¬²»»ØÍËµÄ»°»áäÖÈ¾´íÂÒ
+					SDL_GPUTexture* _backupRender;//ç¦»å±æ¸²æŸ“å®Œéœ€è¦å›é€€åˆ°åŸæ¸²æŸ“ç›®æ ‡ï¼Œå³çª—å£æˆ–Live2Då¤–çš„æ¸²æŸ“ç›®æ ‡ï¼Œä¸å›é€€çš„è¯ä¼šæ¸²æŸ“é”™ä¹±
 					SDL_GPUTexture* _backupDepth;
 
 					SDL_GPUDevice* _device;

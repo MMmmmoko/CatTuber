@@ -1,8 +1,8 @@
 #pragma once
 
 
-//ÉèÖÃSDLµÄºó¶Ë
-//MacOSÉÏÎªMetal WindowsÉÏÎªD3d12£¬linuxÉÏÎªVulkan
+//è®¾ç½®SDLçš„åç«¯
+//MacOSä¸Šä¸ºMetal Windowsä¸Šä¸ºD3d12ï¼Œlinuxä¸Šä¸ºVulkan
 #include<SDL3/SDL_platform_defines.h>
 
 

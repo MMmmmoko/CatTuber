@@ -54,13 +54,13 @@ namespace Live2D {
         namespace Framework {
             namespace Rendering {
 
-                //  ǰ������
+                //  前方宣言
                 class CubismRenderer_SDL3;
                 class CubismClippingContext;
                 class CubismRenderContext_SDL3;
 
 
-                //һ����Ⱦ�����еĶ���ƬԪ��ɫ�������ܲ���Ҫ�����
+                //一个渲染管线中的顶点片元着色器，可能不需要这个类
                 class CubismShaderSet
                 {
                 public:
@@ -94,18 +94,18 @@ namespace Live2D {
                     void SetupShader(SDL_GPUDevice* device, CubismRenderContext_SDL3* renderContext);
 
                 private:
-                    //������ɫ��
+                    //创建着色器
                     void GenerateShaders(SDL_GPUDevice* device);
 
-                    //�ɹ�Ϊtrue
-                    Csm::csmBool LoadShaderProgram(SDL_GPUDevice* device, bool isPs, csmInt32 assign, const uint8_t* bytes, size_t size, const csmChar* entryPoint);
+                    //成功为true
+                    Csm::csmBool LoadShaderProgram(SDL_GPUDevice* device, bool isPs, csmInt32 assign, const uint8_t* bytes, size_t size, const csmChar* entryPoint, csmInt32 samplerNum=0);
 
 
                     SDL_GPUDevice* _device = NULL;
 
                     csmVector<CubismShaderSet*> _shaderSets;
 
-                    //������ɫ��
+                    //保存着色器
                     csmVector<SDL_GPUShader*> _shaderSetsVS;
                     csmVector<SDL_GPUShader*> _shaderSetsPS;
 

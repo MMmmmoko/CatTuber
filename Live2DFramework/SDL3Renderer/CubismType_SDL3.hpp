@@ -8,7 +8,7 @@ namespace Live2D {
         namespace Framework {
 
             /**
-             * @brief   D3D11ª˘±æÌîµ„
+             * @brief   D3D11Âü∫Êú¨È†ÇÁÇπ
              */
 
             struct CubismVertexSDL3
@@ -18,7 +18,7 @@ namespace Live2D {
             };
 
             /**
-             * @brief   •∑•ß©`•¿©`•≥•Û•π•ø•Û•»•–•√•’•°
+             * @brief   „Ç∑„Çß„Éº„ÉÄ„Éº„Ç≥„É≥„Çπ„Çø„É≥„Éà„Éê„ÉÉ„Éï„Ç°
              */
             struct CubismConstantBufferSDL3
             {

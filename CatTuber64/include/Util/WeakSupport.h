@@ -57,7 +57,7 @@ namespace cat
 
 
 
-        //·µ»Øfalse±íÊ¾º¯Êý¹ýÆÚ£¬ÐèÒª´ÓÔ­ÁÐ±íÖÐÉ¾³ý¶ÔÓ¦Ïî
+        //è¿”å›žfalseè¡¨ç¤ºå‡½æ•°è¿‡æœŸï¼Œéœ€è¦ä»ŽåŽŸåˆ—è¡¨ä¸­åˆ é™¤å¯¹åº”é¡¹
         template<class... Args>
         auto operator()(Args&&... args) const
 #if _MSC_VER>1900

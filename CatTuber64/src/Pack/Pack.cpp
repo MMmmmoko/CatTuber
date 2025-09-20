@@ -12,7 +12,7 @@
 bool Pack::Open(const char* packFilePath)
 {
 	
-#define PACK_CHECKPATH(reader) if(PackReader_##reader::CheckPack(packFilePath)){packPath = packFilePath;return true;};
+#define PACK_CHECKPATH(reader) if(PackReader_##reader::CheckPack(packFilePath)){packPath = packFilePath;type=PackType_##reader;return true;};
 	PACKREADER_LIST(PACK_CHECKPATH)
 #undef PACK_CHECKPATH
 
@@ -73,14 +73,15 @@ bool Pack::IsFileExist(const char* path)
 	return false;
 }
 
-std::vector<std::string> Pack::GetFileList(const char* folerPath, bool fullPath)
+//fullPathInPack è¾“å‡ºæ–‡ä»¶åœ¨åŒ…å†…çš„è·¯å¾„ï¼Œä¸ºå¦åˆ™åªè¾“å‡ºæ–‡ä»¶å
+std::vector<std::string> Pack::GetFileList(const char* folerPath, bool fullPathInPack)
 {
 	switch (type)
 	{
 	case Pack::PackType_Unknown:
 		break;
 
-#define PACK_GETFILELIST(reader) case PackType_##reader:return PackReader_##reader::GetFileList(packPath.c_str(),folerPath,fullPath);
+#define PACK_GETFILELIST(reader) case PackType_##reader:return PackReader_##reader::GetFileList(packPath.c_str(),folerPath,fullPathInPack);
 		PACKREADER_LIST(PACK_GETFILELIST)
 #undef PACK_GETFILELIST
 
@@ -111,13 +112,14 @@ void Pack::ReleaseMem(uint8_t* mem)
 
 bool PackReader_Folder::CheckPack(const char* packFilePath)
 {
-	//¸ø¶¨Â·¾¶ÅĞ¶ÏÊÇ·ñÎªÎÄ¼ş¼Ğ¼´¿É
+	//ç»™å®šè·¯å¾„åˆ¤æ–­æ˜¯å¦ä¸ºæ–‡ä»¶å¤¹å³å¯
 	SDL_PathInfo pathInfo;
 	bool result = SDL_GetPathInfo(packFilePath, &pathInfo);
 	if (result)
 	{
 		if (pathInfo.type == SDL_PathType::SDL_PATHTYPE_DIRECTORY)
 		{
+			
 			return true;
 		}
 	}
@@ -138,37 +140,28 @@ bool PackReader_Folder::IsFileExist(const char* packPath, const char* path)
 	return  SDL_GetPathInfo(pathStr.c_str(), NULL);
 }
 
-std::vector<std::string> PackReader_Folder::GetFileList(const char* packPath, const char* folerPath, bool fullPath)
+std::vector<std::string> PackReader_Folder::GetFileList(const char* packPath, const char* folerPath, bool fullPathInPack)
 {
-	//»ñÈ¡Ä³¸öÎÄ¼ş¼ĞÖĞµÄÎÄ¼ş£¬²»¶ÁÈ¡×ÓÎÄ¼ş¼Ğ
+	//è·å–æŸä¸ªæ–‡ä»¶å¤¹ä¸­çš„æ–‡ä»¶ï¼Œä¸è¯»å–å­æ–‡ä»¶å¤¹
 	std::vector<std::string> resultVec;
 
 	struct _TEMSTRUCT
 	{
 		std::vector<std::string>* pVec;
-		bool fullPath;
-	}tem = {&resultVec ,fullPath };
+	}tem = {&resultVec };
 
-	//dirnameÒÔĞ±¸Ü½áÎ²
+	//dirnameä»¥æ–œæ ç»“å°¾
 	SDL_EnumerateDirectoryCallback fileCallBack = [](void* userdata, const char* dirname, const char* fname) {
 
 		_TEMSTRUCT* ptem = (_TEMSTRUCT*)userdata;
-		if (ptem->fullPath)
-		{
-			std::string temstr = dirname; 
-			temstr +=fname;
-			ptem->pVec->push_back(temstr);
-		}
-		else
-		{
+
 			ptem->pVec->push_back(fname);
-		}
 		return SDL_EnumerationResult::SDL_ENUM_CONTINUE;
 		};
 
 
 
-	//ĞèÒª±éÀúµÄÄ¿Â¼
+	//éœ€è¦éå†çš„ç›®å½•
 	std::string targetPath = packPath;
 	targetPath = targetPath + "/" + folerPath;
 
@@ -176,6 +169,15 @@ std::vector<std::string> PackReader_Folder::GetFileList(const char* packPath, co
 	{
 		SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION,"Can not enumerate directory : %s", targetPath.c_str());
 	};
+	
+	if (fullPathInPack)
+	{
+		for (auto& x : resultVec)
+		{
+			x = UTIL_FOLDER_PATH_WITH_SEPARATOR(folerPath) + x;
+		}
+	}
+
 
 	return resultVec;
 }

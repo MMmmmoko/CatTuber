@@ -3,6 +3,122 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+
+
+
+#自定义输出文件
+#着色器输出路径
+Shader/DXIL
+
+
+
+
+
+
+
+
+
+
+
+
+
+#MacOS
+# =========================
+# macOS 系统文件
+# =========================
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# =========================
+# Xcode / Swift / Objective-C
+# =========================
+# 构建产物
+build/
+DerivedData/
+
+# 用户特定设置
+xcuserdata/
+*.xcuserstate
+*.xcscmblueprint
+
+# 预编译头文件
+*.pch
+
+# 模块缓存
+*.pcm
+*.swiftmodule
+*.swiftdoc
+*.swiftsourceinfo
+
+# 调试符号
+*.dSYM
+*.dSYM.zip
+
+# =========================
+# C / C++ / 通用编译中间文件
+# =========================
+*.o
+*.obj
+*.lo
+*.la
+*.al
+*.libs
+*.so
+*.dylib
+*.dll
+*.exe
+*.out
+*.app
+
+# 依赖文件
+*.d
+
+# =========================
+# 资源编译中间文件
+# =========================
+*.nib
+*.storyboardc
+
+# =========================
+# 包管理器缓存
+# =========================
+# CocoaPods
+Pods/
+# Carthage
+Carthage/Build/
+# Swift Package Manager
+.build/
+# Node.js (如果有前端部分)
+node_modules/
+
+# =========================
+# 其他临时文件
+# =========================
+*.log
+*.tmp
+*.temp
+
+#MacOS END
+# =========================
+# macOS 系统文件 END
+# =========================
+
+
+
+
+
+
+
+
+
+
 # User-specific files
 *.rsuser
 *.suo

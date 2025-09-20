@@ -7,7 +7,7 @@
 
 unsigned char* util::SDL_LoadFileToMem(const char* path, size_t* size)
 {
-    //Í¨¹ıSDL¼ÓÔØÎÄ¼ş
+    //é€šè¿‡SDLåŠ è½½æ–‡ä»¶
     SDL_IOStream* modelFileStream = SDL_IOFromFile(path, "r");
     if (!modelFileStream)
     {
@@ -19,7 +19,7 @@ unsigned char* util::SDL_LoadFileToMem(const char* path, size_t* size)
     void* buffer = SDL_malloc(_size);
     SDL_ReadIO(modelFileStream, buffer, _size);
 
-    SDL_CloseIO(modelFileStream); // ¹Ø±ÕÎÄ¼şÁ÷
+    SDL_CloseIO(modelFileStream); // å…³é—­æ–‡ä»¶æµ
 
 
     *size = _size;
@@ -111,23 +111,23 @@ std::string util::StringToUpper(const std::string& str)
 
 std::string& util::ReplaceString(std::string& org, const char* strToBeReplace, const char* newstr)
 {
-    // TODO: ÔÚ´Ë´¦²åÈë return Óï¾ä
+    // TODO: åœ¨æ­¤å¤„æ’å…¥ return è¯­å¥
 
 
-        // ÕÒµ½µÚÒ»¸öÆ¥ÅäÎ»ÖÃ
+        // æ‰¾åˆ°ç¬¬ä¸€ä¸ªåŒ¹é…ä½ç½®
     size_t startPos = 0;
     std::string from(strToBeReplace);
     std::string to(newstr);
     while ((startPos = org.find(from, startPos)) != std::string::npos) {
         org.replace(startPos, from.length(), to);
-        startPos += to.length(); // ¼ÌĞøÍùºóÕÒ£¬±ÜÃâËÀÑ­»·
+        startPos += to.length(); // ç»§ç»­å¾€åæ‰¾ï¼Œé¿å…æ­»å¾ªç¯
     }
     return org;
 }
 
 std::string util::GetFileNameFromPath(const std::string& path)
 {
-    size_t pos = path.find_last_of("/\\"); // ¼æÈİÁ½ÖÖ·Ö¸ô·û
+    size_t pos = path.find_last_of("/\\"); // å…¼å®¹ä¸¤ç§åˆ†éš”ç¬¦
     std::string filename = (pos == std::string::npos) ? path : path.substr(pos + 1);
     return filename;
 }
@@ -137,6 +137,20 @@ std::string util::RemoveExtension(const std::string& path)
     size_t pos = path.find_last_of("."); 
     std::string filename = (pos == std::string::npos) ? path : path.substr(pos + 1);
     return filename;
+}
+
+void util::AppendSeparator(std::string& path)
+{
+    if (path.empty())
+    {
+        path = path + "/";
+        return;
+    }
+    if (path[path.size() - 1] == '\\' || path[path.size() - 1] == '/')
+    {
+        return;
+    }
+    path = path + "/";
 }
 
 bool util::PathEqual(const std::string& path1, const std::string& path2)
@@ -153,13 +167,13 @@ bool util::PathEqual(const std::string& path1, const std::string& path2)
 
 std::string util::GetStringFromMultiLangJsonNode(const Json::Value& json)
 {
-    //Èç¹ûjsonÊÇstringÔò²»½øĞĞºóĞø²Ù×÷
+    //å¦‚æœjsonæ˜¯stringåˆ™ä¸è¿›è¡Œåç»­æ“ä½œ
     if (json.isString())
         return json.asString();
-    //ÓïÑÔ²ÉÓÃSteamAPIµÄĞÎÊ½
+    //è¯­è¨€é‡‡ç”¨SteamAPIçš„å½¢å¼
     //https://partner.steamgames.com/doc/store/localization/languages
 
-    //ÏÈ²éÑ¯UIÉèÖÃµÄÓïÑÔ
+    //å…ˆæŸ¥è¯¢UIè®¾ç½®çš„è¯­è¨€
     std::string UISettingLang = AppSettings::GetIns().GetMiscLanguage();
     if (json.isMember(UISettingLang)&& json[UISettingLang].isString())
     {
@@ -178,7 +192,7 @@ std::string util::GetStringFromMultiLangJsonNode(const Json::Value& json)
     }
 
 
-    //Ã»ÓĞµÄ»°´ÓjsonÖĞËæ±ãÌô¸öÓïÑÔ
+    //æ²¡æœ‰çš„è¯ä»jsonä¸­éšä¾¿æŒ‘ä¸ªè¯­è¨€
     if (json.isObject())
     {
         for (auto& key:json.getMemberNames())
@@ -191,7 +205,7 @@ std::string util::GetStringFromMultiLangJsonNode(const Json::Value& json)
     }
 
 
-    SDL_LogWarn(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Failed to get multilang json string.");
+    SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Failed to get multilang json string.");
     return std::string();
 }
 

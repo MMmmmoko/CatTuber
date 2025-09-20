@@ -5,8 +5,8 @@
 #include<iostream>
 #include<vector>
 #include"Util/ObjectPool.h"
-//ÕâÀïÑ¡ÔñÊ¹ÓÃ´«Í³º¯ÊıÖ¸Õë¶ø²»Ê¹ÓÃWeakcallback£¬WeakcallbackµÄĞÔÄÜÊÊºÏÓÚUI³¡¾°
-//ÕâÀï±È½Ï¸ßÆµÇÒĞÔÄÜÃô¸Ğ£¬ËùÒÔÑ¡ÔñÓÃC·ç¸ñº¯ÊıÖ¸Õë
+//è¿™é‡Œé€‰æ‹©ä½¿ç”¨ä¼ ç»Ÿå‡½æ•°æŒ‡é’ˆè€Œä¸ä½¿ç”¨Weakcallbackï¼ŒWeakcallbackçš„æ€§èƒ½é€‚åˆäºUIåœºæ™¯
+//è¿™é‡Œæ¯”è¾ƒé«˜é¢‘ä¸”æ€§èƒ½æ•æ„Ÿï¼Œæ‰€ä»¥é€‰æ‹©ç”¨Cé£æ ¼å‡½æ•°æŒ‡é’ˆ
 //#include"WeakSupport.h"
 
 
@@ -32,20 +32,20 @@
 
 
 
-//code µÍ16Î»ÎªË÷Òı£¬¸ß16Î»Îª
+//code ä½16ä½ä¸ºç´¢å¼•ï¼Œé«˜16ä½ä¸º
 namespace input
 {
 
-    ////ÎŞ·¨×ª»»Ôò·µ»Ø¿Õ
+    ////æ— æ³•è½¬æ¢åˆ™è¿”å›ç©º
     //const char* ButtonNameToBaseName(const std::string &);
     //const char* AxisNameToBaseName(const std::string &);
 
 
-    //½öÔÚÊäÈëÏà¹ØµÄÏß³ÌÊ¹ÓÃ
-    //UIÖĞ¿ÉÒÔ½«ÖáÊÓÎª°´¼ü£¬¿ÉÒÔÉèÖÃÎªÕıÏò»ò¸ºÏòsin(22.5¶È)µÄµãÊÓÎª°´¼ü´¥·¢µã
-    //ÓĞĞèÒª½«°´¼üÊÓÎªÖáµÄÇé¿öÂğ£¿
-    //ÓĞ¡£±ÈÈç¶ÔÓÚÒ¡¸ËÄ£ĞÍ»òÕß·½ÏòÅÌ°ó¶¨µ½WASD¼ü
-    //ËùÒÔÄ£ĞÍ°ó¶¨ÒªÔÙ×öÒ»²ã·â×°£¿£¿
+    //ä»…åœ¨è¾“å…¥ç›¸å…³çš„çº¿ç¨‹ä½¿ç”¨
+    //UIä¸­å¯ä»¥å°†è½´è§†ä¸ºæŒ‰é”®ï¼Œå¯ä»¥è®¾ç½®ä¸ºæ­£å‘æˆ–è´Ÿå‘sin(22.5åº¦)çš„ç‚¹è§†ä¸ºæŒ‰é”®è§¦å‘ç‚¹
+    //æœ‰éœ€è¦å°†æŒ‰é”®è§†ä¸ºè½´çš„æƒ…å†µå—ï¼Ÿ
+    //æœ‰ã€‚æ¯”å¦‚å¯¹äºæ‘‡æ†æ¨¡å‹æˆ–è€…æ–¹å‘ç›˜ç»‘å®šåˆ°WASDé”®
+    //æ‰€ä»¥æ¨¡å‹ç»‘å®šè¦å†åšä¸€å±‚å°è£…ï¼Ÿï¼Ÿ
     //
 
 
@@ -106,7 +106,7 @@ namespace input
         friend class InputManager;
         std::string name;
         int _refCount = 0;
-        float lastvalue = 0;//ÓÃÓÚÅĞ¶ÏÔË¶¯·½Ïò
+        float lastvalue = 0;//ç”¨äºåˆ¤æ–­è¿åŠ¨æ–¹å‘
         float value = 0;
         bool _valueChangeCurFrame = false;
 
@@ -116,7 +116,7 @@ namespace input
         float GetLastValue() { return  lastvalue; };
         float GetValue() { return  value; };
         void AddRef(int refCount);
-        //Ò»°ãÓÃÓÚ¸÷ÖÖ»æÖÆ¶ÔÏóÔÚUpdateÉõÖÁDrawÊ±µ÷ÓÃ¡£ÔÚµ±Ç°Ö¡Êı¾İÔ´SetValueÇ°µ÷ÓÃ¿ÉÄÜÎŞ·¨µÃ³öÔ¤ÆÚ½á¹û
+        //ä¸€èˆ¬ç”¨äºå„ç§ç»˜åˆ¶å¯¹è±¡åœ¨Updateç”šè‡³Drawæ—¶è°ƒç”¨ã€‚åœ¨å½“å‰å¸§æ•°æ®æºSetValueå‰è°ƒç”¨å¯èƒ½æ— æ³•å¾—å‡ºé¢„æœŸç»“æœ
         bool ValueChangeCurFrame() { return _valueChangeCurFrame; };
 
 
@@ -125,8 +125,8 @@ namespace input
     private:
         std::vector<AxisInputCallback> axisValueChangeCallbackList;
 
-        ////·ÀÖ¹Öá²ÉÑù¹ı¸ßµ¼ÖÂ¹ıÓÚÆµ·±µ÷ÓÃÖáµÄcallback£¬¼ÇÂ¼ÏÂÒ»Ö¡ÖĞÓĞ±ä»¯µÄ¶ÔÏóÒÔÃ¿Ö¡Ö»µ÷ÓÃÒ»´Îcallback£¿
-        // ²ÉÑùÂÊ¹ı¸ßµÄÎÊÌâÓ¦¸Ã½»¸ø¸÷ÀàÉè±¸InputÈ¥¹ıÂË½â¾ö£¬²»ĞèÒªÔÚÕâÀïÖØ¸´½â¾ö
+        ////é˜²æ­¢è½´é‡‡æ ·è¿‡é«˜å¯¼è‡´è¿‡äºé¢‘ç¹è°ƒç”¨è½´çš„callbackï¼Œè®°å½•ä¸‹ä¸€å¸§ä¸­æœ‰å˜åŒ–çš„å¯¹è±¡ä»¥æ¯å¸§åªè°ƒç”¨ä¸€æ¬¡callbackï¼Ÿ
+        // é‡‡æ ·ç‡è¿‡é«˜çš„é—®é¢˜åº”è¯¥äº¤ç»™å„ç±»è®¾å¤‡Inputå»è¿‡æ»¤è§£å†³ï¼Œä¸éœ€è¦åœ¨è¿™é‡Œé‡å¤è§£å†³
         //static std::vector<InputAxis*> _valueChangeList;
     };
 }
@@ -137,14 +137,14 @@ namespace input
 
 
 //ActionName eg:   Table.Button.1.Down Character.Animation.Jump
-//¿´Ò»ÏÂÆäËû¿âµÄactionÉè¼Æ
-//Çø·ÖÓÃÓÚÄ£ĞÍµÄActionºÍÉèÖÃ½çÃæÖĞµÄCommandAction
+//çœ‹ä¸€ä¸‹å…¶ä»–åº“çš„actionè®¾è®¡
+//åŒºåˆ†ç”¨äºæ¨¡å‹çš„Actionå’Œè®¾ç½®ç•Œé¢ä¸­çš„CommandAction
 
 struct ActionCallback
 {
     void(*callback)(const char* actionName,float value, void* userData, void* userData2) = NULL;
     void* userData=NULL;
-    void* userData2 = NULL;//×÷Îªdata1µÄ²ÎÊı£¬¼õÉÙactionNameµÄ½âÎöÑ¹Á¦£¬
+    void* userData2 = NULL;//ä½œä¸ºdata1çš„å‚æ•°ï¼Œå‡å°‘actionNameçš„è§£æå‹åŠ›ï¼Œ
 };
 
 class Action
@@ -190,13 +190,13 @@ class ButtonActionBinding :public IActionBinding
 {
 public:
     ButtonActionBinding(ActionProxy downAction, ActionProxy upAction, ButtonProxy* buttonArray,int count=1);
-    //ÎªVecµÄÃ¿¸ö¼üÉèÖÃ°ó¶¨
+    //ä¸ºVecçš„æ¯ä¸ªé”®è®¾ç½®ç»‘å®š
     virtual void InstallBinding()override;
     virtual void UninstallBinding()override;
 
     //bool TestTrigger();
-    //ÕâÀïºÍÏÂ·½µÄTryTriggerº¯ÊıÊÇ°´Å¥»òÖáµÄCALLBACK,
-    //ÓÃÓÚÔÚ°´Å¥±»°´ÏÂÌ§ÆğµÄÊ±ºò»òÕßÖáÊıÖµ±ä»¯µÄÊ±ºò£¬¼ì²éÊÇ·ñ¿ÉÒÔ·¢ËÍÊÂ¼ş£¬Èç¹û¿ÉÒÔ£¬Ôò·¢ÆğÊÂ¼ş
+    //è¿™é‡Œå’Œä¸‹æ–¹çš„TryTriggerå‡½æ•°æ˜¯æŒ‰é’®æˆ–è½´çš„CALLBACK,
+    //ç”¨äºåœ¨æŒ‰é’®è¢«æŒ‰ä¸‹æŠ¬èµ·çš„æ—¶å€™æˆ–è€…è½´æ•°å€¼å˜åŒ–çš„æ—¶å€™ï¼Œæ£€æŸ¥æ˜¯å¦å¯ä»¥å‘é€äº‹ä»¶ï¼Œå¦‚æœå¯ä»¥ï¼Œåˆ™å‘èµ·äº‹ä»¶
     static void TryDownTrigger(input::InputButton* button,float value,void* pThisBinding);
     static void TryUpTrigger(input::InputButton* button,float value,void* pThisBinding);
 private:
@@ -210,7 +210,7 @@ class AxisChangeActionBinding :public IActionBinding
 {
 public:
     AxisChangeActionBinding(ActionProxy action, AxisProxy axis) :action(action), axis(axis) {};
-    //ÎªVecµÄÃ¿¸ö¼üÉèÖÃ°ó¶¨
+    //ä¸ºVecçš„æ¯ä¸ªé”®è®¾ç½®ç»‘å®š
     virtual void InstallBinding()override;
     virtual void UninstallBinding()override;
 
@@ -221,13 +221,13 @@ private:
     ActionProxy action;
 };
 
-//AxisÊıÖµ´ÓÔ½¹ıÄ³ÖµÊ±´¥·¢
+//Axisæ•°å€¼ä»è¶Šè¿‡æŸå€¼æ—¶è§¦å‘
 class AxisExceedActionBinding :public IActionBinding
 {
 public:
     AxisExceedActionBinding(ActionProxy action, AxisProxy axis, float targetValue)
         :action(action), axis(axis),targetValue(targetValue) {};
-    //ÎªVecµÄÃ¿¸ö¼üÉèÖÃ°ó¶¨
+    //ä¸ºVecçš„æ¯ä¸ªé”®è®¾ç½®ç»‘å®š
     virtual void InstallBinding()override;
     virtual void UninstallBinding()override;
 
@@ -236,17 +236,17 @@ private:
     AxisProxy axis;
     float targetValue;
     ActionProxy action;
-    //QUESTION ºóĞøĞèÒª¸øÕâ¸öÉèÖÃ¡°ÀäÈ´Ê±¼ä¡±Âğ
+    //QUESTION åç»­éœ€è¦ç»™è¿™ä¸ªè®¾ç½®â€œå†·å´æ—¶é—´â€å—
 };
 
-//AxisÊıÖµµøÆÆÄ³ÊıÖµÊ±´¥·¢
+//Axisæ•°å€¼è·Œç ´æŸæ•°å€¼æ—¶è§¦å‘
 class AxisDroppedActionBinding :public IActionBinding
 {
 public:
     AxisDroppedActionBinding(ActionProxy action, AxisProxy axis, float targetValue)
         :action(action), axis(axis), targetValue(targetValue) {
     };
-    //ÎªVecµÄÃ¿¸ö¼üÉèÖÃ°ó¶¨
+    //ä¸ºVecçš„æ¯ä¸ªé”®è®¾ç½®ç»‘å®š
     virtual void InstallBinding()override;
     virtual void UninstallBinding()override;
 
@@ -273,7 +273,7 @@ public:
     static void TryUpTrigger(input::InputButton* button, float value, void* pThisBinding);
 
 
-    //Õâ¸öĞèÒªÔÚinputmanagerÀïÃ¿Ö¡µ÷ÓÃÒ»´Î
+    //è¿™ä¸ªéœ€è¦åœ¨inputmanageré‡Œæ¯å¸§è°ƒç”¨ä¸€æ¬¡
     static void UpdateAxesValue();
 
 private:
@@ -284,8 +284,8 @@ private:
 
     struct BindingInfo
     {
-        int motion = 0;//1°´ÏÂ0Ì§Æğ
-        uint64_t motionTriggeredTick = 0;//´¥·¢µÄÊ±¿Ì
+        int motion = 0;//1æŒ‰ä¸‹0æŠ¬èµ·
+        uint64_t motionTriggeredTick = 0;//è§¦å‘çš„æ—¶åˆ»
         float value;
         ActionProxy targetAxisAction;
     };

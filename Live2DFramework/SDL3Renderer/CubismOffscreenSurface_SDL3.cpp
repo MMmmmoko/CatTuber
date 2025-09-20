@@ -24,8 +24,8 @@ namespace Live2D {
 
 				void CubismOffscreenSurface_SDL3::BeginDraw(CubismRenderContext_SDL3* renderContext)
 				{
-					//½«´ËÎÆÀíÉèÖÃÎªäÖÈ¾Ä¿±ê
-					//±£´æÒÔÍùµÄÄ¿±êÒÔ»Ö¸´
+					//å°†æ­¤çº¹ç†è®¾ç½®ä¸ºæ¸²æŸ“ç›®æ ‡
+					//ä¿å­˜ä»¥å¾€çš„ç›®æ ‡ä»¥æ¢å¤
 					if (_texture == NULL || _depthTexture == NULL)
 						return;
 
@@ -39,7 +39,7 @@ namespace Live2D {
 
 				void CubismOffscreenSurface_SDL3::EndDraw(CubismRenderContext_SDL3* renderContext)
 				{
-					//»Ö¸´Ö®Ç°±£´æµÄäÖÈ¾Ä¿±ê
+					//æ¢å¤ä¹‹å‰ä¿å­˜çš„æ¸²æŸ“ç›®æ ‡
 					if (_texture == NULL || _depthTexture == NULL)
 						return;
 
@@ -49,7 +49,7 @@ namespace Live2D {
 
 				void CubismOffscreenSurface_SDL3::Clear(CubismRenderContext_SDL3* renderContext, float r, float g, float b, float a)
 				{
-					//²»ÒªÓÃÓÚÆ½Ê±Clear£¬Õâ¸öÖ»ÔÚäÖÈ¾¹ÜÏßÖĞ¹¤×÷
+					//ä¸è¦ç”¨äºå¹³æ—¶Clearï¼Œè¿™ä¸ªåªåœ¨æ¸²æŸ“ç®¡çº¿ä¸­å·¥ä½œ
 					renderContext->ClearRenderTarget( r,  g,  b,  a);
 					renderContext->ClearDepth(1.f);
 				}
@@ -57,13 +57,13 @@ namespace Live2D {
 
 				csmBool CubismOffscreenSurface_SDL3::CreateOffscreenSurface(SDL_GPUDevice* device, csmUint32 displayBufferWidth, csmUint32 displayBufferHeight)
 				{
-					//Èç¹ûÒÑÓĞÎÆÀí£¬É¾³ıËü
+					//å¦‚æœå·²æœ‰çº¹ç†ï¼Œåˆ é™¤å®ƒ
 					DestroyOffscreenSurface();
 					_device = device;
 
 
-					//²¢·ÇÑ­»·
-					//²»ÓÃgotoÌôÕ½Âğ£¿ÓĞµãÒâË¼
+					//å¹¶éå¾ªç¯
+					//ä¸ç”¨gotoæŒ‘æˆ˜å—ï¼Ÿæœ‰ç‚¹æ„æ€
 					do
 					{
 
@@ -99,7 +99,7 @@ namespace Live2D {
 						}
 
 
-						//Éî¶È
+						//æ·±åº¦
 						SDL_GPUTextureCreateInfo depthDesc = {};
 						depthDesc.type = SDL_GPU_TEXTURETYPE_2D;
 						depthDesc.format = SDL_GPU_TEXTUREFORMAT_D24_UNORM_S8_UINT;
@@ -110,7 +110,7 @@ namespace Live2D {
 						depthDesc.num_levels = 1;
 
 #ifdef SDL_PLATFORM_WINDOWS
-						//ÆäÊµlive2dºÃÏñ²»ÓÃÉî¶ÈÒ²ĞĞ
+						//å…¶å®live2då¥½åƒä¸ç”¨æ·±åº¦ä¹Ÿè¡Œ
 						depthDesc.props = SDL_CreateProperties();
 						SDL_SetFloatProperty(depthDesc.props, SDL_PROP_GPU_TEXTURE_CREATE_D3D12_CLEAR_DEPTH_FLOAT, 1.f);
 						SDL_SetFloatProperty(depthDesc.props, SDL_PROP_GPU_TEXTURE_CREATE_D3D12_CLEAR_STENCIL_NUMBER, 0);
@@ -129,14 +129,14 @@ namespace Live2D {
 						_bufferWidth = displayBufferWidth;
 						_bufferHeight = displayBufferHeight;
 
-						// ³É¹¦
+						// æˆåŠŸ
 						return true;
 
 
 					} while (0);
 
 
-					//´´½¨Ê§°ÜÔò½øĞĞÇåÀí
+					//åˆ›å»ºå¤±è´¥åˆ™è¿›è¡Œæ¸…ç†
 					DestroyOffscreenSurface();
 
 

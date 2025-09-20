@@ -8,15 +8,15 @@
 
 #include"IModel.h"
 
-//ģ�͹�����
-//һ��������ģ�����ɡ����١�����¼������¡���Ⱦ
+//模型管理器
+//一个场景中模型生成、销毁、点击事件、更新、渲染
 
 
 class ModelManager
 {
 
 public:
-	//�������ͷű�ǵ�ģ��
+	//被打上释放标记的模型
 	struct ReleaseModel
 	{
 		ReleaseModel()

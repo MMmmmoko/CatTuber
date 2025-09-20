@@ -15,12 +15,12 @@
 #define DINPUT_BUFFERSIZE 128
 
 
-//Ö÷DInput COM¶ÔÏó
+//ä¸»DInput COMå¯¹è±¡
 static LPDIRECTINPUT8 lpdi = NULL;
-static LPDIRECTINPUTDEVICE8 lpdikey = NULL;//¼üÅÌ
+static LPDIRECTINPUTDEVICE8 lpdikey = NULL;//é”®ç›˜
 static bool inited = false;
 
-//DinputË÷Òý£¬²¢²»ÊÇ¶¼ÊÇÓÐÐ§Î»
+//Dinputç´¢å¼•ï¼Œå¹¶ä¸æ˜¯éƒ½æ˜¯æœ‰æ•ˆä½
 static ButtonProxy buttnList[256] = {NULL};
 
 
@@ -29,7 +29,7 @@ bool KeyboardInput::Init()
 
 	if (inited)return true;
 
-	//Ìî³äË÷Òý
+	//å¡«å……ç´¢å¼•
 	{
 		auto& im=InputManager::GetIns();
 		buttnList[DIK_ESCAPE]= im.GetButton("Keyboard.ESC");
@@ -62,7 +62,7 @@ bool KeyboardInput::Init()
 		//SDL_SCANCODE_LEFTBRACKET SDL_SCANCODE_RIGHTBRACKET
 		buttnList[DIK_LBRACKET]= im.GetButton("Keyboard.LBRACKET");
 		buttnList[DIK_RBRACKET]= im.GetButton("Keyboard.RBRACKET");
-		buttnList[DIK_RETURN]= im.GetButton("Keyboard.RETURN");//Ö÷¼üÅÌµÄenter¼ü
+		buttnList[DIK_RETURN]= im.GetButton("Keyboard.RETURN");//ä¸»é”®ç›˜çš„enteré”®
 		buttnList[DIK_LCONTROL]= im.GetButton("Keyboard.LCTRL");
 
 		buttnList[DIK_A] = im.GetButton("Keyboard.A");
@@ -75,11 +75,11 @@ bool KeyboardInput::Init()
 		buttnList[DIK_K] = im.GetButton("Keyboard.K");
 		buttnList[DIK_L] = im.GetButton("Keyboard.L");
 
-		buttnList[DIK_SEMICOLON] = im.GetButton("Keyboard.SEMICOLON");//·ÖºÅ¼ü
-		buttnList[DIK_APOSTROPHE] = im.GetButton("Keyboard.APOSTROPHE");//Æ²ºÅ£¨ÒýºÅ
+		buttnList[DIK_SEMICOLON] = im.GetButton("Keyboard.SEMICOLON");//åˆ†å·é”®
+		buttnList[DIK_APOSTROPHE] = im.GetButton("Keyboard.APOSTROPHE");//æ’‡å·ï¼ˆå¼•å·
 		buttnList[DIK_GRAVE] = im.GetButton("Keyboard.GRAVE");
 		buttnList[DIK_LSHIFT] = im.GetButton("Keyboard.LSHIFT");
-		buttnList[DIK_BACKSLASH] = im.GetButton("Keyboard.BACKSLASH");//ÃÀÊ½¼üÅÌ»Ø³µÉÏ·½µÄÐ±ÏßºÍ´¹Ö±Ïß
+		buttnList[DIK_BACKSLASH] = im.GetButton("Keyboard.BACKSLASH");//ç¾Žå¼é”®ç›˜å›žè½¦ä¸Šæ–¹çš„æ–œçº¿å’Œåž‚ç›´çº¿
 	
 		buttnList[DIK_Z]= im.GetButton("Keyboard.Z");
 		buttnList[DIK_X]= im.GetButton("Keyboard.X");
@@ -90,13 +90,13 @@ bool KeyboardInput::Init()
 		buttnList[DIK_M]= im.GetButton("Keyboard.M");
 
 		buttnList[DIK_COMMA]= im.GetButton("Keyboard.COMMA");
-		buttnList[DIK_PERIOD]= im.GetButton("Keyboard.PERIOD");//Ö÷¼üÅÌµÄ"."
-		buttnList[DIK_SLASH] = im.GetButton("Keyboard.SLASH");// Ö÷¼üÅÌµÄ"/"
+		buttnList[DIK_PERIOD]= im.GetButton("Keyboard.PERIOD");//ä¸»é”®ç›˜çš„"."
+		buttnList[DIK_SLASH] = im.GetButton("Keyboard.SLASH");// ä¸»é”®ç›˜çš„"/"
 		buttnList[DIK_RSHIFT] = im.GetButton("Keyboard.RSHIFT");
 		buttnList[DIK_MULTIPLY] = im.GetButton("Keyboard.KP_MULTIPLY");
 		buttnList[DIK_LMENU] = im.GetButton("Keyboard.LALT");//left alt
 		buttnList[DIK_SPACE] = im.GetButton("Keyboard.SPACE");
-		buttnList[DIK_CAPITAL] = im.GetButton("Keyboard.CAPSLOCK");//´óÐ´Ëø¶¨¼ü
+		buttnList[DIK_CAPITAL] = im.GetButton("Keyboard.CAPSLOCK");//å¤§å†™é”å®šé”®
 
 		buttnList[DIK_F1] = im.GetButton("Keyboard.F1");
 		buttnList[DIK_F2] = im.GetButton("Keyboard.F2");
@@ -132,14 +132,14 @@ bool KeyboardInput::Init()
 		buttnList[DIK_F14] = im.GetButton("Keyboard.F14");
 		buttnList[DIK_F15] = im.GetButton("Keyboard.F15");
 		buttnList[DIK_KANA] = im.GetButton("Keyboard.KANA");
-		//buttnList[DIK_ABNT_C1] = im.GetButton("Keyboard.KANA");°ÍÎ÷¼üÅÌÊ²Ã´ÍæÒâ
+		//buttnList[DIK_ABNT_C1] = im.GetButton("Keyboard.KANA");å·´è¥¿é”®ç›˜ä»€ä¹ˆçŽ©æ„
 		//buttnList[DIK_CONVERT] = im.GetButton("Keyboard.KANA");
 		//DIK_NOCONVERT
 		buttnList[DIK_YEN] = im.GetButton("Keyboard.YEN");//SDL_SCANCODE_INTERNATIONAL3
 		//DIK_ABNT_C2
 		buttnList[DIK_NUMPADEQUALS]= im.GetButton("Keyboard.KP_EQUALS");
 		buttnList[DIK_PREVTRACK]=im.GetButton("Keyboard.MEDIA_PREVTRACK");
-		buttnList[DIK_AT]= im.GetButton("Keyboard.KP_AT");//²»È·¶¨ºÍSDL_SCANCODE_KP_ATµÄ¹ØÏµ..
+		buttnList[DIK_AT]= im.GetButton("Keyboard.KP_AT");//ä¸ç¡®å®šå’ŒSDL_SCANCODE_KP_ATçš„å…³ç³»..
 		buttnList[DIK_COLON] = im.GetButton("Keyboard.KP_COLON");
 		//buttnList[DIK_KANJI]
 		buttnList[DIK_STOP] = im.GetButton("Keyboard.MEDIA_STOP");
@@ -154,10 +154,10 @@ bool KeyboardInput::Init()
 		buttnList[DIK_MEDIASTOP]=im.GetButton("Keyboard.MEDIA_STOP");
 		buttnList[DIK_VOLUMEDOWN]=im.GetButton("Keyboard.VOLUMEDOWN");
 		buttnList[DIK_VOLUMEUP]=im.GetButton("Keyboard.VOLUMEUP");
-		buttnList[DIK_WEBHOME]= im.GetButton("Keyboard.WEBHOME");//²»È·¶¨SDL_SCANCODE_AC_HOME
+		buttnList[DIK_WEBHOME]= im.GetButton("Keyboard.WEBHOME");//ä¸ç¡®å®šSDL_SCANCODE_AC_HOME
 		buttnList[DIK_NUMPADCOMMA]= im.GetButton("Keyboard.KP_COMMA");
 		buttnList[DIK_DIVIDE]= im.GetButton("Keyboard.KP_DIVIDE");
-		buttnList[DIK_SYSRQ]= im.GetButton("Keyboard.SYSREQ");//prinrt screenÒ»¸ö¼ü£¿
+		buttnList[DIK_SYSRQ]= im.GetButton("Keyboard.SYSREQ");//prinrt screenä¸€ä¸ªé”®ï¼Ÿ
 		buttnList[DIK_RMENU] = im.GetButton("Keyboard.RALT");
 		buttnList[DIK_PAUSE] = im.GetButton("Keyboard.PAUSE");
 		buttnList[DIK_HOME] = im.GetButton("Keyboard.HOME");
@@ -168,16 +168,16 @@ bool KeyboardInput::Init()
 		buttnList[DIK_END] = im.GetButton("Keyboard.END");// SDL_SCANCODE_END
 		buttnList[DIK_DOWN] = im.GetButton("Keyboard.DOWN");
 		buttnList[DIK_NEXT] = im.GetButton("Keyboard.PAGEDOWN");
-		buttnList[DIK_INSERT] = im.GetButton("Keyboard.INSERT");//PCÉÏµÄinsert£¬macÉÏµÄhelp¼ü¡£
+		buttnList[DIK_INSERT] = im.GetButton("Keyboard.INSERT");//PCä¸Šçš„insertï¼Œmacä¸Šçš„helpé”®ã€‚
 		buttnList[DIK_DELETE] = im.GetButton("Keyboard.DELETE");
-		buttnList[DIK_LWIN] = im.GetButton("Keyboard.LWIN");//SDL_SCANCODE_LGUI MACÉÏÊÇCOMMAND
+		buttnList[DIK_LWIN] = im.GetButton("Keyboard.LWIN");//SDL_SCANCODE_LGUI MACä¸Šæ˜¯COMMAND
 		buttnList[DIK_RWIN] = im.GetButton("Keyboard.RWIN");
 		//buttnList[DIK_APPS] = im.GetButton("Keyboard.RWIN");
 		buttnList[DIK_POWER] = im.GetButton("Keyboard.POWER");
 		buttnList[DIK_SLEEP] = im.GetButton("Keyboard.SLEEP");
 		buttnList[DIK_WAKE] = im.GetButton("Keyboard.WAKE");
-		buttnList[DIK_WEBSEARCH]= im.GetButton("Keyboard.WEBSEARCH");//²»È·¶¨SDL_SCANCODE_AC_SEARCH
-		buttnList[DIK_WEBFAVORITES] = im.GetButton("Keyboard.BOOKMARKS");//²»È·¶¨SDL_SCANCODE_AC_BOOKMARKS
+		buttnList[DIK_WEBSEARCH]= im.GetButton("Keyboard.WEBSEARCH");//ä¸ç¡®å®šSDL_SCANCODE_AC_SEARCH
+		buttnList[DIK_WEBFAVORITES] = im.GetButton("Keyboard.BOOKMARKS");//ä¸ç¡®å®šSDL_SCANCODE_AC_BOOKMARKS
 		buttnList[DIK_WEBREFRESH] = im.GetButton("Keyboard.WEBREFRESH");
 		buttnList[DIK_WEBSTOP] = im.GetButton("Keyboard.WEBSTOP");//SDL_SCANCODE_AC_STOP
 		buttnList[DIK_WEBFORWARD] = im.GetButton("Keyboard.WEBFORWARD");//SDL_SCANCODE_AC_FORWARD
@@ -186,17 +186,17 @@ bool KeyboardInput::Init()
 		//buttnList[DIK_MAIL];
 		buttnList[DIK_MEDIASELECT]= im.GetButton("Keyboard.MEDIA_SELECT");//SDL_SCANCODE_MEDIA_SELECT
 
-		//ºÜ¶àÓïÑÔÏà¹ØµÄ°´Å¥Ã»·¨ÕÒµ½
-		//todo Âò¸öÈÕ±¾¼üÅÌ£¨ÌÉ
+		//å¾ˆå¤šè¯­è¨€ç›¸å…³çš„æŒ‰é’®æ²¡æ³•æ‰¾åˆ°
+		//todo ä¹°ä¸ªæ—¥æœ¬é”®ç›˜ï¼ˆèºº
 	}
 
 
 
 
-	//³õÊ¼»¯DINPUT
+	//åˆå§‹åŒ–DINPUT
 	do
 	{
-		//´´½¨¼üÅÌÉè±¸
+		//åˆ›å»ºé”®ç›˜è®¾å¤‡
 		if (FAILED(::DirectInput8Create(GetModuleHandle(0), DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&lpdi, NULL)))
 		{
 			SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "KeyboardInput: Init Failed.");
@@ -207,7 +207,7 @@ bool KeyboardInput::Init()
 			SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "KeyboardInput: Init Failed.");
 			break;
 		}
-		//ÉèÖÃ¼üÅÌÐ­×÷µÈ¼¶£¬ÉèÖÃÎªºóÌ¨/·Ç¶ÀÕ¼Ä£Ê½
+		//è®¾ç½®é”®ç›˜åä½œç­‰çº§ï¼Œè®¾ç½®ä¸ºåŽå°/éžç‹¬å æ¨¡å¼
 		if (FAILED(lpdikey->SetCooperativeLevel(0, DISCL_BACKGROUND | DISCL_NONEXCLUSIVE)))
 		{
 			SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "KeyboardInput: Init Failed.");
@@ -216,7 +216,7 @@ bool KeyboardInput::Init()
 
 
 
-		//ÉèÖÃ»º³åÇø´óÐ¡
+		//è®¾ç½®ç¼“å†²åŒºå¤§å°
 		DIPROPDWORD     property;
 		property.diph.dwSize = sizeof(DIPROPDWORD);
 		property.diph.dwHeaderSize = sizeof(DIPROPHEADER);
@@ -232,13 +232,13 @@ bool KeyboardInput::Init()
 
 
 
-		//ÉèÖÃ¼üÅÌµÄÊý¾Ý¸ñÊ½£¬¼üÅÌ¶ÔÓ¦µÄÊý¾Ý¸ñÊ½Îªc_dfDIKeyboard
+		//è®¾ç½®é”®ç›˜çš„æ•°æ®æ ¼å¼ï¼Œé”®ç›˜å¯¹åº”çš„æ•°æ®æ ¼å¼ä¸ºc_dfDIKeyboard
 		if (FAILED(lpdikey->SetDataFormat(&c_dfDIKeyboard)))
 		{
 			SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "KeyboardInput: Init Failed.");
 			break;
 		}
-		//»ñÈ¡¼üÅÌ
+		//èŽ·å–é”®ç›˜
 		if (FAILED(lpdikey->Acquire()))
 		{
 			SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "KeyboardInput: Init Failed.");
@@ -274,19 +274,19 @@ void KeyboardInput::UpdateAndPumpEvents()
 		hr = lpdikey->GetDeviceData(sizeof(DIDEVICEOBJECTDATA), didod, &dwElements, 0);
 		if (hr != DI_OK)
 		{
-			// hr != DI_OK±íÊ¾·¢ÉúÁËÒ»¸ö´íÎó
-			// Õâ¸ö´íÎóÓÐ¿ÉÄÜÊÇ DI_BUFFEROVERFLOW »º³åÇøÒç³ö´íÎó
-			// µ«²»¹ÜÊÇÄÄÖÖ´íÎó£¬¶¼ÒâÎ¶×ÅÍ¬ÊäÈëÉè±¸µÄÁªÏµ±»¶ªÊ§ÁË
+			// hr != DI_OKè¡¨ç¤ºå‘ç”Ÿäº†ä¸€ä¸ªé”™è¯¯
+			// è¿™ä¸ªé”™è¯¯æœ‰å¯èƒ½æ˜¯ DI_BUFFEROVERFLOW ç¼“å†²åŒºæº¢å‡ºé”™è¯¯
+			// ä½†ä¸ç®¡æ˜¯å“ªç§é”™è¯¯ï¼Œéƒ½æ„å‘³ç€åŒè¾“å…¥è®¾å¤‡çš„è”ç³»è¢«ä¸¢å¤±äº†
 
-			// ÕâÖÖ´íÎóÒýÆðµÄ×îÑÏÖØµÄºó¹û¾ÍÊÇÈç¹ûÄã°´ÏÂÒ»¸ö¼üºó»¹Î´ËÉ¿ªÊ±
-			// ·¢ÉúÁË´íÎó£¬¾Í»á¶ªÊ§ºóÃæËÉ¿ª¸Ã¼üµÄÏûÏ¢¡£ÕâÑùÒ»À´£¬ÄãµÄ³ÌÐò
-			// ¾Í¿ÉÄÜÒÔÎª¸Ã¼üÉÐÎ´±»ËÉ¿ª£¬´Ó¶ø·¢ÉúÒ»Ð©ÒâÏë²»µ½µÄÇé¿ö
+			// è¿™ç§é”™è¯¯å¼•èµ·çš„æœ€ä¸¥é‡çš„åŽæžœå°±æ˜¯å¦‚æžœä½ æŒ‰ä¸‹ä¸€ä¸ªé”®åŽè¿˜æœªæ¾å¼€æ—¶
+			// å‘ç”Ÿäº†é”™è¯¯ï¼Œå°±ä¼šä¸¢å¤±åŽé¢æ¾å¼€è¯¥é”®çš„æ¶ˆæ¯ã€‚è¿™æ ·ä¸€æ¥ï¼Œä½ çš„ç¨‹åº
+			// å°±å¯èƒ½ä»¥ä¸ºè¯¥é”®å°šæœªè¢«æ¾å¼€ï¼Œä»Žè€Œå‘ç”Ÿä¸€äº›æ„æƒ³ä¸åˆ°çš„æƒ…å†µ
 
-			// ÏÖÔÚÕâ¶Î´úÂë²¢Î´´¦Àí¸Ã´íÎó
+			// çŽ°åœ¨è¿™æ®µä»£ç å¹¶æœªå¤„ç†è¯¥é”™è¯¯
 
-			// ½â¾ö¸ÃÎÊÌâµÄÒ»¸ö°ì·¨ÊÇ£¬ÔÚ³öÏÖÕâÖÖ´íÎóÊ±£¬¾ÍÈ¥µ÷ÓÃÒ»´Î
-			// GetDeviceState()£¬È»ºó°Ñ½á¹ûÍ¬³ÌÐò×îºóËù¼ÇÂ¼µÄ×´Ì¬½øÐÐ
-			// ±È½Ï£¬´Ó¶øÐÞÕý¿ÉÄÜ·¢ÉúµÄ´íÎó
+			// è§£å†³è¯¥é—®é¢˜çš„ä¸€ä¸ªåŠžæ³•æ˜¯ï¼Œåœ¨å‡ºçŽ°è¿™ç§é”™è¯¯æ—¶ï¼Œå°±åŽ»è°ƒç”¨ä¸€æ¬¡
+			// GetDeviceState()ï¼Œç„¶åŽæŠŠç»“æžœåŒç¨‹åºæœ€åŽæ‰€è®°å½•çš„çŠ¶æ€è¿›è¡Œ
+			// æ¯”è¾ƒï¼Œä»Žè€Œä¿®æ­£å¯èƒ½å‘ç”Ÿçš„é”™è¯¯
 
 			SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "KeyboardInput ErrorCode: HRESULT %d",hr);
 			hr = lpdikey->Acquire();
@@ -305,10 +305,10 @@ void KeyboardInput::UpdateAndPumpEvents()
 
 	for (DWORD i = 0; i < dwElements; i++)
 	{
-		// ´Ë´¦·ÅÈë´¦Àí´úÂë
-		// didod[i].dwOfs ±íÊ¾ÄÇ¸ö¼ü±»°´ÏÂ»òËÉ¿ª
-		// didod[i].dwData ¼ÇÂ¼´Ë¼üµÄ×´Ì¬£¬µÍ×Ö½Ú×î¸ßÎ»ÊÇ 1 ±íÊ¾°´ÏÂ£¬0 ±íÊ¾ËÉ¿ª
-		// Ò»°ãÓÃ didod[i].dwData&0x80 À´²âÊÔ
+		// æ­¤å¤„æ”¾å…¥å¤„ç†ä»£ç 
+		// didod[i].dwOfs è¡¨ç¤ºé‚£ä¸ªé”®è¢«æŒ‰ä¸‹æˆ–æ¾å¼€
+		// didod[i].dwData è®°å½•æ­¤é”®çš„çŠ¶æ€ï¼Œä½Žå­—èŠ‚æœ€é«˜ä½æ˜¯ 1 è¡¨ç¤ºæŒ‰ä¸‹ï¼Œ0 è¡¨ç¤ºæ¾å¼€
+		// ä¸€èˆ¬ç”¨ didod[i].dwData&0x80 æ¥æµ‹è¯•
 
 		auto curKey = didod[i].dwOfs;
 		auto curData = didod[i].dwData;
@@ -316,7 +316,7 @@ void KeyboardInput::UpdateAndPumpEvents()
 		//keyboardStates[curKey] = curData;
 		if (curData & 0x80)
 		{
-			//°´ÏÂ
+			//æŒ‰ä¸‹
 			if(buttnList[curKey])
 				buttnList[curKey]->ButtonDown();
 		}
@@ -336,9 +336,9 @@ void KeyboardInput::Release()
 {
 	if (lpdikey)
 	{
-		//»ñÈ¡ºó£¬¹é»¹
+		//èŽ·å–åŽï¼Œå½’è¿˜
 		lpdikey->Unacquire();
-		//ÊÍ·Å
+		//é‡Šæ”¾
 		lpdikey->Release();
 		lpdikey = NULL;
 	}

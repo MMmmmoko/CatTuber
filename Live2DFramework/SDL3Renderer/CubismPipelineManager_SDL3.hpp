@@ -11,7 +11,7 @@ namespace Live2D {
             namespace Rendering {
 
 
-                //°´Ðè¼ìË÷£¬ÈçÎÞÔò´´½¨
+                //æŒ‰éœ€æ£€ç´¢ï¼Œå¦‚æ— åˆ™åˆ›å»º
 
 
 

@@ -5,8 +5,8 @@
 #include<SDL3/SDL.h>
 #include"Input/InputCommon.h"
 
-//Êó±êÊäÈë
-//½öÔÚ´¦ÀíÊäÈëµÄÏß³ÌÊ¹ÓÃ
+//é¼ æ ‡è¾“å…¥
+//ä»…åœ¨å¤„ç†è¾“å…¥çš„çº¿ç¨‹ä½¿ç”¨
 class MouseInput
 {
 
@@ -19,10 +19,10 @@ public:
 	void SetMoveSpeed(float _speed) { mouseSpeed=_speed; };
 	void SetInverX(bool b) { isInvertX =b; };
 private:
-	//Êı¾İÁĞ±í
+	//æ•°æ®åˆ—è¡¨
 	ButtonProxy mouseButtonList[5] = {};
-	ButtonProxy mouseWheelUp ;//¹öÂÖ³¯Ô¶ÀëÉíÌåµÄµØ·½
-	ButtonProxy mouseWheelDown ; //¹öÂÖ³¯¿¿½üÉíÌåµÄµØ·½
+	ButtonProxy mouseWheelUp ;//æ»šè½®æœè¿œç¦»èº«ä½“çš„åœ°æ–¹
+	ButtonProxy mouseWheelDown ; //æ»šè½®æœé è¿‘èº«ä½“çš„åœ°æ–¹
 	AxisProxy mouseCoordinateX ;
 	AxisProxy mouseCoordinateY ;
 	AxisProxy mouseMoveX;

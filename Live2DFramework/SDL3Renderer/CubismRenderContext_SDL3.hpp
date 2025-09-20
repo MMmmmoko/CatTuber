@@ -21,13 +21,13 @@ namespace Live2D {
                     SDL_GPUShader* _vertexShader = NULL;
                     SDL_GPUShader* _fragmentShader = NULL;
 
-                    //ÊäÈë²¼¾Ö
+                    //è¾“å…¥å¸ƒå±€
                     SDL_GPUVertexInputState _vertexInputState;
                     SDL_GPUVertexBufferDescription _vertexBufferDescription;
-                    SDL_GPUVertexAttribute _vertexAttr[2];//Õë¶Ôlive2D¿ª·¢µÄ£¬Ä¿Ç°live2D¶¥µãÖ»ÓĞxy¡¢uvÁ½×é(Ã»ÓĞÑÕÉ«)
+                    SDL_GPUVertexAttribute _vertexAttr[2];//é’ˆå¯¹live2Då¼€å‘çš„ï¼Œç›®å‰live2Dé¡¶ç‚¹åªæœ‰xyã€uvä¸¤ç»„(æ²¡æœ‰é¢œè‰²)
 
 
-                    //ÓÃÓÚhashµÄº¯Êı
+                    //ç”¨äºhashçš„å‡½æ•°
                     //size_t operator()(_PipelineState const&) const noexcept;
                     bool operator==(const _CubismRenderSDL3PipelineState & o) const noexcept
                     {
@@ -56,7 +56,7 @@ namespace Live2D {
 namespace std
 {
     inline void hash_combine(size_t& seed, size_t h) {
-        // 0x9e3779b97f4a7c15 ÊÇ 64 Î»»Æ½ğ·Ö¸î³£Á¿
+        // 0x9e3779b97f4a7c15 æ˜¯ 64 ä½é»„é‡‘åˆ†å‰²å¸¸é‡
         seed ^= h + 0x9e3779b97f4a7c15ULL
             + (seed << 6)
             + (seed >> 2);
@@ -77,12 +77,12 @@ namespace std
             hash_combine(seed, std::hash<void*>()(s._vertexShader));
             hash_combine(seed, std::hash<void*>()(s._fragmentShader));
 
-            //Ê£ÏÂµÄ²ÎÊıÓ¦¸ÃÊÇ²»ĞèÒª²ÎÓë¹şÏ£¼ÆËãµÄ£¨ÊäÈë²¼¾ÖÓë¶¥µã×ÅÉ«Æ÷Ç¿°ó¶¨£©
-            //_topology¿ÉÒÔ¼ÆËãÒ»ÏÂ£¨µ«ÔÚlive2DÖĞÃ»ÓĞÓÃµ½¹ıÈı½ÇĞÎlistÒÔÍâµÄtopology£¬ËùÒÔÕâÀïºöÂÔ£©
+            //å‰©ä¸‹çš„å‚æ•°åº”è¯¥æ˜¯ä¸éœ€è¦å‚ä¸å“ˆå¸Œè®¡ç®—çš„ï¼ˆè¾“å…¥å¸ƒå±€ä¸é¡¶ç‚¹ç€è‰²å™¨å¼ºç»‘å®šï¼‰
+            //_topologyå¯ä»¥è®¡ç®—ä¸€ä¸‹ï¼ˆä½†åœ¨live2Dä¸­æ²¡æœ‰ç”¨åˆ°è¿‡ä¸‰è§’å½¢listä»¥å¤–çš„topologyï¼Œæ‰€ä»¥è¿™é‡Œå¿½ç•¥ï¼‰
             //hash_combine(seed, std::hash<int>()(int(s._topology)));
             return seed;
         }
-    }; // ¼ä½Óµ÷ÓÃÔ­ÉúHash.
+    }; // é—´æ¥è°ƒç”¨åŸç”ŸHash.
 
 
     template<>
@@ -116,8 +116,8 @@ namespace Live2D {
             namespace Rendering {
 
                 
-                //SDL3Âß¼­ÀàËÆDx12£¬ÕâÀï³¢ÊÔ·â×°Ò»¸öÀàËÆDx11contextµÄ¶«Î÷
-                //½öÓÃÓÚLive2D
+                //SDL3é€»è¾‘ç±»ä¼¼Dx12ï¼Œè¿™é‡Œå°è¯•å°è£…ä¸€ä¸ªç±»ä¼¼Dx11contextçš„ä¸œè¥¿
+                //ä»…ç”¨äºLive2D
                 class CubismRenderContext_SDL3
                 {
 
@@ -128,16 +128,17 @@ namespace Live2D {
                     static void ReleaseSDLGpuRenderContext(CubismRenderContext_SDL3* context);
 
 
-                    //ÎªÁË¼õÉÙÊı¾İ¸´ÖÆ£¬¶îÍâÔö¼ÓBeforeDrawCallºÍEndDrawCallÀ´ÊÊÓ¦SDL3µÄcommandbuffer
-                    //ÊÇÔÚÃ¿´ÎDrawCallÇ°ºóÊ¹ÓÃ£¬½«°ó¶¨¹ÜÏß×ÊÔ´µÄ´úÂë°üº¬ÔÚStartºÍEndÖ®¼ä
-                    //Õâ¸öÊÇSDL3µÄcommandbufferµÄÉúÃüÖÜÆÚ£¬²»ÊÇÀàËÆimguiÄÇÖÖÒ»Ö¡µÄäÖÈ¾º¯ÊıµÄÇ°ºó
+                    //ä¸ºäº†å‡å°‘æ•°æ®å¤åˆ¶ï¼Œé¢å¤–å¢åŠ BeforeDrawCallå’ŒEndDrawCallæ¥é€‚åº”SDL3çš„commandbuffer
+                    //æ˜¯åœ¨æ¯æ¬¡DrawCallå‰åä½¿ç”¨ï¼Œå°†ç»‘å®šç®¡çº¿èµ„æºçš„ä»£ç åŒ…å«åœ¨Startå’ŒEndä¹‹é—´
+                    //è¿™ä¸ªæ˜¯SDL3çš„commandbufferçš„ç”Ÿå‘½å‘¨æœŸï¼Œä¸æ˜¯ç±»ä¼¼imguié‚£ç§ä¸€å¸§çš„æ¸²æŸ“å‡½æ•°çš„å‰å
 
-                    //²»ÄÜ´ÓÍâÃæ´«Èëpass£¬ÒòÎªÎŞ·¨Í¬Ê±´æÔÚ¶à¸öpass
-                    // ÔÚlive2dÄÚ²¿»á´æÔÚÇĞ»»äÖÈ¾Ä¿±êµÄÇé¿ö£¨ÀëÆÁ£©
-                    //ËùÒÔÕâÀï¸ÄÎª´«Èë´´½¨Ò»¸öpassËù±ØĞëµÄĞÅÏ¢£¬ÔÚpassÊ§Ğ§ºóÓÉäÖÈ¾Æ÷×ÔĞĞÖØ½¨pass
-                    void StartFrame(SDL_GPUCommandBuffer* cmdCurFrame, SDL_GPUColorTargetInfo* colorTargetInfo, SDL_GPUDepthStencilTargetInfo* depthStencilTargetInfo);//Ã¿Ö¡Êı´«Èëµ±Ç°Ö¡
+                    //ä¸èƒ½ä»å¤–é¢ä¼ å…¥passï¼Œå› ä¸ºæ— æ³•åŒæ—¶å­˜åœ¨å¤šä¸ªpass
+                    // åœ¨live2då†…éƒ¨ä¼šå­˜åœ¨åˆ‡æ¢æ¸²æŸ“ç›®æ ‡çš„æƒ…å†µï¼ˆç¦»å±ï¼‰
+                    //æ‰€ä»¥è¿™é‡Œæ”¹ä¸ºä¼ å…¥åˆ›å»ºä¸€ä¸ªpassæ‰€å¿…é¡»çš„ä¿¡æ¯ï¼Œåœ¨passå¤±æ•ˆåç”±æ¸²æŸ“å™¨è‡ªè¡Œé‡å»ºpass
+                    void StartFrame(SDL_GPUCommandBuffer* cmdCurFrame,SDL_GPURenderPass* mainRenderPass, SDL_GPUCommandBuffer* copyBuffer);//æ¯å¸§æ•°ä¼ å…¥å½“å‰å¸§
 
                     SDL_GPUCommandBuffer* GetCommandBuffer() { return _cmd; };
+                    SDL_GPUCommandBuffer* GetCopyCommandBuffer() { return _cmd_copy; };
 
 
 
@@ -176,13 +177,13 @@ namespace Live2D {
                     
                     void DrawIndexed(uint32_t count,uint32_t startIndex);
 
-
+                    SDL_GPUGraphicsPipeline* GetPipelineFromCurState();
 
                 private:
 
 
-                    //¸÷ÖÖäÖÈ¾×´Ì¬
-                    //äÖÈ¾Ä¿±êÓëClear±ê¼Ç
+                    //å„ç§æ¸²æŸ“çŠ¶æ€
+                    //æ¸²æŸ“ç›®æ ‡ä¸Clearæ ‡è®°
                     SDL_GPUTexture* _renderTarget = NULL;
                     SDL_GPUTexture* _depthStencil = NULL;
                     CubismRenderState_SDL3::Sampler _sampler;
@@ -194,27 +195,24 @@ namespace Live2D {
                     bool _needClearDepth =false;
                     bool _needClearStencil =false;
 
-                    SDL_GPUColorTargetInfo _colorTargetInfo;
-                    SDL_GPUDepthStencilTargetInfo _depthStencilTargetInfo;
-                    void _RebuildRenderPass(bool isStartFrame=false);
-
-                    //×ÊÔ´
+                    //èµ„æº
                     //SDL_GPUBufferBinding _vertexBuffer[8];
                     //bool _vertexBufferUpdateFlag[8] = {};
                     //SDL_GPUBuffer* _indexBuffer = NULL;
                     //SDL_GPUIndexElementSize _index_element_size;
                     //uint32_t _indexBufferOffset = 0;
                     
-                                        //¹ÜÏß
+                                        //ç®¡çº¿
 
                     _CubismRenderSDL3PipelineState _pipelineState;
 
                     //SDL3 GPU
                     SDL_GPUCommandBuffer* _cmd = NULL;
-                    SDL_GPURenderPass* _pass_orig = NULL;
-                    SDL_GPURenderPass* _pass_offscreen = NULL;
+                    SDL_GPUCommandBuffer* _cmd_copy = NULL;
+                    SDL_GPURenderPass* _pass_orig = NULL;//main renderpass,ä¸€å¸§å†…ä¸ä¼šå‘ç”Ÿæ”¹å˜
+                    //SDL_GPURenderPass* _pass_offscreen = NULL;
                     //SDL_GPURenderPass* _pass_working = NULL;
-                    SDL_GPURenderPass* _pass = NULL;//µ±_pass_workingÓÃ
+                    SDL_GPURenderPass* _pass = NULL;//å½“_pass_workingç”¨
 
                     SDL_GPUDevice* _device=NULL;
 
@@ -224,7 +222,7 @@ namespace Live2D {
 
                     //std::unordered_map<_RenderPassState, SDL_GPURenderPass*>renderPassPool;
 
-                    //ĞèÒªRENDERPASS POOLÂğ£¿Live2DµÄ»æÖÆÂß¼­Ã¿¸öÀëÆÁÄ¿±êÓ¦¸ÃÃ¿Ö¡²»»áäÖÈ¾¶à´Î
+                    //éœ€è¦RENDERPASS POOLå—ï¼ŸLive2Dçš„ç»˜åˆ¶é€»è¾‘æ¯ä¸ªç¦»å±ç›®æ ‡åº”è¯¥æ¯å¸§ä¸ä¼šæ¸²æŸ“å¤šæ¬¡
                     
 
 

@@ -5,7 +5,7 @@
 
 InputManager::InputManager()
 {
-	//383¡¢179ÊÇ¸öÖĞµÈ´óĞ¡µÄÖÊÊı,Ó¦¸ÃËãÊÇ±È½ÏÊÊºÏÄ¿Ç°µÄÇé¿öµÄ
+	//383ã€179æ˜¯ä¸ªä¸­ç­‰å¤§å°çš„è´¨æ•°,åº”è¯¥ç®—æ˜¯æ¯”è¾ƒé€‚åˆç›®å‰çš„æƒ…å†µçš„
 	buttonMap.max_load_factor(0.7f);
 	axisMap.max_load_factor(0.7f);
 	buttonMap.reserve(383);
@@ -67,7 +67,7 @@ void InputManager::PumpDeviceOrNetworkInputEvents()
 	mouseInput.UpdateAndPumpEvents();
 	kerboardInput.UpdateAndPumpEvents();
 
-	//ÉèÖÃÄ¬ÈÏÊó±êÖµ
+	//è®¾ç½®é»˜è®¤é¼ æ ‡å€¼
 	if (isMousePosMove)
 	{
 		_axis_mouse_posX->SetValue(_axis_mouse_posMoveX->GetValue());
@@ -79,7 +79,7 @@ void InputManager::PumpDeviceOrNetworkInputEvents()
 		_axis_mouse_posY->SetValue(_axis_mouse_posCoordY->GetValue());
 	}
 
-	//ÆäËûĞèÒªÃ¿Ö¡µ÷ÓÃµÄÄÚÈİ
+	//å…¶ä»–éœ€è¦æ¯å¸§è°ƒç”¨çš„å†…å®¹
 	ButtonToAxisActionBinding::UpdateAxesValue();
 
 
@@ -99,7 +99,7 @@ ActionBindingHandle InputManager::RegisterButtonActionBinding(const char* downAc
 
 
 
-	//¸øÃ¿¸ö°´¼üÉèÖÃ°ó¶¨
+	//ç»™æ¯ä¸ªæŒ‰é”®è®¾ç½®ç»‘å®š
 	std::vector<ButtonProxy> buttonlist;
 	for (int i = 0; i < buttonCount; i++)
 	{
@@ -161,7 +161,7 @@ ActionBindingHandle InputManager::RegisterActionByActionBinding(const char* acti
 
 void InputManager::UnregisterActionBinding(ActionBindingHandle bindinghandle)
 {
-	//QusetionÊÇ·ñÓĞ³Ø»¯µÄ±ØÒª£¿
+	//Qusetionæ˜¯å¦æœ‰æ± åŒ–çš„å¿…è¦ï¼Ÿ
 	bindinghandle->UninstallBinding();
 	delete bindinghandle;
 }
@@ -183,7 +183,7 @@ void InputManager::UnregisterActionCallback(const char* actionName, ActionCallba
 
 void InputManager::RiseAction(const char* actionName, float value)
 {
-	//²»Ê¹ÓÃactionMap[XX]»òGetAction()·ÀÖ¹´´½¨²»±ØÒªmap¶ÔÏó
+	//ä¸ä½¿ç”¨actionMap[XX]æˆ–GetAction()é˜²æ­¢åˆ›å»ºä¸å¿…è¦mapå¯¹è±¡
 	auto it = actionMap.find(actionName);
 	if (it == actionMap.end())
 	{
@@ -209,5 +209,5 @@ void InputManager::ShutDown()
 {
 	mouseInput.Release();
 	kerboardInput.Release();
-	//ÒÑ¾­½øÈëÁË¹Ø±Õ¹ı³ÌÁË£¬ÆäËû¶«Î÷ÈÃËûÃÇ×Ô¶¯Îö¹¹°É.
+	//å·²ç»è¿›å…¥äº†å…³é—­è¿‡ç¨‹äº†ï¼Œå…¶ä»–ä¸œè¥¿è®©ä»–ä»¬è‡ªåŠ¨ææ„å§.
 }

@@ -6,7 +6,7 @@
 #include<iostream>
 
 
-//device�ȱ����� �����汾�š�  ����config
+//device等变量、 软件版本号、  软件config
 
 ///
 /// ********************
@@ -15,18 +15,22 @@
 /// 
 ///
 
-#define CATTUBER_VER_MAJOR 0LL
+#define CATTUBER_VER_MAJOR 0
 #define CATTUBER_VER_MINOR 8
 #define CATTUBER_VER_PATCH 2
 
 
 #define CATTUBER_VER_BETA 10
 
-
-#define ____TOSTRING(x) #x
+//保证先展开再转字符串
+#define ____TOSTRING(x) ____TOSTRING____(x)
+#define ____TOSTRING____(x) #x
 
 #ifdef CATTUBER_VER_BETA
-#define CATTUBER_VER ((CATTUBER_VER_MAJOR<<28)+(CATTUBER_VER_MINOR<<20)+(CATTUBER_VER_PATCH<<16)+CATTUBER_VER_BETA)
+//#define CATTUBER_VER ((CATTUBER_VER_MAJOR<<28)+(CATTUBER_VER_MINOR<<20)+(CATTUBER_VER_PATCH<<16)+CATTUBER_VER_BETA)
+//参考sdl
+#define CATTUBER_VER_NUM(MAJOR,MINOR,PATCH,BETA) (MAJOR*100'000'000 +MINOR*1000'000+PATCH*1000+BETA)
+#define CATTUBER_VER (CATTUBER_VER_NUM(CATTUBER_VER_MAJOR,CATTUBER_VER_MINOR,CATTUBER_VER_PATCH,CATTUBER_VER_BETA))
 
 
 #define CATTUBER_VER_STR \
@@ -36,7 +40,8 @@
     ____TOSTRING(CATTUBER_VER_BETA)
 #else
 
-#define CATTUBER_VER (CATTUBER_VER_MAJOR<<28+CATTUBER_VER_MINOR<<20+CATTUBER_VER_PATCH<<16+0)
+#define CATTUBER_VER_NUM(MAJOR,MINOR,PATCH) (MAJOR*100'000'000 +MINOR*1000'000+PATCH*1000)
+#define CATTUBER_VER (CATTUBER_VER_NUM(CATTUBER_VER_MAJOR,CATTUBER_VER_MINOR,CATTUBER_VER_PATCH))
 
 
 
@@ -54,12 +59,12 @@
 #define CATTUBER_APPNAME "CatTuber"
 
 
-//�ļ�
+//文件
 #define CATTUBER_SCENE_LAST_SAVED_FILE_NAME "_LastSaved.scene"
 
 
-//ģ����Դ���
-//ģ�������ļ���
+//模型资源相关
+//模型描述文件名
 #define CATTUBER_MODELRESOURCE_INFO_FILENAME "info.json"
 #define CATTUBER_MODELRESOURCE_PROPERTIES_FILENAME "properties.json"
 #define CATTUBER_MODEL_BUTTON_PARAM_HEAD "BUTTON_"
@@ -77,7 +82,7 @@
 
 
 
-//���ξ���
+//屏蔽警告
 #if defined(_MSC_VER)
 #define DISABLE_WARNING_PUSH           __pragma(warning(push))
 #define DISABLE_WARNING_POP            __pragma(warning(pop))
@@ -102,7 +107,7 @@ DISABLE_WARNING_GCC("-Wshift-count-overflow")
 DISABLE_WARNING_GCC("-Wshift-negative-value")
 
 
-//����live2d���õ�renderContext
+//声明live2d所用的renderContext
 namespace Live2D {
     namespace Cubism {
         namespace Framework {
@@ -132,14 +137,14 @@ public:
 
 
 
-    //ͳһ����־���ļ��ӿڣ�������������ʹ�ã� sadsa
+    //统一的日志、文件接口（方便结合其他库使用） sadsa
 public:
-    //��ȡһ����д��·��,��β��"/"����
-    static const char* GetPrefPath();//���Զ�д��·��
-    static const char* GetAppBasePath();//windows��exe�����ļ���·�� ����β��"/"���ţ�
-    static const char* GetWorkShopPath();//windows��exe�����ļ���·�� ����β��"/"���ţ�
-    static std::string ResolvePathToAbsolute(const std::string& pathToResolve);//����·������·���е�[AppBasePath]���ַ��������ɾ���·��
-    static std::string ResolvePathToRelative(const std::string& pathToResolve);//����·������·���е�[AppBasePath]���ַ������������·��
+    //获取一个可写的路径,结尾有"/"符号
+    static const char* GetPrefPath();//可以读写的路径
+    static const char* GetAppBasePath();//windows：exe所在文件夹路径 （结尾有"/"符号）
+    static const char* GetWorkShopPath();//windows：exe所在文件夹路径 （结尾有"/"符号）
+    static std::string ResolvePathToAbsolute(const std::string& pathToResolve);//解析路径，将路径中的[AppBasePath]等字符串解析成绝对路径
+    static std::string ResolvePathToRelative(const std::string& pathToResolve);//解析路径，将路径中的[AppBasePath]等字符串解析成相对路径
 
 
 

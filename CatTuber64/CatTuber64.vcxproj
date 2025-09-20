@@ -104,13 +104,14 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <LanguageStandard_C>stdc11</LanguageStandard_C>
-      <AdditionalIncludeDirectories>..\..\ThirdPart\SDL-release-3.2.16\include;..\..\ThirdPart\SDL_image-release-3.2.4\include;..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Core\include;..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src;..\..\ThirdPart\glm-1.0.1-light;include;include\Util;G:\CommonProject\nim_duilib\nim_duilib-main</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ThirdPart\SDL-release-3.2.16\include;..\..\ThirdPart\SDL_image-release-3.2.4\include;..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Core\include;..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src;..\..\ThirdPart\glm-1.0.1-light;include;include\Util;..\..\ThirdPart\nim_duilib-main;Dui</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir);..\..\ThirdPart\nim_duilib-main\lib\x64;..\..\ThirdPart\skia\out;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -123,16 +124,21 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <LanguageStandard_C>stdc11</LanguageStandard_C>
-      <AdditionalIncludeDirectories>..\..\ThirdPart\SDL-release-3.2.16\include;..\..\ThirdPart\SDL_image-release-3.2.4\include;..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Core\include;..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src;..\..\ThirdPart\glm-1.0.1-light;include;include\Util;G:\CommonProject\nim_duilib\nim_duilib-main</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ThirdPart\SDL-release-3.2.16\include;..\..\ThirdPart\SDL_image-release-3.2.4\include;..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Core\include;..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src;..\..\ThirdPart\glm-1.0.1-light;include;include\Util;..\..\ThirdPart\nim_duilib-main;Dui</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir);..\..\ThirdPart\nim_duilib-main\lib\x64;..\..\ThirdPart\skia\out;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Dui\Dui.h" />
+    <ClInclude Include="Dui\DuiCommon.h" />
+    <ClInclude Include="Dui\Form\MainUiForm.h" />
+    <ClInclude Include="Dui\UiThread.h" />
     <ClInclude Include="include\AppContext.h" />
     <ClInclude Include="include\AppSettings.h" />
     <ClInclude Include="include\CatTuberApp.h" />
@@ -150,8 +156,12 @@
     <ClInclude Include="include\Model\Live2DModelBase.h" />
     <ClInclude Include="include\Model\ModelManager.h" />
     <ClInclude Include="include\Pack\Pack.h" />
+    <ClInclude Include="include\Renderer\CatRendererContext.h" />
+    <ClInclude Include="include\Renderer\CatRenderState.h" />
+    <ClInclude Include="include\Renderer\MixDrawList.h" />
     <ClInclude Include="include\RenderThread.h" />
     <ClInclude Include="include\RenderWindowManager.h" />
+    <ClInclude Include="include\Tray.h" />
     <ClInclude Include="include\UserEvent.h" />
     <ClInclude Include="include\Util\json\allocator.h" />
     <ClInclude Include="include\Util\json\assertions.h" />
@@ -173,6 +183,9 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Dui\Dui.cpp" />
+    <ClCompile Include="Dui\Form\MainUiForm.cpp" />
+    <ClCompile Include="Dui\UiThread.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="platform\Windows\WinKeyboardInput.cpp" />
     <ClCompile Include="platform\Windows\WinMouseInput.cpp" />
@@ -191,8 +204,10 @@
     <ClCompile Include="src\Model\Live2DModelBase.cpp" />
     <ClCompile Include="src\Model\ModelManager.cpp" />
     <ClCompile Include="src\Pack\Pack.cpp" />
+    <ClCompile Include="src\Renderer\MixDrawList.cpp" />
     <ClCompile Include="src\RenderThread.cpp" />
     <ClCompile Include="src\RenderWindowManager.cpp" />
+    <ClCompile Include="src\Tray.cpp" />
     <ClCompile Include="src\UserEvent.cpp" />
     <ClCompile Include="src\Util\json\json_reader.cpp" />
     <ClCompile Include="src\Util\json\json_value.cpp" />
@@ -211,6 +226,9 @@
     <ProjectReference Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Samples\D3D11\Demo\proj.d3d11.cmake\build\proj_msvc2022_x64_md\Framework\Framework.vcxproj">
       <Project>{3b372482-8d89-3f80-a7bc-9c34dd4070b6}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\..\ThirdPart\nim_duilib-main\duilib\duilib.vcxproj">
+      <Project>{e106acd7-4e53-4aee-942b-d0dd426db34e}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\ThirdPart\SDL-release-3.2.16\VisualC\SDL\SDL.vcxproj">
       <Project>{81ce8daf-ebb2-4761-8e45-b71abcca8c68}</Project>
     </ProjectReference>
@@ -220,6 +238,27 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Util\json\json_valueiterator.inl" />
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="Dui\Form\MainUiForm.xml">
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)Dui/themes/default/CatTuber_default</DestinationFolders>
+    </CopyFileToFolders>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Dui\Lang\en_US.txt" />
+    <CopyFileToFolders Include="Dui\Lang\schinese.ini">
+      <FileType>Document</FileType>
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)Dui/lang/</DestinationFolders>
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)Dui/lang/</DestinationFolders>
+    </CopyFileToFolders>
+  </ItemGroup>
+  <ItemGroup>
+    <Xsd Include="Dui\NIMDUISchema.xsd">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Xsd>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

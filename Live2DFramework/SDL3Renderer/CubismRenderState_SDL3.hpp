@@ -30,15 +30,15 @@ namespace Live2D {
 					enum
 					{
 						State_None,
-						State_Blend,        ///< ¥Ö¥ì¥ó¥É¥â©`¥É
-						State_Viewport,     ///< ¥Ó¥å©`¥Ý©`¥È
-						State_ZEnable,      ///< ZÓÐ„¿Ÿo„¿
-						State_CullMode,     ///< ¥«¥ê¥ó¥°¥â©`¥É
-						State_Sampler,      ///< ¥Æ¥¯¥¹¥Á¥ã¥Õ¥£¥ë¥¿©`
+						State_Blend,        ///< ãƒ–ãƒ¬ãƒ³ãƒ‰ãƒ¢ãƒ¼ãƒ‰
+						State_Viewport,     ///< ãƒ“ãƒ¥ãƒ¼ãƒãƒ¼ãƒˆ
+						State_ZEnable,      ///< Zæœ‰åŠ¹ç„¡åŠ¹
+						State_CullMode,     ///< ã‚«ãƒªãƒ³ã‚°ãƒ¢ãƒ¼ãƒ‰
+						State_Sampler,      ///< ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒ•ã‚£ãƒ«ã‚¿ãƒ¼
 						State_Max,
 					};
 
-					// ¥Ö¥ì¥ó¥É¥¹¥Æ©`¥È D3D11¤Ç¤Ï¥ª¥Ö¥¸¥§¥¯¥È…gÎ»¤Ç¤Î¹ÜÀí
+					// ãƒ–ãƒ¬ãƒ³ãƒ‰ã‚¹ãƒ†ãƒ¼ãƒˆ D3D11ã§ã¯ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆå˜ä½ã§ã®ç®¡ç†
 					enum Blend
 					{
 						Blend_Origin,
@@ -52,27 +52,27 @@ namespace Live2D {
 
 					enum Cull
 					{
-						Cull_Origin,///< Ôª¡©¤ÎÔO¶¨
-						Cull_None,  ///< ¥«¥ê¥ó¥°Ÿo¤·
-						Cull_Ccw,   ///< CCW±íÊ¾
+						Cull_Origin,///< å…ƒã€…ã®è¨­å®š
+						Cull_None,  ///< ã‚«ãƒªãƒ³ã‚°ç„¡ã—
+						Cull_Ccw,   ///< CCWè¡¨ç¤º
 						Cull_Max,
 					};
 
-					// Z D3D11¤Ç¤Ï¥ª¥Ö¥¸¥§¥¯¥È…gÎ»¤Ç¤Î¹ÜÀí
+					// Z D3D11ã§ã¯ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆå˜ä½ã§ã®ç®¡ç†
 					enum Depth
 					{
-						Depth_Origin,   ///< Ô­Ê¼ÉèÖÃ
+						Depth_Origin,   ///< åŽŸå§‹è®¾ç½®
 						Depth_Disable,  ///< Zoff
 						Depth_Enable,   ///< Zon
 						Depth_Max,
 					};
 
-					// ¥µ¥ó¥×¥é©`¥¹¥Æ©`¥È D3D11¤Ç¤Ï¥ª¥Ö¥¸¥§¥¯¥È…gÎ»¤Ç¤Î¹ÜÀí
+					// ã‚µãƒ³ãƒ—ãƒ©ãƒ¼ã‚¹ãƒ†ãƒ¼ãƒˆ D3D11ã§ã¯ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆå˜ä½ã§ã®ç®¡ç†
 					enum Sampler
 					{
-						Sampler_Origin,     ///< Ôª¡©¤ÎÔO¶¨
-						Sampler_Normal,     ///< Ê¹ÓÃ¥¹¥Æ©`¥È
-						Sampler_Anisotropy, ///< ®·½ÐÔ¥Õ¥£¥ë¥¿¥ê¥ó¥°Ê¹ÓÃ
+						Sampler_Origin,     ///< å…ƒã€…ã®è¨­å®š
+						Sampler_Normal,     ///< ä½¿ç”¨ã‚¹ãƒ†ãƒ¼ãƒˆ
+						Sampler_Anisotropy, ///< ç•°æ–¹æ€§ãƒ•ã‚£ãƒ«ã‚¿ãƒªãƒ³ã‚°ä½¿ç”¨
 						Sampler_Max,
 					};
 
@@ -127,7 +127,7 @@ namespace Live2D {
 						Sampler _sampler;
 						float _anisotropy;
 
-						csmBool _valid[State_Max];    ///< ÊÇ·ñÒÑÉèÖÃ¡£¬FÔÚ¤ÏStartFrame¤ÇÒ»Í¨¤ê¤Ïºô¤ó¤Ç¤¤¤ë
+						csmBool _valid[State_Max];    ///< æ˜¯å¦å·²è®¾ç½®ã€‚ç¾åœ¨ã¯StartFrameã§ä¸€é€šã‚Šã¯å‘¼ã‚“ã§ã„ã‚‹
 					};
 
 
@@ -149,10 +149,10 @@ namespace Live2D {
 					CubismRenderState_SDL3();
 					~CubismRenderState_SDL3();
 
-					//´´½¨¸÷ÖÖ¶ÔÏó?
+					//åˆ›å»ºå„ç§å¯¹è±¡?
 					void Create(SDL_GPUDevice* device);
 
-					//ºÃÏñÓÃ²»ÉÏ
+					//å¥½åƒç”¨ä¸ä¸Š
 					//void SaveCurrentNativeState(ID3D11Device* device, ID3D11DeviceContext* renderContext);
 					//void RestoreNativeState(ID3D11Device* device, ID3D11DeviceContext* renderContext);
 

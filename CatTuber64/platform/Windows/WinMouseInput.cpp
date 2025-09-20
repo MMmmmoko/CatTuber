@@ -13,27 +13,27 @@
 
 
 
-//¾²Ì¬±äÁ¿
+//é™æ€å˜é‡
 
 
-		//»ñÈ¡µÄÊó±êÊı¾İ·ÅÔÚ´Ë½á¹¹ÖĞ
+		//è·å–çš„é¼ æ ‡æ•°æ®æ”¾åœ¨æ­¤ç»“æ„ä¸­
 static DIMOUSESTATE2 mouse_state_d7;
 static LPDIRECTINPUT8 lpdi = NULL;
 static LPDIRECTINPUTDEVICE8 lpdimouse = NULL;
 static bool inited = false;
 
 
-//Ä¿Ç°´òËãÖ»Ö§³ÖÎå¸öÊó±ê°´¼ü
+//ç›®å‰æ‰“ç®—åªæ”¯æŒäº”ä¸ªé¼ æ ‡æŒ‰é”®
 
-//static input::InputAxis* mousePosY = NULL;//ÓëÈí¼şÏà¹Ø
+//static input::InputAxis* mousePosY = NULL;//ä¸è½¯ä»¶ç›¸å…³
 //static input::InputAxis* mousePosY = NULL;
 
 
 #define DINPUT_BUFFERSIZE 128
 
-//8ÊÇDInputÌá¹©µÄÊıÁ¿£¬ CatTuberÔİÊ±Ö»¿ª·Å5¸ö°´¼ü¸øÓÃ»§
+//8æ˜¯DInputæä¾›çš„æ•°é‡ï¼Œ CatTuberæš‚æ—¶åªå¼€æ”¾5ä¸ªæŒ‰é”®ç»™ç”¨æˆ·
 BYTE MouseButtonStates[8] = { 0 };
-BYTE MouseButtonStates_LastFrame[8] = { 0 };//<ÎïÀí»úÆ÷ÉÏµÄÊó±ê°´¼ü ºÍÍøÂçÎŞ¹ØÊó±ê°´¼ü
+BYTE MouseButtonStates_LastFrame[8] = { 0 };//<ç‰©ç†æœºå™¨ä¸Šçš„é¼ æ ‡æŒ‰é”® å’Œç½‘ç»œæ— å…³é¼ æ ‡æŒ‰é”®
 bool MouseWheel_LastFrame[2] = {0};
 
 bool MouseInput::Init()
@@ -41,9 +41,9 @@ bool MouseInput::Init()
 	
 	if (inited)return true;
 
-	//»ñÈ¡ÊäÈë
+	//è·å–è¾“å…¥
 	auto& im=InputManager::GetIns();
-	//0×ó1ÓÒ2ÖĞ34²à
+	//0å·¦1å³2ä¸­34ä¾§
 	mouseButtonList[0]=im.GetButton("Mouse.Left");
 	mouseButtonList[1]=im.GetButton("Mouse.Right");
 	mouseButtonList[2]=im.GetButton("Mouse.Middle");
@@ -58,7 +58,7 @@ bool MouseInput::Init()
 	//mousePosX = im.GetAxis("Mouse.Pos");
 	
 
-	//»ñÈ¡Ö÷ÏÔÊ¾Æ÷·Ö±æÂÊ,Ìá¹©ÒÆ¶¯²Î¿¼
+	//è·å–ä¸»æ˜¾ç¤ºå™¨åˆ†è¾¨ç‡,æä¾›ç§»åŠ¨å‚è€ƒ
 	do
 	{
 		SDL_DisplayID primaryDisplay = SDL_GetPrimaryDisplay();
@@ -73,7 +73,7 @@ bool MouseInput::Init()
 
 
 
-	//³õÊ¼»¯directinput
+	//åˆå§‹åŒ–directinput
 	do
 	{
 		HRESULT hr;
@@ -83,13 +83,13 @@ bool MouseInput::Init()
 			break;
 		}
 
-		//´´½¨Êó±êÉè±¸
+		//åˆ›å»ºé¼ æ ‡è®¾å¤‡
 		if (lpdi->CreateDevice(GUID_SysMouse, &lpdimouse, NULL) != DI_OK)
 		{
 			SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "MouseInput: Init Failed.");
 			break;
 		}
-		//ÉèÖÃÊó±êĞ­×÷µÈ¼¶£¬ÉèÖÃÎªºóÌ¨/·Ç¶ÀÕ¼Ä£Ê½
+		//è®¾ç½®é¼ æ ‡åä½œç­‰çº§ï¼Œè®¾ç½®ä¸ºåå°/éç‹¬å æ¨¡å¼
 		if (lpdimouse->SetCooperativeLevel(0, DISCL_NONEXCLUSIVE | DISCL_BACKGROUND) != DI_OK)
 		{
 			SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "MouseInput: Init Failed.");
@@ -104,7 +104,7 @@ bool MouseInput::Init()
 		property.dwData = DINPUT_BUFFERSIZE;
 
 
-		//ÉèÖÃÊı¾İ¸ñÊ½,Êó±ê¶ÔÓ¦µÄÊı¾İ¸ñÊ½Îªc_dfDIMouse
+		//è®¾ç½®æ•°æ®æ ¼å¼,é¼ æ ‡å¯¹åº”çš„æ•°æ®æ ¼å¼ä¸ºc_dfDIMouse
 		if (lpdimouse->SetDataFormat(&c_dfDIMouse2) != DI_OK)
 		{
 			SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "MouseInput: Init Failed.");
@@ -114,13 +114,13 @@ bool MouseInput::Init()
 
 		if FAILED(hr)
 		{
-			// Ê§°Ü
+			// å¤±è´¥
 			SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "MouseInput: Init Failed.");
 			break;
 		}
 
 
-		//»ñÈ¡Êó±ê
+		//è·å–é¼ æ ‡
 		if (lpdimouse->Acquire() != DI_OK)
 		{
 			SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,"MouseInput: Init Failed.");
@@ -150,13 +150,13 @@ void MouseInput::Release()
 	inited = false;
 }
 
-//Ê¹ÓÃ»º´æÄ£Ê½»áÒòÎªÊó±ê»Ø±¨ÂÊ¹ı´óµ¼ÖÂ¼«¸ßCPUÕ¼ÓÃ£¨Ò²Ğí£©
-//ÕâÀï²ÉÓÃÁ¢¼´Ä£Ê½
+//ä½¿ç”¨ç¼“å­˜æ¨¡å¼ä¼šå› ä¸ºé¼ æ ‡å›æŠ¥ç‡è¿‡å¤§å¯¼è‡´æé«˜CPUå ç”¨ï¼ˆä¹Ÿè®¸ï¼‰
+//è¿™é‡Œé‡‡ç”¨ç«‹å³æ¨¡å¼
 void MouseInput::UpdateAndPumpEvents()
 {
 
 
-	//¶ÁÈ¡Êó±êÊı¾İ
+	//è¯»å–é¼ æ ‡æ•°æ®
 	if (lpdimouse)
 	{
 		if (lpdimouse->GetDeviceState(sizeof(DIMOUSESTATE2), (LPVOID)&mouse_state_d7) != DI_OK)
@@ -164,7 +164,7 @@ void MouseInput::UpdateAndPumpEvents()
 	}
 	else
 	{
-		//Èç¹ûÃ»ÓĞ²åÈëÊó±ê£¬Ôò½«Êó±êÊı¾İ½á¹¹ÖÃÎª0
+		//å¦‚æœæ²¡æœ‰æ’å…¥é¼ æ ‡ï¼Œåˆ™å°†é¼ æ ‡æ•°æ®ç»“æ„ç½®ä¸º0
 		memset(&mouse_state_d7, 0, sizeof(mouse_state_d7));
 		return;
 	}
@@ -173,7 +173,7 @@ void MouseInput::UpdateAndPumpEvents()
 
 
 
-	//CatTuberÔİÊ±Ö»´¦ÀíÎå¸öÊó±ê°´¼ü
+	//CatTuberæš‚æ—¶åªå¤„ç†äº”ä¸ªé¼ æ ‡æŒ‰é”®
 	//for (int i = 0; i < 8; i++)
 	for (int i = 0; i < 5; i++)
 	{
@@ -197,13 +197,13 @@ void MouseInput::UpdateAndPumpEvents()
 
 
 
-	//½«mouse_state_d7ÖĞµÄÊı¾İ×ªĞ´µ½ÎÒÃÇĞèÒª±£´æÊı¾İµÄÎ»ÖÃ
-	//float MousePoint_Model[2];		//<Êó±êÎ»ÖÃ
+	//å°†mouse_state_d7ä¸­çš„æ•°æ®è½¬å†™åˆ°æˆ‘ä»¬éœ€è¦ä¿å­˜æ•°æ®çš„ä½ç½®
+	//float MousePoint_Model[2];		//<é¼ æ ‡ä½ç½®
 
 
-	//*2:[0,1]Ó³Éäµ½[-1,1]
+	//*2:[0,1]æ˜ å°„åˆ°[-1,1]
 
-	bool localUpdate = false;//±¾µØÊÇ·ñ·¢ÉúÁËÊı¾İ¸üĞÂ
+	bool localUpdate = false;//æœ¬åœ°æ˜¯å¦å‘ç”Ÿäº†æ•°æ®æ›´æ–°
 
 	float dx = mouse_state_d7.lX  * 2 * mouseSpeed * (isInvertX ? -1 : 1)/(float)primaryScreenW;
 	float dy = mouse_state_d7.lY  * -2 * mouseSpeed / (float)primaryScreenH;
@@ -237,7 +237,7 @@ void MouseInput::UpdateAndPumpEvents()
 
 
 
-	//½öÔÚÊó±êÓĞÒÆ¶¯µÄÇé¿öÏÂ¸üĞÂ×ø±ê
+	//ä»…åœ¨é¼ æ ‡æœ‰ç§»åŠ¨çš„æƒ…å†µä¸‹æ›´æ–°åæ ‡
 	if (localUpdate)
 	{
 		POINT p;
@@ -267,8 +267,8 @@ void MouseInput::UpdateAndPumpEvents()
 
 
 
-	//¹öÂÖ
-	//TodoĞèÒª²âÊÔ·½Ïò
+	//æ»šè½®
+	//Todoéœ€è¦æµ‹è¯•æ–¹å‘
 	if (mouse_state_d7.lZ > 0)
 	{
 		if (MouseWheel_LastFrame[0] == false)

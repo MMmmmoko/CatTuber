@@ -4,11 +4,14 @@
 
 
 
-//CatTuberÃ¿¸ö´°¿ÚÒ»¸ö³¡¾°
-//³¡¾°ÖĞÓĞÒ»Ğ©¹Ì¶¨²ÛÎ»£¨½ÇÉ« ×À×Ó ÊÖ³ÖÎïÆ·£©ºÍÆäËû²ÛÎ»£¨×°ÊÎÆ·£©
+//CatTuberæ¯ä¸ªçª—å£ä¸€ä¸ªåœºæ™¯
+//åœºæ™¯ä¸­æœ‰ä¸€äº›å›ºå®šæ§½ä½ï¼ˆè§’è‰² æ¡Œå­ æ‰‹æŒç‰©å“ï¼‰å’Œå…¶ä»–æ§½ä½ï¼ˆè£…é¥°å“ï¼‰
+
+#include<glm/glm.hpp>
+#include<vector>
+
 #include"Model/IModel.h"
 #include"json/json.h"
-#include<vector>
 class TableObject;
 class CharacterObject;
 class HandheldItemObject;
@@ -17,24 +20,25 @@ class Decorationbject;
 
 class ISceneItem;
 class MainSceneItem;
-//class MainItem;// ½ÇÉ«×À×ÓÊó±êµÄ×éºÏÄ£ĞÍ  ¡¢¶ÀÁ¢Ä£ĞÍ£¬Bongo Cat
-//QUESTION²ÉÓÃÈ«¾ÖMixÂğ
-class MixDrawList;//ÓÃ»ìºÏ»æÖÆ¼¼Êõ½«¶à¸öLive2DÄ£ĞÍ»òÆäËûÄ£ĞÍÒ»Æğ»æÖÆ¡£
-//¿ØÖÆ³¡¾°ÄÚÈİ²¢Ö±½ÓÓëUI²ã½Ó´¥
-//Ö±½ÓÓë±»»æÖÆµÄ¶ÔÏó½Ó´¥
+//class MainItem;// è§’è‰²æ¡Œå­é¼ æ ‡çš„ç»„åˆæ¨¡å‹  ã€ç‹¬ç«‹æ¨¡å‹ï¼ŒBongo Cat
+//QUESTIONé‡‡ç”¨å…¨å±€Mixå—
+class MixDrawList;//ç”¨æ··åˆç»˜åˆ¶æŠ€æœ¯å°†å¤šä¸ªLive2Dæ¨¡å‹æˆ–å…¶ä»–æ¨¡å‹ä¸€èµ·ç»˜åˆ¶ã€‚
+//æ§åˆ¶åœºæ™¯å†…å®¹å¹¶ç›´æ¥ä¸UIå±‚æ¥è§¦
+//ç›´æ¥ä¸è¢«ç»˜åˆ¶çš„å¯¹è±¡æ¥è§¦
 class Scene
 {
 public:
-	//²»ÒªÖ´ĞĞÈÎºÎÓëGPUäÖÈ¾Ïà¹ØµÄ¹¤×÷£¿
+	//ä¸è¦æ‰§è¡Œä»»ä½•ä¸GPUæ¸²æŸ“ç›¸å…³çš„å·¥ä½œï¼Ÿ
 	void Update(uint64_t deltaTicksNS);
-	//QUESTION Î´À´µÄ3DÏà»úĞèÒª×÷ÎªDrawº¯ÊıµÄ²ÎÊı½øĞĞ´«µİÂğ
-	//ClearÔÚÆäËûµØ·½½øĞĞ£¨ClearÊÇ´°¿ÚµÄ¹¤×÷£©£¬ÕâÀïÖ»ĞèÒª×¨×¢ÍùÄ¿±êÉÏ»æÖÆÄÚÈİ
-	void Draw(SDL_GPUTexture* renderTarget, SDL_GPUTexture* depth,int width,int height,SDL_GPUCommandBuffer* mainCmdBuffer, SDL_GPUCommandBuffer* copyCmdBuffer=NULL);
+	//QUESTION æœªæ¥çš„3Dç›¸æœºéœ€è¦ä½œä¸ºDrawå‡½æ•°çš„å‚æ•°è¿›è¡Œä¼ é€’å—
+	//Clearåœ¨å…¶ä»–åœ°æ–¹è¿›è¡Œï¼ˆClearæ˜¯çª—å£çš„å·¥ä½œï¼‰ï¼Œè¿™é‡Œåªéœ€è¦ä¸“æ³¨å¾€ç›®æ ‡ä¸Šç»˜åˆ¶å†…å®¹
+	//void Draw(SDL_GPUTexture* renderTarget, SDL_GPUTexture* depth,int width,int height,SDL_GPUCommandBuffer* mainCmdBuffer, SDL_GPUCommandBuffer* copyCmdBuffer=NULL);
+	void Draw(SDL_GPURenderPass* mainRenderPass,int width,int height,SDL_GPUCommandBuffer* mainCmdBuffer, SDL_GPUCommandBuffer* copyCmdBuffer=NULL);
 
 
 
 
-	//±£´æ»òÔØÈëµ±Ç°³¡¾°ÄÚÈİ
+	//ä¿å­˜æˆ–è½½å…¥å½“å‰åœºæ™¯å†…å®¹
 	Json::Value GenerateAttributes();
 	void ApplyAttributes(const Json::Value& jsonvalue);
 
@@ -42,23 +46,31 @@ public:
 	 
 
 
-	//ÍêÈ«ÇåÀí×ÊÔ´//½öÔÚäÖÈ¾Ïß³Ìµ÷ÓÃ
+	//å®Œå…¨æ¸…ç†èµ„æº//ä»…åœ¨æ¸²æŸ“çº¿ç¨‹è°ƒç”¨
 	void Reset();
-	//Õâ¸öº¯ÊıÖ»»áÔÚÖ¡»æÖÆÍêÊ±ÖØ½¨»º³åÇøµÄÊ±ºò²Åµ÷ÓÃ(äÖÈ¾Ïß³ÌÖĞ)
+	//è¿™ä¸ªå‡½æ•°åªä¼šåœ¨å¸§ç»˜åˆ¶å®Œæ—¶é‡å»ºç¼“å†²åŒºçš„æ—¶å€™æ‰è°ƒç”¨(æ¸²æŸ“çº¿ç¨‹ä¸­)
 	void SetCanvasSize(int witdh, int height);
 
 
-
+	glm::mat4x4& Get2DProj() { return proj2D; };
 
 private:
 	//3D Camera
 	int canvasW=0;
 	int canvasH=0;
 
+	
+
+
 	MainSceneItem* _mainItem=NULL;
-	//UI½çÃæÖĞÎïÆ·ÃûÎª¡°decoration£¨×°ÊÎ£©¡±
+	//UIç•Œé¢ä¸­ç‰©å“åä¸ºâ€œdecorationï¼ˆè£…é¥°ï¼‰â€
 	std::vector<ISceneItem*> _itemList;
-	//MixDrawList* _mixDraw;//ÏÈ°ÑÄ¿Ç°µÄÈí¼şÅÜÆğÀ´ÔÙ¸ã¶¨Mix
+	//MixDrawList* _mixDraw;//å…ˆæŠŠç›®å‰çš„è½¯ä»¶è·‘èµ·æ¥å†æå®šMix
+	//MixDrawListç›®å‰æ”¾åœ¨ClassicItemå†…éƒ¨äº†
+
+	glm::mat4x4 proj2D;
+	
+	
 
 };
 

@@ -1,16 +1,17 @@
 
 #include<SDL3/SDL.h>
+#include <glm/gtc/matrix_transform.hpp>
+
 #include"Item/SceneItem.h"
 #include"Item/MainSceneItem.h"
 #include"Item/Scene.h"
-
 
 
 void Scene::Update(uint64_t deltaTicksNS)
 {
 	//update camera
 
-	//QUESTION:Ïß³Ì³Ø·Ö·¢¸÷Îï¼şµÄUpdate£¿
+	//QUESTION:çº¿ç¨‹æ± åˆ†å‘å„ç‰©ä»¶çš„Updateï¼Ÿ
 
 
 	for (auto& sceneItem: _itemList)
@@ -21,29 +22,37 @@ void Scene::Update(uint64_t deltaTicksNS)
 }
 
 
-void Scene::Draw(SDL_GPUTexture* renderTarget, SDL_GPUTexture* depth, int width, int height, SDL_GPUCommandBuffer* mainCmdBuffer, SDL_GPUCommandBuffer* copyCmdBuffer)
+//void Scene::Draw(SDL_GPUTexture* renderTarget, SDL_GPUTexture* depth, int width, int height, SDL_GPUCommandBuffer* mainCmdBuffer, SDL_GPUCommandBuffer* copyCmdBuffer)
+void Scene::Draw(SDL_GPURenderPass* mainRenderPass, int width, int height, SDL_GPUCommandBuffer* mainCmdBuffer, SDL_GPUCommandBuffer* copyCmdBuffer)
 {
+
+	//3D PROJ
+
+
+
 
 	for (auto& sceneItem : _itemList)
 	{
-		sceneItem->Draw(renderTarget,depth, width, height, mainCmdBuffer, copyCmdBuffer);
+		//sceneItem->Draw(renderTarget,depth, width, height, mainCmdBuffer, copyCmdBuffer);
+		sceneItem->Draw(mainRenderPass, width, height, mainCmdBuffer, copyCmdBuffer);
+
 	}
 
 }
 
 Json::Value Scene::GenerateAttributes()
 {
-	//ÓĞÏß³Ì·çÏÕÂğ£¿É¾³ıÎïÆ·µÄÊ±ºò±£´æ£¿
+	//æœ‰çº¿ç¨‹é£é™©å—ï¼Ÿåˆ é™¤ç‰©å“çš„æ—¶å€™ä¿å­˜ï¼Ÿ
 	Json::Value json;
 
-	//TODO 3D Camera¼ÓÈëºóÕâÀïĞèÒªĞ´Èë3D CameraµÄĞÅÏ¢
+	//TODO 3D CameraåŠ å…¥åè¿™é‡Œéœ€è¦å†™å…¥3D Cameraçš„ä¿¡æ¯
 
 
 	for (int i = 0; i < _itemList.size(); i++)
 	{
 		auto& itemJson = json["Items"][i];
 		itemJson["Type"] = _itemList[i]->GetType();
-		//itemJson["Name"]Èç¹û¿¼ÂÇ¼ò»¯µÄ»°£¬Ó¦¸Ã²»ĞèÒªÈÃÓÃ»§¹ÜÀíÃû×Ö
+		//itemJson["Name"]å¦‚æœè€ƒè™‘ç®€åŒ–çš„è¯ï¼Œåº”è¯¥ä¸éœ€è¦è®©ç”¨æˆ·ç®¡ç†åå­—
 		//_itemList[i]->
 		itemJson["Detail"] = _itemList[i]->GenerateAttributes();
 	}
@@ -54,8 +63,8 @@ Json::Value Scene::GenerateAttributes()
 
 void Scene::ApplyAttributes(const Json::Value& jsonvalue)
 {
-	//OPTIMIZE:¼ì²éÊÇ·ñÓĞÍ¬ÃûÍ¬×ÊÔ´µÄ¶ÔÏó£¬ÈÃËü×Ô¼º¾ö¶¨ÊÇ·ñÓĞ±ØÒªÇåÀíÖØ½¨×ÊÔ´
-	// £¨¿ÉÄÜÕâÖÖ¶ÔÏóÖØÖÃ²ÎÊı»á¸ü¿ì£¬µ«ÔØÈë³¡¾°²¢²»ÊÇÊ±¼äÃô¸ĞµÄµØ·½£¬ËùÒÔÎ´À´ÓÅ»¯µÄÓÅÏÈ¼¶ºÜµÍ£©
+	//OPTIMIZE:æ£€æŸ¥æ˜¯å¦æœ‰åŒååŒèµ„æºçš„å¯¹è±¡ï¼Œè®©å®ƒè‡ªå·±å†³å®šæ˜¯å¦æœ‰å¿…è¦æ¸…ç†é‡å»ºèµ„æº
+	// ï¼ˆå¯èƒ½è¿™ç§å¯¹è±¡é‡ç½®å‚æ•°ä¼šæ›´å¿«ï¼Œä½†è½½å…¥åœºæ™¯å¹¶ä¸æ˜¯æ—¶é—´æ•æ„Ÿçš„åœ°æ–¹ï¼Œæ‰€ä»¥æœªæ¥ä¼˜åŒ–çš„ä¼˜å…ˆçº§å¾ˆä½ï¼‰
 	Reset();
 	
 	if (jsonvalue.isMember("Items") && jsonvalue["Items"].isArray())
@@ -72,19 +81,21 @@ void Scene::ApplyAttributes(const Json::Value& jsonvalue)
 					);
 				if (curJson.isMember("Detail"))
 				{
-					pitem = ISceneItem::CreateItem(curJson["Type"].asString().c_str(), curJson["Detail"]);
+					pitem = ISceneItem::CreateItem(curJson["Type"].asString().c_str(),this, curJson["Detail"]);
 				}
 				else
 				{
-					pitem= ISceneItem::CreateItem(curJson["Type"].asString().c_str());
+					pitem= ISceneItem::CreateItem(curJson["Type"].asString().c_str(),this );
 				}
 
 				if (pitem && _mainItem && isMainItem)
 				{
-					SDL_LogWarn(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION,"Can not create Multiple MainItem!");
+					SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION,"Can not create Multiple MainItem!");
 					ISceneItem::FreeItem(pitem);
 					pitem = NULL;
 				}
+
+
 
 				if (pitem) 
 				{
@@ -103,7 +114,7 @@ void Scene::ApplyAttributes(const Json::Value& jsonvalue)
 
 void Scene::Reset()
 {
-	//½öÔÚäÖÈ¾Ïß³Ìµ÷ÓÃ
+	//ä»…åœ¨æ¸²æŸ“çº¿ç¨‹è°ƒç”¨
 	for (auto& x: _itemList)
 	{
 		ISceneItem::FreeItem(x);
@@ -117,15 +128,23 @@ void Scene::Reset()
 
 }
 
-void Scene::SetCanvasSize(int witdh, int height)
+void Scene::SetCanvasSize(int width, int height)
 {
-	if (canvasW == witdh && canvasH == height)
+	if (canvasW == width && canvasH == height)
 		return;
-	canvasW = witdh;
+	canvasW = width;
 	canvasH = height;
-	//TODO/FIXME ĞÂÔö3dÏà»úºóÕâÀïÓ¦¸ÃÕâÊÇ3DÏà»ú
+	//TODO/FIXME æ–°å¢3dç›¸æœºåè¿™é‡Œåº”è¯¥è¿™æ˜¯3Dç›¸æœº
 
-
+	//æ›´æ–°PROJ
+	float viewHeight = 2.0f;     // ä½ æƒ³çœ‹åˆ°çš„ä¸–ç•Œé«˜åº¦
+	float aspect = static_cast<float>(width) / static_cast<float>(height);
+	float viewWidth = viewHeight * aspect;
+	proj2D = glm::orthoLH_ZO(
+		-viewWidth / 2.0f, viewWidth / 2.0f,  // left, right
+		-viewHeight / 2.0f, viewHeight / 2.0f, // bottom, top
+		0.1f, 100.0f                           // near, far
+	);
 
 	for (auto& x : _itemList)
 	{

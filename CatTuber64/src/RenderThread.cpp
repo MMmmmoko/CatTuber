@@ -6,15 +6,15 @@
 #include"Util/SDL_LockGuard.h"
 void RenderThread::Start()
 {
-	//Õâ¸öº¯Êý»áÔÚÖ÷Ïß³Ìµ÷ÓÃ
+	//è¿™ä¸ªå‡½æ•°ä¼šåœ¨ä¸»çº¿ç¨‹è°ƒç”¨
 
 	if (renderThread) {
-		// ÒÑÆô¶¯
+		// å·²å¯åŠ¨
 		return;
 	}
 	stopFlag = false;
 
-	//»¥³âËø
+	//äº’æ–¥é”
 	if (!taskQueueMutex)
 	{
 		taskQueueMutex = SDL_CreateMutex();
@@ -80,7 +80,7 @@ void RenderThread::Stop()
 		},this);
 
 	
-	//Èç¹û²»ÔÚäÖÈ¾Ïß³Ì,µÈ´ý
+	//å¦‚æžœä¸åœ¨æ¸²æŸ“çº¿ç¨‹,ç­‰å¾…
 	if (SDL_GetCurrentThreadID() != SDL_GetThreadID(renderThread))
 	{
 		int status;
@@ -90,7 +90,7 @@ void RenderThread::Stop()
 
 void RenderThread::PostTask(void(*task)(void* userdata, uint64_t userdata2), void* userdata, uint64_t userdata2)
 {
-	//Èç¹ûÒÑ¾­ÔÚäÖÈ¾Ïß³Ì
+	//å¦‚æžœå·²ç»åœ¨æ¸²æŸ“çº¿ç¨‹
 	if (SDL_GetCurrentThreadID() == SDL_GetThreadID(renderThread))
 	{
 		task(userdata, userdata2);
@@ -134,7 +134,7 @@ void RenderThread::ThreadLoop()
 	uint64_t savedTick = startTick;
 	while (!stopFlag)
 	{
-		//´¦ÀíTaskÊÂ¼þ
+		//å¤„ç†Taskäº‹ä»¶
 		{
 			SDL_LockGuard guard(taskQueueMutex);
 			std::swap(taskQueueFront, taskQueueBack);
@@ -149,7 +149,7 @@ void RenderThread::ThreadLoop()
 		if (!wm.canStartFrame)
 			continue;
 
-		//¼ÆËãÊ±¼ä²î
+		//è®¡ç®—æ—¶é—´å·®
 		uint64_t currentTick = SDL_GetTicksNS();
 		uint64_t deltaTick = currentTick - savedTick;
 		savedTick = currentTick;
@@ -161,12 +161,12 @@ void RenderThread::ThreadLoop()
 		wm.RenderAll();
 		wm.PresentAll();
 
-		//¼ÆËãË¯Ãß
+		//è®¡ç®—ç¡çœ 
 		uint64_t _CurFrameTick = SDL_GetTicksNS() - currentTick;
-		//µ½ÏÂÒ»Ö¡µÄns tickÖµ
+		//åˆ°ä¸‹ä¸€å¸§çš„ns tickå€¼
 		uint64_t frameDuration= 1'000'000'000 / wm._frameLimit;
 		int64_t sleepTime = frameDuration - _CurFrameTick;
-		//½öÔÚÐèÒª½øÐÐsleepµÄÊ±ºòË¯Ãß,Èç¹û²»ÄÜË¯ÃßÒ»¶¨Ê±¼äÄÇ¾Í²»Ë¯
+		//ä»…åœ¨éœ€è¦è¿›è¡Œsleepçš„æ—¶å€™ç¡çœ ,å¦‚æžœä¸èƒ½ç¡çœ ä¸€å®šæ—¶é—´é‚£å°±ä¸ç¡
 		if (sleepTime > 1)
 			SDL_DelayNS(sleepTime);
 	}

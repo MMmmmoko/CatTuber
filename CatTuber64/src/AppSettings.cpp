@@ -10,10 +10,10 @@
 #include"Input/InputManager.h"
 
 AppSettings AppSettings::ins;
-SDL_Color AppSettings::_defaultBackgroundColor = {255,255,255,0};//µÍµ½¸ß rgba
+SDL_Color AppSettings::_defaultBackgroundColor = {255,255,255,0};//ä½åˆ°é«˜ rgba
 
 
-//²»ÒªĞŞ¸ÄÎÄ¼şÃû£¿
+//ä¸è¦ä¿®æ”¹æ–‡ä»¶åï¼Ÿ
 #define _SETTINGS_FILE_NAME "AppConfig.json"
 
 
@@ -22,7 +22,7 @@ SDL_Color AppSettings::_defaultBackgroundColor = {255,255,255,0};//µÍµ½¸ß rgba
 
 void AppSettings::Load()
 {
-	//ÖØÖÃÄ¬ÈÏ
+	//é‡ç½®é»˜è®¤
 	*this = AppSettings();
 
 	std::string settingsFilePath = AppContext::GetPrefPath();
@@ -36,13 +36,13 @@ void AppSettings::Load()
 
 
 	
-	//ÏÈ¼ì²éÏîÊÇ·ñ´æÔÚ ÈçÏÂ:
-	//ºóĞøÈç¹ûÓĞ·Ç»ù´¡µÄÊı¾İÀàĞÍ£¨Èçrect£©
-	//Ôò¶ÔËùÓĞÀàĞÍ·â×°Ò»²ã¶ÁĞ´£º
+	//å…ˆæ£€æŸ¥é¡¹æ˜¯å¦å­˜åœ¨ å¦‚ä¸‹:
+	//åç»­å¦‚æœæœ‰éåŸºç¡€çš„æ•°æ®ç±»å‹ï¼ˆå¦‚rectï¼‰
+	//åˆ™å¯¹æ‰€æœ‰ç±»å‹å°è£…ä¸€å±‚è¯»å†™ï¼š
 	//IsRectType(Json::Value& json){json.isArray()......}
 	//SaveRect(Json::Value& json,Rect rect){json[i]=recr.topleft....};
 
-	//×Ó´úÂëÈçÏÂ
+	//å­ä»£ç å¦‚ä¸‹
 	/*
 	if (configJson.isMember("Window")&& configJson["Window"].isMember("Top")&& configJson["Window"]["Top"].isBool())
 	{
@@ -77,7 +77,7 @@ else \
 bool AppSettings::Save()
 {
 
-	//¹¹½¨Json
+	//æ„å»ºJson
 	Json::Value root;
 
 	//_Save_bool_Type(root["Window"]["Top"], _WindowTop);
@@ -87,14 +87,14 @@ bool AppSettings::Save()
 #undef APPSETTINGS_Save
 
 
-	//ÌØÊâ´¦Àí£¬Èç¹û²»±£´æLock×´Ì¬µÄÇé¿öÏÂ£¬±£´æÎªfalse
+	//ç‰¹æ®Šå¤„ç†ï¼Œå¦‚æœä¸ä¿å­˜LockçŠ¶æ€çš„æƒ…å†µä¸‹ï¼Œä¿å­˜ä¸ºfalse
 	if (!root["Window"]["LockSave"].asBool())
 	{
 		root["Window"]["Lock"] = false;
 	}
 
-	//½«jsonĞ´ÈëÎÄ¼ş
-	//ĞèÒªÅĞ¶ÏÊÇ·ñ¿ÉĞ´
+	//å°†jsonå†™å…¥æ–‡ä»¶
+	//éœ€è¦åˆ¤æ–­æ˜¯å¦å¯å†™
 	std::string settingsFilePath = AppContext::GetPrefPath();
 	settingsFilePath += _SETTINGS_FILE_NAME;
 
@@ -117,13 +117,13 @@ const std::vector<std::string>& AppSettings::GetLocalLanguageFullbackVec()
 		return vec;
 	
 
-	//¹¹½¨fullback±í
+	//æ„å»ºfullbackè¡¨
 	int count;
 	SDL_Locale** localeList=SDL_GetPreferredLocales(&count);
 	if (NULL == localeList)
 	{
 		SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Can not get locale info! %s",SDL_GetError());
-		//TODO/FIXME¼ÓÈë¶ÔsteamÓïÑÔµÄ¼ì²â
+		//TODO/FIXMEåŠ å…¥å¯¹steamè¯­è¨€çš„æ£€æµ‹
 		vec.push_back("english");
 		return vec;
 	}
@@ -186,7 +186,7 @@ const std::vector<std::string>& AppSettings::GetLocalLanguageFullbackVec()
 		PUSHLANG(vietnamese, vi);
 	}
 
-	//¶Ô¼òÌå·±Ìå»¥ÏàÌí¼ÓÒ»¸öFullback
+	//å¯¹ç®€ä½“ç¹ä½“äº’ç›¸æ·»åŠ ä¸€ä¸ªFullback
 	for (auto it = vec.begin(); it != vec.end(); it++)
 	{
 		if (*it == "schinese")
@@ -200,7 +200,7 @@ const std::vector<std::string>& AppSettings::GetLocalLanguageFullbackVec()
 			break;
 		}
 	}
-	//×ÜÒÔenglish½áÎ²
+	//æ€»ä»¥englishç»“å°¾
 	vec.push_back("english");
 
 	SDL_free(localeList);
@@ -224,9 +224,9 @@ const std::vector<std::string>& AppSettings::GetLocalLanguageFullbackVec()
 
 
 //************************************************
-//ÊµÏÖ_OnXXXXXChange()
-//×¢ÒâÉèÖÃÏîµÄĞŞ¸ÄÓ¦¸ÃÊÇ·¢ÉúÔÚÖ÷Ïß³ÌÖĞµÄ
-//ÓëäÖÈ¾Ïß³ÌÓĞ¹ØµÄĞèÒª½øĞĞ×ª·¢
+//å®ç°_OnXXXXXChange()
+//æ³¨æ„è®¾ç½®é¡¹çš„ä¿®æ”¹åº”è¯¥æ˜¯å‘ç”Ÿåœ¨ä¸»çº¿ç¨‹ä¸­çš„
+//ä¸æ¸²æŸ“çº¿ç¨‹æœ‰å…³çš„éœ€è¦è¿›è¡Œè½¬å‘
 //************************************************
 
 void AppSettings::_OnWindowTopChange(const bool& value)
@@ -246,7 +246,7 @@ void AppSettings::_OnWindowLockChange(const bool& value)
 
 void AppSettings::_OnWindowLockSaveChange(const bool& value)
 {
-	//Ó¦¸Ã²»ÓÃ½øĞĞÈÎºÎ¶¯×÷..
+	//åº”è¯¥ä¸ç”¨è¿›è¡Œä»»ä½•åŠ¨ä½œ..
 }
 
 void AppSettings::_OnWindowVisibleChange(const bool& value)
@@ -265,7 +265,7 @@ void AppSettings::_OnWindowFrameLimitChange(const int64_t& value)
 
 void AppSettings::_OnWindowBackgroundColorChange(const SDL_Color& value)
 {
-	//SDL_Color4×Ö½Ú£¬¿ÉÒÔÖ±½Ó´«Öµ
+	//SDL_Color4å­—èŠ‚ï¼Œå¯ä»¥ç›´æ¥ä¼ å€¼
 	RenderThread::GetIns().PostTask([](void* data, uint64_t taskParam) {
 		SDL_Color color = *(SDL_Color*)(&data);
 		RenderWindowManager::GetIns().SetWindowBackgroundColor(color);
@@ -275,7 +275,7 @@ void AppSettings::_OnWindowBackgroundColorChange(const SDL_Color& value)
 
 void AppSettings::_OnVolumeValueChange(const double& value)
 {
-	//ÒôÁ¿µÈ´ısdl_mix3¿â
+	//éŸ³é‡ç­‰å¾…sdl_mix3åº“
 	SDL_assert(false);
 }
 
@@ -296,14 +296,14 @@ void AppSettings::_OnMouseSpeedChange(const double& value)
 
 void AppSettings::_OnMouseInputAreaChange(const std::string& value)
 {
-	//valueÊÇ»ùÓÚÏÔÊ¾Æ÷µÄ×Ö·û´®
-	//"AllDisplays" »òÕßÏÔÊ¾Æ÷Ãû+²¿·ÖÆäËû±êÊ¶
-	//Í¬ÃûÏÔÊ¾Æ÷ºó×º##0\##1
+	//valueæ˜¯åŸºäºæ˜¾ç¤ºå™¨çš„å­—ç¬¦ä¸²
+	//"AllDisplays" æˆ–è€…æ˜¾ç¤ºå™¨å+éƒ¨åˆ†å…¶ä»–æ ‡è¯†
+	//åŒåæ˜¾ç¤ºå™¨åç¼€##0\##1
 	SDL_Rect rect = {};
-	//ÏÈÅĞ¶Ï"AllDisplays"
+	//å…ˆåˆ¤æ–­"AllDisplays"
 	if (value == "AllDisplays")
 	{
-		//¼ÆËãÆÁÄ»×Ü·¶Î§
+		//è®¡ç®—å±å¹•æ€»èŒƒå›´
 		int displayCount=0;
 		SDL_DisplayID* displays=SDL_GetDisplays(&displayCount);
 		if(!displays|| displayCount==0)
@@ -350,9 +350,9 @@ void AppSettings::_OnMouseInputAreaChange(const std::string& value)
 	}
 	else
 	{
-		//Õâ¶Î´úÂëºóĞø»áÓÃÔÚUIÖĞ
-		//ÏÈ¹¹½¨Ò»¸öÏÔÊ¾Æ÷displayºÍÏÔÊ¾Æ÷Ãûºó×ºµÄ¶ÔÕÕ±í.
-		//È»ºó²é×Ö·û´®
+		//è¿™æ®µä»£ç åç»­ä¼šç”¨åœ¨UIä¸­
+		//å…ˆæ„å»ºä¸€ä¸ªæ˜¾ç¤ºå™¨displayå’Œæ˜¾ç¤ºå™¨ååç¼€çš„å¯¹ç…§è¡¨.
+		//ç„¶åæŸ¥å­—ç¬¦ä¸²
 		int displayCount = 0;
 		SDL_DisplayID* displays = SDL_GetDisplays(&displayCount);
 		if (!displays || displayCount == 0)
@@ -377,7 +377,7 @@ void AppSettings::_OnMouseInputAreaChange(const std::string& value)
 		for (int i = 0; i < displayCount; i++)
 		{
 			const std::string& curDisplayName = nameVec[i];
-			std::vector<int> sameNameIndexVec;//Í¬ÃûÏÔÊ¾Æ÷Ë÷Òı
+			std::vector<int> sameNameIndexVec;//åŒåæ˜¾ç¤ºå™¨ç´¢å¼•
 			for (int j = i + 1; j < displayCount; j++)
 			{
 				if (curDisplayName == nameVec[j])
@@ -387,16 +387,16 @@ void AppSettings::_OnMouseInputAreaChange(const std::string& value)
 			}
 			if (!sameNameIndexVec.empty())
 			{
-				//¼ì²âµ½Í¬ÃûÏÔÊ¾Æ÷,ÖØ¹¹ÃüÃû
+				//æ£€æµ‹åˆ°åŒåæ˜¾ç¤ºå™¨,é‡æ„å‘½å
 				nameVec[i] = nameVec[i]+"##1";
 
 				for (int k = 0; k < sameNameIndexVec.size(); k++)
 				{
-					nameVec[sameNameIndexVec[k]] = nameVec[sameNameIndexVec[k]] + "##"+std::to_string(k+2);//##2¿ªÊ¼
+					nameVec[sameNameIndexVec[k]] = nameVec[sameNameIndexVec[k]] + "##"+std::to_string(k+2);//##2å¼€å§‹
 				}
 			}
 		}
-		//¶Ô±È×Ö·û´®
+		//å¯¹æ¯”å­—ç¬¦ä¸²
 		bool success = false;
 		for (int i = 0; i < displayCount; i++)
 		{
@@ -412,7 +412,7 @@ void AppSettings::_OnMouseInputAreaChange(const std::string& value)
 				break;
 			}
 		}
-		//Î´³É¹¦Æ¥ÅäÏÔÊ¾Æ÷£¬ÒÆ³ı##ÔÙ½øĞĞÆ¥Åä
+		//æœªæˆåŠŸåŒ¹é…æ˜¾ç¤ºå™¨ï¼Œç§»é™¤##å†è¿›è¡ŒåŒ¹é…
 		{
 			std::string curDisplay = value;
 			curDisplay=curDisplay.substr(0,curDisplay.find("##"));
@@ -441,7 +441,7 @@ void AppSettings::_OnMouseInputAreaChange(const std::string& value)
 		return;
 	}
 
-	//¹¹ÔìºÃÁËrect
+	//æ„é€ å¥½äº†rect
 	SDL_Rect* rectData = new SDL_Rect(rect);
 	RenderThread::GetIns().PostTask([](void* data, uint64_t taskParam) {
 		SDL_Rect* pRect = (SDL_Rect*)data;
@@ -464,7 +464,7 @@ void AppSettings::_OnMouseInvertXChange(const bool& value)
 
 void AppSettings::_OnMiscLanguageChange(const std::string& value)
 {
-	//ÓïÑÔ²ÉÓÃSteamAPIµÄĞÎÊ½
+	//è¯­è¨€é‡‡ç”¨SteamAPIçš„å½¢å¼
 //https://partner.steamgames.com/doc/store/localization/languages
 	SDL_assert(false);
 }
@@ -604,7 +604,7 @@ std::string AppSettings::_Get__CatString(Json::Value& json)
 
 bool AppSettings::_Is_SDL_Color_Type(Json::Value& json)
 {
-	//ÑÕÉ«ÓÉ4¸öÕûÊıÊıÖµ×é³ÉÊı×é//²»ÃæÏòÓÃ»§ËùÒÔ²»¶Ô3ÔªµÄÑÕÉ«½øĞĞÅĞ¶Ï
+	//é¢œè‰²ç”±4ä¸ªæ•´æ•°æ•°å€¼ç»„æˆæ•°ç»„//ä¸é¢å‘ç”¨æˆ·æ‰€ä»¥ä¸å¯¹3å…ƒçš„é¢œè‰²è¿›è¡Œåˆ¤æ–­
 	//json[0]
 	if (json.isArray() && json.size() == 4)
 	{

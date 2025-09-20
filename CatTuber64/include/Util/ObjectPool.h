@@ -3,9 +3,9 @@
 
 #include<iostream>
 #include<vector>
-//¶ÔÏó³Ø
-//Ö÷ÒªÎªÁËÔÚ½ô´ÕÄÚ´æÖĞÊ¹ÓÃ´óÁ¿ButtonºÍAxis¶ÔÏó
-//ÎŞÏß³Ì°²È« ±ÈÈçÈç¹û¹ÜÀíButton ¾ÍÖ÷ÒªÔÚÊäÈëÏà¹ØµÄÄÇ¸öÏß³ÌÊ¹ÓÃ£¬²»ÒªÔÚÆäËûµØ·½Ê¹ÓÃ
+//å¯¹è±¡æ± 
+//ä¸»è¦ä¸ºäº†åœ¨ç´§å‡‘å†…å­˜ä¸­ä½¿ç”¨å¤§é‡Buttonå’ŒAxiså¯¹è±¡
+//æ— çº¿ç¨‹å®‰å…¨ æ¯”å¦‚å¦‚æœç®¡ç†Button å°±ä¸»è¦åœ¨è¾“å…¥ç›¸å…³çš„é‚£ä¸ªçº¿ç¨‹ä½¿ç”¨ï¼Œä¸è¦åœ¨å…¶ä»–åœ°æ–¹ä½¿ç”¨
 template<typename T>
 class ObjectPool
 {
@@ -23,17 +23,17 @@ public:
     };
     Handle create(T value) {
         if (!free_.empty()) {
-            uint32_t i = free_.back(); free_.pop_back();//Èç¹ûÓĞ¿ÕÖÃµÄÎ»ÖÃ£¬Ê¹ÓÃÒ»¸ö¿ÕÖÃÎ»ÖÃ£¨freeÊı×éµÄback£©¡£
+            uint32_t i = free_.back(); free_.pop_back();//å¦‚æœæœ‰ç©ºç½®çš„ä½ç½®ï¼Œä½¿ç”¨ä¸€ä¸ªç©ºç½®ä½ç½®ï¼ˆfreeæ•°ç»„çš„backï¼‰ã€‚
             storage_[i] = std::move(value);
             ++generations_[i];
             return { i, generations_[i] };
         }
-        //Ã»ÓĞ¿ÕÎ»Ê±£¬Ö±½Ópushback
+        //æ²¡æœ‰ç©ºä½æ—¶ï¼Œç›´æ¥pushback
         storage_.push_back(std::move(value));
         generations_.push_back(0);
         return { uint32_t(storage_.size() - 1), 0,this };
     }
-    //²»¿É³¤ÆÚ±£´æ
+    //ä¸å¯é•¿æœŸä¿å­˜
     T* get(const Handle& h) {
         if (h.index >= storage_.size()) return nullptr;
         if (generations_[h.index] != h.generation) return nullptr;
@@ -42,7 +42,7 @@ public:
     void destroy(const Handle& h) {
         if (h.index >= storage_.size()) return;
         if (generations_[h.index] != h.generation) return;
-        ++generations_[h.index]; // ÌáÉı´úºÅ£¬¾É¾ä±úÊ§Ğ§
+        ++generations_[h.index]; // æå‡ä»£å·ï¼Œæ—§å¥æŸ„å¤±æ•ˆ
         free_.push_back(h.index);
     }
 
@@ -50,11 +50,11 @@ public:
     void reserve(size_t n) {
         storage_.reserve(n);
         generations_.reserve(n);
-        // free_ ²»Ò»¶¨Òª reserve£¬³ı·ÇÄãÔ¤¼ÆÆµ·± destroy
+        // free_ ä¸ä¸€å®šè¦ reserveï¼Œé™¤éä½ é¢„è®¡é¢‘ç¹ destroy
     }
 
 
-    //±éÀúµü´úÆ÷
+    //éå†è¿­ä»£å™¨
     struct iterator {
         using iterator_category = std::forward_iterator_tag;
         using value_type = T;
@@ -88,19 +88,19 @@ public:
     private:
         void skip_invalid() {
             while (idx < pool->storage_.size()) {
-                // Èç¹ûÔÚ free_ ÖĞ£¬»òÕß generation ²»Æ¥Åä£¬ÔòÌø¹ı
+                // å¦‚æœåœ¨ free_ ä¸­ï¼Œæˆ–è€… generation ä¸åŒ¹é…ï¼Œåˆ™è·³è¿‡
                 if (pool->generations_[idx] != uint32_t(-1)) break;
                 ++idx;
             }
         }
     };
-    // ±éÀú½Ó¿Ú
+    // éå†æ¥å£
     iterator begin() { return iterator(this, 0); }
     iterator end() { return iterator(this, storage_.size()); }
 private:
-    std::vector<T> storage_;//´æ´¢¶ÔÏó
-    std::vector<uint32_t> generations_;//´æ´¢´úÊı
-    std::vector<uint32_t> free_;//´æ´¢¿ÕÏĞÎ»ÖÃË÷Òı
+    std::vector<T> storage_;//å­˜å‚¨å¯¹è±¡
+    std::vector<uint32_t> generations_;//å­˜å‚¨ä»£æ•°
+    std::vector<uint32_t> free_;//å­˜å‚¨ç©ºé—²ä½ç½®ç´¢å¼•
 };
 
 
