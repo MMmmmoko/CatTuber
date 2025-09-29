@@ -22,6 +22,10 @@
 #include"AppContext.h"
 #include"Renderer/MixDrawList.h"
 #include"Item/Scene.h"
+
+
+#include"Live2DCubismCore.h"
+
 //屏蔽C4276
 //DISABLE_WARNING_PUSH
 //DISABLE_WARNING_MSVC(4267)
@@ -223,7 +227,7 @@ std::vector<std::string> CubismLive2DModel::GetParamList()
 	std::vector<std::string> paramVec;
 	for (int i = 0; i < paramCount; i++)
 	{
-		Csm::CubismIdHandle id=_model->GetParameterId(paramCount);
+		Csm::CubismIdHandle id=_model->GetParameterId(i);
 		paramVec.push_back(id->GetString().GetRawString());
 	}
 
@@ -637,10 +641,12 @@ void CubismLive2DModel::Update(float deltaTimeSeconds)
 	//对于长期应用的参数
 	for (auto& x : _paramSetCache_longterm)
 	{
-		if (x.isAdd)
-			GetModel()->AddParameterValue(static_cast<Csm::csmInt32>(x.param),x.value);
-		else
-			GetModel()->SetParameterValue(static_cast<Csm::csmInt32>(x.param), x.value);
+		if (x.op== _ParamInfo::OP_SET)
+			GetModel()->SetParameterValue(static_cast<Csm::csmInt32>(x.param),x.value);
+		else if (x.op == _ParamInfo::OP_ADD)
+			GetModel()->AddParameterValue(static_cast<Csm::csmInt32>(x.param), x.value);
+		else if (x.op == _ParamInfo::OP_MULTIPLY)
+			GetModel()->MultiplyParameterValue(static_cast<Csm::csmInt32>(x.param), x.value);
 	}
 	_paramSetCache_longterm.clear();
 
@@ -648,14 +654,17 @@ void CubismLive2DModel::Update(float deltaTimeSeconds)
 	_model->SaveParameters(); //保存应用动作后的参数
 	//保存是为了之后计算各种参数的最终值后不会影响到下帧（下帧加载参数重新计算，不保存其他状态）
 	//保存后设置只影响当前帧的参数改动
-	for (auto& x : _paramSetCache_longterm)
+	for (auto& x : _paramSetCache_curFrame)
 	{
-		if (x.isAdd)
-			GetModel()->AddParameterValue(static_cast<Csm::csmInt32>(x.param), x.value);
-		else
+		if (x.op == _ParamInfo::OP_SET)
 			GetModel()->SetParameterValue(static_cast<Csm::csmInt32>(x.param), x.value);
+		else if (x.op == _ParamInfo::OP_ADD)
+			GetModel()->AddParameterValue(static_cast<Csm::csmInt32>(x.param), x.value);
+		else if (x.op == _ParamInfo::OP_MULTIPLY)
+			GetModel()->MultiplyParameterValue(static_cast<Csm::csmInt32>(x.param), x.value);
 	}
-	_paramSetCache_longterm.clear();
+	//GetModel()->SetParameterValue(Csm::CubismFramework::GetIdManager()->GetId("CAT_KEY_Q"),1.f);
+	_paramSetCache_curFrame.clear();
 	//-----------------------------------------------------------------
 
 	// 不透明度
@@ -722,10 +731,16 @@ void CubismLive2DModel::Update(float deltaTimeSeconds)
 	}
 
 	_model->Update();
+
+
 }
 
 void CubismLive2DModel::Draw()
 {
+	//OPTIMIZE:Live2D的HIT AREA会调用DrawCall，即使其中没有任何东西需要绘制。
+	//因为Live2D的hit area其实就是个图像为透明的正常图层（纹理为16*16方块）
+	//可以想办法指定部分图层不进行绘制？
+
 	Rendering::CubismRenderer_SDL3* renderer = GetRenderer<Rendering::CubismRenderer_SDL3>();
 	renderer->UseHighPrecisionMask(true);
 	if (_model == NULL /*|| _deleteModel*/ || renderer == NULL)
@@ -764,9 +779,10 @@ void CubismLive2DModel::DrawMix(MixDrawList* pMix, glm::mat4x4& view_projMat)
 	//auto projMat=Csm::Rendering::ConvertToCsmMat(view_projMat);
 
 	//目前没有设置model矩阵， 直接传入view-proj矩阵
-	renderer->SetMvpMatrix(view_projMat);
+	auto csmMat = Csm::Rendering::ConvertToCsmMat(view_projMat);
+	csmMat.MultiplyByMatrix(_modelMatrix);
+	renderer->Rendering::CubismRenderer::SetMvpMatrix(&csmMat);
 	
-
 
 	renderer->SetMixCallback(MixDrawList::InsertDrawCommandCallback, pMix);
 	renderer->SetMixDraw(true);
@@ -888,6 +904,16 @@ void Live2DModelBase::DrawMix(MixDrawList* pMix)
 	l2dmodel.DrawMix(pMix,GetScene()->Get2DProj());
 }
 
+std::vector<std::string> Live2DModelBase::GetParamList()
+{
+	return l2dmodel.GetParamList();
+}
+
+std::vector<std::string> Live2DModelBase::GetAnimationList()
+{
+	return l2dmodel.GetAnimationList();
+}
+
 void Live2DModelBase::PlayAnimation(const std::string& name, bool loop)
 {
 	//TODO/FIXME LOOP
@@ -901,36 +927,123 @@ ParamHandle Live2DModelBase::GetParamHandle(const std::string& param)
 	return static_cast<ParamHandle>(l2dmodel.GetModel()->GetParameterIndex(Csm::CubismFramework::GetIdManager()->GetId(param.c_str())));
 }
 
-void Live2DModelBase::SetParamValue(ParamHandle param, float value, bool longTerm)
+HandPosHandle Live2DModelBase::GetHandHandle(const std::string& param)
 {
-	l2dmodel.SetParamValue(param,value,longTerm);
+	//在Live2D中HandHandle是drawAbleIndex
+	
+	for (int i=0;i<l2dmodel.GetModel()->GetDrawableCount();i++)
+	{
+		auto id=l2dmodel.GetModel()->GetDrawableId(i);
+		if (id->GetString().GetRawString() == param)
+		{
+			uint64_t handle=0;
+			UTIL_SETLOW32VALUE(handle,i);
+			return handle;
+		}
+	}
+	return INVALID_HANDHANDLE;
 }
 
-void Live2DModelBase::AddParamValue(ParamHandle param, float value, bool longTerm)
+void Live2DModelBase::GetHandPosFromHandle(HandPosHandle handPosHandle, float* x, float* y)
 {
-	l2dmodel.AddParamValue(param,value,longTerm);
+	//if (handPosHandle == INVALID_HANDHANDLE)
+	//{
+	//	return;
+	//}
+	//计算handle对应的mesh的中点
+	//TODO 斟酌一下具体返回什么坐标系
+
+
+	auto vertexCount=csmGetDrawableVertexCounts(l2dmodel.GetModel()->GetModel());
+	auto vertexPos= csmGetDrawableVertexPositions(l2dmodel.GetModel()->GetModel());
+	if (vertexCount&&vertexCount[handPosHandle])
+	{
+		float resultX=0.f;
+		float resultY = 0.f;
+		for (int i = 0; i < vertexCount[handPosHandle]; i++)
+		{
+			resultX += vertexPos[handPosHandle][i].X;
+			resultY +=vertexPos[handPosHandle][i].Y;
+		}
+		resultX /= static_cast<float>(vertexCount[handPosHandle]);
+		resultY /= static_cast<float>(vertexCount[handPosHandle]);
+
+
+		//如在4比3的画布下获取右下角的点的数据的时候
+		//经过下面的变换后
+		//x在1.3333   y在-1
+
+
+		*x = l2dmodel.GetModelMatrix()->TransformX(resultX);
+		*y = l2dmodel.GetModelMatrix()->TransformY(resultY);
+		
+
+	}
+	
+
 }
 
-void CubismLive2DModel::SetParamValue(ParamHandle param, float value, bool longTerm)
+void Live2DModelBase::SetParamValue(ParamHandle param, float value, bool normallizeValue, bool longTerm)
 {
+	l2dmodel.SetParamValue(param,value, normallizeValue,longTerm);
+}
+
+void Live2DModelBase::AddParamValue(ParamHandle param, float value, bool normallizeValue, bool longTerm)
+{
+	l2dmodel.AddParamValue(param,value, normallizeValue,longTerm);
+}
+
+void Live2DModelBase::MultiplyParamValue(ParamHandle param, float value, bool longTerm)
+{
+	l2dmodel.MultiplyParamValue(param,value,longTerm);
+}
+
+void CubismLive2DModel::SetParamValue(ParamHandle param, float value, bool normallizeValue , bool longTerm)
+{
+	if (normallizeValue)
+	{
+		float maxValue=_model->GetParameterMaximumValue(static_cast<Csm::csmUint32>(param));
+		float minValue=_model->GetParameterMinimumValue(static_cast<Csm::csmUint32>(param));
+		if (value > 0.f)
+		{
+			if(maxValue>0.f)
+				value = value * maxValue;
+		}
+		else
+		{
+			if (minValue < 0.f)
+				value = -1.f*value * minValue;
+		}
+	}
 	if (longTerm)
 	{
-		_paramSetCache_longterm.push_back({ param,value,false});
+		_paramSetCache_longterm.push_back({ param,value,_ParamInfo::OP_SET});
 	}
 	else
 	{
-		_paramSetCache_curFrame.push_back({ param,value,false });
+		_paramSetCache_curFrame.push_back({ param,value,_ParamInfo::OP_SET });
 	}
 }
 
-void CubismLive2DModel::AddParamValue(ParamHandle param, float value, bool longTerm)
+void CubismLive2DModel::AddParamValue(ParamHandle param, float value, bool normallizeValue, bool longTerm)
 {
 	if (longTerm)
 	{
-		_paramSetCache_longterm.push_back({ param,value,true });
+		_paramSetCache_longterm.push_back({ param,value,_ParamInfo::OP_ADD });
 	}
 	else
 	{
-		_paramSetCache_curFrame.push_back({ param,value,true });
+		_paramSetCache_curFrame.push_back({ param,value,_ParamInfo::OP_ADD });
+	}
+}
+void CubismLive2DModel::MultiplyParamValue(ParamHandle param, float value, bool longTerm)
+{
+	if (longTerm)
+	{
+		_paramSetCache_longterm.push_back({ param,value,_ParamInfo::OP_MULTIPLY });
+	}
+	else
+	{
+		_paramSetCache_curFrame.push_back({ param,value,_ParamInfo::OP_MULTIPLY });
 	}
 }

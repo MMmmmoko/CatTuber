@@ -1572,6 +1572,7 @@ bool RenderWindowManager::_BuildFromJson(const Json::Value& json)
         item0["Type"] = "ClassicItem";
         //item0["Detail"]["Table"]; //TableObject::CreateFromAttributes
         item0["Detail"]["Table"]["PackPath"] = "[AppBasePath]/Resources/Table/28kGameKeyboard";
+        item0["Detail"]["Character"]["PackPath"] = "[AppBasePath]/Resources/Character/Mimi";
         //TODO/FIXME
         //item0["Detail"]["Character"];
         //item0["Detail"]["HandheldItem"];

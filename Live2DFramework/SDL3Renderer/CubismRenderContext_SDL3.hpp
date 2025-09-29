@@ -158,13 +158,16 @@ namespace Live2D {
                     void SetVertexShader(SDL_GPUShader* vs);
                     void SetVertexBuffers(uint32_t startSlot, uint32_t numBuffers, SDL_GPUBufferBinding* buffers);
                     void SetIndexBuffer(SDL_GPUBuffer* indexBuffer, SDL_GPUIndexElementSize index_element_size,uint32_t offset);
-                    void SetVertexUniformData(uint32_t slot, const void* data, uint32_t datalength);
+                    //这是给Live2D写的渲染器，因为Live2D不使用全局数据，所以这里不再提供Uniform接口
+                    //void SetVertexUniformData(uint32_t slot, const void* data, uint32_t datalength);
+                    void SetVertexConstantBuffer(uint32_t startSlot, uint32_t numBuffers, SDL_GPUBuffer** buffers);
 
                     void SetInputLayout(SDL_GPUVertexInputState* inputstate);
 
                     void SetFragmentShader(SDL_GPUShader* fs);
                     void SetFragmentTextureResources(uint32_t startSlot, uint32_t numViews, const SDL_GPUTextureSamplerBinding* textures);
-                    void SetFragmentUniformData(uint32_t slot,const void* data,uint32_t datalength);
+                    //void SetFragmentUniformData(uint32_t slot,const void* data,uint32_t datalength);
+                    void SetFragmentConstantBuffer(uint32_t startSlot, uint32_t numBuffers, SDL_GPUBuffer** buffers);
                     void SetFragmentSampler(CubismRenderState_SDL3::Sampler sampler) { _sampler = sampler; };
                     SDL_GPUSampler* GetFragmentSampler();
 

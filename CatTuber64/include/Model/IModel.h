@@ -20,6 +20,8 @@ enum ModelType
 
 
 typedef uintptr_t ParamHandle;
+typedef uintptr_t HandPosHandle;//模型使用这个标识获取手部的位置
+#define INVALID_HANDHANDLE UINT64_MAX
 class MixDrawList;
 class Scene;
 class IModel
@@ -51,10 +53,13 @@ public:
 	//模型自身管理动画轨道“Track”
 	virtual void PlayAnimation(const std::string& name, bool loop=false)=0;
 	virtual ParamHandle GetParamHandle(const std::string& param)=0;
-	virtual void SetParamValue(ParamHandle param,float value,bool longTerm=false)=0;//未设置长期longTerm的话，修改只对当前帧有效
-	virtual void AddParamValue(ParamHandle param,float value,bool longTerm = false)=0;
+	virtual void SetParamValue(ParamHandle param,float value,bool normallizeValue=true,bool longTerm=false)=0;//未设置长期longTerm的话，修改只对当前帧有效
+	virtual void AddParamValue(ParamHandle param,float value, bool normallizeValue = true,bool longTerm = false)=0;
+	virtual void MultiplyParamValue(ParamHandle param,float value,bool longTerm = false)=0;
 	
-
+	//从模型中获取某个网格的中点的位置，要求Y坐标范围为-1~1 y轴向上
+	virtual void GetHandPosFromHandle(HandPosHandle handPosHandle,float* x,float* y) {};
+	virtual HandPosHandle GetHandHandle(const std::string& param) { return INVALID_HANDHANDLE; };
 
 
 	//获取所有软件可控参数

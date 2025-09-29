@@ -98,6 +98,39 @@ namespace
     csmUint32 s_viewportHeight = 0;         ///< 描画ターゲット高さ CubismRenderer_D3D11::startframeで渡される
 }
 
+
+//如果常数缓存为空则创建常数缓存
+//因为不是所有图层都使用常数缓存，所以这样减少创建量
+inline void CreateConstantBufferIfNull(SDL_GPUBuffer*& cbuffer, SDL_GPUTransferBuffer*& cbuffer_tb)
+{
+    if (!cbuffer)
+    {
+        {
+            SDL_GPUBufferCreateInfo bufferDesc = {};
+            bufferDesc.usage = SDL_GPU_BUFFERUSAGE_GRAPHICS_STORAGE_READ;
+            bufferDesc.size = sizeof(CubismConstantBufferSDL3);
+            auto pbuffer = SDL_CreateGPUBuffer(s_device, &bufferDesc);
+            if (!pbuffer)
+            {
+                CubismLogError("ConstantBuffer create failed : %s", SDL_GetError());
+            }
+            else
+            {
+                //缓存有效，创建transferbuffer
+                cbuffer = pbuffer;
+
+                SDL_GPUTransferBufferCreateInfo createInfo = {};
+                createInfo.usage = SDL_GPU_TRANSFERBUFFERUSAGE_UPLOAD;
+                createInfo.size = sizeof(CubismConstantBufferSDL3);
+                SDL_GPUTransferBuffer* transferBuffer = SDL_CreateGPUTransferBuffer(s_device, &createInfo);
+                cbuffer_tb = transferBuffer;
+
+            }
+        }
+    }
+}
+
+
 #pragma region CLIPPING
 
 
@@ -339,7 +372,7 @@ void CubismRenderer_SDL3::ReleaseShader()
 CubismRenderer_SDL3::CubismRenderer_SDL3()
     : _vertexBuffers(NULL)
     , _indexBuffers(NULL)
-    , _constantBuffers(NULL)
+    , _constantBuffersForDraw(NULL)
     , _drawableNum(0)
     , _clippingManager(NULL)
     , _clippingContextBufferForMask(NULL)
@@ -375,11 +408,16 @@ CubismRenderer_SDL3::~CubismRenderer_SDL3()
     {
         for (csmUint32 drawAssign = 0; drawAssign < drawableCount; drawAssign++)
         {
-            if (_constantBuffers[buffer][drawAssign])
+            if (_constantBuffersForDraw[buffer][drawAssign])
             {
-                //_constantBuffers[buffer][drawAssign]->Release();
-                _constantBuffers[buffer][drawAssign] = NULL;
+                SDL_ReleaseGPUBuffer(s_device, _constantBuffersForDraw[buffer][drawAssign]);
+                _constantBuffersForDraw[buffer][drawAssign] = NULL;
             }
+            //if (_constantBuffers_tb[buffer][drawAssign])
+            //{
+            //    SDL_ReleaseGPUTransferBuffer(s_device, _constantBuffersForMask_tb[buffer][drawAssign]);
+            //    _constantBuffersForMask_tb[buffer][drawAssign] = NULL;
+            //}
             if (_indexBuffers[buffer][drawAssign])
             {
                 SDL_ReleaseGPUBuffer(s_device,_indexBuffers[buffer][drawAssign]);
@@ -396,16 +434,39 @@ CubismRenderer_SDL3::~CubismRenderer_SDL3()
                 _vertexBuffers_tb[buffer][drawAssign] = NULL;
             }
 
+            
 
         }
+        for (auto x : _constantBuffersForDraw_tb)
+        {
+            SDL_ReleaseGPUTransferBuffer(s_device, x);
+        }
+        _constantBuffersForDraw_tb.clear();
 
-        CSM_FREE(_constantBuffers[buffer]);
+        for (auto& bufferVec : _constantBuffersForMask)
+        {
+            //for (auto x : bufferVec)
+            //{
+            //    SDL_ReleaseGPUBuffer(s_device,x );
+            //}
+            SDL_ReleaseGPUBuffer(s_device, bufferVec);
+        }
+
+        for(auto& transferVec: _constantBuffersForMask_tb)
+        for (auto x : transferVec)
+        {
+            SDL_ReleaseGPUTransferBuffer(s_device,x);
+        }
+        _constantBuffersForMask_tb.clear();
+
+        _constantBuffersForMask_tb_index.clear();
+        CSM_FREE(_constantBuffersForDraw[buffer]);
         CSM_FREE(_indexBuffers[buffer]);
         CSM_FREE(_vertexBuffers[buffer]);
         CSM_FREE(_vertexBuffers_tb[buffer]);
     }
 
-    CSM_FREE(_constantBuffers);
+    CSM_FREE(_constantBuffersForDraw);
     CSM_FREE(_indexBuffers);
     CSM_FREE(_vertexBuffers);
     CSM_FREE(_vertexBuffers_tb);
@@ -504,7 +565,7 @@ void Live2D::Cubism::Framework::Rendering::CubismRenderer_SDL3::Initialize(Frame
     _vertexBuffers = static_cast<SDL_GPUBuffer***>(CSM_MALLOC(sizeof(SDL_GPUBuffer**) * s_bufferSetNum));
     _vertexBuffers_tb = static_cast<SDL_GPUTransferBuffer***>(CSM_MALLOC(sizeof(SDL_GPUTransferBuffer**) * s_bufferSetNum));
     _indexBuffers = static_cast<SDL_GPUBuffer***>(CSM_MALLOC(sizeof(SDL_GPUBuffer**) * s_bufferSetNum));
-    _constantBuffers = static_cast<CubismConstantBufferSDL3***>(CSM_MALLOC(sizeof(CubismConstantBufferSDL3**) * s_bufferSetNum));
+    _constantBuffersForDraw = static_cast<SDL_GPUBuffer***>(CSM_MALLOC(sizeof(SDL_GPUBuffer**) * s_bufferSetNum));
 
     
     const csmInt32 drawableCount = GetModel()->GetDrawableCount();
@@ -515,8 +576,7 @@ void Live2D::Cubism::Framework::Rendering::CubismRenderer_SDL3::Initialize(Frame
         _vertexBuffers[buffer] = static_cast<SDL_GPUBuffer**>(CSM_MALLOC(sizeof(SDL_GPUBuffer*) * drawableCount));
         _vertexBuffers_tb[buffer] = static_cast<SDL_GPUTransferBuffer**>(CSM_MALLOC(sizeof(SDL_GPUTransferBuffer*) * drawableCount));
         _indexBuffers[buffer] = static_cast<SDL_GPUBuffer**>(CSM_MALLOC(sizeof(SDL_GPUBuffer*) * drawableCount));
-        _constantBuffers[buffer] = static_cast<CubismConstantBufferSDL3**>(CSM_MALLOC(sizeof(CubismConstantBufferSDL3*) * drawableCount));
-
+        _constantBuffersForDraw[buffer] = static_cast<SDL_GPUBuffer**>(CSM_MALLOC(sizeof(SDL_GPUBuffer*) * drawableCount));
 
 
         for (csmUint32 drawAssign = 0; drawAssign < drawableCount; drawAssign++)
@@ -535,7 +595,7 @@ void Live2D::Cubism::Framework::Rendering::CubismRenderer_SDL3::Initialize(Frame
                 SDL_GPUBuffer* pbuffer = SDL_CreateGPUBuffer(s_device,&bufferDesc);
                 if (!pbuffer)
                 {
-                    CubismLogError("Vertexbuffer create failed : %d", vcount);
+                    CubismLogError("Vertexbuffer create failed : %s", SDL_GetError());
 
                     _vertexBuffers_tb[buffer][drawAssign] = NULL;
                 }
@@ -563,7 +623,7 @@ void Live2D::Cubism::Framework::Rendering::CubismRenderer_SDL3::Initialize(Frame
 
 
 
-            //创建对象的顶点缓存
+            //创建对象的索引缓存
             _indexBuffers[buffer][drawAssign] = NULL;
             const csmInt32 icount = GetModel()->GetDrawableVertexIndexCount(drawAssign);
             if (icount != 0)
@@ -575,7 +635,7 @@ void Live2D::Cubism::Framework::Rendering::CubismRenderer_SDL3::Initialize(Frame
                 SDL_GPUBuffer* pbuffer = SDL_CreateGPUBuffer(s_device, &bufferDesc);
                 if (!pbuffer)
                 {
-                    CubismLogError("Vertexbuffer create failed : %d", vcount);
+                    CubismLogError("Indexbuffer create failed : %s", SDL_GetError());
                 }
                 else
                 {
@@ -619,10 +679,7 @@ void Live2D::Cubism::Framework::Rendering::CubismRenderer_SDL3::Initialize(Frame
 
             
 
-            _constantBuffers[buffer][drawAssign] = NULL;
-            {
-                _constantBuffers[buffer][drawAssign] =(CubismConstantBufferSDL3*)SDL_malloc(sizeof(CubismConstantBufferSDL3));
-            }
+
             
 
             //CONSTANT BUFFER(uniform data)直接用push的形式传输？？
@@ -652,14 +709,45 @@ void Live2D::Cubism::Framework::Rendering::CubismRenderer_SDL3::Initialize(Frame
             //        CubismLogError("ConstantBuffers create failed");
             //    }
             //}
+            // **********
+            // ↑↑↑↑
+    //已确认添加角色模型后桌子绘制出现问题是因为SDL每个slot、每个管线阶段只申请一块uniform buffer，
+    //这个uniform大小为32468字节，并且数据以256字节对其
+    //每次push uniform data即向uniform buffer的末尾添加新的数据
+    //这导致在128个图层push了unifordata后，uniform buffer数据已满
+    //第129个图层会创建一个新的uniform buffer，这导致了数据丢失，第1个图层会使用第129图层的数据
+    //在这次出现的Shift框体消失的问题即是这种情况
+    // 
+    //因此 Live2D的每图层一个用于着色器的常数缓存不适合使用SDL uniform buffer
+    // （图层会轻易上数百层， uniform buffer甚至会覆写两三次）
+    //SDL UNIFORM buffer可能适合管理更少绑定次数的数据
+    //
+    // 将Live2D的缓存改用正常的常数缓存并自己管理.
+            //***********
 
-
-
-
-
-
+            //每个图层都需要一个常数缓存
+            //蒙版所用的常数缓存在用到的时候才创建
+            _constantBuffersForDraw[buffer][drawAssign] = NULL;
+            {
+                SDL_GPUBufferCreateInfo bufferDesc = {};
+                bufferDesc.usage = SDL_GPU_BUFFERUSAGE_GRAPHICS_STORAGE_READ;
+                bufferDesc.size = sizeof(CubismConstantBufferSDL3);
+                auto pbuffer = SDL_CreateGPUBuffer(s_device, &bufferDesc);
+                if (!pbuffer)
+                {
+                    CubismLogError("ConstantBuffer create failed : %s", SDL_GetError());
+                }
+                _constantBuffersForDraw[buffer][drawAssign] = pbuffer;
+            }
+            
 
         }
+
+        _constantBuffersForDraw_tb.resize(drawableCount, 0);
+        _constantBuffersForMask.resize(drawableCount,0);
+        _constantBuffersForMask_tb.resize(drawableCount);
+        _constantBuffersForMask_tb_index.resize(drawableCount,0);
+
     }
 
 
@@ -673,6 +761,10 @@ void Live2D::Cubism::Framework::Rendering::CubismRenderer_SDL3::Initialize(Frame
 void CubismRenderer_SDL3::PreDraw()
 {
     SetDefaultRenderState();
+
+
+ 
+
 }
 
 void CubismRenderer_SDL3::PostDraw()
@@ -694,21 +786,15 @@ void CubismRenderer_SDL3::DoDrawModel()
 
     PreDraw();//SetDefaultRenderstates
 
+
+    //重置一些状态
+    SDL_memset(_constantBuffersForMask_tb_index.data(), 0, _constantBuffersForMask_tb_index.size() * sizeof(int));
+
+
+
     //在使用裁剪蒙版·缓冲区预处理方式的情况下
     if (_clippingManager != NULL)
     {
-        //如果大小不同，在此处重新创建
-        //for (csmInt32 i = 0; i < _clippingManager->GetRenderTextureCount(); ++i)
-        //{
-        //    if (_offscreenSurfaces[_commandBufferCurrent][i].GetBufferWidth() != static_cast<csmUint32>(_clippingManager->GetClippingMaskBufferSize().X) ||
-        //        _offscreenSurfaces[_commandBufferCurrent][i].GetBufferHeight() != static_cast<csmUint32>(_clippingManager->GetClippingMaskBufferSize().Y))
-        //    {
-        //        _offscreenSurfaces[_commandBufferCurrent][i].CreateOffscreenSurface(s_device,
-        //            static_cast<csmUint32>(_clippingManager->GetClippingMaskBufferSize().X), static_cast<csmUint32>(_clippingManager->GetClippingMaskBufferSize().Y));
-        //    }
-        //}
-        
-
         for (csmInt32 i = 0; i < _offscreenSurfaces.GetSize(); ++i)
         {
             for (csmInt32 j = 0; j < _offscreenSurfaces[i].GetSize(); ++j)
@@ -791,6 +877,7 @@ void CubismRenderer_SDL3::DoDrawModel()
                 {
                     if (clipContext->_isUsing) //
                     {
+                        
                         CubismRenderer_SDL3::GetRenderStateManager()->SetViewport(s_context,
                             0,
                             0,
@@ -874,6 +961,7 @@ void CubismRenderer_SDL3::DoDrawModel()
 
 void CubismRenderer_SDL3::ExecuteDrawForMask(const CubismModel& model, const csmInt32 index)
 {
+
     CubismShader_SDL3* shaderManager = Live2D::Cubism::Framework::Rendering::CubismRenderer_SDL3::GetShaderManager();
     if (!shaderManager)
     {
@@ -891,30 +979,12 @@ void CubismRenderer_SDL3::ExecuteDrawForMask(const CubismModel& model, const csm
         return;
     }
 
-    //*****************
-//*****************
-//这里逻辑和D3d11的example不一致，添加了SDL3 RenderContext的StartRender和EndRender
-    s_context->StartRender();
-    //*****************
-    //*****************
-
-    //纹理和采样器
-    SetSamplerAccordingToAnisotropy();//根据各向异性数值设置采样器
-    SetTextureView(model, index);
-
-    //着色器
-    s_context->SetVertexShader(vs);
-    s_context->SetFragmentShader(ps);
 
 
-    //mask用的RenderState
-    GetRenderStateManager()->SetBlend(s_context,
-        CubismRenderState_SDL3::Blend_Mask,
-        glm::vec4(0, 0, 0, 0),
-        0xffffffff);
+    //这里不能和D3D11 example顺序一直，因为下面StartRender中用COPY CMD开启了新的render pass，（COPY用于离屏准备绘制、顶点和常数缓存的更新等）
+    //所以要先处理常数
 
-
-    //常数缓存（uniform data）
+        //常数缓存（uniform data）
     {
         CubismConstantBufferSDL3 cb;
         memset(&cb, 0, sizeof(cb));
@@ -933,9 +1003,42 @@ void CubismRenderer_SDL3::ExecuteDrawForMask(const CubismModel& model, const csm
         // proj矩阵
         SetProjectionMatrix(cb, GetClippingContextBufferForMask()->_matrixForMask);
 
+
+        auto testMat = GetClippingContextBufferForMask()->_matrixForMask;
+
         // Update
-        UpdateConstantBuffer(cb, index);
+        UpdateConstantBufferForMask(cb, index);
     }
+
+
+
+
+    //*****************
+//*****************
+//这里逻辑和D3d11的example不一致，添加了SDL3 RenderContext的StartRender和EndRender
+    s_context->StartRender();
+    //*****************
+    //*****************
+
+    //纹理和采样器
+    SetSamplerAccordingToAnisotropy();//根据各向异性数值设置采样器
+    SetTextureView(model, index);
+
+    //着色器
+    s_context->SetVertexShader(vs);
+    s_context->SetFragmentShader(ps);
+
+    //在StartRender后再进行常数缓存的绑定
+    BindConstantBufferForMask(index);
+
+
+    //mask用的RenderState
+    GetRenderStateManager()->SetBlend(s_context,
+        CubismRenderState_SDL3::Blend_Mask,
+        glm::vec4(0, 0, 0, 0),
+        0xffffffff);
+
+
 
     //设置顶点几何布局为TRIANGLELIST
     s_context->SetTopology(SDL_GPUPrimitiveType::SDL_GPU_PRIMITIVETYPE_TRIANGLELIST);
@@ -967,7 +1070,8 @@ void CubismRenderer_SDL3::ExecuteDrawForDraw(const CubismModel& model, const csm
     SetTextureView(model, index);
 
     //SDL3不能像D3d11那样灵活设置着色器，而应该根据着色器组合创建多个渲染管线，然后按需绑定资源到不同管线
-    if (!SetShader(model, index))
+    int psCbufferSlot;
+    if (!SetShader(model, index,&psCbufferSlot))
     {
         return;
     }
@@ -1005,7 +1109,8 @@ void CubismRenderer_SDL3::ExecuteDrawForDraw(const CubismModel& model, const csm
 
 
         SetProjectionMatrix(cb, GetMvpMatrix());
-        UpdateConstantBuffer(cb, index);
+        UpdateConstantBufferForDraw(cb, index);
+        BindConstantBufferForDraw(index);
 
     }
 
@@ -1049,13 +1154,29 @@ void CubismRenderer_SDL3::ExecuteDrawForMixDraw(const CubismModel& model, const 
     uint32_t texNum;
     SDL_GPUTextureSamplerBinding textures[2];//Live2D纹理数不会超过2
 
-    uint32_t vsUniformSlot;
-    void* vsUniformData; 
-    uint32_t vsUniformDataLength;
+    //为了修复bug 不再使用uniform buffer 改用constant buffer
+    //uint32_t vsUniformSlot;
+    //void* vsUniformData; 
+    //uint32_t vsUniformDataLength;
 
-    uint32_t psUniformSlot;
-    const void* psUniformData;
-    uint32_t psUniformDataLength;
+    //uint32_t psUniformSlot;
+    //const void* psUniformData;
+    //uint32_t psUniformDataLength;
+
+
+
+
+
+    uint32_t vsConstantStartSlot;
+    uint32_t vsConstantNum;
+    SDL_GPUBuffer* vsConstantBuffers[1];//Live2D只使用1个常数缓存
+
+    uint32_t psConstantStartSlot;
+    uint32_t psConstantNum;
+    SDL_GPUBuffer* psConstantBuffers[1];//Live2D只使用1个常数缓存
+
+
+    
 
     SDL_GPUViewport viewPort = {};
 
@@ -1086,7 +1207,7 @@ void CubismRenderer_SDL3::ExecuteDrawForMixDraw(const CubismModel& model, const 
         SDL_GPUTexture* textureView = GetTextureViewWithIndex(model, index);
 
 
-        //BUG的原因应该是模型会共用蒙版。X
+        //SHIFT键框消失的BUG的原因应该是模型会共用蒙版。X
         //无法识别蒙版的原因是延迟绘制触发的时候_clippingContextBufferForDraw已经被恢复为空，而空值导致被判定为当前图层不使用mask
         //把mask绘制的过程也移动到mix里可能能解决这个问题
         //SDL_GPUTexture* maskView = (masked && drawing ? _offscreenSurfaces[_commandBufferCurrent][GetClippingContextBufferForDraw()->_bufferIndex].GetTextureView() : NULL);
@@ -1110,16 +1231,44 @@ void CubismRenderer_SDL3::ExecuteDrawForMixDraw(const CubismModel& model, const 
             }
         }
     }
+
+    int psCbufferSlot;
+    //PipeLile
+    {
+        CubismBlendMode colorBlendMode = model.GetDrawableBlendMode(index);
+        SetBlendState(colorBlendMode);
+
+        if (!SetShader(model, index,&psCbufferSlot))
+        {
+            return;
+        }
+
+        s_context->SetTopology(SDL_GPUPrimitiveType::SDL_GPU_PRIMITIVETYPE_TRIANGLELIST);
+    
+        pipeLine=s_context->GetPipelineFromCurState();
+    }
+
+    //现在存在作为其他图像蒙版的图层绘制出现问题
+    //原因是为了修复SHIFT按键消失的问题将常数缓存从uniform迁移到普通buffer
+    //但CatTuber采用了SDL建议的双commandbuffer方案，即一个主CMD(command buffer),一个用于上传顶点图像、绘制离屏纹理的副CMD
+    // 这种方案可以大幅减少RenderPass的重建次数以提高性能
+    // 
+    //但是在Live2D中，作为其他蒙版的图层的常数缓存存在多次修改的情况，（绘制蒙版的时候的数据和正常绘制的数据不同）
+    // 这导致了正常绘制图像时GPU实际使用的常数缓存是绘制蒙版时的常数缓存（正常绘制和绘制蒙版时 并不在GPU内同步）
+    // 
+    //由于无论如何都是先将COPY 队列完全执行后在执行主队列，
+    // 所以不管在哪修改这个buffer都会导致主队列中使用的是最后一次设置常数缓存
+    //
+    // 准备分开管理蒙版所用的常数缓存和绘制所用的常数缓存
+    //
+    // 
+    // 
     //常数
     {
         CubismConstantBufferSDL3 cb;
         memset(&cb, 0, sizeof(cb));
 
-
-        //const csmBool masked = GetClippingContextBufferForDraw() != NULL;
-
-            //const csmBool masked = _offscreenSurfaces[_commandBufferCurrent][index].IsValid();
-            const csmBool masked = __clippingContextBufferForDelayDraw !=NULL;
+        const csmBool masked = __clippingContextBufferForDelayDraw != NULL;
         if (masked)
         {
             //设置矩阵以将View坐标转换为ClippingContext坐标
@@ -1138,34 +1287,26 @@ void CubismRenderer_SDL3::ExecuteDrawForMixDraw(const CubismModel& model, const 
         CubismTextureColor screenColor = model.GetScreenColor(index);
         SetColorConstantBuffer(cb, model, index, baseColor, multiplyColor, screenColor);
 
+
+
+
         SetProjectionMatrix(cb, GetMvpMatrix());
-    
-        *_constantBuffers[_commandBufferCurrent][index] = cb;
 
+        UpdateConstantBufferForDraw(cb, index);
 
-        vsUniformSlot=0;
-        vsUniformData= _constantBuffers[_commandBufferCurrent][index];
-        vsUniformDataLength=sizeof(cb);
+        vsConstantStartSlot = 0;
+        vsConstantNum = 1;
+        vsConstantBuffers[0] = _constantBuffersForDraw[_commandBufferCurrent][index];
 
-        psUniformSlot = 0;
-        psUniformData = _constantBuffers[_commandBufferCurrent][index];
-        psUniformDataLength = sizeof(cb);
+        //psConstantStartSlot = 0;
+        //需要具体计算槽位 幽默SDL检测机制，复杂化、僵化开发.
+
+        psConstantStartSlot = 0;
+        psConstantNum = 1;
+        psConstantBuffers[0] = _constantBuffersForDraw[_commandBufferCurrent][index];
     }
 
-    //PipeLile
-    {
-        CubismBlendMode colorBlendMode = model.GetDrawableBlendMode(index);
-        SetBlendState(colorBlendMode);
 
-        if (!SetShader(model, index))
-        {
-            return;
-        }
-
-        s_context->SetTopology(SDL_GPUPrimitiveType::SDL_GPU_PRIMITIVETYPE_TRIANGLELIST);
-    
-        pipeLine=s_context->GetPipelineFromCurState();
-    }
     //VIEWPORT
     {
         viewPort.x = 0;
@@ -1178,7 +1319,7 @@ void CubismRenderer_SDL3::ExecuteDrawForMixDraw(const CubismModel& model, const 
 
     //填充数据
     {
-        Csm::Rendering::MixRenderData renderData;
+        Csm::Rendering::MixRenderData renderData = {};
         renderData.sizeOfThisStruct = sizeof(renderData);
         renderData.layerZ = _drawOrderList[index];
         renderData.pipeLine = pipeLine;
@@ -1196,13 +1337,14 @@ void CubismRenderer_SDL3::ExecuteDrawForMixDraw(const CubismModel& model, const 
         renderData.texNum = texNum;
         renderData.textures = textures;
 
-        renderData.vsUniformSlot = vsUniformSlot;
-        renderData.vsUniformData = vsUniformData;
-        renderData.vsUniformDataLength = vsUniformDataLength;
+        renderData.vsConstantSlot = vsConstantStartSlot;
+        renderData.vsConstantNum = vsConstantNum;
+        renderData.vsConstantBuffers = vsConstantBuffers;
 
-        renderData.psUniformSlot = psUniformSlot;
-        renderData.psUniformData = psUniformData;
-        renderData.psUniformDataLength = psUniformDataLength;
+        renderData.psConstantSlot = psConstantStartSlot;
+        renderData.psConstantNum = psConstantNum;
+        renderData.psConstantBuffers = psConstantBuffers;
+
 
         renderData.beforeDrawCallback = beforeDrawCallback;
         renderData.callbackUserData = this;
@@ -1213,70 +1355,6 @@ void CubismRenderer_SDL3::ExecuteDrawForMixDraw(const CubismModel& model, const 
     
     }
     return;
-
-
-    //////////////////////////////////////////////////////
-    //纹理和采样器
-    SetSamplerAccordingToAnisotropy();//根据各向异性数值设置采样器
-
-
-
-    SetTextureView(model, index);
-
-    //SDL3不能像D3d11那样灵活设置着色器，而应该根据着色器组合创建多个渲染管线，然后按需绑定资源到不同管线
-    if (!SetShader(model, index))
-    {
-        return;
-    }
-
-
-
-    //BlendMode
-    {
-        CubismBlendMode colorBlendMode = model.GetDrawableBlendMode(index);
-        SetBlendState(colorBlendMode);
-    }
-
-    //常数缓存（uniform data）
-    {
-        CubismConstantBufferSDL3 cb;
-        memset(&cb, 0, sizeof(cb));
-
-
-        const csmBool masked = GetClippingContextBufferForDraw() != NULL;
-        if (masked)
-        {
-            //设置矩阵以将View坐标转换为ClippingContext坐标
-            cb.clipMatrix = glm::transpose(ConvertToGLM(GetClippingContextBufferForDraw()->_matrixForDraw));
-
-            //设置要使用的颜色通道
-            CubismClippingContext_SDL3* contextBuffer = GetClippingContextBufferForDraw();
-            SetColorChannel(cb, contextBuffer);
-        }
-
-        // 色
-        CubismTextureColor baseColor = GetModelColorWithOpacity(model.GetDrawableOpacity(index));
-        CubismTextureColor multiplyColor = model.GetMultiplyColor(index);
-        CubismTextureColor screenColor = model.GetScreenColor(index);
-        SetColorConstantBuffer(cb, model, index, baseColor, multiplyColor, screenColor);
-
-
-        SetProjectionMatrix(cb, GetMvpMatrix());
-        UpdateConstantBuffer(cb, index);
-
-
-    }
-
-
-    //设置顶点几何布局为TRIANGLELIST
-    s_context->SetTopology(SDL_GPUPrimitiveType::SDL_GPU_PRIMITIVETYPE_TRIANGLELIST);
-    DrawDrawableIndexed(model, index);
-
-
-    s_context->EndRender();
-
-
-
 }
 
 
@@ -1576,7 +1654,7 @@ void CubismRenderer_SDL3::SetBlendState(const CubismBlendMode blendMode)
     }
 }
 
-Csm::csmBool CubismRenderer_SDL3::SetShader(const CubismModel& model, const csmInt32 index)
+Csm::csmBool CubismRenderer_SDL3::SetShader(const CubismModel& model, const csmInt32 index/*,int* cBufferStartSlotVS*/, int* cBufferStartSlotPS)
 {
     //根据状态设置着色器
     //const csmBool masked = GetClippingContextBufferForDraw() != NULL;
@@ -1588,6 +1666,8 @@ Csm::csmBool CubismRenderer_SDL3::SetShader(const CubismModel& model, const csmI
         ShaderNames_NormalMasked :
         ShaderNames_Normal);
     ShaderNames pixelShaderNames;
+
+    int psCbufferSlot;
     if (masked)
     {
         if (premult)
@@ -1612,6 +1692,7 @@ Csm::csmBool CubismRenderer_SDL3::SetShader(const CubismModel& model, const csmI
                 pixelShaderNames = ShaderNames_NormalMasked;
             }
         }
+        psCbufferSlot = 2;
     }
     else
     {
@@ -1623,7 +1704,11 @@ Csm::csmBool CubismRenderer_SDL3::SetShader(const CubismModel& model, const csmI
         {
             pixelShaderNames = ShaderNames_Normal;
         }
+        psCbufferSlot = 1;
     }
+
+  
+
 
     CubismShader_SDL3* shaderManager = Live2D::Cubism::Framework::Rendering::CubismRenderer_SDL3::GetShaderManager();
     SDL_GPUShader* vs = shaderManager->GetVertexShader(vertexShaderNames);
@@ -1636,6 +1721,9 @@ Csm::csmBool CubismRenderer_SDL3::SetShader(const CubismModel& model, const csmI
     {
         return false;
     }
+
+    if (cBufferStartSlotPS)*cBufferStartSlotPS = psCbufferSlot;
+
 
     s_context->SetVertexShader(vs);
     s_context->SetFragmentShader(ps);
@@ -1688,12 +1776,182 @@ void CubismRenderer_SDL3::SetProjectionMatrix(CubismConstantBufferSDL3& cb, Cubi
    cb.projectMatrix = glm::transpose(ConvertToGLM(matrix));
 }
 
-void CubismRenderer_SDL3::UpdateConstantBuffer(CubismConstantBufferSDL3& cb, csmInt32 index)
+void CubismRenderer_SDL3::UpdateConstantBufferForDraw(CubismConstantBufferSDL3& cb, csmInt32 index)
 {
-    //_constantBuffers[_commandBufferCurrent][index];
-    //传入参数那我直接上传给SDL就得了
-    s_context->SetVertexUniformData(0, &cb, sizeof(cb));
-    s_context->SetFragmentUniformData(0,&cb,sizeof(cb));
+    if (_constantBuffersForDraw[_commandBufferCurrent][index])
+    {
+        //获取最新的tb
+        SDL_GPUTransferBuffer* transferBuffer= _constantBuffersForDraw_tb[index];
+        if(!transferBuffer)
+        {
+
+            SDL_GPUTransferBufferCreateInfo createInfo = {};
+            createInfo.usage = SDL_GPU_TRANSFERBUFFERUSAGE_UPLOAD;
+            createInfo.size = sizeof(CubismConstantBufferSDL3);
+            transferBuffer = SDL_CreateGPUTransferBuffer(s_device, &createInfo);
+            _constantBuffersForDraw_tb[index]=(transferBuffer);
+        }
+
+
+        //SDL_GPUTransferBuffer* transferBuffer = _constantBuffersForDraw_tb[_commandBufferCurrent][index];
+        
+
+
+
+        //映射并复制数据
+        void* mapped = SDL_MapGPUTransferBuffer(s_device,transferBuffer,false);
+        if (mapped)
+        {
+            SDL_memcpy(mapped,&cb,sizeof(cb));
+            SDL_UnmapGPUTransferBuffer(s_device,transferBuffer);
+
+
+            //创建命令缓冲区并开始复制
+            SDL_GPUCommandBuffer* cmd = s_context->GetCopyCommandBuffer();
+
+            SDL_GPUTransferBufferLocation bufferLocation = { transferBuffer,0 };
+            SDL_GPUBufferRegion bufferRegion ;
+            bufferRegion.buffer = _constantBuffersForDraw[_commandBufferCurrent][index];
+            bufferRegion.offset = 0;
+            bufferRegion.size = sizeof(CubismConstantBufferSDL3);
+            SDL_GPUCopyPass* copyPass = SDL_BeginGPUCopyPass(cmd);
+            SDL_UploadToGPUBuffer(copyPass,&bufferLocation,&bufferRegion,false);
+            SDL_EndGPUCopyPass(copyPass);
+        }
+    }
+}
+
+void CubismRenderer_SDL3::UpdateConstantBufferForMask(CubismConstantBufferSDL3& cb, csmInt32 index)
+{
+    //不是图层索引，每个图层需要很多缓存，这个是缓存的索引
+    int curBufferIndex = _constantBuffersForMask_tb_index[index];
+
+
+    if (!_constantBuffersForMask[index])
+    {
+        //for (int i = _constantBuffersForMask[index].size(); i <= curBufferIndex; i++)
+        {
+            SDL_GPUBufferCreateInfo bufferDesc = {};
+            bufferDesc.usage = SDL_GPU_BUFFERUSAGE_GRAPHICS_STORAGE_READ;
+            bufferDesc.size = sizeof(CubismConstantBufferSDL3);
+            auto pbuffer = SDL_CreateGPUBuffer(s_device, &bufferDesc);
+            if (!pbuffer)
+            {
+                CubismLogError("ConstantBuffer create failed : %s", SDL_GetError());
+            }
+            _constantBuffersForMask[index]=(pbuffer);
+        }
+    }
+    //if (_constantBuffersForMask[index].size() <= curBufferIndex)
+    //{
+    //    for (int i = _constantBuffersForMask[index].size(); i <= curBufferIndex; i++)
+    //    {
+    //        SDL_GPUBufferCreateInfo bufferDesc = {};
+    //        bufferDesc.usage = SDL_GPU_BUFFERUSAGE_GRAPHICS_STORAGE_READ;
+    //        bufferDesc.size = sizeof(CubismConstantBufferSDL3);
+    //        auto pbuffer = SDL_CreateGPUBuffer(s_device, &bufferDesc);
+    //        if (!pbuffer)
+    //        {
+    //            CubismLogError("ConstantBuffer create failed : %s", SDL_GetError());
+    //        }
+    //        _constantBuffersForMask[index].push_back(pbuffer);
+    //    }
+    //}
+
+
+    if (_constantBuffersForMask_tb[index].size() <= curBufferIndex)
+    {
+        for (int i = _constantBuffersForMask_tb[index].size(); i <= curBufferIndex; i++)
+        {
+            SDL_GPUTransferBufferCreateInfo createInfo = {};
+            createInfo.usage = SDL_GPU_TRANSFERBUFFERUSAGE_UPLOAD;
+            createInfo.size = sizeof(CubismConstantBufferSDL3);
+            SDL_GPUTransferBuffer* transferBuffer = SDL_CreateGPUTransferBuffer(s_device, &createInfo);
+            _constantBuffersForMask_tb[index].push_back(transferBuffer);
+        }
+    }
+
+
+
+
+
+    auto transferBuffer = _constantBuffersForMask_tb[index][curBufferIndex];
+        //映射并复制数据
+        void* mapped = SDL_MapGPUTransferBuffer(s_device, _constantBuffersForMask_tb[index][curBufferIndex], false);
+        if (mapped)
+        {
+            SDL_memcpy(mapped,&cb,sizeof(cb));
+            SDL_UnmapGPUTransferBuffer(s_device,transferBuffer);
+
+
+            //创建命令缓冲区并开始复制
+            SDL_GPUCommandBuffer* cmd = s_context->GetCopyCommandBuffer();
+
+            SDL_GPUTransferBufferLocation bufferLocation = { transferBuffer,0 };
+            SDL_GPUBufferRegion bufferRegion ;
+            bufferRegion.buffer = _constantBuffersForMask[index]/*[curBufferIndex]*/;
+            bufferRegion.offset = 0;
+            bufferRegion.size = sizeof(CubismConstantBufferSDL3);
+            SDL_GPUCopyPass* copyPass = SDL_BeginGPUCopyPass(cmd);
+            SDL_UploadToGPUBuffer(copyPass,&bufferLocation,&bufferRegion,false);
+            SDL_EndGPUCopyPass(copyPass);
+        }
+
+        _constantBuffersForMask_tb_index[index]++;
+}
+
+//void CubismRenderer_SDL3::UpdateConstantBufferForMask(CubismConstantBufferSDL3& cb, csmInt32 index)
+//{
+    //CreateConstantBufferIfNull(_constantBuffersForMask[_commandBufferCurrent][index], _constantBuffersForMask_tb[_commandBufferCurrent][index]);
+
+    //if (_constantBuffersForMask[_commandBufferCurrent][index])
+    //{
+    //    SDL_GPUTransferBuffer* transferBuffer = _constantBuffersForMask_tb[_commandBufferCurrent][index];
+
+    //    //映射并复制数据
+    //    void* mapped = SDL_MapGPUTransferBuffer(s_device,transferBuffer,false);
+    //    if (mapped)
+    //    {
+    //        SDL_memcpy(mapped,&cb,sizeof(cb));
+    //        SDL_UnmapGPUTransferBuffer(s_device,transferBuffer);
+
+
+    //        //创建命令缓冲区并开始复制
+    //        SDL_GPUCommandBuffer* cmd = s_context->GetCopyCommandBuffer();
+
+    //        SDL_GPUTransferBufferLocation bufferLocation = { transferBuffer,0 };
+    //        SDL_GPUBufferRegion bufferRegion ;
+    //        bufferRegion.buffer = _constantBuffersForMask[_commandBufferCurrent][index];
+    //        bufferRegion.offset = 0;
+    //        bufferRegion.size = sizeof(CubismConstantBufferSDL3);
+    //        SDL_GPUCopyPass* copyPass = SDL_BeginGPUCopyPass(cmd);
+    //        SDL_UploadToGPUBuffer(copyPass,&bufferLocation,&bufferRegion,false);
+    //        SDL_EndGPUCopyPass(copyPass);
+    //    }
+    //}
+//}
+
+void CubismRenderer_SDL3::BindConstantBufferForDraw(csmInt32 index)
+{
+
+    //在混合绘制的情况，不进行buffer绑定
+    if (_constantBuffersForDraw[_commandBufferCurrent][index])
+    {
+        s_context->SetVertexConstantBuffer(0, 1, &_constantBuffersForDraw[_commandBufferCurrent][index]);
+        s_context->SetFragmentConstantBuffer(0, 1, &_constantBuffersForDraw[_commandBufferCurrent][index]);
+    }
+}
+
+void CubismRenderer_SDL3::BindConstantBufferForMask(csmInt32 index)
+{
+
+    ////在混合绘制的情况，不进行buffer绑定
+    auto pcbuffer=_constantBuffersForMask[index]/*[_constantBuffersForMask_tb_index[index] - 1]*/;
+    if (pcbuffer)
+    {
+        s_context->SetVertexConstantBuffer(0, 1, &pcbuffer);
+        s_context->SetFragmentConstantBuffer(0, 1, &pcbuffer);
+    }
 }
 
 void CubismRenderer_SDL3::SetSamplerAccordingToAnisotropy()

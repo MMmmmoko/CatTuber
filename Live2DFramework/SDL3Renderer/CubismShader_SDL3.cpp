@@ -234,8 +234,10 @@ namespace Live2D {
                     //shaderDesc.num_samplers = isPs ? 2:0;
                     shaderDesc.num_samplers = samplerNum;
                     shaderDesc.num_storage_textures = 0;
-                    shaderDesc.num_storage_buffers = 0;
-                    shaderDesc.num_uniform_buffers = 1;
+                    //shaderDesc.num_storage_buffers = 0;
+                    //shaderDesc.num_uniform_buffers = 1;
+                    shaderDesc.num_storage_buffers = 1;
+                    shaderDesc.num_uniform_buffers = 0;
 
 
                     SDL_GPUShader* pCurShader=SDL_CreateGPUShader(device,&shaderDesc);

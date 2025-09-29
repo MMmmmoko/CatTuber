@@ -148,9 +148,14 @@
     <ClInclude Include="include\Input\InputParser.h" />
     <ClInclude Include="include\Input\KeyboardInput.h" />
     <ClInclude Include="include\Input\MouseInput.h" />
+    <ClInclude Include="include\Item\CharacterObject.h" />
+    <ClInclude Include="include\Item\ClassicItem.h" />
     <ClInclude Include="include\Item\MainSceneItem.h" />
+    <ClInclude Include="include\Item\MeshMapping.h" />
+    <ClInclude Include="include\Item\ModelControl.h" />
     <ClInclude Include="include\Item\Scene.h" />
     <ClInclude Include="include\Item\SceneItem.h" />
+    <ClInclude Include="include\Item\StraightMovingPoint.h" />
     <ClInclude Include="include\Item\TableObject.h" />
     <ClInclude Include="include\Model\IModel.h" />
     <ClInclude Include="include\Model\Live2DModelBase.h" />
@@ -196,9 +201,14 @@
     <ClCompile Include="src\Input\InputCommon.cpp" />
     <ClCompile Include="src\Input\InputManager.cpp" />
     <ClCompile Include="src\Input\InputParser.cpp" />
+    <ClCompile Include="src\Item\CharacterObject.cpp" />
+    <ClCompile Include="src\Item\ClassicItem.cpp" />
     <ClCompile Include="src\Item\MainSceneItem.cpp" />
+    <ClCompile Include="src\Item\MeshMapping.cpp" />
+    <ClCompile Include="src\Item\ModelControl.cpp" />
     <ClCompile Include="src\Item\Scene.cpp" />
     <ClCompile Include="src\Item\SceneItem.cpp" />
+    <ClCompile Include="src\Item\StraightMovingPoint.cpp" />
     <ClCompile Include="src\Item\TableObject.cpp" />
     <ClCompile Include="src\Model\IModel.cpp" />
     <ClCompile Include="src\Model\Live2DModelBase.cpp" />
@@ -263,4 +273,9 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>

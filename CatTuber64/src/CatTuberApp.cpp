@@ -100,15 +100,21 @@ bool CatTuberApp::Init(int argC, char* argV[])
 
 
 
-
-
-
-
-
 	bool b_debug = false;
 #ifdef _DEBUG
 	b_debug = true;
 #endif // _DEBUG
+
+
+
+
+
+	//初始化输入
+	InputManager::GetIns().InitInput();
+
+
+
+
 
 
 
@@ -141,13 +147,6 @@ bool CatTuberApp::Init(int argC, char* argV[])
 
 	//创建托盘
 	Tray::GetIns().CreateTray();
-
-
-
-
-
-
-
 
 
 

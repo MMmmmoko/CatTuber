@@ -142,9 +142,9 @@ namespace input
 
 struct ActionCallback
 {
-    void(*callback)(const char* actionName,float value, void* userData, void* userData2) = NULL;
+    void(*callback)(const char* actionName,float value, void* userData, uint64_t userData2) = NULL;
     void* userData=NULL;
-    void* userData2 = NULL;//作为data1的参数，减少actionName的解析压力，
+    uint64_t userData2 = NULL;//作为data1的参数，减少actionName的解析压力，
 };
 
 class Action
@@ -305,7 +305,7 @@ public:
     virtual void UninstallBinding()override;
 
 private:
-    static void ActionCallbackFunc(const char* actionName, float value, void* userData, void* userData2);
+    static void ActionCallbackFunc(const char* actionName, float value, void* userData, uint64_t userData2);
     ActionProxy actionToBeTriggered;
     ActionProxy origAction;
     float actionParam;

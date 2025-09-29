@@ -50,8 +50,13 @@ namespace Live2D {
 					uint32_t vsStartSlot; uint32_t vsBufferNum; SDL_GPUBufferBinding* vsBuffers;
 					SDL_GPUIndexElementSize indexElementSize; SDL_GPUBufferBinding* indexBuffer; uint32_t indexCount; uint32_t indexStart;
 					uint32_t texStartSlot; uint32_t texNum; SDL_GPUTextureSamplerBinding* textures;
-					uint32_t vsUniformSlot; const void* vsUniformData; uint32_t vsUniformDataLength;
-					uint32_t psUniformSlot; const void* psUniformData; uint32_t psUniformDataLength;
+					//经过测试SDL的Uniform不能承载多次少量数据（最大32768字节，128个图层即耗尽SDL的uniform缓冲区）
+					//造成Uniform数据混用的情况，所以改为正常的constantbuffer
+					//uint32_t vsUniformSlot; const void* vsUniformData; uint32_t vsUniformDataLength;
+					//uint32_t psUniformSlot; const void* psUniformData; uint32_t psUniformDataLength;
+					uint32_t vsConstantSlot; uint32_t vsConstantNum; SDL_GPUBuffer** vsConstantBuffers;
+					uint32_t psConstantSlot; uint32_t psConstantNum; SDL_GPUBuffer** psConstantBuffers;
+
 					SDL_GPUViewport viewport;
 					void(*beforeDrawCallback)(void* userData, uint64_t userData2)=NULL; void* callbackUserData; uint64_t callbackUserData2;
 				};					//由于一些绘制需要额外绘制蒙版，这里也提供函数让一些动作在绘制前执行
@@ -183,10 +188,16 @@ namespace Live2D {
 
 
 					void CopyToBuffer(CubismRenderContext_SDL3* renderContext, csmInt32 drawAssign, const csmInt32 vcount, const csmFloat32* varray, const csmFloat32* uvarray);
+					
 					SDL_GPUTexture* GetTextureViewWithIndex(const CubismModel& model, const csmInt32 index);
 
 					void SetBlendState(const CubismBlendMode blendMode);
-					Csm::csmBool SetShader(const CubismModel& model, const csmInt32 index);
+
+					//Live2d的cbuffer是对象属性，不是全局属性，所以uniform不合适，改用普通的存储缓存
+					//而SDL有非常僵硬的数据资源检测机制导致各种缓存不能自己挑选合适的插槽而只能按特定顺序插槽
+					//像素着色器中SDL必须按采样纹理、存储纹理、存储缓存的顺序来设置插槽
+					//导致我们必须要根据当前的着色器获取存储缓存的插槽位置
+					Csm::csmBool SetShader(const CubismModel& model, const csmInt32 index,int* cBufferStartSlotPS);
 
 					void SetTextureView(const CubismModel& model, const csmInt32 index);
 
@@ -197,7 +208,10 @@ namespace Live2D {
 					void SetColorChannel(CubismConstantBufferSDL3& cb, CubismClippingContext_SDL3* contextBuffer);
 
 					void SetProjectionMatrix(CubismConstantBufferSDL3& cb, CubismMatrix44 matrix);
-					void UpdateConstantBuffer(CubismConstantBufferSDL3& cb, csmInt32 index);
+					void UpdateConstantBufferForDraw(CubismConstantBufferSDL3& cb, csmInt32 index);
+					void UpdateConstantBufferForMask(CubismConstantBufferSDL3& cb, csmInt32 index);
+					void BindConstantBufferForDraw(csmInt32 index);
+					void BindConstantBufferForMask(csmInt32 index);
 
 					void SetSamplerAccordingToAnisotropy();
 
@@ -207,7 +221,33 @@ namespace Live2D {
 					SDL_GPUTransferBuffer*** _vertexBuffers_tb=NULL;         ///< SDL3需要中转buffer来更新vertexBuffer,为了防止频繁创建，这里复用缓冲区
 					SDL_GPUBuffer*** _indexBuffers;          ///< インデックスのバッファ
 					//SDL_GPUBuffer*** _indexBuffers_tb;          ///< indexbuffer不会每帧更新，不复用transfer buffer
-					CubismConstantBufferSDL3*** _constantBuffers;       ///< 定数のバッファ
+					
+					
+
+	//已确认添加角色模型后桌子绘制出现问题是因为SDL每个slot、每个管线阶段只申请一块uniform buffer，
+	//这个uniform大小为32468字节，并且数据以256字节对其
+	//每次push uniform data即向uniform buffer的末尾添加新的数据
+	//这导致在128个图层push了unifordata后，uniform buffer数据已满
+	//第129个图层会创建一个新的uniform buffer，这导致了数据丢失，第1个图层会使用第129图层的数据
+	//在这次出现的Shift框体消失的问题即是这种情况
+	// 
+	//因此 Live2D的每图层一个用于着色器的常数缓存不适合使用SDL uniform buffer
+	// （图层会轻易上数百层， uniform buffer甚至会覆写两三次）
+	//SDL UNIFORM buffer可能适合管理更少绑定次数的数据
+	//
+	// TransferBuffer不能在一帧内修改多次，GPU获取的始终是最后一次的修改结果
+	//我们还需要解决这个TransferBuffer的问题
+	// 
+	// 将Live2D的缓存改用正常的常数缓存并自己管理.
+	//CubismConstantBufferSDL3*** _constantBuffers;       ///< 定数のバッファ
+					SDL_GPUBuffer*** _constantBuffersForDraw;
+					std::vector<SDL_GPUTransferBuffer*> _constantBuffersForDraw_tb;
+					
+					std::vector<SDL_GPUBuffer*> _constantBuffersForMask;//暂时不使用Live2D框架的多重缓存机制
+					std::vector<std::vector<SDL_GPUTransferBuffer*>> _constantBuffersForMask_tb;//暂时不使用Live2D框架的多重缓存机制
+					std::vector<int> _constantBuffersForMask_tb_index;
+					
+
 					//虽然SDL库能实时绑定uniform data，但CatTuber中的混合绘制不是当场绘制，需要有地方保持常数缓存的数据，所以这个结构保留
 
 					csmUint32 _drawableNum;           ///< _vertexBuffers, _indexBuffersの確保数

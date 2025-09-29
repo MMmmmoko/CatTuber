@@ -219,6 +219,21 @@
     <ClInclude Include="Dui\Dui.h">
       <Filter>Dui</Filter>
     </ClInclude>
+    <ClInclude Include="include\Item\ClassicItem.h">
+      <Filter>头文件\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Item\CharacterObject.h">
+      <Filter>头文件\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Item\ModelControl.h">
+      <Filter>头文件\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Item\MeshMapping.h">
+      <Filter>头文件\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Item\StraightMovingPoint.h">
+      <Filter>头文件\Item</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -313,6 +328,21 @@
     </ClCompile>
     <ClCompile Include="Dui\Dui.cpp">
       <Filter>Dui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Item\ClassicItem.cpp">
+      <Filter>源文件\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Item\CharacterObject.cpp">
+      <Filter>源文件\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Item\ModelControl.cpp">
+      <Filter>源文件\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Item\MeshMapping.cpp">
+      <Filter>源文件\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Item\StraightMovingPoint.cpp">
+      <Filter>源文件\Item</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

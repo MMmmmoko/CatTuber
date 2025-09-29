@@ -1,7 +1,7 @@
 #include"Item/SceneItem.h"
 #include"Util/Util.h"
 #include"Item/MainSceneItem.h"
-
+#include"Item/ClassicItem.h"
 ISceneItem* ISceneItem::CreateItem(const char* type, Scene* _scene, const Json::Value& json)
 {
 	if (UTIL_IS_CSTR_EMPTY(type))

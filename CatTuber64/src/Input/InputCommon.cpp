@@ -219,7 +219,7 @@ void ButtonActionBinding::InstallBinding()
 		if(downAction)
 		button->AttachKeyDownCallback(downCallback);
 		if (upAction)
-		button->AttachKeyDownCallback(upCallback);
+		button->AttachKeyUpCallback(upCallback);
 	}
 
 
@@ -255,7 +255,7 @@ void ButtonToAxisActionBinding::InstallBinding()
 
 
 	button->AttachKeyDownCallback(downCallback);
-	button->AttachKeyDownCallback(upCallback);
+	button->AttachKeyUpCallback(upCallback);
 
 	BindingInfo bi;
 	bi.targetAxisAction = axisAction;
@@ -434,7 +434,7 @@ void AxisDroppedActionBinding::TryTrigger(input::InputAxis* axis, float value, v
 }
 
 
-void ActionByActionBinding::ActionCallbackFunc(const char* actionName, float value, void* userData, void* userData2)
+void ActionByActionBinding::ActionCallbackFunc(const char* actionName, float value, void* userData, uint64_t userData2)
 {
 	ActionByActionBinding* _pthis =(ActionByActionBinding*) userData;
 	_pthis->actionToBeTriggered->DoAction(_pthis->actionParam);

@@ -20,11 +20,12 @@ public:
 
 	//核心功能
 	virtual void Update(uint64_t deltaTicksNS)=0;
+	virtual void Update_Late(uint64_t deltaTicksNS) {};
 	//virtual void Draw(SDL_GPUTexture* renderTarget, SDL_GPUTexture* depth, int width, int height, SDL_GPUCommandBuffer* mainCmdBuffer, SDL_GPUCommandBuffer* copyCmdBuffer)=0;
 	virtual void Draw(SDL_GPURenderPass* mainPass, int width, int height, SDL_GPUCommandBuffer* mainCmdBuffer, SDL_GPUCommandBuffer* copyCmdBuffer)=0;
 	virtual void DrawMix(MixDrawList* mix) {};
-	
-
+	virtual void Draw_Late(SDL_GPURenderPass* mainPass, int width, int height, SDL_GPUCommandBuffer* mainCmdBuffer, SDL_GPUCommandBuffer* copyCmdBuffer) {}//循环的末尾调用(绘制后)
+	virtual void OnLoopEnd() {};//循环的末尾调用
 
 	//其他信息
 	//GetType将用于工厂创建ISceneItem

@@ -2,8 +2,9 @@
 #include <algorithm>
 
 #include "Renderer/MixDrawList.h"
-
-
+#include"../../ThirdPart/CubismSdkForNative-5-r.4.1/Framework/src/Live2DCubismCore.hpp"
+#include"../../Live2DFramework/SDL3Renderer/CubismRenderer_SDL3.hpp"
+#include"Util/Util.h"
 
 
 MixDrawList::MixDrawList()
@@ -21,7 +22,23 @@ void MixDrawList::InsertDrawCommand(void* mixRenderData)
 	
 	if (structSize == sizeof(MixRenderData))
 	{
+
+
+
+
+
+
 		MixRenderData* renderData = (MixRenderData*)mixRenderData;
+
+
+
+		//检查数据量
+		assert(renderData->vsBufferNum<= MIXRENDER_VSBUFFER_NUM_MAX
+			&& renderData->texNum<= MIXRENDER_TEXTURE_NUM_MAX
+			&&renderData->vsConstantNum<= MIXRENDER_CONSTANTBUFFER_NUM_MAX
+			&&renderData->psConstantNum<= MIXRENDER_CONSTANTBUFFER_NUM_MAX
+			&& "Buffer Num Overflow");
+
 
 		//对renderData的一些数据进行检查
 		if (renderData->vsBufferNum > 4)
@@ -69,13 +86,20 @@ void MixDrawList::InsertDrawCommand(void* mixRenderData)
 			__renderData.textures[i] = renderData->textures[i];
 		}
 
-		__renderData.vsStartSlot = renderData->vsStartSlot;
-		__renderData.vsUniformData = renderData->vsUniformData;
-		__renderData.vsUniformDataLength = renderData->vsUniformDataLength;
+		__renderData.vsConstantSlot = renderData->vsConstantSlot;
+		__renderData.vsConstantNum = renderData->vsConstantNum;
+		for (uint32_t i = 0; i < renderData->vsConstantNum; i++)
+		{
+			__renderData.vsConstantBuffers[i] = renderData->vsConstantBuffers[i];
+		}
 
-		__renderData.psUniformSlot = renderData->psUniformSlot;
-		__renderData.psUniformData = renderData->psUniformData;
-		__renderData.psUniformDataLength = renderData->psUniformDataLength;
+		__renderData.psConstantSlot = renderData->psConstantSlot;
+		__renderData.psConstantNum = renderData->psConstantNum;
+		for (uint32_t i = 0; i < renderData->psConstantNum; i++)
+		{
+			__renderData.psConstantBuffers[i] = renderData->psConstantBuffers[i];
+		}
+
 
 		__renderData.beforeDrawCallback = renderData->beforeDrawCallback;
 		__renderData.callbackUserData = renderData->callbackUserData;
@@ -133,13 +157,14 @@ void MixDrawList::DoDraw(SDL_GPUCommandBuffer* mainCmd, SDL_GPURenderPass* mainP
 			}
 
 
+
 			//对资源进行绑定
 			_CheckAndBindAndUpdate_PipeLine(curCommand.pipeLine,mainPass);
 			_CheckAndBindAndUpdate_VertexBuffer(curCommand.vsStartSlot, curCommand.vsBufferNum, curCommand.vsBuffers,mainPass);
 			_CheckAndBindAndUpdate_IndexBuffer(curCommand.indexElementSize,&curCommand.indexBuffer,mainPass);
 			_CheckAndBindAndUpdate_Texture(curCommand.texStartSlot,curCommand.texNum,curCommand.textures,mainPass);
-			_CheckAndBindAndUpdate_VsUniform(curCommand.vsUniformSlot,curCommand.vsUniformData,curCommand.vsUniformDataLength, mainCmd);
-			_CheckAndBindAndUpdate_PsUniform(curCommand.psUniformSlot,curCommand.psUniformData,curCommand.psUniformDataLength, mainCmd);
+			_CheckAndBindAndUpdate_VsConstantBuffer(curCommand.vsConstantSlot,curCommand.vsConstantNum,curCommand.vsConstantBuffers, mainPass);
+			_CheckAndBindAndUpdate_PsConstantBuffer(curCommand.psConstantSlot,curCommand.psConstantNum,curCommand.psConstantBuffers, mainPass);
 			
 			//绑定完进行绘制
 			SDL_DrawGPUIndexedPrimitives(mainPass, curCommand.indexCount, 1, curCommand.indexStart,0,0);
@@ -178,13 +203,14 @@ void MixDrawList::_ResetLastData()
 	lastTexNum = 0;
 	SDL_memset(lastTextures, 0, sizeof(lastTextures));
 
-	lastVsUniformSlot = 0;
-	lastVsUniformData = NULL;
-	lastVsUniformDataLength = 0;
+	lastVsConstantSlot = 0;
+	lastVsConstantNum = 0;
+	SDL_memset(lastVsConstantBuffers, 0, sizeof(lastVsConstantBuffers));
 
-	lastPsUniformSlot = 0;
-	lastPsUniformData = NULL;
-	lastPsUniformDataLength = 0;
+	lastPsConstantSlot = 0;
+	lastPsConstantNum = 0;
+	SDL_memset(lastPsConstantBuffers, 0, sizeof(lastPsConstantBuffers));
+
 
 	lastGpuViewport = {};
 }
@@ -231,31 +257,31 @@ void MixDrawList::_CheckAndBindAndUpdate_Texture(uint32_t texStartSlot, uint32_t
 	}
 }
 
-void MixDrawList::_CheckAndBindAndUpdate_VsUniform(uint32_t vsUniformSlot, const void* vsUniformData, uint32_t vsUniformDataLength, SDL_GPUCommandBuffer* mainCmd)
+void MixDrawList::_CheckAndBindAndUpdate_VsConstantBuffer(uint32_t vsConstantSlot, uint32_t vsConstantNum, SDL_GPUBuffer** vsConstantBuffers, SDL_GPURenderPass* mainPass)
 {
-
-
-	if (lastVsUniformSlot != vsUniformSlot || lastVsUniformData != vsUniformData || lastVsUniformDataLength != vsUniformDataLength)
+	if (lastVsConstantSlot != vsConstantSlot || lastVsConstantNum != vsConstantNum
+		|| 0 != SDL_memcmp(vsConstantBuffers, lastVsConstantBuffers, vsConstantNum * sizeof(SDL_GPUBuffer*)))
 	{
-		if(vsUniformData)
-			SDL_PushGPUVertexUniformData(mainCmd, vsUniformSlot, vsUniformData, vsUniformDataLength);
-		lastVsUniformSlot = vsUniformSlot;
-		lastVsUniformData = vsUniformData;
-		lastVsUniformDataLength = vsUniformDataLength;
+		SDL_BindGPUVertexStorageBuffers(mainPass, vsConstantSlot, vsConstantBuffers, vsConstantNum);
+		lastVsConstantSlot = vsConstantSlot;
+		lastVsConstantNum = vsConstantNum;
+		SDL_memcpy(lastVsConstantBuffers, vsConstantBuffers, vsConstantNum * sizeof(SDL_GPUBuffer*));
 	}
 }
 
-void MixDrawList::_CheckAndBindAndUpdate_PsUniform(uint32_t psUniformSlot, const void* psUniformData, uint32_t psUniformDataLength, SDL_GPUCommandBuffer* mainCmd)
+void MixDrawList::_CheckAndBindAndUpdate_PsConstantBuffer(uint32_t psConstantSlot, uint32_t psConstantNum, SDL_GPUBuffer** psConstantBuffers, SDL_GPURenderPass* mainPass)
 {
-	if (lastPsUniformSlot != psUniformSlot || lastPsUniformData != psUniformData || lastPsUniformDataLength != psUniformDataLength)
+	if (lastPsConstantSlot != psConstantSlot || lastPsConstantNum != psConstantNum
+		|| 0 != SDL_memcmp(psConstantBuffers, lastPsConstantBuffers, psConstantNum * sizeof(SDL_GPUBuffer*)))
 	{
-		if (psUniformData)
-			SDL_PushGPUFragmentUniformData(mainCmd, psUniformSlot, psUniformData, psUniformDataLength);
-		lastPsUniformSlot = psUniformSlot;
-		lastPsUniformData = psUniformData;
-		lastPsUniformDataLength = psUniformDataLength;
+		SDL_BindGPUFragmentStorageBuffers(mainPass, 0, psConstantBuffers, psConstantNum);
+		lastPsConstantSlot = psConstantSlot;
+		lastPsConstantNum = psConstantNum;
+		SDL_memcpy(lastPsConstantBuffers, psConstantBuffers, psConstantNum * sizeof(SDL_GPUBuffer*));
 	}
 }
+
+
 
 void MixDrawList::_CheckAndBindAndUpdate_ViewPort(SDL_GPUViewport* viewPort, SDL_GPURenderPass* mainPass)
 {

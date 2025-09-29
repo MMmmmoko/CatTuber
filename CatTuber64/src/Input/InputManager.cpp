@@ -95,7 +95,7 @@ ActionBindingHandle InputManager::RegisterButtonActionBinding(const char* downAc
 
 
 	downAction = GetAction(downActionName);
-	upAction = GetAction(downActionName);
+	upAction = GetAction(upActionName);
 
 
 

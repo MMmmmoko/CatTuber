@@ -66,9 +66,9 @@ public:
 
 
 
-	void SetParamValue(ParamHandle param, float value, bool longTerm);
-	void AddParamValue(ParamHandle param, float value, bool longTerm);
-
+	void SetParamValue(ParamHandle param, float value, bool normallizeValue, bool longTerm);
+	void AddParamValue(ParamHandle param, float value, bool normallizeValue, bool longTerm);
+	void MultiplyParamValue(ParamHandle param, float value, bool longTerm);
 
 private:
 	uint8_t* CreateBuffer(const char* pathInPack,size_t* size);
@@ -112,7 +112,12 @@ private:
 	{
 		ParamHandle param;
 		float value;
-		bool isAdd;
+		enum OP
+		{
+			OP_SET,
+			OP_ADD,
+			OP_MULTIPLY
+		} op;
 	};
 	std::vector<_ParamInfo> _paramSetCache_longterm;
 	std::vector<_ParamInfo> _paramSetCache_curFrame;
@@ -140,14 +145,18 @@ public:
 
 	//后续再实现hit
 	//virtual void Hit(float x, float y)override {};
-
+	virtual std::vector<std::string> GetParamList()override;
+	virtual std::vector<std::string> GetAnimationList()override;
 
 
 
 	virtual void PlayAnimation(const std::string& name, bool loop = false)override;
 	virtual ParamHandle GetParamHandle(const std::string& param)override;
-	virtual void SetParamValue(ParamHandle param,float value,bool longTerm)override;
-	virtual void AddParamValue(ParamHandle param,float value,bool longTerm)override;
+	virtual HandPosHandle GetHandHandle(const std::string& param)override;
+	virtual void GetHandPosFromHandle(HandPosHandle handPosHandle, float* x, float* y)override;
+	virtual void SetParamValue(ParamHandle param,float value, bool normallizeValue,bool longTerm)override;
+	virtual void AddParamValue(ParamHandle param,float value, bool normallizeValue, bool longTerm)override;
+	virtual void MultiplyParamValue(ParamHandle param,float value,bool longTerm)override;
 protected:
 	
 	CubismLive2DModel l2dmodel;

@@ -235,14 +235,20 @@ namespace Live2D {
 					SDL_BindGPUIndexBuffer(_pass, &binding, index_element_size);
 				}
 
-				void CubismRenderContext_SDL3::SetVertexUniformData(uint32_t slot, const void* data, uint32_t datalength)
+				//void CubismRenderContext_SDL3::SetVertexUniformData(uint32_t slot, const void* data, uint32_t datalength)
+				//{
+				//	//SDL_assert(_cmd&&"command buffer should not be null");
+				//	//修改为多缓冲后，需要区分缓冲区.....
+				//	if(_renderTarget || _depthStencil)
+				//		SDL_PushGPUVertexUniformData(_cmd_copy, slot, data, datalength);
+				//	else
+				//		SDL_PushGPUVertexUniformData(_cmd, slot, data, datalength);
+				//}
+
+				void CubismRenderContext_SDL3::SetVertexConstantBuffer(uint32_t startSlot, uint32_t numBuffers, SDL_GPUBuffer** buffers)
 				{
-					//SDL_assert(_cmd&&"command buffer should not be null");
-					//修改为多缓冲后，需要区分缓冲区.....
-					if(_renderTarget || _depthStencil)
-						SDL_PushGPUVertexUniformData(_cmd_copy, slot, data, datalength);
-					else
-						SDL_PushGPUVertexUniformData(_cmd, slot, data, datalength);
+
+					SDL_BindGPUVertexStorageBuffers(_pass,startSlot,buffers, numBuffers);
 				}
 
 				void CubismRenderContext_SDL3::SetInputLayout(SDL_GPUVertexInputState* inputstate)
@@ -279,12 +285,17 @@ namespace Live2D {
 					SDL_BindGPUFragmentSamplers(_pass, startSlot, textures, numViews);
 				}
 
-				void CubismRenderContext_SDL3::SetFragmentUniformData(uint32_t slot, const void* data, uint32_t datalength)
+				//void CubismRenderContext_SDL3::SetFragmentUniformData(uint32_t slot, const void* data, uint32_t datalength)
+				//{
+				//	if (_renderTarget || _depthStencil)
+				//		SDL_PushGPUFragmentUniformData(_cmd_copy, slot, data, datalength);
+				//	else
+				//		SDL_PushGPUVertexUniformData(_cmd, slot, data, datalength);
+				//}
+				void CubismRenderContext_SDL3::SetFragmentConstantBuffer(uint32_t startSlot, uint32_t numBuffers, SDL_GPUBuffer** buffers)
 				{
-					if (_renderTarget || _depthStencil)
-						SDL_PushGPUFragmentUniformData(_cmd_copy, slot, data, datalength);
-					else
-						SDL_PushGPUVertexUniformData(_cmd, slot, data, datalength);
+
+					SDL_BindGPUFragmentStorageBuffers(_pass, startSlot, buffers, numBuffers);
 				}
 
 				SDL_GPUSampler* CubismRenderContext_SDL3::GetFragmentSampler()
