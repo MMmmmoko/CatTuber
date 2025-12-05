@@ -17,7 +17,6 @@ public:
 
 
 
-
 private:
 	Dui& GetIns() { static Dui ref; return ref; };
 	

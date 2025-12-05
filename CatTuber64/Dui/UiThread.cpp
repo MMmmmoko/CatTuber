@@ -63,7 +63,7 @@ void UIMainThread::OnInit()
 
 
     resParam.languageFileName = L"schinese.ini";
-    ui::GlobalManager::Instance().Startup(ui::LocalFilesResParam(resourcePath));
+    ui::GlobalManager::Instance().Startup(resParam);
 
 
 

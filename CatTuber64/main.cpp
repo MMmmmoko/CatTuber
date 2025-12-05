@@ -24,6 +24,10 @@
 #pragma comment(lib,"Opengl32.lib")
 #pragma comment(lib,"comctl32.lib")
 #pragma comment(lib,"Shell32.lib")
+#pragma comment(lib, "winmm.lib")
+#pragma comment(lib, "setupapi.lib")
+#pragma comment(lib, "version.lib")
+
 
 
 //Live2D

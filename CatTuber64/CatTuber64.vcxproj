@@ -138,6 +138,7 @@
     <ClInclude Include="Dui\Dui.h" />
     <ClInclude Include="Dui\DuiCommon.h" />
     <ClInclude Include="Dui\Form\MainUiForm.h" />
+    <ClInclude Include="Dui\Form\SettingsPage.h" />
     <ClInclude Include="Dui\UiThread.h" />
     <ClInclude Include="include\AppContext.h" />
     <ClInclude Include="include\AppSettings.h" />
@@ -150,6 +151,7 @@
     <ClInclude Include="include\Input\MouseInput.h" />
     <ClInclude Include="include\Item\CharacterObject.h" />
     <ClInclude Include="include\Item\ClassicItem.h" />
+    <ClInclude Include="include\Item\HandheldItemObject.h" />
     <ClInclude Include="include\Item\MainSceneItem.h" />
     <ClInclude Include="include\Item\MeshMapping.h" />
     <ClInclude Include="include\Item\ModelControl.h" />
@@ -190,6 +192,7 @@
   <ItemGroup>
     <ClCompile Include="Dui\Dui.cpp" />
     <ClCompile Include="Dui\Form\MainUiForm.cpp" />
+    <ClCompile Include="Dui\Form\SettingsPage.cpp" />
     <ClCompile Include="Dui\UiThread.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="platform\Windows\WinKeyboardInput.cpp" />
@@ -203,6 +206,7 @@
     <ClCompile Include="src\Input\InputParser.cpp" />
     <ClCompile Include="src\Item\CharacterObject.cpp" />
     <ClCompile Include="src\Item\ClassicItem.cpp" />
+    <ClCompile Include="src\Item\HandheldItemObject.cpp" />
     <ClCompile Include="src\Item\MainSceneItem.cpp" />
     <ClCompile Include="src\Item\MeshMapping.cpp" />
     <ClCompile Include="src\Item\ModelControl.cpp" />
@@ -247,6 +251,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\README.md" />
     <None Include="src\Util\json\json_valueiterator.inl" />
   </ItemGroup>
   <ItemGroup>
@@ -269,6 +274,19 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </Xsd>
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="Dui\Form\MainWindowMenu.xml">
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)Dui/themes/default/CatTuber_default</DestinationFolders>
+    </CopyFileToFolders>
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="Dui\Form\SettingsPage.xml">
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)Dui/themes/default/CatTuber_default</DestinationFolders>
+    </CopyFileToFolders>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="..\x64\Debug\Dui\themes\default\global.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

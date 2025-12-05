@@ -576,7 +576,7 @@ int64_t AppSettings::_Get_int64_t(Json::Value& json)
 
 bool AppSettings::_Is_bool_Type(Json::Value& json)
 {
-	return json.isInt64();
+	return json.isBool();
 }
 void AppSettings::_Save_bool_Type(Json::Value& json, bool value)
 {

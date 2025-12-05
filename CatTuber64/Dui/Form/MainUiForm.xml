@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Window size="1056,670" min_size="1056,670"
-        caption="0,0,0,36" use_system_caption="false" snap_layout_menu="true" sys_menu="true" sys_menu_rect="0,0,36,36"
+<Window size="1300,900" min_size="1300,900"
+        caption="0,0,0,80" use_system_caption="false" snap_layout_menu="true" sys_menu="true" sys_menu_rect="0,0,36,36"
         shadow_type="default" shadow_attached="true" shadow_snap="true" layered_window="true"
         alpha="255" size_box="4,4,4,4" icon="public/caption/logo.ico"
 
@@ -9,9 +9,8 @@
 		>
 	<VBox bkcolor="bk_wnd_darkcolor" visible="true">
 		<!-- 标题栏区域 -->
-		<HBox name="window_caption_bar" width="stretch" height="36" bkcolor="bk_wnd_lightcolor">
+		<HBox name="window_caption_bar" width="stretch" height="36">
 			<Control />
-			<Button class="btn_wnd_fullscreen_11" height="32" width="40" name="fullscreenbtn" margin="0,2,0,2" tooltip_text="全屏，按ESC键可退出全屏"/>
 			<Button class="btn_wnd_min_11" height="32" width="40" name="minbtn" margin="0,2,0,2" tooltip_text="最小化"/>
 			<Box height="stretch" width="40" margin="0,2,0,2">
 				<Button class="btn_wnd_max_11" height="32" width="stretch" name="maxbtn" tooltip_text="最大化"/>
@@ -23,22 +22,27 @@
 		<!-- 工作区域，除了标题栏外的内容都放在这个大的Box区域 -->
 		<HBox>
 			<!-- 基础面板左侧，场景设置区域与基本控制区 有固定宽度 -->
-			<VBox margin="0,0,0,0" width="210">
+			<VBox width="290" >
 				<!-- 场景设置区域VBOX -->
-				<VBox>
-					
+				<VBox margin="20,20,20,10" bkcolor="panelBkColor" border_round="10,10">
+					<Button text="未命名场景" fade_hot="true" hot_color="itemHoverColor" height="30" width="stretch" text_padding="20,0,0,0" text_align="left,vcenter"/>
 			<Label name="tooltip" text="场景设置区" height="100%" width="100%" text_align="hcenter,vcenter"/>
 		
 				</VBox>
 				<!-- 基础控制区VBOX 有固定高度-->
-				<VBox height="220">
-					<Label name="tooltip" text="基础控制区" height="100%" width="100%" text_align="hcenter,vcenter"/>
-				</VBox>
+				<VTileBox margin="20,10,20,20"  height="220" bkcolor="panelBkColor" border_round="10,10" item_size="80,80">
+					<ButtonBox name="baseControl_btn_settings" hot_color="itemHoverColor" mouse_child="false">
+						<VBox >
+							<Control bkimage="baseControl_settings.svg" width="auto" height="auto"/>
+							<Label text_id="STRID_BASECONTROL_SETTINGS"  normal_text_color="textNormalColor"/>
+						</VBox>
+					</ButtonBox>
+				</VTileBox>
 			</VBox>
 			
 			<!-- 工作区容器-->
 			<!-- 点场景中的物品时工作区显示对应的设置项-->
-			<Box name="box_workSpaceContainer"/>
+			<Box name="box_workSpaceContainer" margin="0,20,20,20" border_round="10,10" bkcolor="panelBkColor" />
 		</HBox>
 	</VBox>
 </Window>

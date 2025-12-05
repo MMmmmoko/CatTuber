@@ -82,6 +82,8 @@ private:
     void _ResetOffscreenTex();
     
 
+    void ShowPopMenu(int x,int y);
+
     const char* title;
 
     //窗口尺寸变化变化

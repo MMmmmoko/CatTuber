@@ -520,6 +520,11 @@
 				<xs:documentation>底部边框大小,如(1),设置该值大于0,则将忽略border_size属性的设置</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
+		<xs:attribute name="border_round" default="0,0" type="SIZE" >
+			<xs:annotation>
+				<xs:documentation>边框圆角半径,如(2,2)</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
 		<xs:attribute name="bkimage" default="" type="IMG" >
 			<xs:annotation>
 				<xs:documentation>背景图片,如(bk.bmp或file='aaa.jpg' res='' dest='0,0,0,0' source='0,0,0,0' corner='0,0,0,0' fade='255' xtiled='false' ytiled='false')</xs:documentation>
@@ -566,6 +571,11 @@
 			</xs:annotation>
 		</xs:attribute>
 		<xs:attribute name="tooltip_text" default="" type="STRING" >
+			<xs:annotation>
+					<xs:documentation>鼠标悬浮提示,如(请在这里输入你的密码)</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="tooltip_text_id" default="" type="STRING" >
 			<xs:annotation>
 					<xs:documentation>鼠标悬浮提示,如(请在这里输入你的密码)</xs:documentation>
 			</xs:annotation>

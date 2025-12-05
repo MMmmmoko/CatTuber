@@ -5,6 +5,7 @@
 #include"Item/MainSceneItem.h"
 #include"Item/ClassicItem.h"
 #include"Item/TableObject.h"
+#include"Item/HandheldItemObject.h"
 #include"Item/CharacterObject.h"
 
 
@@ -22,8 +23,11 @@ void ClassicItem::Update(uint64_t deltaTicksNS)
 		_character->_pParentItem = this;
 		_character->Update(deltaTicksNS);
 	}
-	//if(_handHeldItem)
-	//	_handHeldItem->Update(deltatime);
+	if (_handHeldItem)
+	{
+		_handHeldItem->_pParentItem = this;
+		_handHeldItem->Update(deltaTicksNS);
+	}
 }
 
 
@@ -58,6 +62,11 @@ void ClassicItem::Draw(SDL_GPURenderPass* mainRenderPass, int width, int height,
 		_character->GetModel()->SetScene(scene);
 		_character->Draw(&mixDraw);
 	}
+	if (_handHeldItem)
+	{
+		_handHeldItem->GetModel()->SetScene(scene);
+		_handHeldItem->Draw(&mixDraw);
+	}
 
 
 	mixDraw.DoDraw(mainCmdBuffer, mainRenderPass);
@@ -73,6 +82,10 @@ void ClassicItem::DrawMix(MixDrawList* mix)
 	{
 		_table->Draw(mix);
 	}
+	if (_handHeldItem)
+	{
+		_handHeldItem->Draw(mix);
+	}
 }
 void ClassicItem::OnLoopEnd()
 {
@@ -85,6 +98,10 @@ void ClassicItem::OnLoopEnd()
 	//{
 	//	_character->OnLoopEnd();
 	//}
+	if (_handHeldItem)
+	{
+		_handHeldItem->OnLoopEnd();
+	}
 }
 
 
@@ -105,10 +122,10 @@ Json::Value ClassicItem::GenerateAttributes()
 	{
 		json["Character"] = _character->GenerateAttributes();
 	}
-	//if (_handHeldItem)
-	//{
-	//	json["HandheldItem"] = _handHeldItem->GenerateAttributes();
-	//}
+	if (_handHeldItem)
+	{
+		json["HandheldItem"] = _handHeldItem->GenerateAttributes();
+	}
 	return json;
 }
 
@@ -140,10 +157,10 @@ void ClassicItem::ApplyAttributes(const Json::Value& applyJson)
 	{
 		_character = CharacterObject::CreateFromAttributes(applyJson["Character"]);
 	}
-	//if (applyJson.isMember("HandheldItem"))
-	//{
-	//	_handHeldItem = HandheldItemObject::CreateFromAttributes(applyJson["HandheldItem"]);
-	//}
+	if (applyJson.isMember("HandheldItem"))
+	{
+		_handHeldItem = HandheldItemObject::CreateFromAttributes(applyJson["HandheldItem"]);
+	}
 
 
 
@@ -207,12 +224,11 @@ void ClassicItem::Reset()
 		CharacterObject::ReleaseObj(_character);
 		_character = nullptr;
 	}
-
-	//TODO/FIXME
-	//if (_handHeldItem)
-	//{
-	//	delete _handHeldItem;
-	//	_handHeldItem = nullptr;
-	//}
+	
+	if (_handHeldItem)
+	{
+		HandheldItemObject::ReleaseObj(_handHeldItem);
+		_handHeldItem = nullptr;
+	}
 
 }

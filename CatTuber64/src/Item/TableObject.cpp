@@ -9,6 +9,7 @@
 #include"Item/Scene.h"
 #include"Item/TableObject.h"
 #include"Item/CharacterObject.h"
+#include"Item/HandheldItemObject.h"
 #include"Item/ModelControl.h"
 #include"Item/ClassicItem.h"
 //入参应该是个文件夹或者资源包
@@ -203,7 +204,7 @@ if(hand==HandControl::LEFT){sumLHandX+=X*weight; sumLHandY+=Y*weight;sumLWeights
 else {sumRHandX+=X*weight; sumRHandY+=Y*weight;sumRWeights+=weight;}
 
 		//optimize 应该是可以实现设置长期参数的 比如仅维护一个近期抬起的按键表在此处更新
-		std::vector<ModelButtonControl*> pushedButtnVec;
+		_pushedButtnVec.clear();
 		for (auto& button : modelButtonVec)
 		{
 			float value;
@@ -211,7 +212,7 @@ else {sumRHandX+=X*weight; sumRHandY+=Y*weight;sumRWeights+=weight;}
 			{
 				value = 1.f;
 
-				pushedButtnVec.push_back(&button);
+				_pushedButtnVec.push_back(&button);
 			}
 			else
 			{
@@ -242,6 +243,21 @@ else {sumRHandX+=X*weight; sumRHandY+=Y*weight;sumRWeights+=weight;}
 		_model->Update(deltaTicksNS);
 
 		
+
+		//获取是否有鼠标按键被按下，这会用于后面的逻辑
+		bool isAnyHandheldItemButtonPushed = false;
+		bool hasHandheldItemData = false;
+		float handheldItemX=0.f;
+		float handheldItemY=0.f;
+		//int handheldItemCount = 0;
+		if (_pParentItem->GetHandheldItem())
+		{
+			auto pHandheldItem = _pParentItem->GetHandheldItem();
+			isAnyHandheldItemButtonPushed=pHandheldItem->IsAntButtonPushed();
+		}
+
+
+
 		//轴相关的特殊处理 不想使用std::vector
 		//鼠标没移动时需要看是否存在其他有效对象，所以需要一个临时区域
 		float sumLHandX_mouse = 0.f;
@@ -252,10 +268,12 @@ else {sumRHandX+=X*weight; sumRHandY+=Y*weight;sumRWeights+=weight;}
 		float sumRHandY_mouse = 0.f;
 		float sumRWeights_mouse = 0.f;
 
-		std::vector<ModelAxisControl*> _noMoveMouseAxisControls_L;//未移动但是被标注了active的鼠标轴
-		std::vector<ModelAxisControl*> _noMoveMouseAxisControls_R;//未移动但是被标注了active的鼠标轴
+		//std::vector<ModelAxisControl*> _noMoveMouseAxisControls_L;//未移动但是被标注了active的鼠标轴
+		//std::vector<ModelAxisControl*> _noMoveMouseAxisControls_R;//未移动但是被标注了active的鼠标轴
+		_noMoveMouseAxisControls_L.clear();
+		_noMoveMouseAxisControls_R.clear();
 
-		for (auto button : pushedButtnVec)
+		for (auto button : _pushedButtnVec)
 		{
 				float x, y;
 				_model->GetHandPosFromHandle(button->handControl.handPosHandle, &x, &y);
@@ -288,14 +306,18 @@ else {sumRHandX+=X*weight; sumRHandY+=Y*weight;sumRWeights+=weight;}
 				if (axis.handControl.moveCalcData.mouseData.requiredHandheldItem==false
 					||_pParentItem->GetHandheldItem())
 				{
-					if (axis.valueChangedCurFrame)
+					if (isAnyHandheldItemButtonPushed||axis.valueChangedCurFrame)
 					{
-						//对于鼠标模式，如果位置有任何偏移均视为有效数据
+						//对于鼠标模式，如果位置有任何偏移均视为有效数据，手持物按下也视为有效
 						float x, y;
 						_model->GetHandPosFromHandle(axis.handControl.handPosHandle, &x, &y);
 						_PUSH_HAND_DATA(axis.handControl.handIndex, x, y, axis.handControl.handWeight)
 
 							axis.handControl.moveCalcData.mouseData.mouseDataActive = true;
+
+						hasHandheldItemData = true;
+						handheldItemX = x;
+						handheldItemY = y;
 					}
 					else
 					{
@@ -401,18 +423,26 @@ else {sumRHandX+=X*weight; sumRHandY+=Y*weight;sumRWeights+=weight;}
 		
 		//todo计算坐标，并将数据变换后发送给其他模型
 		//x\y->桌子的模型坐标变换->  （在角色模型中进行后续处理）角色的模型坐标变换
-		if (sumLWeights_mouse > 0.f)
-		{
-			float resultLHandX_mouse = sumLHandX_mouse / sumLWeights_mouse;
-			float resultLHandY_mouse = sumLHandY_mouse / sumLWeights_mouse;
+		//if (sumLWeights_mouse > 0.f)
+		//{
+		//	float resultLHandX_mouse = sumLHandX_mouse / sumLWeights_mouse;
+		//	float resultLHandY_mouse = sumLHandY_mouse / sumLWeights_mouse;
 
-			//进行变换
-			//CatTuber的变换逻辑：  对物体位移之调整scale，那么scale时物体不应该出现位移
-			resultLHandX_mouse = resultLHandX_mouse * scale+offsetX;
-			resultLHandY_mouse = resultLHandY_mouse * scale+offsetY;
+		//	//进行变换
+		//	//CatTuber的变换逻辑：  对物体位移之调整scale，那么scale时物体不应该出现位移
+		//	resultLHandX_mouse = resultLHandX_mouse * scale+offsetX;
+		//	resultLHandY_mouse = resultLHandY_mouse * scale+offsetY;
+		//}
+		//if (sumRWeights_mouse > 0.f)
+		//{
+		//	float resultRHandX_mouse = sumRHandX_mouse / sumRWeights_mouse;
+		//	float resultRHandY_mouse = sumRHandY_mouse / sumRWeights_mouse;
 
-
-		}
+		//	//进行变换
+		//	//CatTuber的变换逻辑：  对物体位移之调整scale，那么scale时物体不应该出现位移
+		//	resultRHandX_mouse = resultRHandX_mouse * scale+offsetX;
+		//	resultRHandY_mouse = resultRHandY_mouse * scale+offsetY;
+		//}
 
 
 #define TRANSFORM_X(X) (X)*scale+offsetX
@@ -477,8 +507,8 @@ else {sumRHandX+=X*weight; sumRHandY+=Y*weight;sumRWeights+=weight;}
 		{
 			//
 			auto pHandheldItem=_pParentItem->GetHandheldItem();
-			//pHandheldItem->SetPosition
-
+			if(hasHandheldItemData)
+				pHandheldItem->SetPosition(TRANSFORM_X(handheldItemX), TRANSFORM_Y(handheldItemY));
 		}
 
 

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Window shadow_type="menu_round" shadow_attached="true" layered_window="true"
+		xmlns:xs="http://www.w3.org/2001/XMLSchema"
+		xmlns="http://tempuri.org/NIMDUISchema.xsd"
+		
+		>
+	<MenuListBox class="menu" name="windowRightMenu">
+		<MenuItem class="menu_element" name="windowMenu_openSettingWindow" width="auto">
+			<Label class="menu_text"  text_id="STRID_WINDOWMENU_OPENSETTINGWINDOW" mouse_enabled="false" keyboard_enabled="false"/>
+		</MenuItem>
+		<MenuItem class="menu_element" name="windowMenu_lockWindow" width="stretch">
+			<Label class="menu_text"  text_id="STRID_WINDOWMENU_LOCKWINDOW" mouse_enabled="false" keyboard_enabled="false"/>
+		</MenuItem>
+		<MenuItem class="menu_element" name="windowMenu_hideWindow" width="stretch">
+			<Label class="menu_text"  text_id="STRID_WINDOWMENU_HIDEWINDOW" mouse_enabled="false" keyboard_enabled="false"/>
+		</MenuItem>
+		<MenuItem class="menu_element" name="windowMenu_showWindowBorder" width="stretch">
+			<Label class="menu_text"  text_id="STRID_WINDOWMENU_WINDOWBORDER_SHOW" mouse_enabled="false" keyboard_enabled="false"/>
+		</MenuItem>
+		<MenuItem class="menu_element" name="windowMenu_hideWindowBorder" width="stretch">
+			<Label class="menu_text"  text_id="STRID_WINDOWMENU_WINDOWBORDER_HIDE" mouse_enabled="false" keyboard_enabled="false"/>
+		</MenuItem>
+		<MenuItem class="menu_element" name="windowMenu_exit" width="stretch">
+			<Label class="menu_text"  text_id="STRID_WINDOWMENU_EXIT" mouse_enabled="false" keyboard_enabled="false"/>
+		</MenuItem>
+		
+		
+	</MenuListBox>
+</Window>

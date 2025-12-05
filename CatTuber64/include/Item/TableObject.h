@@ -112,8 +112,11 @@ private:
 	std::vector<ModelAxisControl> modelAxisVec;
 	std::vector<ModelAnimationControl> modelAnimationVec;
 
-
-
+	//辅助数据
+	//用于计算当前帧按下的按钮数设立一个缓存防止反复申请内存
+	std::vector<ModelButtonControl*> _pushedButtnVec;
+	std::vector<struct ModelAxisControl*> _noMoveMouseAxisControls_L;//未移动但是被标注了active的鼠标轴
+	std::vector<struct ModelAxisControl*> _noMoveMouseAxisControls_R;//未移动但是被标注了active的鼠标轴
 };
 
 

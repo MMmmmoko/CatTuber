@@ -5,10 +5,6 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="头文件">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
     <Filter Include="资源文件">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
@@ -22,29 +18,11 @@
     <Filter Include="Render">
       <UniqueIdentifier>{c754ee31-91bf-47e8-bade-536f82b23a08}</UniqueIdentifier>
     </Filter>
-    <Filter Include="头文件\Model">
-      <UniqueIdentifier>{b283928f-a02b-4262-b02d-1a2e56da6962}</UniqueIdentifier>
-    </Filter>
     <Filter Include="源文件\Model">
       <UniqueIdentifier>{f9546f0c-5824-4aee-bbe7-8582446162b7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="头文件\Util">
-      <UniqueIdentifier>{ebf6e765-c818-4b8c-aaf5-0bb3e0858378}</UniqueIdentifier>
-    </Filter>
     <Filter Include="源文件\Util">
       <UniqueIdentifier>{050c9aca-6af8-454f-82b3-80897f819ffb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\DrawableModule">
-      <UniqueIdentifier>{356430df-85b2-4766-a8dd-75029f09eef6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\Input">
-      <UniqueIdentifier>{cb781b61-74a3-45d8-ada9-cdf39c464262}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\Item">
-      <UniqueIdentifier>{faa8f072-0767-4338-a970-6d10f6413327}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\Util\json">
-      <UniqueIdentifier>{28c9a5c6-8370-4ea7-8823-fd35daf869d7}</UniqueIdentifier>
     </Filter>
     <Filter Include="源文件\Util\json">
       <UniqueIdentifier>{2e162ec2-65c7-44a1-b6b9-2764985cf532}</UniqueIdentifier>
@@ -52,20 +30,11 @@
     <Filter Include="源文件\Item">
       <UniqueIdentifier>{a4550af1-7bbe-4992-9286-d9c670f9e2cc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="头文件\Pack">
-      <UniqueIdentifier>{018521a3-f116-427c-ac83-7b7eaaf1662d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="源文件\Pack">
       <UniqueIdentifier>{37b4a593-379c-498f-83f5-e381b069c4a4}</UniqueIdentifier>
     </Filter>
     <Filter Include="源文件\Input">
       <UniqueIdentifier>{8caa1ebf-74bb-40f1-a0b8-76a1613716d6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\Base">
-      <UniqueIdentifier>{c65e8924-1003-4b03-b65a-3a786609de9d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\Renderer">
-      <UniqueIdentifier>{aee89686-578b-4de5-b228-3eea44eb887c}</UniqueIdentifier>
     </Filter>
     <Filter Include="源文件\Renderer">
       <UniqueIdentifier>{81dc46f6-2b28-4d51-9330-7c95ccb86c4d}</UniqueIdentifier>
@@ -81,131 +50,8 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="targetver.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Resource.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\CatTuberApp.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\RenderWindowManager.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Model\IModel.h">
-      <Filter>头文件\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Model\Live2DModelBase.h">
-      <Filter>头文件\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Util\Util.h">
-      <Filter>头文件\Util</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Graphic.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\AppContext.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Model\ModelManager.h">
-      <Filter>头文件\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Input\InputManager.h">
-      <Filter>头文件\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Input\MouseInput.h">
-      <Filter>头文件\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Input\InputCommon.h">
-      <Filter>头文件\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Item\TableObject.h">
-      <Filter>头文件\Item</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Util\json\config.h">
-      <Filter>头文件\Util\json</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Util\json\forwards.h">
-      <Filter>头文件\Util\json</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Util\json\json.h">
-      <Filter>头文件\Util\json</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Util\json\json_features.h">
-      <Filter>头文件\Util\json</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Util\json\reader.h">
-      <Filter>头文件\Util\json</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Util\json\value.h">
-      <Filter>头文件\Util\json</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Util\json\version.h">
-      <Filter>头文件\Util\json</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Util\json\writer.h">
-      <Filter>头文件\Util\json</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Util\json\allocator.h">
-      <Filter>头文件\Util\json</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Util\json\assertions.h">
-      <Filter>头文件\Util\json</Filter>
-    </ClInclude>
     <ClInclude Include="src\Util\json\json_tool.h">
       <Filter>源文件\Util\json</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Item\SceneItem.h">
-      <Filter>头文件\Item</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Item\MainSceneItem.h">
-      <Filter>头文件\Item</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Item\Scene.h">
-      <Filter>头文件\Item</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Util\WeakSupport.h">
-      <Filter>头文件\Util</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Util\WeakCallbackList.h">
-      <Filter>头文件\Util</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Pack\Pack.h">
-      <Filter>头文件\Pack</Filter>
-    </ClInclude>
-    <ClInclude Include="include\AppSettings.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\RenderThread.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Input\KeyboardInput.h">
-      <Filter>头文件\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Util\ObjectPool.h">
-      <Filter>头文件\Util</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Util\SDL_LockGuard.h">
-      <Filter>头文件\Util</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Input\InputParser.h">
-      <Filter>头文件\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="include\UserEvent.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Renderer\CatRendererContext.h">
-      <Filter>头文件\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Renderer\CatRenderState.h">
-      <Filter>头文件\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Renderer\MixDrawList.h">
-      <Filter>头文件\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Tray.h">
-      <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Dui\DuiCommon.h">
       <Filter>Dui</Filter>
@@ -219,20 +65,149 @@
     <ClInclude Include="Dui\Dui.h">
       <Filter>Dui</Filter>
     </ClInclude>
-    <ClInclude Include="include\Item\ClassicItem.h">
-      <Filter>头文件\Item</Filter>
+    <ClInclude Include="Dui\Form\SettingsPage.h">
+      <Filter>Dui\Form</Filter>
+    </ClInclude>
+    <ClInclude Include="include\UserEvent.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\AppContext.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\AppSettings.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CatTuberApp.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Graphic.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\RenderThread.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\RenderWindowManager.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Tray.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Util\json\allocator.h">
+      <Filter>源文件\Util\json</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Util\json\assertions.h">
+      <Filter>源文件\Util\json</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Util\json\config.h">
+      <Filter>源文件\Util\json</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Util\json\forwards.h">
+      <Filter>源文件\Util\json</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Util\json\json.h">
+      <Filter>源文件\Util\json</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Util\json\json_features.h">
+      <Filter>源文件\Util\json</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Util\json\reader.h">
+      <Filter>源文件\Util\json</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Util\json\value.h">
+      <Filter>源文件\Util\json</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Util\json\version.h">
+      <Filter>源文件\Util\json</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Util\json\writer.h">
+      <Filter>源文件\Util\json</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Util\ObjectPool.h">
+      <Filter>源文件\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Util\SDL_LockGuard.h">
+      <Filter>源文件\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Util\Util.h">
+      <Filter>源文件\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Util\WeakCallbackList.h">
+      <Filter>源文件\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Util\WeakSupport.h">
+      <Filter>源文件\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Renderer\CatRendererContext.h">
+      <Filter>源文件\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Renderer\CatRenderState.h">
+      <Filter>源文件\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Renderer\MixDrawList.h">
+      <Filter>源文件\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Pack\Pack.h">
+      <Filter>源文件\Pack</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Model\IModel.h">
+      <Filter>源文件\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Model\Live2DModelBase.h">
+      <Filter>源文件\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Model\ModelManager.h">
+      <Filter>源文件\Model</Filter>
     </ClInclude>
     <ClInclude Include="include\Item\CharacterObject.h">
-      <Filter>头文件\Item</Filter>
+      <Filter>源文件\Item</Filter>
     </ClInclude>
-    <ClInclude Include="include\Item\ModelControl.h">
-      <Filter>头文件\Item</Filter>
+    <ClInclude Include="include\Item\ClassicItem.h">
+      <Filter>源文件\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Item\MainSceneItem.h">
+      <Filter>源文件\Item</Filter>
     </ClInclude>
     <ClInclude Include="include\Item\MeshMapping.h">
-      <Filter>头文件\Item</Filter>
+      <Filter>源文件\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Item\ModelControl.h">
+      <Filter>源文件\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Item\Scene.h">
+      <Filter>源文件\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Item\SceneItem.h">
+      <Filter>源文件\Item</Filter>
     </ClInclude>
     <ClInclude Include="include\Item\StraightMovingPoint.h">
-      <Filter>头文件\Item</Filter>
+      <Filter>源文件\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Item\TableObject.h">
+      <Filter>源文件\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Input\InputCommon.h">
+      <Filter>源文件\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Input\InputManager.h">
+      <Filter>源文件\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Input\InputParser.h">
+      <Filter>源文件\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Input\KeyboardInput.h">
+      <Filter>源文件\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Input\MouseInput.h">
+      <Filter>源文件\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Item\HandheldItemObject.h">
+      <Filter>源文件\Item</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -344,6 +319,12 @@
     <ClCompile Include="src\Item\StraightMovingPoint.cpp">
       <Filter>源文件\Item</Filter>
     </ClCompile>
+    <ClCompile Include="Dui\Form\SettingsPage.cpp">
+      <Filter>Dui\Form</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Item\HandheldItemObject.cpp">
+      <Filter>源文件\Item</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CatTuber64.rc">
@@ -362,13 +343,20 @@
     <None Include="src\Util\json\json_valueiterator.inl">
       <Filter>源文件\Util\json</Filter>
     </None>
+    <None Include="..\README.md" />
   </ItemGroup>
   <ItemGroup>
+    <CopyFileToFolders Include="Dui\Lang\schinese.ini">
+      <Filter>Dui\Lang</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Dui\Form\MainWindowMenu.xml">
+      <Filter>Dui\Form</Filter>
+    </CopyFileToFolders>
     <CopyFileToFolders Include="Dui\Form\MainUiForm.xml">
       <Filter>Dui\Form</Filter>
     </CopyFileToFolders>
-    <CopyFileToFolders Include="Dui\Lang\schinese.ini">
-      <Filter>Dui\Lang</Filter>
+    <CopyFileToFolders Include="Dui\Form\SettingsPage.xml">
+      <Filter>Dui\Form</Filter>
     </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
@@ -380,5 +368,10 @@
     <Xsd Include="Dui\NIMDUISchema.xsd">
       <Filter>Dui</Filter>
     </Xsd>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="..\x64\Debug\Dui\themes\default\global.xml">
+      <Filter>Dui</Filter>
+    </Xml>
   </ItemGroup>
 </Project>

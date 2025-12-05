@@ -13,6 +13,8 @@
 #include"RenderWindowManager.h"
 #include"UserEvent.h"
 #include"../Tray.h"
+//#include"DuiCommon.h"
+#include"Dui.h"
 SDL_FColor RenderWindowController::clearColor = { 0.f,0.f, 0.f, 0.f };
 
 
@@ -141,6 +143,68 @@ void RenderWindowController::_ResetOffscreenTex()
     }
 
 
+}
+
+void RenderWindowController::ShowPopMenu(int x,int y)
+{
+    //右键弹出菜单
+    ui::Menu* menu = new ui::Menu(nullptr);
+    menu->SetSkinFolder(L"CatTuber_default");
+    DString xml(L"MainWindowMenu.xml");
+
+    menu->ShowMenu(xml, { x,y });
+
+    ui::MenuItem* windowMenu_openSettingWindow = dynamic_cast<ui::MenuItem*>( menu->FindControl(L"windowMenu_openSettingWindow"));
+    ui::MenuItem* windowMenu_lockWindow = dynamic_cast<ui::MenuItem*>( menu->FindControl(L"windowMenu_lockWindow"));
+    ui::MenuItem* windowMenu_hideWindow = dynamic_cast<ui::MenuItem*>( menu->FindControl(L"windowMenu_hideWindow"));
+    ui::MenuItem* windowMenu_showWindowBorder = dynamic_cast<ui::MenuItem*>( menu->FindControl(L"windowMenu_showWindowBorder"));
+    ui::MenuItem* windowMenu_hideWindowBorder = dynamic_cast<ui::MenuItem*>( menu->FindControl(L"windowMenu_hideWindowBorder"));
+    ui::MenuItem* windowMenu_exit = dynamic_cast<ui::MenuItem*>( menu->FindControl(L"windowMenu_exit"));
+    
+
+    //windowMenu_openSettingWindow->e
+
+
+    ////设置部分项目的显隐
+    //if (AppSettings::GetIns().GetWindowTransparent())
+    //{
+    //    if (windowMenu_hideWindowBorder)windowMenu_hideWindowBorder->SetVisible(false);
+    //}
+    //else
+    //{
+    //    if (windowMenu_showWindowBorder)windowMenu_showWindowBorder->SetVisible(false);
+    //}
+
+
+    //添加按钮功能
+    if(windowMenu_openSettingWindow)windowMenu_openSettingWindow->AttachClick(
+        [](const ui::EventArgs&)->bool {
+            Dui::OpenMainUiWindow();
+            return true;
+        });
+    if(windowMenu_lockWindow)windowMenu_lockWindow->AttachClick(
+        [](const ui::EventArgs&)->bool {
+            AppSettings::GetIns().SetWindowLock(true); return true;
+        });
+    if(windowMenu_hideWindow)windowMenu_hideWindow->AttachClick(
+        [](const ui::EventArgs&)->bool {
+            AppSettings::GetIns().SetWindowVisible(false); return true;
+        });
+    if(windowMenu_showWindowBorder)windowMenu_showWindowBorder->AttachClick(
+        [](const ui::EventArgs&)->bool {
+            AppSettings::GetIns().SetWindowTransparent(false); return true;
+        });
+    if(windowMenu_hideWindowBorder)windowMenu_hideWindowBorder->AttachClick(
+        [](const ui::EventArgs&)->bool {
+            AppSettings::GetIns().SetWindowTransparent(true); return true;
+        });
+    if(windowMenu_exit)windowMenu_exit->AttachClick(
+        [](const ui::EventArgs&)->bool {
+            SDL_Event e;
+            e.type = SDL_EVENT_QUIT;
+            SDL_PushEvent(&e);
+            return true;
+        });
 }
 
 bool RenderWindowController::ResetGraphic(int W, int H) {
@@ -346,9 +410,21 @@ void RenderWindowController::HandleEvent(const SDL_Event& event) {
         if (event.button.button == SDL_BUTTON_RIGHT)
         {
             //右键按下
+            int x,y;
+            SDL_GetWindowPosition(window,&x,&y);
+            ShowPopMenu(x+static_cast<int>( event.button.x)+2, y+static_cast<int>(event.button.y)+2);
         }
     }
+    if (event.type == SDL_EVENT_KEY_DOWN)
+    {
+        if (event.key.key == SDLK_S&& (event.key.mod&SDL_KMOD_CTRL)&& (event.key.mod & SDL_KMOD_SHIFT))
+        {
+            Dui::OpenMainUiWindow();
 
+        }
+
+
+    }
 
 
 
