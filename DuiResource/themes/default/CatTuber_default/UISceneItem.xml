@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Window 
+   		xmlns:xs="http://www.w3.org/2001/XMLSchema"
+		xmlns="http://tempuri.org/NIMDUISchema.xsd"
+		>
+	<ListBoxItemV width="200" height="200" mouse_child="false" hot_color="itemHoverColor" pushed_color="itemPushColor" group="SceneItemGroup" selected_normal_color="subjectColor"
+				   selected_normal_text_color="subjectColor_content" border_round="6,6">
+			<Control name="sceneItem_cover" width="180" margin="10,20,10,0" height="135" border_round="6,6"/>
+			<Control height="30%"/>
+			<Label name="sceneItem_name" width="200" text_align="center" multi_line="true"/>
+			<Control height="70%"/>
+	</ListBoxItemV>
+</Window>

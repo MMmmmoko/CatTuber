@@ -24,6 +24,15 @@ const char* AppContext::GetAppBasePath()
 	return SDL_GetBasePath();
 }
 
+const char* AppContext::GetSceneFolderPath()
+{
+	if (_ref()._sceneFolderPath.empty())
+	{
+		_ref()._sceneFolderPath = std::string(GetPrefPath()) + "Scenes/";
+	}
+	return _ref()._sceneFolderPath.c_str();
+}
+
 const char* AppContext::GetWorkShopPath()
 {
 	//TODD/Fixme:创意工坊

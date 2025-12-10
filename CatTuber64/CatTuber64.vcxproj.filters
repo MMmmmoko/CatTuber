@@ -48,11 +48,14 @@
     <Filter Include="Dui\Lang">
       <UniqueIdentifier>{6108c887-363c-4f89-9e28-67ee750a7a09}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Dui\UserControl">
+      <UniqueIdentifier>{a0fa249d-081e-440a-b259-c3e99397442f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dui\Dialog">
+      <UniqueIdentifier>{1abe1319-fa68-41e0-a071-1439a74dc7f0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Util\json\json_tool.h">
-      <Filter>源文件\Util\json</Filter>
-    </ClInclude>
     <ClInclude Include="Dui\DuiCommon.h">
       <Filter>Dui</Filter>
     </ClInclude>
@@ -65,149 +68,131 @@
     <ClInclude Include="Dui\Dui.h">
       <Filter>Dui</Filter>
     </ClInclude>
-    <ClInclude Include="Dui\Form\SettingsPage.h">
-      <Filter>Dui\Form</Filter>
-    </ClInclude>
-    <ClInclude Include="include\UserEvent.h">
-      <Filter>源文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\AppContext.h">
-      <Filter>源文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\AppSettings.h">
-      <Filter>源文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\CatTuberApp.h">
-      <Filter>源文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Graphic.h">
-      <Filter>源文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\RenderThread.h">
-      <Filter>源文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\RenderWindowManager.h">
-      <Filter>源文件</Filter>
-    </ClInclude>
     <ClInclude Include="Resource.h">
       <Filter>源文件</Filter>
     </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>源文件</Filter>
     </ClInclude>
-    <ClInclude Include="include\Tray.h">
+    <ClInclude Include="src\Tray.h">
       <Filter>源文件</Filter>
     </ClInclude>
-    <ClInclude Include="include\Util\json\allocator.h">
-      <Filter>源文件\Util\json</Filter>
+    <ClInclude Include="src\UserEvent.h">
+      <Filter>源文件</Filter>
     </ClInclude>
-    <ClInclude Include="include\Util\json\assertions.h">
-      <Filter>源文件\Util\json</Filter>
+    <ClInclude Include="src\AppContext.h">
+      <Filter>源文件</Filter>
     </ClInclude>
-    <ClInclude Include="include\Util\json\config.h">
-      <Filter>源文件\Util\json</Filter>
+    <ClInclude Include="src\AppSettings.h">
+      <Filter>源文件</Filter>
     </ClInclude>
-    <ClInclude Include="include\Util\json\forwards.h">
-      <Filter>源文件\Util\json</Filter>
+    <ClInclude Include="src\CatTuberApp.h">
+      <Filter>源文件</Filter>
     </ClInclude>
-    <ClInclude Include="include\Util\json\json.h">
-      <Filter>源文件\Util\json</Filter>
+    <ClInclude Include="src\Graphic.h">
+      <Filter>源文件</Filter>
     </ClInclude>
-    <ClInclude Include="include\Util\json\json_features.h">
-      <Filter>源文件\Util\json</Filter>
+    <ClInclude Include="src\RenderThread.h">
+      <Filter>源文件</Filter>
     </ClInclude>
-    <ClInclude Include="include\Util\json\reader.h">
-      <Filter>源文件\Util\json</Filter>
+    <ClInclude Include="src\RenderWindowManager.h">
+      <Filter>源文件</Filter>
     </ClInclude>
-    <ClInclude Include="include\Util\json\value.h">
-      <Filter>源文件\Util\json</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Util\json\version.h">
-      <Filter>源文件\Util\json</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Util\json\writer.h">
-      <Filter>源文件\Util\json</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Util\ObjectPool.h">
+    <ClInclude Include="src\Util\WeakCallbackList.h">
       <Filter>源文件\Util</Filter>
     </ClInclude>
-    <ClInclude Include="include\Util\SDL_LockGuard.h">
+    <ClInclude Include="src\Util\WeakSupport.h">
       <Filter>源文件\Util</Filter>
     </ClInclude>
-    <ClInclude Include="include\Util\Util.h">
+    <ClInclude Include="src\Util\ObjectPool.h">
       <Filter>源文件\Util</Filter>
     </ClInclude>
-    <ClInclude Include="include\Util\WeakCallbackList.h">
+    <ClInclude Include="src\Util\SDL_LockGuard.h">
       <Filter>源文件\Util</Filter>
     </ClInclude>
-    <ClInclude Include="include\Util\WeakSupport.h">
+    <ClInclude Include="src\Util\Util.h">
       <Filter>源文件\Util</Filter>
     </ClInclude>
-    <ClInclude Include="include\Renderer\CatRendererContext.h">
+    <ClInclude Include="src\Renderer\CatRenderState.h">
       <Filter>源文件\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="include\Renderer\CatRenderState.h">
+    <ClInclude Include="src\Renderer\MixDrawList.h">
       <Filter>源文件\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="include\Renderer\MixDrawList.h">
+    <ClInclude Include="src\Renderer\CatRendererContext.h">
       <Filter>源文件\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="include\Pack\Pack.h">
+    <ClInclude Include="src\Pack\Pack.h">
       <Filter>源文件\Pack</Filter>
     </ClInclude>
-    <ClInclude Include="include\Model\IModel.h">
+    <ClInclude Include="src\Model\IModel.h">
       <Filter>源文件\Model</Filter>
     </ClInclude>
-    <ClInclude Include="include\Model\Live2DModelBase.h">
+    <ClInclude Include="src\Model\Live2DModelBase.h">
       <Filter>源文件\Model</Filter>
     </ClInclude>
-    <ClInclude Include="include\Model\ModelManager.h">
+    <ClInclude Include="src\Model\ModelManager.h">
       <Filter>源文件\Model</Filter>
     </ClInclude>
-    <ClInclude Include="include\Item\CharacterObject.h">
+    <ClInclude Include="src\Item\ModelControl.h">
       <Filter>源文件\Item</Filter>
     </ClInclude>
-    <ClInclude Include="include\Item\ClassicItem.h">
+    <ClInclude Include="src\Item\Scene.h">
       <Filter>源文件\Item</Filter>
     </ClInclude>
-    <ClInclude Include="include\Item\MainSceneItem.h">
+    <ClInclude Include="src\Item\SceneItem.h">
       <Filter>源文件\Item</Filter>
     </ClInclude>
-    <ClInclude Include="include\Item\MeshMapping.h">
+    <ClInclude Include="src\Item\StraightMovingPoint.h">
       <Filter>源文件\Item</Filter>
     </ClInclude>
-    <ClInclude Include="include\Item\ModelControl.h">
+    <ClInclude Include="src\Item\TableObject.h">
       <Filter>源文件\Item</Filter>
     </ClInclude>
-    <ClInclude Include="include\Item\Scene.h">
+    <ClInclude Include="src\Item\CharacterObject.h">
       <Filter>源文件\Item</Filter>
     </ClInclude>
-    <ClInclude Include="include\Item\SceneItem.h">
+    <ClInclude Include="src\Item\ClassicItem.h">
       <Filter>源文件\Item</Filter>
     </ClInclude>
-    <ClInclude Include="include\Item\StraightMovingPoint.h">
+    <ClInclude Include="src\Item\HandheldItemObject.h">
       <Filter>源文件\Item</Filter>
     </ClInclude>
-    <ClInclude Include="include\Item\TableObject.h">
+    <ClInclude Include="src\Item\MainSceneItem.h">
       <Filter>源文件\Item</Filter>
     </ClInclude>
-    <ClInclude Include="include\Input\InputCommon.h">
+    <ClInclude Include="src\Item\MeshMapping.h">
+      <Filter>源文件\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Input\InputManager.h">
       <Filter>源文件\Input</Filter>
     </ClInclude>
-    <ClInclude Include="include\Input\InputManager.h">
+    <ClInclude Include="src\Input\InputParser.h">
       <Filter>源文件\Input</Filter>
     </ClInclude>
-    <ClInclude Include="include\Input\InputParser.h">
+    <ClInclude Include="src\Input\KeyboardInput.h">
       <Filter>源文件\Input</Filter>
     </ClInclude>
-    <ClInclude Include="include\Input\KeyboardInput.h">
+    <ClInclude Include="src\Input\MouseInput.h">
       <Filter>源文件\Input</Filter>
     </ClInclude>
-    <ClInclude Include="include\Input\MouseInput.h">
+    <ClInclude Include="src\Input\InputCommon.h">
       <Filter>源文件\Input</Filter>
     </ClInclude>
-    <ClInclude Include="include\Item\HandheldItemObject.h">
+    <ClInclude Include="src\Item\SceneManager.h">
       <Filter>源文件\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="Dui\Form\SceneSelectPage.h">
+      <Filter>Dui\Form</Filter>
+    </ClInclude>
+    <ClInclude Include="Dui\Form\SettingsPage.h">
+      <Filter>Dui\Form</Filter>
+    </ClInclude>
+    <ClInclude Include="Dui\Dialog\UISceneItemRename_Dlg.h">
+      <Filter>Dui\Dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="Dui\Dialog\DuiMessageBox.h">
+      <Filter>Dui\Dialog</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -325,6 +310,15 @@
     <ClCompile Include="src\Item\HandheldItemObject.cpp">
       <Filter>源文件\Item</Filter>
     </ClCompile>
+    <ClCompile Include="Dui\Form\SceneSelectPage.cpp">
+      <Filter>Dui\Form</Filter>
+    </ClCompile>
+    <ClCompile Include="Dui\Dialog\UISceneItemRename_Dlg.cpp">
+      <Filter>Dui\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="Dui\Dialog\DuiMessageBox.cpp">
+      <Filter>Dui\Dialog</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CatTuber64.rc">
@@ -349,18 +343,9 @@
     <CopyFileToFolders Include="Dui\Lang\schinese.ini">
       <Filter>Dui\Lang</Filter>
     </CopyFileToFolders>
-    <CopyFileToFolders Include="Dui\Form\MainWindowMenu.xml">
-      <Filter>Dui\Form</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="Dui\Form\MainUiForm.xml">
-      <Filter>Dui\Form</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="Dui\Form\SettingsPage.xml">
-      <Filter>Dui\Form</Filter>
-    </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Dui\Lang\en_US.txt">
+    <Text Include="Dui\Lang\english.ini">
       <Filter>Dui\Lang</Filter>
     </Text>
   </ItemGroup>
@@ -372,6 +357,30 @@
   <ItemGroup>
     <Xml Include="..\x64\Debug\Dui\themes\default\global.xml">
       <Filter>Dui</Filter>
+    </Xml>
+    <Xml Include="..\DuiResource\themes\default\CatTuber_default\MainUiForm.xml">
+      <Filter>Dui\Form</Filter>
+    </Xml>
+    <Xml Include="..\DuiResource\themes\default\CatTuber_default\MainWindowMenu.xml">
+      <Filter>Dui\Form</Filter>
+    </Xml>
+    <Xml Include="..\DuiResource\themes\default\CatTuber_default\SettingsPage.xml">
+      <Filter>Dui\Form</Filter>
+    </Xml>
+    <Xml Include="..\DuiResource\themes\default\CatTuber_default\DuiSimpleMessageBox.xml">
+      <Filter>Dui\Dialog</Filter>
+    </Xml>
+    <Xml Include="..\DuiResource\themes\default\CatTuber_default\UISceneItemRename_Dlg.xml">
+      <Filter>Dui\Dialog</Filter>
+    </Xml>
+    <Xml Include="..\DuiResource\themes\default\CatTuber_default\UISceneItemMenu.xml">
+      <Filter>Dui\Form</Filter>
+    </Xml>
+    <Xml Include="..\DuiResource\themes\default\CatTuber_default\UISceneItem.xml">
+      <Filter>Dui\Form</Filter>
+    </Xml>
+    <Xml Include="..\DuiResource\themes\default\CatTuber_default\SceneSelectPage.xml">
+      <Filter>Dui\Form</Filter>
     </Xml>
   </ItemGroup>
 </Project>

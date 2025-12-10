@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Window shadow_type="menu_round" shadow_attached="true" layered_window="true"
+		xmlns:xs="http://www.w3.org/2001/XMLSchema"
+		xmlns="http://tempuri.org/NIMDUISchema.xsd"
+		>
+	
+	<Class name="sceneItemMenuElement" height="24" padding="20,0,20,0" margin="1,1,1,1"
+		   hot_color="itemHoverColor"  fade_hot="false"/>
+	
+	<Class name="helperMenuText" normal_text_color="textNormalColor" font="system_12" valign="center"/>
+	
+	
+	<MenuListBox class="menu" bkcolor="panelBkColor">
+		<MenuItem class="sceneItemMenuElement" name="SceneItemMenu_Load" width="auto">
+			<Label class="helperMenuText"  text_id="STRID_SCENESELECT_MENU_LOAD"  mouse_enabled="false" keyboard_enabled="false"/>
+		</MenuItem>
+		<MenuItem class="sceneItemMenuElement" name="SceneItemMenu_Rename" width="auto">
+			<Label class="helperMenuText"  text_id="STRID_SCENESELECT_MENU_RENAME" mouse_enabled="false" keyboard_enabled="false"/>
+		</MenuItem>
+		<MenuItem class="sceneItemMenuElement" name="SceneItemMenu_Remove" width="auto">
+			<Label class="helperMenuText"  text_id="STRID_SCENESELECT_MENU_REMOVE" mouse_enabled="false" keyboard_enabled="false"/>
+		</MenuItem>
+	</MenuListBox>
+</Window>

@@ -3,6 +3,7 @@
 
 #include"MainUiForm.h"
 #include"SettingsPage.h"
+#include"SceneSelectPage.h"
 MainUiForm::MainUiForm()
 {
 }
@@ -17,6 +18,9 @@ void MainUiForm::OnInitWindow()
 
 
 	pageContainer= dynamic_cast<ui::Box*>(FindControl(L"box_workSpaceContainer"));
+
+	//总是以场景选择页开始
+	GoToPage(L"SCENESELECT_PAGE");
 
 
 	//基础控件区
@@ -83,11 +87,18 @@ void MainUiForm::GoToPage(const std::wstring& pageName)
 
 ui::Box* MainUiForm::BuildPage(const std::wstring& pageName)
 {
+	if (pageName == L"SCENESELECT_PAGE")
+	{
+		auto page = new SceneSelectPage(this);
+		page->InitContents();
+		return page;
+	}
 	if (pageName == L"SETTINGS_PAGE")
 	{
 		auto page = new SettingsPage(this);
 		page->InitContents();
 		return page;
 	}
+
 	return nullptr;
 }

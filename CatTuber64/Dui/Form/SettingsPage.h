@@ -4,7 +4,7 @@
 
 
 
-class SettingsPage:public ui::Box
+class SettingsPage :public ui::Box
 {
 
 public:

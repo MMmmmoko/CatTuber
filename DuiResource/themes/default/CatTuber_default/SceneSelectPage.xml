@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window
+		xmlns:xs="http://www.w3.org/2001/XMLSchema"
+		xmlns="http://tempuri.org/NIMDUISchema.xsd">
+
+
+	<VBox margin="20,0,0,0">
+	<Label text_id="STRID_SCENESELECT_SCENESELECT" font="system_bold_22" margin="0,20,0,20"/>
+		<VirtualVTileListBox name="sceneItemContainer" width="stretch" height="stretch" child_margin="6" 
+							 item_size="200,200" vscrollbar="true" select_none_when_click_blank="false">
+			
+		</VirtualVTileListBox>
+		
+</VBox>
+</Window>
+	
+	

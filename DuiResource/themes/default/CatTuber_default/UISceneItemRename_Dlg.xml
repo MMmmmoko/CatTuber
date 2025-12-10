@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Window
+        caption="0,0,0,28" use_system_caption="false" snap_layout_menu="true" sys_menu="true" sys_menu_rect="0,0,36,36"
+        shadow_type="default" shadow_attached="true" shadow_snap="true" layered_window="true"
+        alpha="255" icon="public/caption/logo.ico"
+		
+		xmlns:xs="http://www.w3.org/2001/XMLSchema"
+		xmlns="http://tempuri.org/NIMDUISchema.xsd"
+		>
+	<VBox bkcolor="panelBkColor" visible="true" height="auto" width="400">
+		<!-- 标题栏区域 -->
+		<HBox name="window_caption_bar" width="stretch" height="28">
+			<Label name="text_Title" text_id="STRID_SCENEDLG_TITLE_RENAME"  text_align="vcenter"  margin="8,0,8,0" valign="center" font="system_14"/>
+			<Control />
+
+			<Button class="btn_wnd_close_11" height="stretch" width="40" name="btn_Close" margin="0,0,0,2"/>
+		</HBox>
+		<Control height="1" bkcolor="itemSeparatorColor"/>
+		<!-- 工作区域，除了标题栏外的内容都放在这个大的Box区域 -->
+		<VBox height="auto">
+			<Control height="30"/>
+			<Label text_id="STRID_SCENEDLG_INPUT_NEW_NAME" valign="center" margin="24,0,24,2" text_align="right,vcenter" font="system_14"/>
+			<RichEdit name="edit_sceneName" width="stretch" height="30" margin="20,3,20,0" font="system_14" 
+					  border_size="0,0,0,1" border_color="richedit_border_color" padding="0,6,0,0"
+				  multi_line="false" auto_hscroll="true" rich_text="false"
+                         want_return="true" want_ctrl_return="false" want_tab="false" 
+                         disabled_text_color="disabled_font_color" select_all_on_focus="true"/>
+
+			<Control height="30"/>
+			<!--按钮区-->
+			<HBox margin="8,8,8,8"  halign="center" height="auto">
+				<Control />
+				<Button class="ctb_btn_dlg_normal" name="btn_Cancel" text_id="STRING_CANCEL"/>
+				<Button class="ctb_btn_dlg_highlight" name="btn_OK" text_id="STRING_OK"/>
+			</HBox>
+
+		</VBox>
+
+
+
+	</VBox>
+</Window>
