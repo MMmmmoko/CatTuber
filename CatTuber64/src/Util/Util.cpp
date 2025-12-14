@@ -66,20 +66,34 @@ bool util::SaveJsonToFile(const Json::Value& json, const char* filePath)
 {
     Json::StreamWriterBuilder builder;
     builder["emitUTF8"] = true;
-    std::unique_ptr<Json::StreamWriter> writer(
-        builder.newStreamWriter());
+    std::string jsonStr=Json::writeString(builder, json);
 
-    std::ofstream ofs;
-    ofs.open(filePath);
-    if (!ofs)
-    {
-        SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Failed to write file: %s", filePath);
-        return false;
-    }
 
-    writer->write(json, &ofs);
-    ofs.close();
-    return true;
+    return SDL_SaveFile(filePath, jsonStr.c_str(), jsonStr.size());
+
+    //std::unique_ptr<Json::StreamWriter> writer(
+    //    builder.newStreamWriter());
+
+
+    //std::ostream stream;
+
+    //改用SDL实现，原生C++接口比较难以处理中文文件名
+
+    
+
+
+
+    //std::ofstream ofs;
+    //ofs.open(filePath);
+    //if (!ofs)
+    //{
+    //    SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Failed to write file: %s", filePath);
+    //    return false;
+    //}
+
+    //writer->write(json, &ofs);
+    //ofs.close();
+    //return true;
 }
 
 bool util::IsStringEndsWith(const std::string& str, const char* end)
@@ -98,6 +112,22 @@ bool util::IsStringStartWith(const std::string& str, const char* end)
         return false;
     }
     return 0==SDL_memcmp(str.data(), end, len);
+}
+
+bool util::StringIsNumber(const std::string& str)
+{
+    for(auto x:str)
+    {
+        if (x >= '0' && x <= '9')
+        {
+            continue;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    return true;
 }
 
 std::string util::StringToUpper(const std::string& str)

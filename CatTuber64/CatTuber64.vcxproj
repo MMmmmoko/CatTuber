@@ -136,13 +136,21 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Dui\Dialog\DuiMessageBox.h" />
+    <ClInclude Include="Dui\Dialog\UISceneCoverCropper_Dlg.h" />
+    <ClInclude Include="Dui\Dialog\UISceneCreateNew_Dlg.h" />
     <ClInclude Include="Dui\Dialog\UISceneItemRename_Dlg.h" />
     <ClInclude Include="Dui\Dui.h" />
     <ClInclude Include="Dui\DuiCommon.h" />
     <ClInclude Include="Dui\Form\MainUiForm.h" />
     <ClInclude Include="Dui\Form\SceneSelectPage.h" />
     <ClInclude Include="Dui\Form\SettingsPage.h" />
+    <ClInclude Include="Dui\Form\SettingsPage_aboutCatTuber.h" />
+    <ClInclude Include="Dui\Form\SettingsPage_input.h" />
+    <ClInclude Include="Dui\Form\SettingsPage_other.h" />
+    <ClInclude Include="Dui\Form\SettingsPage_sound.h" />
+    <ClInclude Include="Dui\Form\SettingsPage_window.h" />
     <ClInclude Include="Dui\UiThread.h" />
+    <ClInclude Include="Dui\UserControl\ImageCropperControl.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="src\AppContext.h" />
     <ClInclude Include="src\AppSettings.h" />
@@ -183,13 +191,22 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\duilib_CodePatch\Image_cpp_patch.cpp" />
     <ClCompile Include="Dui\Dialog\DuiMessageBox.cpp" />
+    <ClCompile Include="Dui\Dialog\UISceneCoverCropper_Dlg.cpp" />
+    <ClCompile Include="Dui\Dialog\UISceneCreateNew_Dlg.cpp" />
     <ClCompile Include="Dui\Dialog\UISceneItemRename_Dlg.cpp" />
     <ClCompile Include="Dui\Dui.cpp" />
     <ClCompile Include="Dui\Form\MainUiForm.cpp" />
     <ClCompile Include="Dui\Form\SceneSelectPage.cpp" />
     <ClCompile Include="Dui\Form\SettingsPage.cpp" />
+    <ClCompile Include="Dui\Form\SettingsPage_aboutCatTuber.cpp" />
+    <ClCompile Include="Dui\Form\SettingsPage_input.cpp" />
+    <ClCompile Include="Dui\Form\SettingsPage_other.cpp" />
+    <ClCompile Include="Dui\Form\SettingsPage_sound.cpp" />
+    <ClCompile Include="Dui\Form\SettingsPage_window.cpp" />
     <ClCompile Include="Dui\UiThread.cpp" />
+    <ClCompile Include="Dui\UserControl\ImageCropperControl.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="platform\Windows\WinKeyboardInput.cpp" />
     <ClCompile Include="platform\Windows\WinMouseInput.cpp" />
@@ -208,6 +225,7 @@
     <ClCompile Include="src\Item\ModelControl.cpp" />
     <ClCompile Include="src\Item\Scene.cpp" />
     <ClCompile Include="src\Item\SceneItem.cpp" />
+    <ClCompile Include="src\Item\SceneManager.cpp" />
     <ClCompile Include="src\Item\StraightMovingPoint.cpp" />
     <ClCompile Include="src\Item\TableObject.cpp" />
     <ClCompile Include="src\Model\IModel.cpp" />
@@ -224,6 +242,7 @@
     <ClCompile Include="src\Util\json\json_writer.cpp" />
     <ClCompile Include="src\Util\Util.cpp" />
     <ClCompile Include="src\Util\WeakSupport.cpp" />
+    <ClCompile Include="_CodePatch\nanosvg_patch.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CatTuber64.rc" />
@@ -272,6 +291,8 @@
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\MainWindowMenu.xml" />
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\SceneSelectPage.xml" />
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\SettingsPage.xml" />
+    <Xml Include="..\DuiResource\themes\default\CatTuber_default\UISceneCoverCropper_Dlg.xml" />
+    <Xml Include="..\DuiResource\themes\default\CatTuber_default\UISceneCreateNew_Dlg.xml" />
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\UISceneItem.xml" />
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\UISceneItemMenu.xml" />
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\UISceneItemRename_Dlg.xml" />

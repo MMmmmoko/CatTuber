@@ -1,8 +1,24 @@
 #include"Dui.h"
 #include"SceneSelectPage.h"
 #include"Dialog/UISceneItemRename_Dlg.h"
+#include"Dialog/UISceneCreateNew_Dlg.h"
+#include"Dialog/UISceneCoverCropper_Dlg.h"
+
 #include"AppContext.h"
 #include"Util.h"
+
+#include"Item/SceneManager.h"
+
+//////////
+//******预设所有场景文件后缀为.json!!!!
+//////////
+
+
+
+#define DEFAULT_COVER_PATH "UISceneItem_DefaultCover.png"
+
+
+
 UISceneItem::UISceneItem(ui::Window* pWindow)
     :ui::ListBoxItemV(pWindow)
 {
@@ -37,7 +53,10 @@ void UISceneItem::InitSubControls(const std::string& name, const std::string& im
             };
         AttachSelect(textColorFunc);
         AttachUnSelect(textColorFunc);
-
+        if (selected)
+        {
+            labelSceneName->SetStateTextColor(ui::kControlStateNormal, L"subjectColor_content");
+        }
 
     }
     auto testPtr = dynamic_cast<ui::VBox*> (this);
@@ -60,6 +79,12 @@ std::string UISceneItem::GetSceneName()
     return provider->GetSceneInfo(index).name;
 }
 
+std::string UISceneItem::GetSceneFileName()
+{
+    auto provider = GetProvider();
+    return provider->GetSceneInfo(index).filePath;
+}
+
 bool UISceneItem::OnRightClick(const ui::EventArgs& args)
 {
     //创建菜单
@@ -79,7 +104,10 @@ bool UISceneItem::OnRightClick(const ui::EventArgs& args)
 
 
     ui::MenuItem* SceneItemMenu_Load = dynamic_cast<ui::MenuItem*>(menu->FindControl(L"SceneItemMenu_Load"));
+    ui::MenuItem* SceneItemMenu_Duplicate = dynamic_cast<ui::MenuItem*>(menu->FindControl(L"SceneItemMenu_Duplicate"));
     ui::MenuItem* SceneItemMenu_Rename = dynamic_cast<ui::MenuItem*>(menu->FindControl(L"SceneItemMenu_Rename"));
+    ui::MenuItem* SceneItemMenu_UploadCover = dynamic_cast<ui::MenuItem*>(menu->FindControl(L"SceneItemMenu_UploadCover"));
+    ui::MenuItem* SceneItemMenu_CaptureCover = dynamic_cast<ui::MenuItem*>(menu->FindControl(L"SceneItemMenu_CaptureCover"));
     ui::MenuItem* SceneItemMenu_Remove = dynamic_cast<ui::MenuItem*>(menu->FindControl(L"SceneItemMenu_Remove"));
 
     ui::UiSize sizeMax(9999, 9999);
@@ -89,12 +117,35 @@ bool UISceneItem::OnRightClick(const ui::EventArgs& args)
         int32_t curW = SceneItemMenu_Load->EstimateSize(sizeMax).cx.GetInt32();
         if (curW > maxW)maxW = curW;
         if (IsSelected())
-            SceneItemMenu_Load->SetVisible(false);
+            SceneItemMenu_Load->SetEnabled(false);
+    }
+    if (SceneItemMenu_Duplicate)
+    {
+        int32_t curW = SceneItemMenu_Duplicate->EstimateSize(sizeMax).cx.GetInt32();
+        if (curW > maxW)maxW = curW;
     }
     if (SceneItemMenu_Rename)
     {
         int32_t curW = SceneItemMenu_Rename->EstimateSize(sizeMax).cx.GetInt32();
         if (curW > maxW)maxW = curW;
+    }
+    if (SceneItemMenu_UploadCover)
+    {
+        int32_t curW = SceneItemMenu_UploadCover->EstimateSize(sizeMax).cx.GetInt32();
+        if (curW > maxW)maxW = curW;
+    }
+    if (SceneItemMenu_CaptureCover)
+    {
+        if (IsSelected())
+        {
+            //先判断是否有显示吧.
+            int32_t curW = SceneItemMenu_CaptureCover->EstimateSize(sizeMax).cx.GetInt32();
+            if (curW > maxW)maxW = curW;
+        }
+        else
+        {
+            SceneItemMenu_CaptureCover->SetVisible(false);
+        }
     }
     if (SceneItemMenu_Remove)
     {
@@ -108,13 +159,16 @@ bool UISceneItem::OnRightClick(const ui::EventArgs& args)
             SceneItemProvider* provider = dynamic_cast<SceneItemProvider*>(parent->GetDataProvider());
             if (provider->GetElementCount() <= 1)
             {
-                SceneItemMenu_Remove->SetVisible(false);
+                SceneItemMenu_Remove->SetEnabled(false);
             }
         }
 
     }
     SceneItemMenu_Load->SetFixedWidth(ui::UiFixedInt(maxW), true, false);
+    SceneItemMenu_Duplicate->SetFixedWidth(ui::UiFixedInt(maxW), true, false);
     SceneItemMenu_Rename->SetFixedWidth(ui::UiFixedInt(maxW), true, false);
+    SceneItemMenu_UploadCover->SetFixedWidth(ui::UiFixedInt(maxW), true, false);
+    SceneItemMenu_CaptureCover->SetFixedWidth(ui::UiFixedInt(maxW), true, false);
     SceneItemMenu_Remove->SetFixedWidth(ui::UiFixedInt(maxW), true, false);
 
 
@@ -122,7 +176,10 @@ bool UISceneItem::OnRightClick(const ui::EventArgs& args)
 
     //添加按钮功能
     SceneItemMenu_Load->AttachClick(ui::UiBind(&UISceneItem::OnLoadClick, this, std::placeholders::_1));
+    SceneItemMenu_Duplicate->AttachClick(ui::UiBind(&UISceneItem::OnDuplicateClick, this, std::placeholders::_1));
     SceneItemMenu_Rename->AttachClick(ui::UiBind(&UISceneItem::OnRenameClick, this, std::placeholders::_1));
+    SceneItemMenu_UploadCover->AttachClick(ui::UiBind(&UISceneItem::OnUploadCoverClick, this, std::placeholders::_1));
+    SceneItemMenu_CaptureCover->AttachClick(ui::UiBind(&UISceneItem::OnCaptureCoverClick, this, std::placeholders::_1));
     SceneItemMenu_Remove->AttachClick(ui::UiBind(&UISceneItem::OnRemoveClick, this, std::placeholders::_1));
 
 
@@ -138,6 +195,13 @@ bool UISceneItem::OnLoadClick(const ui::EventArgs& args)
     return true;
 }
 
+bool UISceneItem::OnDuplicateClick(const ui::EventArgs& args)
+{
+    auto provider = GetProvider();
+    provider->DuplicateItem(index);
+    return true;
+}
+
 bool UISceneItem::OnRenameClick(const ui::EventArgs& args)
 {
     //打开一个对话框，输入名称并判定是否成功
@@ -150,6 +214,59 @@ bool UISceneItem::OnRenameClick(const ui::EventArgs& args)
         //确认原因是duilib的模式对话框是假的.. 会直接返回不会在这里停着
         
     }
+    return true;
+}
+
+bool UISceneItem::OnUploadCoverClick(const ui::EventArgs& args)
+{
+    //ASSERT(false);
+
+
+    //打开文件选择窗口
+    //使用nimduilib封装
+    ui::FileDialog dialog;
+    ui::FilePath resultPath;
+    std::vector<ui::FileDialog::FileType>fileTypes;
+    auto& fileType=fileTypes.emplace_back();
+    fileType.szName = L"Image File";
+    fileType.szExt = L"*.png;*.jpg;*.gif";
+
+
+    if (dialog.BrowseForFile(GetWindow(), resultPath, true, fileTypes))
+    {
+        //选择了一个图片文件
+        //如果图片文件为gif则不进行裁剪直接拷贝?
+        if (resultPath.GetFileExtension() == L".gif")
+        {
+            //将已有的图像文件移除
+            auto& sceneInfo=GetProvider()->GetSceneInfo(index);
+
+            std::string baseFilePath = AppContext::GetSceneFolderPath() + sceneInfo.filePath.substr(0, sceneInfo.filePath.size() - 5);
+            SDL_RemovePath((baseFilePath + ".png").c_str());
+            SDL_RemovePath((baseFilePath + ".jpg").c_str());
+            SDL_RemovePath((baseFilePath + ".gif").c_str());
+            if (SDL_CopyFile(resultPath.ToStringA().c_str(),(baseFilePath + ".gif").c_str()))
+            {
+                sceneInfo.imgPath = (baseFilePath + ".gif");
+                GetProvider()->EmitDataChanged(index,index);
+            }
+        }
+        else
+        {
+            //打开裁剪对话框
+            UISceneCoverCropper_Dlg::ShowModalDlg(this, resultPath.ToStringA().c_str());
+            
+        }
+
+        return true;
+    }
+
+    return true;
+}
+
+bool UISceneItem::OnCaptureCoverClick(const ui::EventArgs& args)
+{
+    ASSERT(false);
     return true;
 }
 
@@ -169,6 +286,12 @@ SceneItemProvider* UISceneItem::GetProvider()
         
     }
     return nullptr;
+}
+
+void UISceneItem::UpdateUI()
+{
+    auto provider = GetProvider();
+    provider->EmitDataChanged(index, index);
 }
 
 
@@ -260,9 +383,12 @@ SceneItemProvider::RESULT_STATUS SceneItemProvider::RenameScene(size_t index, st
 		}
     }
     sceneList[index].name = name;
-    Json::Value curSceneJson = util::BuildJsonFromFile(sceneList[index].filePath.c_str());
+    std::string filePath = AppContext::GetSceneFolderPath() + sceneList[index].filePath;
+    Json::Value curSceneJson = util::BuildJsonFromFile(filePath.c_str());
+	//curSceneJson["Version"] = 1;
 	curSceneJson["SceneName"] = name;
-    if (util::SaveJsonToFile(curSceneJson, sceneList[index].filePath.c_str()))
+    //std::string filepath=
+    if (util::SaveJsonToFile(curSceneJson, filePath.c_str()))
     {
         EmitDataChanged(index,index);
 		return RESULT_STATUS_DONE;
@@ -277,6 +403,211 @@ SceneItemProvider::RESULT_STATUS SceneItemProvider::RenameScene(size_t index, st
     //return RESULT_STATUS();
 }
 
+SceneItemProvider::RESULT_STATUS SceneItemProvider::CreateScene(std::string name, bool fillSceneWithDefaultResource)
+{
+
+    //判断是否为空
+    if (name.empty())
+        return RESULT_STATUS_CREATE_EMPTY_NAME;
+
+
+    //判断是否有同名场景
+    for (size_t i = 0; i < sceneList.size(); i++)
+    {
+        if (sceneList[i].name == name)
+        {
+            return RESULT_STATUS_CREATE_DUPLICATE_SCENE_NAME;
+        }
+    }
+
+    Json::Value sceneJson;
+    std::string fileName;
+    if (SceneManager::GenerateSceneJson(name.c_str(), fillSceneWithDefaultResource, true, sceneJson, &fileName))
+    {
+        //成功创建了场景json文件
+        //构建新的item
+        SceneInfo itemInfo;
+        itemInfo.filePath = fileName;
+        itemInfo.imgPath = DEFAULT_COVER_PATH;
+        itemInfo.name = name;
+        itemInfo.selected = false;
+        sceneList.push_back(itemInfo);
+        EmitCountChanged();
+
+        return RESULT_STATUS_DONE;
+    }
+
+    //创建文件失败
+
+    return RESULT_STATUS_CREATE_WRITE_FILE_FAILED;
+
+
+}
+
+void SceneItemProvider::DuplicateItem(size_t index)
+{
+
+    std::string filePath = AppContext::GetSceneFolderPath() + sceneList[index].filePath;
+    Json::Value curSceneJson = util::BuildJsonFromFile(filePath.c_str());
+
+    //AAAA
+    //AAAA_2
+    //AAAA_3
+    //AAAA_4
+    //...
+
+
+
+
+
+    std::string realSceneName;
+    std::string realFileName;
+
+    {
+        //创建一个不重名的
+        std::string curItemName = sceneList[index].name;
+        auto pos = curItemName.find_last_of('_');
+        std::string nameBase;
+        int endNum;
+        if (pos != std::string::npos)
+        {
+            std::string endStr = curItemName.substr(pos + 1);
+            if (util::StringIsNumber(endStr))
+            {
+
+                //末尾是数字
+                endNum = std::atoi(endStr.c_str());
+                nameBase = curItemName.substr(0, pos + 1);
+            }
+            else
+            {
+
+                nameBase = curItemName + "_";
+                endNum = 2;
+            }
+        }
+        else
+        {
+            endNum = 2;
+            nameBase = curItemName + "_";
+        }
+        while (true)
+        {
+            //根据endnum构建字符串
+            realSceneName = nameBase + std::to_string(endNum);
+            //判断是否存在名为realName的物品
+            bool hasSameName = false;
+            for (auto& x : sceneList)
+            {
+                if (x.name == realSceneName)
+                {
+                    hasSameName = true;
+                    break;
+                }
+            }
+            if (hasSameName)
+            {
+                endNum++;
+                continue;
+            }
+            break;
+        }
+    }
+    //按同样的方法获取文件名
+    {
+        std::string curFileName = sceneList[index].filePath;
+        curFileName = curFileName.substr(0, curFileName.size()-5);
+        auto pos = curFileName.find_last_of('_');
+        std::string nameBase;
+        int endNum;
+        //防止pos为时间戳前的 '_'
+        if (pos != std::string::npos&& pos> curFileName.size()-4)
+        {
+            std::string endStr = curFileName.substr(pos + 1);
+            if (util::StringIsNumber(endStr))
+            {
+
+                //末尾是数字
+                endNum = std::atoi(endStr.c_str());
+                nameBase = curFileName.substr(0, pos + 1);
+            }
+            else
+            {
+
+                nameBase = curFileName + "_";
+                endNum = 2;
+            }
+        }
+        else
+        {
+            endNum = 2;
+            nameBase = curFileName + "_";
+        }
+        while (true)
+        {
+            //根据endnum构建字符串
+            realFileName = nameBase + std::to_string(endNum);
+            //判断是否存在名为realName的物品
+            bool hasFileName = false;
+            for (auto& x : sceneList)
+            {
+                if (0 == SDL_strncmp(x.filePath.c_str(), realFileName.c_str(), realFileName.size()))
+                {
+                    hasFileName = true;
+                    break;
+                }
+            }
+            if (hasFileName)
+            {
+                endNum++;
+                continue;
+            }
+            realFileName += ".json";
+            break;
+        }
+    }
+
+    //
+    curSceneJson["SceneName"] = realSceneName;
+    if (util::SaveJsonToFile(curSceneJson, (AppContext::GetSceneFolderPath() + realFileName).c_str()))
+    {
+
+        SceneInfo info;
+
+
+        //如果有封面文件那么也复制封面
+        //封面不是默认图片则复制
+        if (sceneList[index].imgPath != DEFAULT_COVER_PATH)
+        {
+            //确认图片类型
+            auto pos=sceneList[index].imgPath.find_last_of(".");
+            std::string extension = sceneList[index].imgPath.substr(pos);
+
+            std::string newImagePath = AppContext::GetSceneFolderPath()+ realFileName.substr(0, realFileName.size()-5)+ extension;
+            //尝试复制
+            if (SDL_CopyFile(sceneList[index].imgPath.c_str(), newImagePath.c_str()))
+            {
+                info.imgPath = newImagePath;
+            }
+
+
+        }
+
+
+
+        info.filePath = realFileName;
+        if(info.imgPath.empty())info.imgPath = sceneList[index].imgPath;
+        info.name = realSceneName;
+        info.selected = false;
+        sceneList.insert(sceneList.begin() + index + 1, info);
+        EmitCountChanged();
+    }
+
+
+
+
+}
+
 bool SceneItemProvider::RemoveItem(size_t index)
 {
     if (index >= sceneList.size())return false;
@@ -285,16 +616,54 @@ bool SceneItemProvider::RemoveItem(size_t index)
     //删除目标文件
     {
         std::string filePath = it->filePath;
-        std::filesystem::remove(filePath);
-		std::string basePath = filePath.substr(0, filePath.size() - 5);//去掉.json
-        std::filesystem::remove(basePath+".png");
-        std::filesystem::remove(basePath+".jpg");
-        std::filesystem::remove(basePath+".gif");
+        std::string baseFilePath = AppContext::GetSceneFolderPath() + filePath.substr(0,filePath.size() - 5);
+        SDL_RemovePath((baseFilePath+".json").c_str());
+        SDL_RemovePath((baseFilePath +".png").c_str());
+        SDL_RemovePath((baseFilePath +".jpg").c_str());
+        SDL_RemovePath((baseFilePath +".gif").c_str());
     }
     //删除数据
+
+    if (sceneList[index].selected == true)
+    {
+        //自动选择为下一个场景
+        size_t nextIndex = index + 1;
+        if (nextIndex == sceneList.size())nextIndex = 0;
+        sceneList[nextIndex].selected = true;
+    }
     sceneList.erase(it);
+
+  
+
     EmitCountChanged();
     return true;
+}
+
+void SceneItemProvider::OnCoverSetted(size_t index, const char* imageFileInSceneFolder)
+{
+    std::string basePath = imageFileInSceneFolder;
+    std::string extension = basePath.substr(basePath.find_first_of('.'));
+    basePath = basePath.substr(basePath.size()- extension.size());
+
+    if (extension == ".png")
+    {
+        SDL_RemovePath((basePath + ".jpg").c_str());
+        SDL_RemovePath((basePath + ".gif").c_str());
+    }
+    else if (extension == ".jpg")
+    {
+        SDL_RemovePath((basePath + ".png").c_str());
+        SDL_RemovePath((basePath + ".gif").c_str());
+    }
+    else if (extension == ".gif")
+    {
+        SDL_RemovePath((basePath + ".png").c_str());
+        SDL_RemovePath((basePath + ".jpg").c_str());
+    }
+
+    sceneList[index].imgPath = imageFileInSceneFolder;
+    EmitDataChanged(index, index);
+
 }
 
 
@@ -303,7 +672,7 @@ bool SceneItemProvider::RemoveItem(size_t index)
 
 
 
-const SceneItemProvider::SceneInfo& SceneItemProvider::GetSceneInfo(size_t nElementIndex)
+SceneItemProvider::SceneInfo& SceneItemProvider::GetSceneInfo(size_t nElementIndex)
 {
 	ASSERT(nElementIndex < sceneList.size());
 	return sceneList[nElementIndex];
@@ -340,27 +709,29 @@ void SceneItemProvider::LoadSceneList()
 			//检查封面图片文件是否存在
 			std::string baseFilePath = sceneFoldPath+ curScene.filePath.substr(0, curScene.filePath.size() - 5);//去掉.json
 			
-            if (std::filesystem::exists(baseFilePath + ".png"))
+
+            SDL_PathInfo info;
+            if (SDL_GetPathInfo((baseFilePath + ".png").c_str(),&info))
             {
                 curScene.imgPath = baseFilePath + ".png";
             }
-            else if (std::filesystem::exists(baseFilePath + ".jpg"))
+            else if (SDL_GetPathInfo((baseFilePath + ".jpg").c_str(),&info))
             {
                 curScene.imgPath = baseFilePath + ".jpg";
             }
-            else if (std::filesystem::exists(baseFilePath + ".gif"))
+            else if (SDL_GetPathInfo((baseFilePath + ".gif").c_str(),&info))
             {
                 curScene.imgPath = baseFilePath + ".gif";
             }
             else
             {
 				//不存在封面图片，使用默认图片
-				curScene.imgPath = "UISceneItem_DefaultCover.png";
+				curScene.imgPath = DEFAULT_COVER_PATH;
             }
         }
     }
     if (sceneJsonFiles)SDL_free(sceneJsonFiles);
-
+    sceneList[0].selected = true;
     EmitCountChanged();
 
 
@@ -393,8 +764,25 @@ void SceneSelectPage::InitContents()
 
     ui::VirtualVTileListBox* container= (ui::VirtualVTileListBox*)FindSubControl(L"sceneItemContainer");
     
-    auto provider = new SceneItemProvider;
+    provider = new SceneItemProvider;
     container->SetDataProvider(provider);
     provider->LoadSceneList();
 
+
+
+    auto btn_createScene = static_cast<ui::Button*>(FindSubControl(L"btn_createScene"));
+
+    btn_createScene->AttachClick(ui::UiBind(&SceneSelectPage::OnBtnClicked, this, std::placeholders::_1));
+}
+
+bool SceneSelectPage::OnBtnClicked(const ui::EventArgs& args)
+{
+    
+    if (UISceneCreateNew_Dlg::ShowModalDlg(GetWindow(), provider))
+    {
+
+
+    }
+
+    return true;
 }

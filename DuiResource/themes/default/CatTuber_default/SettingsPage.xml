@@ -4,8 +4,12 @@
 		xmlns="http://tempuri.org/NIMDUISchema.xsd">
 
 
-	<Class name="TabOption" bkcolor="red" group="SettingsTab"/>
-	<Class name="SettingsTitle" width="120" font="system_bold_16" normal_text_color="textActiveColor"/>
+	<Class name="TabOption" group="SettingsTab" font="system_16" margin="0,0,0,10" valign="bottom" text_padding="10,6,10,6"
+		    border_color="subjectColor"
+		   hot_text_color="textActiveColor"  fade_hot="false" end_ellipsis="false"
+		    selected_normal_text_color="textActiveColor"
+		   />
+	<Class name="SettingsTitle" width="100" font="system_bold_16" normal_text_color="textActiveColor" text_align="right" margin="0,0,20,0"/>
 	<Class name="SettingsSubTitle" width="120" font="system_bold_14" normal_text_color="textActiveColor"/>
 	<Class name="HBox_SetingsGroup" height="auto" margin="25,25,25,25"/>
 	<Class name="CheckBox_Default" height="24" margin="0,8,0,8" font="system_14" normal_text_color="textNormalColor" width="400"
@@ -15,32 +19,24 @@
 		   text_padding="28,0,0,0" text_align="left,vcenter" />
 
 	<Class name="Label_Head" font="system_14" valign="center" normal_text_color="textNormalColor" />
-	<Class name="Option_Default" height="24" margin="0,8,0,8" font="system_14" normal_text_color="textNormalColor"
-		   normal_image="file='CheckBox_16px.png' dest='16,4,32,20' source='0,16,16,32'"
-		   hot_image="file='CheckBox_16px.png' dest='16,4,32,20' source='16,16,32,32'"
-		selected_normal_image="file='CheckBox_16px.png' dest='16,4,32,20' source='32,16,48,32'"
-		   text_padding="40,0,0,0" text_align="left,vcenter" />
-	<Class name="Slider_Default" height="14" margin="4,0,4,0" valign="center" thumb_size="14,14" min="0" max="65535" step="255"
-                                          progress_bar_padding="0,6,0,6"
-                                          progress_color="subjectColor"
-                                          bkimage="file='public/slider/slider_hor_bk.png' valign='center' height='3' width='1200'" 
-                                          thumb_normal_image="file='SliderThumb_14px.png'"/>
-	<VBox>
-	<Label text_id="STRID_SETTINGS_SETTINGS"/>
-	<!--tab按钮面板-->
+
+	<VBox margin="20,0,0,0">
+
 	<HBox height="auto">
-		<Option class="TabOption" text_id="STRID_SETTINGS_TITLE_WINDOW"/>
-		<Option class="TabOption" text_id="STRID_SETTINGS_TITLE_SOUND"/>
-		<Option class="TabOption" text_id="STRID_SETTINGS_TITLE_INPUT"/>
-		<Option class="TabOption" text_id="STRID_SETTINGS_TITLE_OTHER"/>
-		<Option class="TabOption" text_id="STRID_SETTINGS_TITLE_ABOUTCATTUBER"/>
+	<Label text_id="STRID_SETTINGS_SETTINGS" font="system_bold_22" margin="10,10,30,20" height="40" valign="center"/>
+	<!--tab按钮面板-->
+		<Option class="TabOption" name="tabop_window" text_id="STRID_SETTINGS_TITLE_WINDOW"/>
+		<Option class="TabOption" name="tabop_sound" text_id="STRID_SETTINGS_TITLE_SOUND"/>
+		<Option class="TabOption" name="tabop_input" text_id="STRID_SETTINGS_TITLE_INPUT"/>
+		<Option class="TabOption" name="tabop_other" text_id="STRID_SETTINGS_TITLE_OTHER"/>
+		<Option class="TabOption" name="tabop_aboutCatTuber" text_id="STRID_SETTINGS_TITLE_ABOUTCATTUBER"/>
 	</HBox>
 		<Control bkcolor="itemSeparatorColor" height="1"/>
 
-		<VListBox height="stretch" vscrollbar="true">
+		<VListBox name="box_Container" height="stretch" vscrollbar="true">
 			<!--窗口设置项-->
-			<HBox class="HBox_SetingsGroup">
-				<Label class="SettingsTitle" text_id="STRID_SETTINGS_TITLE_WINDOW"/>
+			<HBox class="HBox_SetingsGroup" name="header_window">
+				<Label class="SettingsTitle" text_id="STRID_SETTINGS_TITLE_WINDOW" />
 				<VBox height="auto">
 					<CheckBox class="CheckBox_Default" text_id="STRID_SETTINGS_WINDOW_TOP"/>
 					<CheckBox class="CheckBox_Default" text_id="STRID_SETTINGS_WINDOW_BORDER"/>
@@ -51,7 +47,7 @@
 
 			<Control bkcolor="itemSeparatorColor" height="1"/>
 			<!--声音设置项目-->
-			<HBox class="HBox_SetingsGroup">
+			<HBox class="HBox_SetingsGroup" name="header_sound">
 				<Label class="SettingsTitle" text_id="STRID_SETTINGS_TITLE_SOUND" />
 				<VBox>
 					<HBox>
@@ -63,27 +59,28 @@
 
 			<Control bkcolor="itemSeparatorColor" height="1"/>
 			<!--输入设置项目-->
-			<HBox class="HBox_SetingsGroup">
+			<HBox class="HBox_SetingsGroup" name="header_input">
 				<Label class="SettingsTitle" text_id="STRID_SETTINGS_TITLE_INPUT"/>
 				<VBox height="auto">
 					<HBox height="40">
 						<Label class="Label_Head" text_id="STRID_SETTINGS_INPUT_MOUSE_INPUTMODE"/>
-						<Option class="Option_Default" group="inputmode" text_id="STRID_SETTINGS_INPUT_MOUSE_INPUTMODE_MOVE"/>
-						<Option class="Option_Default" group="inputmode" text_id="STRID_SETTINGS_INPUT_MOUSE_INPUTMODE_COORDINATE"/>
+						<Option class="ctb_option_default" group="inputmode" text_id="STRID_SETTINGS_INPUT_MOUSE_INPUTMODE_MOVE"/>
+						<Option class="ctb_option_default" group="inputmode" text_id="STRID_SETTINGS_INPUT_MOUSE_INPUTMODE_COORDINATE"/>
 					</HBox>
+					<!--滑块属性均为min="0" max="65535" step="255"-->
 					<HBox height="40" width="380">
 						<Label class="Label_Head" text_id="STRID_SETTINGS_INPUT_MOUSE_SPEED"/>
-						<Slider class="Slider_Default" width="stretch"/>
+						<Slider class="ctb_slider_default" width="stretch"/>
 						<Label class="Label_Head" text="x1.0" width="60"/>
 					</HBox>
 					<HBox height="40">
 						<Label class="Label_Head" text_id="STRID_SETTINGS_INPUT_MOUSE_SPEED"/>
-						<Slider class="Slider_Default" width="stretch"/>
+						<Slider class="ctb_slider_default" width="stretch"/>
 						<Label class="Label_Head" text="x1.0" width="60"/>
 					</HBox>
 					<HBox height="40">
 						<Label class="Label_Head" text_id="STRID_SETTINGS_INPUT_MOUSE_SPEED"/>
-						<Slider class="Slider_Default" width="stretch"/>
+						<Slider class="ctb_slider_default" width="stretch"/>
 						<Label class="Label_Head" text="x1.0" width="60"/>
 					</HBox>
 					<CheckBox class="CheckBox_Default" text_id="STRID_SETTINGS_INPUT_MOUSE_INVERT_X"/>
@@ -91,17 +88,17 @@
 					<Label class="SettingsSubTitle" text_id="STRID_SETTINGS_INPUT_GAMEPAD_DEADZONE"/>
 					<HBox height="40">
 						<Label class="Label_Head" text_id="STRID_SETTINGS_INPUT_GAMEPAD_DEADZONE_STICK"/>
-						<Slider class="Slider_Default" width="stretch"/>
+						<Slider class="ctb_slider_default" width="stretch"/>
 						<Label class="Label_Head" text="12%" width="60"/>
 					</HBox>
 					<HBox height="40">
 						<Label class="Label_Head" text_id="STRID_SETTINGS_INPUT_GAMEPAD_DEADZONE_TRIGGER"/>
-						<Slider class="Slider_Default" width="stretch"/>
+						<Slider class="ctb_slider_default" width="stretch"/>
 						<Label class="Label_Head" text="5%" width="60"/>
 					</HBox>
 					<HBox height="40">
 						<Label class="Label_Head" text_id="STRID_SETTINGS_INPUT_GAMEPAD_DEADZONE_JOYSTICK"/>
-						<Slider class="Slider_Default" width="stretch"/>
+						<Slider class="ctb_slider_default" width="stretch"/>
 						<Label class="Label_Head" text="5%" width="60"/>
 					</HBox>
 					
@@ -110,7 +107,7 @@
 
 			<Control bkcolor="itemSeparatorColor" height="1"/>
 			<!--其他-->
-			<HBox class="HBox_SetingsGroup">
+			<HBox class="HBox_SetingsGroup" name="header_other">
 				<Label class="SettingsTitle" text_id="STRID_SETTINGS_TITLE_OTHER"/>
 				<VBox height="auto">
 					<CheckBox class="CheckBox_Default" text_id="STRID_SETTINGS_OTHER_TASKBARICON"/>
@@ -121,14 +118,14 @@
 
 			<Control bkcolor="itemSeparatorColor" height="1"/>
 			<!--关于CatTuber-->
-			<HBox class="HBox_SetingsGroup">
-				<Label class="SettingsTitle" text_id="STRID_SETTINGS_TITLE_ABOUTCATTUBER"/>
-				<VBox height="auto">
+			<VBox class="HBox_SetingsGroup" name="header_aboutCatTuber" >
+				<Label class="SettingsTitle" text_id="STRID_SETTINGS_TITLE_ABOUTCATTUBER" width="auto"/>
+				<VBox height="auto" margin="100,0,0,0">
 					<CheckBox text_id="STRID_SETTINGS_OTHER_TASKBARICON"/>
 					<CheckBox text_id="STRID_SETTINGS_OTHER_STARTONBOOT"/>
 					<CheckBox text_id="STRID_SETTINGS_OTHER_ADMIN"/>
 				</VBox>
-			</HBox>
+			</VBox>
 			<Control height="25"/>
 
 		</VListBox>

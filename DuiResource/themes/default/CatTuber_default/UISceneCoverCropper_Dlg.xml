@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Window
+        caption="0,0,0,28" use_system_caption="false" snap_layout_menu="true" sys_menu="true" sys_menu_rect="0,0,36,36"
+        shadow_type="default" shadow_attached="true" shadow_snap="true" layered_window="true"
+        alpha="255" icon="public/caption/logo.ico"
+		
+		xmlns:xs="http://www.w3.org/2001/XMLSchema"
+		xmlns="http://tempuri.org/NIMDUISchema.xsd"
+		>
+	<VBox bkcolor="panelBkColor" visible="true" height="auto" width="830">
+		<!-- 标题栏区域 -->
+		<HBox name="window_caption_bar" width="stretch" height="28">
+			<Label name="text_Title" text_id="STRID_SCENEDLG_TITLE_COVER_CROPPER"  text_align="vcenter"  margin="8,0,8,0" valign="center" font="system_14"/>
+			<Control />
+
+			<Button class="btn_wnd_close_11" height="stretch" width="40" name="btn_Close" margin="0,0,0,2"/>
+		</HBox>
+		<Control height="1" bkcolor="itemSeparatorColor"/>
+		<!-- 工作区域，除了标题栏外的内容都放在这个大的Box区域 -->
+		<!--<VBox height="auto">-->
+			<HBox height="610">
+
+				<VBox height="auto" width="auto">
+					<!-- 裁剪容器 -->
+				<Box name="box_cropperContainer" height="500" width="500" mouse_child="false" margin="40,40,40,20"
+					  bkimage="file='transparentMesh.png' xtiled='true' ytiled='true'" border_round="8,8"
+					 >
+					<Control name="img_target"/>
+					<Control name="img_clipMask" border_color="#A0333333"/>
+				</Box>
+					<!-- 滑块 -->
+					<HBox height="24">
+
+						<Control />
+						<Control height="24" width="24" bkimage="ZoomIn_24px.png" margin="0,0,20,0"/>
+						<!--从原255改到1785是为了让滑块滚轮与直接在图片上滚有近似的缩放速度-->
+						<Slider class="ctb_slider_default" name="slider_imgScale" width="330" step="1275"/>
+						<Control />
+					</HBox>
+					
+				</VBox>
+				
+				
+				
+				
+				
+				
+				<VBox >
+
+					<CheckBoxBox  name="cbb_previewItem" width="200" height="200" mouse_child="false" hot_color="itemHoverColor" pushed_color="itemPushColor" selected_normal_color="subjectColor"
+								margin="0,120,0,0" selected_normal_text_color="subjectColor_content" border_round="6,6">
+						<VBox>
+						<Control name="img_preview" width="180" margin="10,20,10,0" height="135" border_round="6,6" box_shadow="color='shadowColor' blurradius='4' offset='0,1' spreadradius='0'"/>
+						<Control height="30%"/>
+						<Label name="label_previewItemName" text_id="STRID_SCENEDLG_CROPPER_PREVIEW_ITEM_NAME" width="200" text_align="center" multi_line="true"/>
+						<Control height="70%"/>
+						</VBox>
+					</CheckBoxBox>
+					<Control />
+					<!--按钮区-->
+					<HBox margin="8,8,8,8"  halign="center" height="auto">
+						<Control />
+						<Button class="ctb_btn_dlg_normal" name="btn_Cancel" text_id="STRING_CANCEL"/>
+						<Button class="ctb_btn_dlg_highlight" name="btn_OK" text_id="STRING_OK"/>
+					</HBox>
+				</VBox>
+
+
+
+			</HBox>
+
+
+
+
+
+
+
+
+
+		
+		
+		<!--</VBox>-->
+
+
+
+	</VBox>
+</Window>

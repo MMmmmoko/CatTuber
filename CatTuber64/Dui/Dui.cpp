@@ -8,6 +8,7 @@ static MainUiForm* uiMainForm;
 
 
 
+//extern  unsigned int nsvgPatch_getColorName(const char* str);
 void Dui::Init()
 {
 	if (duiInited)return;
@@ -27,8 +28,16 @@ void Dui::Init()
 	colorManager.AddColor(L"textActiveColor", ui::UiColor(0xFF283248));
 	colorManager.AddColor(L"itemHoverColor", ui::UiColor(0xFFE5E6E7));
 	colorManager.AddColor(L"itemPushColor", ui::UiColor(0xFFCACDCF));
-
 	colorManager.AddColor(L"itemSeparatorColor", ui::UiColor(0xFFEBEDF1));
+
+	colorManager.AddColor(L"iconNormalColor", ui::UiColor(0xFFabb1b6));
+	colorManager.AddColor(L"iconHotColor", ui::UiColor(0xFF283248));
+	colorManager.AddColor(L"iconDisableColor", ui::UiColor(0xFFe2e4e6));
+
+
+
+	colorManager.AddColor(L"shadowColor", ui::UiColor(0x38000000));//阴影色
+
 	colorManager.AddColor(L"subjectColor", ui::UiColor(0xFFff7bb8));//主题色
 	colorManager.AddColor(L"subjectColor_hot", ui::UiColor(0xFFFF95D0));//主题色
 	colorManager.AddColor(L"subjectColor_push", ui::UiColor(0xFFF159AE));//主题色
@@ -40,8 +49,8 @@ void Dui::Init()
 
 
 
-
-
+	//引用一下函数保证编译器不忽略
+	//nsvgPatch_getColorName("red");
 
 
 }

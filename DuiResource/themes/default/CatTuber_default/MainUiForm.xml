@@ -18,7 +18,7 @@
 				<Button height="100" width="stretch" text="logo" bkcolor="darkcolor"/>
 				
 				<!-- 场景设置区域VBOX -->
-				<VBox margin="20,20,20,10">
+				<VBox margin="20,0,20,10">
 					<Button text="未命名场景" fade_hot="true" hot_color="itemHoverColor" height="30" width="stretch" text_padding="20,0,0,0" text_align="left,vcenter"/>
 			<Label name="tooltip" text="场景设置区" height="100%" width="100%" text_align="hcenter,vcenter"/>
 		
@@ -38,14 +38,25 @@
 			<!-- 点场景中的物品时工作区显示对应的设置项-->
 			<VBox  bkcolor="panelBkColor" >
 				<!-- 标题栏区域 -->
-				<HBox name="window_caption_bar" width="stretch" height="36">
+				<HBox name="window_caption_bar" width="stretch" height="auto">
+					<Button name="btn_pageBack" width="48" height="48" margin="10,6,10,0" 
+							normal_image="file='NavigationLeft32x36.svg' dest='8,6,40,42'"
+							hot_image="file='NavigationLeft32x36_hot.svg' dest='8,6,40,42'"
+							disabled_image="file='NavigationLeft32x36_disable.svg' dest='8,6,40,42'"
+							/>
+					<Button name="btn_pageFront" width="48" height="48" margin="10,6,10,0" 
+							 normal_image="file='NavigationRight32x36.svg' dest='8,6,40,42'" 
+							hot_image="file='NavigationRight32x36_hot.svg' dest='8,6,40,42'"
+							disabled_image="file='NavigationRight32x36_disable.svg' dest='8,6,40,42'"
+							
+							/>
 					<Control />
 					<Button class="btn_wnd_min_11" height="32" width="40" name="minbtn" margin="0,2,0,2" />
 					<Box height="stretch" width="40" margin="0,2,0,2">
 						<Button class="btn_wnd_max_11" height="32" width="stretch" name="maxbtn" />
 						<Button class="btn_wnd_restore_11" height="32" width="stretch" name="restorebtn" visible="false" />
 					</Box>
-					<Button class="btn_wnd_close_11" height="stretch" width="40" name="closebtn" margin="0,0,0,2" />
+					<Button class="btn_wnd_close_11" height="36" width="40" name="closebtn" margin="0,0,0,2" />
 				</HBox>
 				<Box name="box_workSpaceContainer" />
 			</VBox>

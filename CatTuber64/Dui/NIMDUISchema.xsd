@@ -29,6 +29,22 @@
 			<xs:enumeration value="light_green"/>
 			<xs:enumeration value="blue"/>
 			<xs:enumeration value="red"/>
+			<!--CatTuber64自定义颜色-->
+
+			<xs:enumeration value="panelBkColor"/>
+			<xs:enumeration value="panelBorderColor"/>
+			<xs:enumeration value="textNormalColor"/>
+			<xs:enumeration value="textLightColor"/>
+			<xs:enumeration value="textActiveColor"/>
+			<xs:enumeration value="itemHoverColor"/>
+			<xs:enumeration value="itemPushColor"/>
+			<xs:enumeration value="itemSeparatorColor"/>
+			<xs:enumeration value="subjectColor"/>
+			<xs:enumeration value="subjectColor_hot"/>
+			<xs:enumeration value="subjectColor_push"/>
+			<xs:enumeration value="subjectColor_content"/>
+			
+			
 		</xs:restriction>
 	</xs:simpleType>
 
@@ -151,7 +167,7 @@
 	<xs:simpleType name="IMG_HINT">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="xxx.png"/>
-			<xs:enumeration value="file='aaa.jpg' dest='0,0,0,0' source='0,0,0,0' corner='0,0,0,0' fade='255' xtiled='false' ytiled='false'"/>
+			<xs:enumeration value="file='aaa.jpg' dest='0,0,0,0' source='0,0,0,0' corner='0,0,0,0' fade='255' xtiled='false' ytiled='false' svgFillColor='red'"/>
 			<xs:enumeration value="file='aaa.jpg' dest='0,0,0,0' source='0,0,0,0' corner='0,0,0,0' fade='255' xtiled='false' ytiled='false' playcount='-1' antialiasing='false'"/>
 		</xs:restriction>
 	</xs:simpleType>

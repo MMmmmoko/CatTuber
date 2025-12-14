@@ -6,6 +6,9 @@
 #include"AppSettings.h"
 
 
+//自定义控件
+//#include"UserControl/ImageCropperControl.h"
+
 //#include"duilib"
 
 void UIMiscThread::OnInit()
@@ -49,6 +52,18 @@ void UIMainThread::OnInit()
 
 
 
+    //创建回调
+    auto createFunc = [](const std::wstring& controlName)->ui::Control*
+        {
+
+            //if (L"CoverCropper" == controlName)return new ImageCropperControl(null);
+
+        };
+
+
+
+
+
 #ifdef _DEBUG
 
     //统一使用APPCONTEXT（由SDL提供的文件路径）
@@ -63,6 +78,8 @@ void UIMainThread::OnInit()
 
 
     resParam.languageFileName = L"schinese.ini";
+
+    //ui::GlobalManager::Instance().Startup(resParam,ui::DpiInitParam(),null);
     ui::GlobalManager::Instance().Startup(resParam);
 
 

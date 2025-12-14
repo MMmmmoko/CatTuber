@@ -26,6 +26,8 @@ namespace util {
 	//std::string GetModelFilePathInPack(Pack* pack,const char* foldPathInPack, );
 	bool IsStringEndsWith(const std::string& str,const char* end);
 	bool IsStringStartWith(const std::string& str,const char* end);
+	bool StringIsNumber(const std::string& str);
+
 
 	std::string StringToUpper(const std::string& str);
 

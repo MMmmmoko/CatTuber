@@ -131,33 +131,46 @@
 						normal_text_color="subjectColor_content" bkcolor="subjectColor" hot_color="subjectColor_hot" pushed_color="subjectColor_push"/>
 	<Class name="ctb_btn_dlg_normal"  margin="4,0,4,0" width="90" height="30" border_size="1" border_round="2,2" border_color="panelBorderColor" fade_hot="false"
 						normal_text_color="textNormalColor" bkcolor="panelBkColor" hot_color="itemHoverColor" pushed_color="itemPushColor"/>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-    <!--字体大小-->
+
+	<Class name="ctb_slider_default" height="14" margin="4,0,4,0" valign="center" thumb_size="14,14" min="0" max="65535" step="255"
+									  progress_bar_padding="0,6,0,6"
+									  progress_color="subjectColor"
+									  bkimage="file='public/slider/slider_hor_bk.png' valign='center' height='3' width='1200'"
+									  thumb_normal_image="file='SliderThumb_14px.png'"/>
+
+
+	<Class name="ctb_option_default" height="24" margin="0,8,0,8" font="system_14" normal_text_color="textNormalColor" valign="center"
+	   normal_image="file='CheckBox_16px.png' dest='16,4,32,20' source='0,16,16,32'"
+	   hot_image="file='CheckBox_16px.png' dest='16,4,32,20' source='16,16,32,32'"
+	selected_normal_image="file='CheckBox_16px.png' dest='16,4,32,20' source='32,16,48,32'"
+	   text_padding="40,0,0,1" text_align="left,vcenter" />
+
+	<!--修改原close按钮样式-->
+	<Class name="btn_wnd_close_11"
+                               normal_image="file='public/button/window-close.svg'   width='24' height='24' valign='center' halign='center'"
+						       hot_image ="file='public/button/window-close-hot.svg'   width='24' height='24' valign='center' halign='center'" 
+		   
+		   hot_color="red" pushed_color="OrangeRed"/>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<!--字体大小-->
     <Class name="font_title" font="system_14"/>
     <!--滚动条: 简约风格，为默认滚动条样式，不可删除-->
     <Class name="vscrollbar" width="12" fade_alpha="true" 
@@ -295,8 +308,8 @@
     <!--窗口右上角按钮 -->
     <Class name="btn_wnd_min_11" normal_image="file='public/button/window-minimize.svg' 
                                  width='24' height='24' valign='center' halign='center'" hot_color="AliceBlue" pushed_color="Lavender"/>
-    <Class name="btn_wnd_close_11" normal_image="file='public/button/window-close.svg' 
-                                 width='24' height='24' valign='center' halign='center'" hot_color="red" pushed_color="OrangeRed"/>
+    <!--<Class name="btn_wnd_close_11" normal_image="file='public/button/window-close.svg' 
+                                 width='24' height='24' valign='center' halign='center'" hot_color="red" pushed_color="OrangeRed"/>-->
     <Class name="btn_wnd_max_11" normal_image="file='public/button/window-maximize.svg' 
                                  width='24' height='24' valign='center' halign='center'" hot_color="AliceBlue" pushed_color="Lavender"/>
     <Class name="btn_wnd_restore_11" normal_image="file='public/button/window-restore.svg' 

@@ -36,7 +36,9 @@ typedef std::string _CatString;
  \
  \
     F(Other,ShowTaskBarIcon,bool,true)  \
-    F(Other,Windows_RunAsAdmin,bool,false)
+    F(Other,Windows_RunAsAdmin,bool,false) \
+\
+    F(UIScene,CreateEmpty,bool,true)
 
 //MouseInputArea使用字符串，需要处理显示器名相同的情况
 //有非默认加载写入行为的

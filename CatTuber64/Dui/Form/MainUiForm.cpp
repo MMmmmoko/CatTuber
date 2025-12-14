@@ -19,9 +19,6 @@ void MainUiForm::OnInitWindow()
 
 	pageContainer= dynamic_cast<ui::Box*>(FindControl(L"box_workSpaceContainer"));
 
-	//总是以场景选择页开始
-	GoToPage(L"SCENESELECT_PAGE");
-
 
 	//基础控件区
 	auto baseControl_btn_settings = dynamic_cast<ui::ButtonBox*>( FindControl(L"baseControl_btn_settings"));
@@ -32,6 +29,18 @@ void MainUiForm::OnInitWindow()
 			return true;
 			});
 	}
+
+
+	//导航按钮
+	pBtnLeft= dynamic_cast<ui::Button*>(FindControl(L"btn_pageBack"));
+	pBtnRight= dynamic_cast<ui::Button*>(FindControl(L"btn_pageFront"));
+	pBtnLeft->AttachClick(ui::UiBind(&MainUiForm::OnNavigationBtnClicked, this, std::placeholders::_1));
+	pBtnRight->AttachClick(ui::UiBind(&MainUiForm::OnNavigationBtnClicked, this, std::placeholders::_1));
+
+
+	//总是以场景选择页开始
+	GoToPage(L"SCENESELECT_PAGE");
+
 }
 
 bool MainUiForm::OnLanguageBtnClicked(ui::EventArgs* msg)
@@ -44,11 +53,62 @@ bool MainUiForm::OnLanguageMenuBtnClicked(ui::EventArgs* msg)
 	return false;
 }
 
+bool MainUiForm::OnNavigationBtnClicked(const ui::EventArgs& msg)
+{
+	if (msg.GetSender() == pBtnLeft)
+	{
+		//返回
+		if (nextVisitIndex >= 2)
+		{
+			nextVisitIndex--;
+
+			auto childCount = pageContainer->GetItemCount();
+			for (size_t i = 0; i < childCount; i++)
+			{
+				auto curItem = pageContainer->GetItemAt(i);
+				curItem->SetVisible(false);
+				if (curItem->GetName() == pageVisitList[nextVisitIndex-1])
+				{
+					curItem->SetVisible(true);
+				}
+			}
+		}
+
+
+		_UpdateNavigateButton();
+	}
+	else if (msg.GetSender() == pBtnRight)
+	{
+		//向右
+		if (nextVisitIndex< pageVisitList.size())
+		{
+			auto childCount = pageContainer->GetItemCount();
+			for (size_t i = 0; i < childCount; i++)
+			{
+				auto curItem = pageContainer->GetItemAt(i);
+				curItem->SetVisible(false);
+				if (curItem->GetName() == pageVisitList[nextVisitIndex])
+				{
+					curItem->SetVisible(true);
+				}
+			}
+
+			nextVisitIndex++;
+		}
+
+
+		_UpdateNavigateButton();
+	}
+
+
+	return true;
+}
+
 void MainUiForm::GoToPage(const std::wstring& pageName)
 {
 	//先从pagecontainer里检索
 
-	if(pageVisitList.empty()==false&& pageName == pageVisitList.back())return;
+	if(pageVisitList.empty()==false&& pageName == pageVisitList[nextVisitIndex-1])return;
 
 
 
@@ -65,7 +125,13 @@ void MainUiForm::GoToPage(const std::wstring& pageName)
 		{
 			hasTarget = true;
 			curItem->SetVisible(true);
+
+			pageVisitList.resize(nextVisitIndex);
 			pageVisitList.push_back(pageName);
+			nextVisitIndex++;
+
+
+			_UpdateNavigateButton();
 		}
 		
 	}
@@ -78,7 +144,14 @@ void MainUiForm::GoToPage(const std::wstring& pageName)
 	if (page)
 	{
 		pageContainer->AddItem(page);
+
+		pageVisitList.resize(nextVisitIndex);
 		pageVisitList.push_back(pageName);
+		nextVisitIndex++;
+
+
+
+		_UpdateNavigateButton();
 	}
 
 
@@ -101,4 +174,26 @@ ui::Box* MainUiForm::BuildPage(const std::wstring& pageName)
 	}
 
 	return nullptr;
+}
+
+void MainUiForm::_UpdateNavigateButton()
+{
+	if (nextVisitIndex >= 2)
+	{
+		pBtnLeft->SetEnabled(true);
+	}
+	else
+	{
+		pBtnLeft->SetEnabled(false);
+	}
+	if (nextVisitIndex < pageVisitList.size())
+	{
+		pBtnRight->SetEnabled(true);
+	}
+	else
+	{
+		pBtnRight->SetEnabled(false);
+	}
+
+
 }

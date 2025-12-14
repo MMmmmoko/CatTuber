@@ -489,6 +489,13 @@ void AppSettings::_OnOtherWindows_RunAsAdminChange(const bool& value)
 
 
 
+void AppSettings::_OnUISceneCreateEmptyChange(const bool& value)
+{
+	//不需要做任何事情
+}
+
+
+
 
 
 

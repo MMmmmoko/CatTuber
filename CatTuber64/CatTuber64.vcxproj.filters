@@ -54,6 +54,9 @@
     <Filter Include="Dui\Dialog">
       <UniqueIdentifier>{1abe1319-fa68-41e0-a071-1439a74dc7f0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="_CodePatch">
+      <UniqueIdentifier>{9149d81c-d75a-4819-8fb7-094bbca56243}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dui\DuiCommon.h">
@@ -194,6 +197,30 @@
     <ClInclude Include="Dui\Dialog\DuiMessageBox.h">
       <Filter>Dui\Dialog</Filter>
     </ClInclude>
+    <ClInclude Include="Dui\UserControl\ImageCropperControl.h">
+      <Filter>Dui\UserControl</Filter>
+    </ClInclude>
+    <ClInclude Include="Dui\Dialog\UISceneCoverCropper_Dlg.h">
+      <Filter>Dui\Dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="Dui\Dialog\UISceneCreateNew_Dlg.h">
+      <Filter>Dui\Dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="Dui\Form\SettingsPage_window.h">
+      <Filter>Dui\Form</Filter>
+    </ClInclude>
+    <ClInclude Include="Dui\Form\SettingsPage_input.h">
+      <Filter>Dui\Form</Filter>
+    </ClInclude>
+    <ClInclude Include="Dui\Form\SettingsPage_other.h">
+      <Filter>Dui\Form</Filter>
+    </ClInclude>
+    <ClInclude Include="Dui\Form\SettingsPage_sound.h">
+      <Filter>Dui\Form</Filter>
+    </ClInclude>
+    <ClInclude Include="Dui\Form\SettingsPage_aboutCatTuber.h">
+      <Filter>Dui\Form</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -319,6 +346,39 @@
     <ClCompile Include="Dui\Dialog\DuiMessageBox.cpp">
       <Filter>Dui\Dialog</Filter>
     </ClCompile>
+    <ClCompile Include="Dui\UserControl\ImageCropperControl.cpp">
+      <Filter>Dui\UserControl</Filter>
+    </ClCompile>
+    <ClCompile Include="Dui\Dialog\UISceneCoverCropper_Dlg.cpp">
+      <Filter>Dui\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="Dui\Dialog\UISceneCreateNew_Dlg.cpp">
+      <Filter>Dui\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Item\SceneManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="_CodePatch\nanosvg_patch.cpp">
+      <Filter>_CodePatch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\duilib_CodePatch\Image_cpp_patch.cpp">
+      <Filter>_CodePatch</Filter>
+    </ClCompile>
+    <ClCompile Include="Dui\Form\SettingsPage_window.cpp">
+      <Filter>Dui\Form</Filter>
+    </ClCompile>
+    <ClCompile Include="Dui\Form\SettingsPage_input.cpp">
+      <Filter>Dui\Form</Filter>
+    </ClCompile>
+    <ClCompile Include="Dui\Form\SettingsPage_other.cpp">
+      <Filter>Dui\Form</Filter>
+    </ClCompile>
+    <ClCompile Include="Dui\Form\SettingsPage_sound.cpp">
+      <Filter>Dui\Form</Filter>
+    </ClCompile>
+    <ClCompile Include="Dui\Form\SettingsPage_aboutCatTuber.cpp">
+      <Filter>Dui\Form</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CatTuber64.rc">
@@ -381,6 +441,12 @@
     </Xml>
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\SceneSelectPage.xml">
       <Filter>Dui\Form</Filter>
+    </Xml>
+    <Xml Include="..\DuiResource\themes\default\CatTuber_default\UISceneCoverCropper_Dlg.xml">
+      <Filter>Dui\Dialog</Filter>
+    </Xml>
+    <Xml Include="..\DuiResource\themes\default\CatTuber_default\UISceneCreateNew_Dlg.xml">
+      <Filter>Dui\Dialog</Filter>
     </Xml>
   </ItemGroup>
 </Project>
