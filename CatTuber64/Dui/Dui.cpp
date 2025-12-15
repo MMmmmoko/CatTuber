@@ -1,7 +1,11 @@
 #include"Dui.h"
 #include"UiThread.h"
 #include"Form/MainUiForm.h"
-//噙怓Е
+
+
+#include"../../ThirdPart/skia/include/utils/SkParse.h"
+
+
 static bool duiInited = false;
 static std::unique_ptr<UIMainThread> uiMainThread;
 static MainUiForm* uiMainForm;
@@ -46,6 +50,26 @@ void Dui::Init()
 
 	//设置默认文字颜色减少xml编辑量
 	colorManager.SetDefaultTextColor(L"textNormalColor");
+
+
+	auto colorFindFullback = [](const char* colorName,size_t len,SkColor* out)->const char* {
+		ui::UiColor color=ui::GlobalManager::Instance().Color().GetColor(ui::StringConvert::UTF8ToWString(colorName));
+		if (color.GetA() == 0)return nullptr;
+		*out=SkColorSetARGB(color.GetA(), color.GetR(), color.GetG(),color.GetB());
+		return colorName+len;
+		};
+
+	SkParse::SetColorFindFullback(colorFindFullback);
+
+
+
+	//设置Skia的颜色查找fullback
+	
+
+
+
+
+
 
 
 

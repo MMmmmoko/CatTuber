@@ -57,8 +57,7 @@ void UISceneCoverCropper_Dlg::OnInitWindow()
 
     //滑块
     ui::Slider* pZoomSlider = static_cast<ui::Slider*>(FindControl(L"slider_imgScale"));
-    pZoomSlider->AttachValueChange(UiBind(&UISceneCoverCropper_Dlg::OnSliderValueChange, this, std::placeholders::_1));
-
+    pZoomSlider->AttachValueChanged(UiBind(&UISceneCoverCropper_Dlg::OnSliderValueChange, this, std::placeholders::_1));
 
 }
 

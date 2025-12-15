@@ -9,7 +9,7 @@ class SettingsPage_sound
 {
 
 public:
-	void InitContents(class SettingsPage* parent);
+	void InitContents(class SettingsPage* parent) {};
 
 
 

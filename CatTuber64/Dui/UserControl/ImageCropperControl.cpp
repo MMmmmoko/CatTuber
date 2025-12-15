@@ -56,9 +56,10 @@ bool ImageCropperControl::SetImageFromFile(const char* imageFilePath)
 
 	auto image = imgControl->GetEstimateImage();
 	if (!image)return false;
-	imgControl->LoadImageData(*image);
+	//imgControl->LoadImageInfo
+	imgControl->LoadImageInfo(*image);
 	//auto image=imgControl->GetEstimateImage();
-	auto imageInfo=image->GetImageCache();
+	auto imageInfo=image->GetImageInfo();
 	imgWidth=imageInfo->GetWidth();
 	imgHeight=imageInfo->GetHeight();
 

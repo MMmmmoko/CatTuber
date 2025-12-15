@@ -40,10 +40,11 @@
 //nimdui
 #ifdef _DEBUG
 #pragma comment(lib, "cximage_d.lib")
-//#pragma comment(lib, "duilib_d.lib")
+#pragma comment(lib, "duilib_d.lib")
 #pragma comment(lib, "libpng_d.lib")
 #pragma comment(lib, "libwebp_d.lib")
 #pragma comment(lib, "zlib_d.lib")
+
 #else
 #pragma comment(lib, "cximage_s.lib")
 #pragma comment(lib, "duilib_s.lib")
@@ -52,30 +53,55 @@
 #pragma comment(lib, "zlib_s.lib")
 #endif // _DEBUG
 
+#pragma comment(lib, "turbojpeg-static.lib")
 
 //SKIA
+//#ifdef _DEBUG
+//#pragma comment(lib, "msvc.x64.MDd/skia.lib") 
+//#pragma comment(lib, "msvc.x64.MDd/bentleyottmann.lib")
+//#pragma comment(lib, "msvc.x64.MDd/expat.lib")
+//#pragma comment(lib, "msvc.x64.MDd/jsonreader.lib")
+//#pragma comment(lib, "msvc.x64.MDd/pathkit.lib")
+//#pragma comment(lib, "msvc.x64.MDd/skcms.lib")
+//#pragma comment(lib, "msvc.x64.MDd/skottie.lib")
+//#pragma comment(lib, "msvc.x64.MDd/skresources.lib")
+//#pragma comment(lib, "msvc.x64.MDd/skshaper.lib")
+//#pragma comment(lib, "msvc.x64.MDd/svg.lib")
+//#else
+//#pragma comment(lib, "msvc.x64.MD/skia.lib") 
+//#pragma comment(lib, "msvc.x64.MD/bentleyottmann.lib")
+//#pragma comment(lib, "msvc.x64.MD/expat.lib")
+//#pragma comment(lib, "msvc.x64.MD/jsonreader.lib")
+//#pragma comment(lib, "msvc.x64.MD/pathkit.lib")
+//#pragma comment(lib, "msvc.x64.MD/skcms.lib")
+//#pragma comment(lib, "msvc.x64.MD/skottie.lib")
+//#pragma comment(lib, "msvc.x64.MD/skresources.lib")
+//#pragma comment(lib, "msvc.x64.MD/skshaper.lib")
+//#pragma comment(lib, "msvc.x64.MD/svg.lib")
+//#endif // _DEBUG
+//SKIA
 #ifdef _DEBUG
-#pragma comment(lib, "msvc.x64.MDd/skia.lib") 
-#pragma comment(lib, "msvc.x64.MDd/bentleyottmann.lib")
-#pragma comment(lib, "msvc.x64.MDd/expat.lib")
-#pragma comment(lib, "msvc.x64.MDd/jsonreader.lib")
-#pragma comment(lib, "msvc.x64.MDd/pathkit.lib")
-#pragma comment(lib, "msvc.x64.MDd/skcms.lib")
-#pragma comment(lib, "msvc.x64.MDd/skottie.lib")
-#pragma comment(lib, "msvc.x64.MDd/skresources.lib")
-#pragma comment(lib, "msvc.x64.MDd/skshaper.lib")
-#pragma comment(lib, "msvc.x64.MDd/svg.lib")
+#pragma comment(lib, "llvm.x64.debug/skia.lib") 
+#pragma comment(lib, "llvm.x64.debug/bentleyottmann.lib")
+#pragma comment(lib, "llvm.x64.debug/expat.lib")
+#pragma comment(lib, "llvm.x64.debug/jsonreader.lib")
+#pragma comment(lib, "llvm.x64.debug/skcms.lib")
+#pragma comment(lib, "llvm.x64.debug/skottie.lib")
+#pragma comment(lib, "llvm.x64.debug/skresources.lib")
+#pragma comment(lib, "llvm.x64.debug/skshaper.lib")
+#pragma comment(lib, "llvm.x64.debug/svg.lib")
+#pragma comment(lib, "llvm.x64.debug/sksg.lib")
 #else
-#pragma comment(lib, "msvc.x64.MD/skia.lib") 
-#pragma comment(lib, "msvc.x64.MD/bentleyottmann.lib")
-#pragma comment(lib, "msvc.x64.MD/expat.lib")
-#pragma comment(lib, "msvc.x64.MD/jsonreader.lib")
-#pragma comment(lib, "msvc.x64.MD/pathkit.lib")
-#pragma comment(lib, "msvc.x64.MD/skcms.lib")
-#pragma comment(lib, "msvc.x64.MD/skottie.lib")
-#pragma comment(lib, "msvc.x64.MD/skresources.lib")
-#pragma comment(lib, "msvc.x64.MD/skshaper.lib")
-#pragma comment(lib, "msvc.x64.MD/svg.lib")
+#pragma comment(lib, "llvm.x64.release/skia.lib") 
+#pragma comment(lib, "llvm.x64.release/bentleyottmann.lib")
+#pragma comment(lib, "llvm.x64.release/expat.lib")
+#pragma comment(lib, "llvm.x64.release/jsonreader.lib")
+#pragma comment(lib, "llvm.x64.release/skcms.lib")
+#pragma comment(lib, "llvm.x64.release/skottie.lib")
+#pragma comment(lib, "llvm.x64.release/skresources.lib")
+#pragma comment(lib, "llvm.x64.release/skshaper.lib")
+#pragma comment(lib, "llvm.x64.release/svg.lib")
+#pragma comment(lib, "llvm.x64.release/sksg.lib")
 #endif // _DEBUG
 
 

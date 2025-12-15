@@ -1,5 +1,4 @@
-
-
+#if 0
 //修改的地方为将SKIASVG的载入改为Nano SVG
 //修改Nano SVG的载入函数，添加svgfillcolor
 
@@ -1031,3 +1030,4 @@ bool ImageDecoder::DecodeImageData(std::vector<uint8_t>& fileData,
 
 } // namespace ui
 
+#endif

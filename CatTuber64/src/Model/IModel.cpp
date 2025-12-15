@@ -33,4 +33,6 @@ IModel* IModel::CreateFromFolder(const char* packPath, const char* folderInpack)
 	pModel = Live2DModelBase::LoadFromFolder(packPath, folderInpack);
 	if (pModel)return pModel;
 	return nullptr;
+
+	
 }

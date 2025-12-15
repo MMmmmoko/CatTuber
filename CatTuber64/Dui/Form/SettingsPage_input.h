@@ -9,7 +9,7 @@ class SettingsPage_input
 {
 
 public:
-	void InitContents(class SettingsPage* parent);
+	void InitContents(class SettingsPage* parent) {};
 
 
 

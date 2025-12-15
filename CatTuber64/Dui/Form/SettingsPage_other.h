@@ -9,7 +9,7 @@ class SettingsPage_other
 {
 
 public:
-	void InitContents(class SettingsPage* parent);
+	void InitContents(class SettingsPage* parent) {};
 
 
 

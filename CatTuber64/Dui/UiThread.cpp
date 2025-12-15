@@ -39,7 +39,7 @@ void UIMainThread::OnInit()
     init = true;
 
     // 启动杂事处理线程
-    misc_thread_.reset(new UIMiscThread(ui::kThreadMisc, L"Global Misc Thread"));
+    misc_thread_.reset(new UIMiscThread(ui::kThreadUser, L"Global Misc Thread"));
     misc_thread_->Start();
 
     // 获取资源路径，初始化全局参数
@@ -85,33 +85,25 @@ void UIMainThread::OnInit()
 
 
 #else
-    //windows 发布release版本时将zip放入程序资源中
+
+    //统一使用APPCONTEXT（由SDL提供的文件路径）
+//ui::FilePath resourcePath = ui::FilePathUtil::GetCurrentModuleDirectory();
+    ui::FilePath resourcePath = ui::FilePath(AppContext::GetAppBasePath());
+    //resourcePath += L"Dui/";
+    resourcePath = L"G:/Projects/CatTuber64/project/CatTuber64/x64/Debug/Dui/";
 
 
-    //原库没有正确处理dll模块句柄
-    //先hook以暂时修复这个问题
-
-    //auto pTargetFunc=  (&ui::ZipManager::OpenResZip);
-    //void** ppTargetFunc = (void**)&pTargetFunc;
-    //void* pFunc = *ppTargetFunc;
-    //CatHook::AutoHook(pFunc,(void*)Hook_ZipManager_OpenResZip,(void**) & orig_ZipManager_OpenResZip);
+    //使用本地文件的资源管理方式
+    ui::LocalFilesResParam resParam(resourcePath);
+    //auto curLang=AppSettings::GetIns().GetMiscLanguage()+".ini";
 
 
+    resParam.languageFileName = L"schinese.ini";
 
-
-
-
-
-    //使用exe资源文件中的zip压缩包
-    ui::ResZipFileResParam resParam;
-    resParam.resourcePath = _T("CSPMOD_res\\");
-    //我们是dll不能空着，空着表示exe的资源，我要读的是dll资源
-    resParam.hResModule = (HMODULE)CatHook::thisModule;
-    resParam.resourceName = MAKEINTRESOURCE(IDR_THEME);
-    resParam.resourceType = _T("Theme");
-    resParam.zipPassword = _T("");
+    //ui::GlobalManager::Instance().Startup(resParam,ui::DpiInitParam(),null);
     ui::GlobalManager::Instance().Startup(resParam);
-    //我超这个ui库有bug，对加载dll中资源没有进行测试.
+
+
 #endif // _DEBUG
 
 

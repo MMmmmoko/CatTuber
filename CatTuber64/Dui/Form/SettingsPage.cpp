@@ -9,19 +9,22 @@ void SettingsPage::InitContents()
 {
 
     //auto Box = ui::GlobalManager::Instance().CreateBox(ui::FilePath(L"CatTuber_default/SettingsPage.xml"));
-    ui::Box* Box=NULL;
+    //ui::Box* Box=NULL;
 
-    {
-        ui::WindowBuilder builder;
-        if (builder.ParseXmlFile(ui::FilePath(L"CatTuber_default/SettingsPage.xml"))) {
-            Control* pControl = builder.CreateControls(ui::CreateControlCallback(),GetWindow());
-            ASSERT(pControl != nullptr);
-            Box= builder.ToBox(pControl);
-        }
-    }
-    ASSERT(Box&&"Can not be nullptr.");
+    //{
+    //    ui::WindowBuilder builder;
+    //    if (builder.ParseXmlFile(ui::FilePath(L"CatTuber_default/SettingsPage.xml"))) {
+    //        Control* pControl = builder.CreateControls(ui::CreateControlCallback(),GetWindow());
+    //        ASSERT(pControl != nullptr);
+    //        Box= builder.ToBox(pControl);
+    //    }
+    //}
+    //ASSERT(Box&&"Can not be nullptr.");
 
-	this->AddItem(Box);
+    ui::GlobalManager::Instance().FillBoxWithCache(this, ui::FilePath(L"CatTuber_default/SettingsPage.xml"));
+
+
+	//this->AddItem(Box);
 
 	this->SetName(L"SETTINGS_PAGE");
 
@@ -45,7 +48,7 @@ settingsPage_##op.InitContents(this);
     //tabop_window->AttachSelect(ui::UiBind(&SettingsPage::OnTabOptionClicked, this, std::placeholders::_1));
     
     vbox_container= static_cast<ui::VListBox*>(FindSubControl(L"box_Container"));
-    vbox_container->AttachScrollChange(ui::UiBind(&SettingsPage::OnScrollChange, this, std::placeholders::_1));
+    vbox_container->AttachScrollPosChanged(ui::UiBind(&SettingsPage::OnScrollChange, this, std::placeholders::_1));
 
 
 
