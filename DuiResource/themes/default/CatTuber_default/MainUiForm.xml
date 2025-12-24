@@ -15,7 +15,8 @@
 			<!-- 基础面板左侧，场景设置区域与基本控制区 有固定宽度 -->
 			<VBox width="290" >
 				<!-- LOGO -->
-				<Button height="100" width="stretch" text="logo" bkcolor="darkcolor"/>
+				<Button bkimage="file='CatTuberLogo_64px.png' dest='28,18,92,82'" height="100" width="auto" font="system_bold_22" text="atTuber" text_padding="70,10,20,0" normal_text_color="subjectColor"
+						 cursor_type="hand" padding="20,0,20,0" halign="center"/>
 				
 				<!-- 场景设置区域VBOX -->
 				<VBox margin="20,0,20,10">

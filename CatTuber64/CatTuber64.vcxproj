@@ -248,10 +248,6 @@
     <ResourceCompile Include="CatTuber64.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="CatTuber64.ico" />
-    <Image Include="small.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Samples\D3D11\Demo\proj.d3d11.cmake\build\proj_msvc2022_x64_md\Framework\Framework.vcxproj">
       <Project>{3b372482-8d89-3f80-a7bc-9c34dd4070b6}</Project>
     </ProjectReference>
@@ -297,6 +293,9 @@
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\UISceneItemMenu.xml" />
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\UISceneItemRename_Dlg.xml" />
     <Xml Include="..\x64\Debug\Dui\themes\default\global.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="CatTuberLogo.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

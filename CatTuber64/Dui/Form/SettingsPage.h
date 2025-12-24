@@ -17,11 +17,11 @@
     F(aboutCatTuber)
 
 
-class SettingsPage :public ui::Box
+class SettingsPage :public ui::VBox
 {
 
 public:
-	SettingsPage(ui::Window* pWindow) :Box(pWindow) {};
+	SettingsPage(ui::Window* pWindow) :VBox(pWindow) {};
 	void InitContents();
 
 
