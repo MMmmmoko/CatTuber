@@ -37,7 +37,7 @@ private:
 	virtual void OnCleanup() override;
 
 private:
-	ui::ThreadIdentifier thread_id_;
+	//ui::ThreadIdentifier thread_id_;
 };
 
 /** @class MainThread

@@ -14,6 +14,7 @@ namespace util {
 
 	//使用SDL的文件接口，所以需要调用SDL_free
 	unsigned char* SDL_LoadFileToMem(const char* path,size_t* size);
+	std::vector<uint8_t> SDL_LoadFileToMem(const char* path);
 	void SDL_FreeMem(unsigned char* mem);
 	
 	//从内存读json
@@ -21,7 +22,13 @@ namespace util {
 	Json::Value BuildJsonFromFile(const char* filePath);
 	bool SaveJsonToFile(const Json::Value& json, const char* filePath);
 
+
 	//返回pack中某文件夹的模型类型与文件名
+	//从一个json项中按当前语言读取字符串
+	//std::string ReadJsonStringWithLang(const Json::Value& json,const char* curLang,const char* fullback="");
+
+
+
 
 	//std::string GetModelFilePathInPack(Pack* pack,const char* foldPathInPack, );
 	bool IsStringEndsWith(const std::string& str,const char* end);

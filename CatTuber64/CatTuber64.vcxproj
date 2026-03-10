@@ -141,6 +141,8 @@
     <ClInclude Include="Dui\Dialog\UISceneItemRename_Dlg.h" />
     <ClInclude Include="Dui\Dui.h" />
     <ClInclude Include="Dui\DuiCommon.h" />
+    <ClInclude Include="Dui\Form\UIModelItemSelect_Page.h" />
+    <ClInclude Include="Dui\Form\ItemSelectPage.h" />
     <ClInclude Include="Dui\Form\MainUiForm.h" />
     <ClInclude Include="Dui\Form\SceneSelectPage.h" />
     <ClInclude Include="Dui\Form\SettingsPage.h" />
@@ -149,8 +151,11 @@
     <ClInclude Include="Dui\Form\SettingsPage_other.h" />
     <ClInclude Include="Dui\Form\SettingsPage_sound.h" />
     <ClInclude Include="Dui\Form\SettingsPage_window.h" />
+    <ClInclude Include="Dui\ImageDecoder\ImageDecoder_EX.h" />
     <ClInclude Include="Dui\UiThread.h" />
     <ClInclude Include="Dui\UserControl\ImageCropperControl.h" />
+    <ClInclude Include="Dui\UserControl\UISceneMainItemSlot_Classic.h" />
+    <ClInclude Include="Dui\UserControl\UIScenePanel.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="src\AppContext.h" />
     <ClInclude Include="src\AppSettings.h" />
@@ -164,6 +169,7 @@
     <ClInclude Include="src\Item\CharacterObject.h" />
     <ClInclude Include="src\Item\ClassicItem.h" />
     <ClInclude Include="src\Item\HandheldItemObject.h" />
+    <ClInclude Include="src\Item\ItemPack.h" />
     <ClInclude Include="src\Item\MainSceneItem.h" />
     <ClInclude Include="src\Item\MeshMapping.h" />
     <ClInclude Include="src\Item\ModelControl.h" />
@@ -197,6 +203,7 @@
     <ClCompile Include="Dui\Dialog\UISceneCreateNew_Dlg.cpp" />
     <ClCompile Include="Dui\Dialog\UISceneItemRename_Dlg.cpp" />
     <ClCompile Include="Dui\Dui.cpp" />
+    <ClCompile Include="Dui\Form\UIModelItemSelect_Page.cpp" />
     <ClCompile Include="Dui\Form\MainUiForm.cpp" />
     <ClCompile Include="Dui\Form\SceneSelectPage.cpp" />
     <ClCompile Include="Dui\Form\SettingsPage.cpp" />
@@ -205,8 +212,11 @@
     <ClCompile Include="Dui\Form\SettingsPage_other.cpp" />
     <ClCompile Include="Dui\Form\SettingsPage_sound.cpp" />
     <ClCompile Include="Dui\Form\SettingsPage_window.cpp" />
+    <ClCompile Include="Dui\ImageDecoder\ImageDecoder_EX.cpp" />
     <ClCompile Include="Dui\UiThread.cpp" />
     <ClCompile Include="Dui\UserControl\ImageCropperControl.cpp" />
+    <ClCompile Include="Dui\UserControl\UISceneMainItemSlot_Classic.cpp" />
+    <ClCompile Include="Dui\UserControl\UIScenePanel.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="platform\Windows\WinKeyboardInput.cpp" />
     <ClCompile Include="platform\Windows\WinMouseInput.cpp" />
@@ -283,15 +293,20 @@
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\DuiSimpleMessageBox.xml" />
+    <Xml Include="..\DuiResource\themes\default\CatTuber_default\ItemSelectPage.xml" />
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\MainUiForm.xml" />
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\MainWindowMenu.xml" />
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\SceneSelectPage.xml" />
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\SettingsPage.xml" />
+    <Xml Include="..\DuiResource\themes\default\CatTuber_default\UIModelItem.xml" />
+    <Xml Include="..\DuiResource\themes\default\CatTuber_default\UIModelItemMenu.xml" />
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\UISceneCoverCropper_Dlg.xml" />
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\UISceneCreateNew_Dlg.xml" />
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\UISceneItem.xml" />
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\UISceneItemMenu.xml" />
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\UISceneItemRename_Dlg.xml" />
+    <Xml Include="..\DuiResource\themes\default\CatTuber_default\UISceneMainItemSlot_Classic.xml" />
+    <Xml Include="..\DuiResource\themes\default\CatTuber_default\UIScenePanel.xml" />
     <Xml Include="..\x64\Debug\Dui\themes\default\global.xml" />
   </ItemGroup>
   <ItemGroup>

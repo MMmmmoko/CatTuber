@@ -4,6 +4,8 @@
 #include"MainUiForm.h"
 #include"SettingsPage.h"
 #include"SceneSelectPage.h"
+#include"UIModelItemSelect_Page.h"
+#include"UserControl/UIScenePanel.h"
 MainUiForm::MainUiForm()
 {
 }
@@ -38,8 +40,38 @@ void MainUiForm::OnInitWindow()
 	pBtnRight->AttachClick(ui::UiBind(&MainUiForm::OnNavigationBtnClicked, this, std::placeholders::_1));
 
 
+
+
+
+	//场景区域
+	ui::Box* box_scenePanelContainer= dynamic_cast<ui::Box*>(FindControl(L"box_scenePanelContainer"));
+	scenePanel = new UIScenePanel(this);
+	scenePanel->InitContents();
+	box_scenePanelContainer->AddItem(scenePanel);
+
+
+
+
+
+
+
+
 	//总是以场景选择页开始
 	GoToPage(L"SCENESELECT_PAGE");
+
+
+
+
+	//初始化主页数据，当前场景
+
+
+
+
+
+
+
+
+
 
 }
 
@@ -131,6 +163,18 @@ void MainUiForm::GoToPage(const std::wstring& pageName)
 			nextVisitIndex++;
 
 
+
+
+			//根据名称进行特殊处理？
+			{
+			
+			
+			
+			
+			}
+
+
+
 			_UpdateNavigateButton();
 		}
 		
@@ -166,12 +210,51 @@ ui::Box* MainUiForm::BuildPage(const std::wstring& pageName)
 		page->InitContents();
 		return page;
 	}
-	if (pageName == L"SETTINGS_PAGE")
+	else if (pageName == L"SETTINGS_PAGE")
 	{
 		auto page = new SettingsPage(this);
 		page->InitContents();
 		return page;
 	}
+
+
+
+
+
+
+
+
+	else if (pageName == L"CLASSIC_CHARACTER_SELECT_PAGE")
+	{
+		auto page = new UIModelItemSelect_Page(this, UIModelItemType_ClassicCharacter);
+		page->InitContents();
+		return page;
+	}
+	else if (pageName == L"CLASSIC_TABLE_SELECT_PAGE")
+	{
+		auto page = new UIModelItemSelect_Page(this, UIModelItemType_ClassicTable);
+		page->InitContents();
+		return page;
+	}
+	else if (pageName == L"CLASSIC_HANDHELDITEM_SELECT_PAGE")
+	{
+		auto page = new UIModelItemSelect_Page(this, UIModelItemType_ClassicHandheldItem);
+		page->InitContents();
+		return page;
+	}
+	else if (pageName == L"BONGOCAT_SELECT_PAGE")
+	{
+		auto page = new UIModelItemSelect_Page(this, UIModelItemType_BongoCat);
+		page->InitContents();
+		return page;
+	}
+
+
+
+
+
+
+
 
 	return nullptr;
 }

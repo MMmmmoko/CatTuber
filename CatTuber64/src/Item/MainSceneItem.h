@@ -11,7 +11,17 @@
 
 class MainSceneItem :public ISceneItem
 {
-	
+public:
+	enum MainSceneItemType
+	{
+		MainSceneItemType_Classic,
+		MainSceneItemType_IntegralModel,
+		MainSceneItemType_BongoCat
+	};
+
+	virtual MainSceneItemType GetMainItemType()=0;
+
+
 
 };
 

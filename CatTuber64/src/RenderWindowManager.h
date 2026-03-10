@@ -68,6 +68,7 @@ public:
 
     //GET
     SDL_Window* GetSDLWindow() { return window; };
+    Scene& GetScene() { return scene; };
 
 
     //仅供内部使用
@@ -189,6 +190,8 @@ public:
     void ShutdownAll();
 
 
+    //获取信息
+    RenderWindowController* GetWindowController(int index);
 
 
     //设置项
@@ -204,9 +207,11 @@ public:
     bool SaveScene(const char* sceneName,bool isQuitSave=false);
     bool LoadScene(const char* sceneName, bool isQuitSave = false);
     
-private:
-    bool _BuildFromJson(const Json::Value& json);
 
+
+    bool _BuildFromJson(const Json::Value& json);
+	Json::Value _SaveToJson(const char* sceneName);
+private:
     int _frameLimit=60;//永远大于0，UI中显示
     //uint64_t _frameTickNs = ;//一帧需要的纳秒数
     SDL_FColor _clearColor = {};//透明度值永远为0

@@ -14,7 +14,7 @@ public:
 	virtual ~ClassicItem() { Reset(); };
 	virtual const char* GetType() override { return _GetType(); };
 	static const char* _GetType() { return "ClassicItem"; };
-
+	virtual MainSceneItemType GetMainItemType() override { return MainSceneItemType_Classic; };
 
 	virtual void Update(uint64_t deltaTicksNS)override;
 	//virtual void Update_Late(uint64_t deltaTicksNS)override;

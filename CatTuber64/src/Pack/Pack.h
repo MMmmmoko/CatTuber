@@ -23,10 +23,21 @@ class Pack
 
 
 public:
+
+
+
+
+
+
+
+
 	//合法性检查
 	bool Open(const char* packFilePath);
 	
 	//packPath中无反斜杠，这里会组合成packPath+/+path
+
+
+	std::vector<uint8_t> LoadFile(const char* pathInPack);
 	uint8_t* LoadFile(const char* path,size_t* size);
 	bool IsFileExist(const char* path);
 	//无反斜杠,如果fullPath为true则返回结果为相对于packroot的路径，否则只包含文件名
@@ -37,7 +48,7 @@ public:
 	void ReleaseMem(uint8_t* mem);
 	const char* GetPath() { return packPath.c_str(); };
 private:
-	PackType type;
+	PackType type= PackType_Unknown;
 	std::string packPath;//文件夹或者pack文件
 };
 
@@ -47,6 +58,7 @@ class PackReader_Folder
 {
 public:
 	static bool CheckPack(const char* packFilePath);
+	static std::vector<uint8_t> LoadFile(const char* packPath, const char* path);
 	static uint8_t* LoadFile(const char* packPath, const char* path, size_t* size);
 	static bool IsFileExist(const char* packPath, const char* path);
 	static std::vector<std::string> GetFileList(const char* packPath, const char* folerPath, bool fullPath = true);
@@ -57,6 +69,7 @@ class PackReader_Pack_ver0
 {
 public:
 	static bool CheckPack(const char* packFilePath) { return false;  };
+	static std::vector<uint8_t> LoadFile(const char* packPath, const char* path) { return std::vector<uint8_t>(); };
 	static uint8_t* LoadFile(const char* packPath, const char* path, size_t* size) { return nullptr; };
 	static bool IsFileExist(const char* packPath, const char* path) { return false; };
 	static std::vector<std::string> GetFileList(const char* packPath, const char* folerPath, bool fullPath = true) { return std::vector<std::string>(); };
@@ -67,6 +80,7 @@ class PackReader_Pack_ver1
 {
 public:
 	static bool CheckPack(const char* packFilePath) { return false; };
+	static std::vector<uint8_t> LoadFile(const char* packPath, const char* path) { return std::vector<uint8_t>(); };
 	static uint8_t* LoadFile(const char* packPath, const char* path, size_t* size) { return nullptr; };
 	static bool IsFileExist(const char* packPath, const char* path) { return false; };
 	static std::vector<std::string> GetFileList(const char* packPath, const char* folerPath, bool fullPath = true) { return std::vector<std::string>(); };

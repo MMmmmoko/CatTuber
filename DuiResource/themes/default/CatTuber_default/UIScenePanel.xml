@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Window 
+   		xmlns:xs="http://www.w3.org/2001/XMLSchema"
+		xmlns="http://tempuri.org/NIMDUISchema.xsd"
+		>
+
+
+
+	<Class name="classicSlotButton" border_round="15,15"  hot_color="itemHoverColor"/>
+
+
+	<!-- 场景设置区域VBOX -->
+	<VBox margin="15,0,15,10" >
+		<Button name="scenePanel_btnSceneTitle" fade_hot="true" hot_color="itemHoverColor" height="30" width="stretch" text_padding="20,0,0,0" text_align="left,vcenter"/>
+
+		
+		
+		<!--Classic CatTuber模型有三个槽位，上到下分别为角色 桌子 手持道具-->
+		<VBox name="scenePanel_classicItemPanel" visible="false" height="auto">
+			<Button class="classicSlotButton" width="260" height="70" name="classicSlot_Character" bkimage="ClassicSlotNoItemBG_Character.png"/>
+			<HBox margin="0,8,0,0" height="auto">
+				<Button class="classicSlotButton" width="70" height="70" name="classicSlot_HandheldItem" bkimage="ClassicSlotNoItemBG_HandheldItem.png"/>
+				<Control width="8" />
+				<Button class="classicSlotButton" width="182" height="70" name="classicSlot_Table" bkimage="ClassicSlotNoItemBG_Table.png"/>
+			</HBox>
+		</VBox>
+		<VBox name="scenePanel_bongoCatPanel" visible="false" height="auto">
+			<Button name="bongoCatSlot" bkimage="ClassicSlotNoItemBG_Character.png" normal_image=""/>
+		</VBox>
+		
+		<!--独立模型功能在开发完成后再开放-->
+		<!--<VBox name="integralItemPanel" visible="false">
+			<Button name="bongoCatSlot_Character" bkimage="ClassicSlotNoItemBG_Character.png" normal_image=""/>
+		</VBox>-->
+
+		<Label name="tooltip" text="场景设置区" height="100%" width="100%" text_align="hcenter,vcenter"/>
+
+	</VBox>
+</Window>

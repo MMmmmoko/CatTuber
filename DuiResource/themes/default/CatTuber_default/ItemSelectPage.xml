@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window
+		xmlns:xs="http://www.w3.org/2001/XMLSchema"
+		xmlns="http://tempuri.org/NIMDUISchema.xsd">
+
+
+	<VBox margin="20,0,0,0">
+		<HBox height="auto" margin="0,10,0,20">
+	<Label name="itemSelectPageTitle" font="system_bold_22" margin="10,0,20,0" valign="center"/>
+			<Button name="btn_createScene" width="40" height="40" border_round="4,4" bkimage="file='icon_add_24px.png' dest='8,8,32,32'" hot_color="itemHoverColor"
+					 valign="center" tooltip_text_id="STRID_SCENESELECT_BUTTON_TOOLTIP_CREATENEW"/>
+			</HBox>
+		<VirtualVTileListBox name="itemContainer" width="stretch" height="stretch" child_margin="2" 
+							 item_size="236,236" vscrollbar="true" select_none_when_click_blank="false">
+			
+		</VirtualVTileListBox>
+		
+</VBox>
+</Window>
+	
+	

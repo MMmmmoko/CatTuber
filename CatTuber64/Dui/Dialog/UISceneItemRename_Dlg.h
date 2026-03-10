@@ -11,7 +11,7 @@ class UISceneItemRename_Dlg :public ui::WindowImplBase
 
 public:
 	//如果名称有变化返回true，否则返回false
-    static bool ShowModalDlg(UISceneItem* item);
+    static bool ShowModalDlg(class UISceneItem* item);
 
 
 

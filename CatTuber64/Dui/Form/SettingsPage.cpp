@@ -8,6 +8,7 @@
 void SettingsPage::InitContents()
 {
 
+
     //auto Box = ui::GlobalManager::Instance().CreateBox(ui::FilePath(L"CatTuber_default/SettingsPage.xml"));
     //ui::Box* Box=NULL;
 

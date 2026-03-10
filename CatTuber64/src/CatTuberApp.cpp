@@ -12,7 +12,7 @@
 #include"Tray.h"
 #include"Input/InputManager.h"
 #include"Dui.h"
-
+#include"Item/SceneManager.h"
 #include "CatTuberApp.h"
 #include"UserEvent.h"
 
@@ -204,8 +204,8 @@ bool CatTuberApp::Init(int argC, char* argV[])
 	//创建窗口
 	 //RenderWindowManager::GetIns().CreateRenderWindow("CatTuber1", 1920, 1080, 100, 100);
 	//载入上次运行时的设置
-	RenderWindowManager::GetIns().LoadScene("#LastExit");
-
+	//RenderWindowManager::GetIns().LoadScene("#LastExit");
+	SceneManager::GetInstance().LoadLastQuitScene();
 
 
 

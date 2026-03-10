@@ -498,6 +498,16 @@ void AppSettings::_OnUISceneCreateEmptyChange(const bool& value)
 
 
 
+void AppSettings::_OnSceneLastExitChange(const std::string& value)
+{
+	//不需要做任何事情
+}
+
+
+
+
+
+
 
 
 

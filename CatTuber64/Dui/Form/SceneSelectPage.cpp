@@ -8,6 +8,7 @@
 #include"Util.h"
 
 #include"Item/SceneManager.h"
+#include "UIModelItemSelect_Page.h"
 
 //////////
 //******预设所有场景文件后缀为.json!!!!
@@ -82,7 +83,7 @@ std::string UISceneItem::GetSceneName()
 std::string UISceneItem::GetSceneFileName()
 {
     auto provider = GetProvider();
-    return provider->GetSceneInfo(index).filePath;
+    return provider->GetSceneInfo(index).fileName;
 }
 
 bool UISceneItem::OnRightClick(const ui::EventArgs& args)
@@ -241,7 +242,7 @@ bool UISceneItem::OnUploadCoverClick(const ui::EventArgs& args)
             //将已有的图像文件移除
             auto& sceneInfo=GetProvider()->GetSceneInfo(index);
 
-            std::string baseFilePath = AppContext::GetSceneFolderPath() + sceneInfo.filePath.substr(0, sceneInfo.filePath.size() - 5);
+            std::string baseFilePath = AppContext::GetSceneFolderPath() + sceneInfo.fileName.substr(0, sceneInfo.fileName.size() - 5);
             SDL_RemovePath((baseFilePath + ".png").c_str());
             SDL_RemovePath((baseFilePath + ".jpg").c_str());
             SDL_RemovePath((baseFilePath + ".gif").c_str());
@@ -383,7 +384,7 @@ SceneItemProvider::RESULT_STATUS SceneItemProvider::RenameScene(size_t index, st
 		}
     }
     sceneList[index].name = name;
-    std::string filePath = AppContext::GetSceneFolderPath() + sceneList[index].filePath;
+    std::string filePath = AppContext::GetSceneFolderPath() + sceneList[index].fileName;
     Json::Value curSceneJson = util::BuildJsonFromFile(filePath.c_str());
 	//curSceneJson["Version"] = 1;
 	curSceneJson["SceneName"] = name;
@@ -422,12 +423,12 @@ SceneItemProvider::RESULT_STATUS SceneItemProvider::CreateScene(std::string name
 
     Json::Value sceneJson;
     std::string fileName;
-    if (SceneManager::GenerateSceneJson(name.c_str(), fillSceneWithDefaultResource, true, sceneJson, &fileName))
+    if (SceneManager::CreateNewSceneJson(name.c_str(), fillSceneWithDefaultResource, true, sceneJson, &fileName))
     {
         //成功创建了场景json文件
         //构建新的item
-        SceneInfo itemInfo;
-        itemInfo.filePath = fileName;
+        SceneUIInfo itemInfo;
+        itemInfo.fileName = fileName;
         itemInfo.imgPath = DEFAULT_COVER_PATH;
         itemInfo.name = name;
         itemInfo.selected = false;
@@ -447,7 +448,7 @@ SceneItemProvider::RESULT_STATUS SceneItemProvider::CreateScene(std::string name
 void SceneItemProvider::DuplicateItem(size_t index)
 {
 
-    std::string filePath = AppContext::GetSceneFolderPath() + sceneList[index].filePath;
+    std::string filePath = AppContext::GetSceneFolderPath() + sceneList[index].fileName;
     Json::Value curSceneJson = util::BuildJsonFromFile(filePath.c_str());
 
     //AAAA
@@ -515,7 +516,7 @@ void SceneItemProvider::DuplicateItem(size_t index)
     }
     //按同样的方法获取文件名
     {
-        std::string curFileName = sceneList[index].filePath;
+        std::string curFileName = sceneList[index].fileName;
         curFileName = curFileName.substr(0, curFileName.size()-5);
         auto pos = curFileName.find_last_of('_');
         std::string nameBase;
@@ -551,7 +552,7 @@ void SceneItemProvider::DuplicateItem(size_t index)
             bool hasFileName = false;
             for (auto& x : sceneList)
             {
-                if (0 == SDL_strncmp(x.filePath.c_str(), realFileName.c_str(), realFileName.size()))
+                if (0 == SDL_strncmp(x.fileName.c_str(), realFileName.c_str(), realFileName.size()))
                 {
                     hasFileName = true;
                     break;
@@ -572,7 +573,7 @@ void SceneItemProvider::DuplicateItem(size_t index)
     if (util::SaveJsonToFile(curSceneJson, (AppContext::GetSceneFolderPath() + realFileName).c_str()))
     {
 
-        SceneInfo info;
+        SceneUIInfo info;
 
 
         //如果有封面文件那么也复制封面
@@ -595,7 +596,7 @@ void SceneItemProvider::DuplicateItem(size_t index)
 
 
 
-        info.filePath = realFileName;
+        info.fileName = realFileName;
         if(info.imgPath.empty())info.imgPath = sceneList[index].imgPath;
         info.name = realSceneName;
         info.selected = false;
@@ -615,7 +616,7 @@ bool SceneItemProvider::RemoveItem(size_t index)
     auto it = sceneList.begin() + index;
     //删除目标文件
     {
-        std::string filePath = it->filePath;
+        std::string filePath = it->fileName;
         std::string baseFilePath = AppContext::GetSceneFolderPath() + filePath.substr(0,filePath.size() - 5);
         SDL_RemovePath((baseFilePath+".json").c_str());
         SDL_RemovePath((baseFilePath +".png").c_str());
@@ -638,6 +639,21 @@ bool SceneItemProvider::RemoveItem(size_t index)
     EmitCountChanged();
     return true;
 }
+
+bool UIModelItemProvider::SetSelect(size_t index)
+{
+    //this->SetSelect(index);
+    ASSERT(false);
+    return true;
+}
+
+bool UIModelItemProvider::SetFavorite(size_t index, bool bFavorite)
+{
+    itemList[index].favorite = bFavorite;
+    EmitCountChanged();
+    return true;
+}
+
 
 void SceneItemProvider::OnCoverSetted(size_t index, const char* imageFileInSceneFolder)
 {
@@ -672,7 +688,7 @@ void SceneItemProvider::OnCoverSetted(size_t index, const char* imageFileInScene
 
 
 
-SceneItemProvider::SceneInfo& SceneItemProvider::GetSceneInfo(size_t nElementIndex)
+SceneItemProvider::SceneUIInfo& SceneItemProvider::GetSceneInfo(size_t nElementIndex)
 {
 	ASSERT(nElementIndex < sceneList.size());
 	return sceneList[nElementIndex];
@@ -687,51 +703,19 @@ void SceneItemProvider::LoadSceneList()
     //封面文件：Scene_20250920133012333.png/jpg/gif
     //创建时也不能使用重复的名字
 	sceneList.clear();
-	std::string sceneFoldPath=AppContext::GetSceneFolderPath();
-    
-    int matchCount = 0;
-	char** sceneJsonFiles=SDL_GlobDirectory(sceneFoldPath.c_str(), "Scene_*.json", 0, &matchCount);
-    for (int i = 0; i < matchCount; i++)
+
+    std::vector<SceneInfo> scenes= SceneManager::GetInstance().GetSceneList();
+	SceneInfo selectScene = SceneManager::GetInstance().GetCurrentScene();
+    for (auto& s : scenes)
     {
-        Json::Value curSceneJson = util::BuildJsonFromFile((sceneFoldPath+sceneJsonFiles[i]).c_str());
-
-
-
-        if (!curSceneJson["Version"].isUInt())continue;
-
-
-        if (curSceneJson["SceneName"].isString())
-        {
-            auto& curScene=sceneList.emplace_back();
-			curScene.name = curSceneJson["SceneName"].asString();
-			curScene.filePath = sceneJsonFiles[i];
-
-			//检查封面图片文件是否存在
-			std::string baseFilePath = sceneFoldPath+ curScene.filePath.substr(0, curScene.filePath.size() - 5);//去掉.json
-			
-
-            SDL_PathInfo info;
-            if (SDL_GetPathInfo((baseFilePath + ".png").c_str(),&info))
-            {
-                curScene.imgPath = baseFilePath + ".png";
-            }
-            else if (SDL_GetPathInfo((baseFilePath + ".jpg").c_str(),&info))
-            {
-                curScene.imgPath = baseFilePath + ".jpg";
-            }
-            else if (SDL_GetPathInfo((baseFilePath + ".gif").c_str(),&info))
-            {
-                curScene.imgPath = baseFilePath + ".gif";
-            }
-            else
-            {
-				//不存在封面图片，使用默认图片
-				curScene.imgPath = DEFAULT_COVER_PATH;
-            }
-        }
+        SceneUIInfo& sceneUIInfo=sceneList.emplace_back();
+		sceneUIInfo.name = s.name;
+        sceneUIInfo.imgPath = s.imgPath;
+		if(sceneUIInfo.imgPath.empty()) sceneUIInfo.imgPath = DEFAULT_COVER_PATH;
+		sceneUIInfo.fileName = s.fileName;
+		sceneUIInfo.selected = selectScene.fileName == s.fileName;
     }
-    if (sceneJsonFiles)SDL_free(sceneJsonFiles);
-    sceneList[0].selected = true;
+
     EmitCountChanged();
 
 

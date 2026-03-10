@@ -54,6 +54,27 @@ public:
 
 	glm::mat4x4& Get2DProj() { return proj2D; };
 
+
+
+
+
+
+
+public:
+	//外部获取信息的接口
+//	std::string GetSceneName() { return sceneName; };
+	MainSceneItem* GetMainItem() { return _mainItem; };
+//
+//
+//
+//	
+//private:
+//	//场景的外部属性
+//	std::string sceneName;
+//	std::string jsonFilePath;
+//	std::string coverFilePath;
+
+
 private:
 	//3D Camera
 	int canvasW=0;

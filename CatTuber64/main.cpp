@@ -7,7 +7,7 @@
 
 #include<SDL3/SDL.h>
 #include<SDL3/SDL_main.h>
-
+#include"AppContext.h"
 #include"CatTuberApp.h"
 
 
@@ -110,6 +110,9 @@
 
 int main(int argc, char** argv)
 {
+
+
+
 
 	try {
 

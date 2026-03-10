@@ -95,14 +95,14 @@ public:
 
 
 
-	struct SceneInfo
+	struct SceneUIInfo
 	{
 		std::string name;
 		std::string imgPath;
-		std::string filePath;
+		std::string fileName;
 		bool selected = false;
 	};
-	SceneInfo& GetSceneInfo(size_t nElementIndex);
+	SceneUIInfo& GetSceneInfo(size_t nElementIndex);
 
 
 
@@ -115,7 +115,7 @@ private:
 
 
 
-	std::vector<SceneInfo> sceneList;
+	std::vector<SceneUIInfo> sceneList;
 
 
 

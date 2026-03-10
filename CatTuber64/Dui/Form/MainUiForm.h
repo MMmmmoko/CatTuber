@@ -28,8 +28,9 @@ private:
 	//更新按钮的enable属性
 	void _UpdateNavigateButton();
 
-	ui::Box* pageContainer;
-
+	ui::Box* pageContainer=nullptr;
+	ui::Box* secenMainItemPanel = nullptr;
+	class UIScenePanel* scenePanel = nullptr;
 
 	ui::Box* pageSettings = NULL;
 	

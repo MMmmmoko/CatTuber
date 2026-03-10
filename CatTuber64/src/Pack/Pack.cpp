@@ -24,6 +24,36 @@ bool Pack::Open(const char* packFilePath)
 
 
 
+std::vector<uint8_t> Pack::LoadFile(const char* pathInPack)
+{
+	switch (type)
+	{
+	case Pack::PackType_Unknown:
+		break;
+
+#define PACK_LOADFILE(reader) case PackType_##reader:return PackReader_##reader::LoadFile(packPath.c_str(),pathInPack);
+
+
+		PACKREADER_LIST(PACK_LOADFILE)
+
+#undef PACK_LOADFILE
+
+			//case Pack::PackType_Folder:
+			//	return PackReader_Folder::LoadFile(packPath.c_str(),path,size);
+			//	break;
+			//case Pack::PackType_Pack_ver0:
+			//	return PackReader_Folder::LoadFile(packPath.c_str(), path, size);
+			//	break;
+			//case Pack::PackType_Pack_ver1:
+			//	break;
+	default:
+		break;
+	}
+
+
+	return std::vector<uint8_t>();
+}
+
 uint8_t* Pack::LoadFile(const char* path, size_t* size)
 {
 	switch (type)
@@ -125,6 +155,18 @@ bool PackReader_Folder::CheckPack(const char* packFilePath)
 	}
 	return false;
 }
+
+
+
+std::vector<uint8_t> PackReader_Folder::LoadFile(const char* packPath, const char* path)
+{
+
+	std::string pathStr = packPath;
+	pathStr = pathStr + "/" + path;
+	return util::SDL_LoadFileToMem(pathStr.c_str());
+
+}
+
 
 uint8_t* PackReader_Folder::LoadFile(const char* packPath, const char* path, size_t* size)
 {

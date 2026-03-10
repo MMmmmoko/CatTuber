@@ -745,7 +745,7 @@ void RenderWindowController::Present()
                     ));
             }
 
-            if (!texToD3D12Copy)
+            if (!texToD3D12Copy&& shareHandle)
             {
                 //从共享句柄创建纹理
                 ID3D11Texture2D* ptexture;
@@ -1416,6 +1416,15 @@ void RenderWindowManager::ShutdownAll() {
     controllers.clear();
 }
 
+RenderWindowController* RenderWindowManager::GetWindowController(int index)
+{
+    if (index < 0 || index >= controllers.size())
+    {
+        return nullptr;
+	}
+    return controllers[index].get();
+}
+
 void RenderWindowManager::SetWindowTop(bool b)
 {
     for (auto& wc : controllers)
@@ -1611,9 +1620,9 @@ bool RenderWindowManager::LoadScene(const char* sceneName, bool isQuitSave)
 
 
     //通过文件遍历到目标json
-    std::string settingsFilePath = AppContext::GetPrefPath();
-    settingsFilePath = settingsFilePath + "Scenes";
-    SDL_EnumerateDirectory(settingsFilePath.c_str(), fileCallBack, &dataStruct);
+    std::string sceneFilePath = AppContext::GetPrefPath();
+    sceneFilePath = sceneFilePath + "Scenes";
+    SDL_EnumerateDirectory(sceneFilePath.c_str(), fileCallBack, &dataStruct);
 
     return  _BuildFromJson(sceneJson);
 }
@@ -1657,5 +1666,44 @@ bool RenderWindowManager::_BuildFromJson(const Json::Value& json)
 
 
     return false;
+}
+
+Json::Value RenderWindowManager::_SaveToJson(const char* sceneName)
+{
+    //构建文件名以及json内容需要用到的毫秒时间戳
+//当前时间戳字符  //SavedScene_20250721114514666
+    SDL_Time time;
+    if (!SDL_GetCurrentTime(&time))
+    {
+        SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Can not Get Current Time: %s", SDL_GetError());
+        return false;
+    }
+    SDL_DateTime date;
+    if (!SDL_TimeToDateTime(time, &date, true))
+    {
+        SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Can not Transfer DateTime: %s", SDL_GetError());
+        return false;
+    }
+    //2025+07+21+   11+45+14+ 666 + '\0'
+    char dateStr[4 + 2 + 2 + 2 + 2 + 2 + 3 + 1] = { 0 };
+    SDL_snprintf(dateStr, sizeof(dateStr), "%04d%02d%02d%02d%02d%02d%03d",
+        date.year, date.month, date.day, date.hour, date.minute, date.second, date.nanosecond / 1000000
+    );
+
+    //构建json
+    Json::Value saveJson;
+    {
+        if (sceneName&&*sceneName!='\0')
+        {
+            saveJson["SceneName"] = sceneName;
+        }
+        saveJson["SavingTime"] = dateStr;
+        for (int i = 0; i < controllers.size(); i++)
+        {
+            saveJson["Windows"][i] = controllers[i]->Save();
+        }
+    }
+
+	return saveJson;
 }
 

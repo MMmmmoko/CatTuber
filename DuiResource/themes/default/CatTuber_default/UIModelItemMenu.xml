@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Window shadow_type="menu_round" shadow_attached="true" layered_window="true"
+		xmlns:xs="http://www.w3.org/2001/XMLSchema"
+		xmlns="http://tempuri.org/NIMDUISchema.xsd"
+		>
+	
+	<Class name="sceneItemMenuElement" height="26" padding="20,0,20,0" margin="1,1,1,1"
+		   hot_color="itemHoverColor"  fade_hot="false"/>
+	
+	<Class name="helperMenuText" normal_text_color="textNormalColor" font="system_12" valign="center"/>
+	
+	
+	<MenuListBox class="menu" bkcolor="panelBkColor">
+		<MenuItem class="sceneItemMenuElement" name="ModelItemMenu_Select" width="auto">
+			<Label class="helperMenuText"  text_id="STRID_MODELITEM_MENU_SELECT"  mouse_enabled="false" keyboard_enabled="false"/>
+		</MenuItem>
+		<MenuItem class="sceneItemMenuElement" name="ModelItemMenu_Deselect" width="auto">
+			<Label class="helperMenuText"  text_id="STRID_MODELITEM_MENU_DESELECT"  mouse_enabled="false" keyboard_enabled="false"/>
+		</MenuItem>
+		<MenuItem class="sceneItemMenuElement" name="ModelItemMenu_Favorite" width="auto">
+			<Label class="helperMenuText"  text_id="STRID_MODELITEM_MENU_FAVORITE"  mouse_enabled="false" keyboard_enabled="false"/>
+		</MenuItem>
+		<MenuItem class="sceneItemMenuElement" name="ModelItemMenu_Unfavorite" width="auto">
+			<Label class="helperMenuText"  text_id="STRID_MODELITEM_MENU_UNFAVORITE" mouse_enabled="false" keyboard_enabled="false"/>
+		</MenuItem>
+	</MenuListBox>
+</Window>

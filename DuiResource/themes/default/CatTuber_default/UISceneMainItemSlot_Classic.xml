@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Window 
+   		xmlns:xs="http://www.w3.org/2001/XMLSchema"
+		xmlns="http://tempuri.org/NIMDUISchema.xsd"
+		>
+	
+	
+	
+	<VBox>
+		<!--Classic CatTuber模型有三个槽位，上到下分别为角色 桌子 手持道具-->
+		
+		
+		<Button name="classicSlot_Character" bkimage="ClassicSlotNoItemBG_Character.png" normal_image="">
+		</Button>
+
+		<Button name="classicSlot_Table" bkimage="ClassicSlotNoItemBG_Table.png">
+		</Button>
+
+	<Button name="classicSlot_HandheldItem" bkimage="ClassicSlotNoItemBG_HandheldItem.png">
+		</Button>
+
+	</VBox>
+</Window>

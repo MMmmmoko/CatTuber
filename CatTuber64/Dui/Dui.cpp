@@ -3,6 +3,8 @@
 #include"Form/MainUiForm.h"
 
 
+
+#include"ImageDecoder/ImageDecoder_EX.h"
 #include"../../ThirdPart/skia/include/utils/SkParse.h"
 
 
@@ -75,6 +77,15 @@ void Dui::Init()
 
 	//引用一下函数保证编译器不忽略
 	//nsvgPatch_getColorName("red");
+
+
+	//图片解析器
+	ui::GlobalManager::Instance().ImageDecoders().AddImageDecoder(std::make_shared<ui::ImageDecoder_PNG_EX>());
+	ui::GlobalManager::Instance().ImageDecoders().AddImageDecoder(std::make_shared<ui::ImageDecoder_JPG_EX>());
+	ui::GlobalManager::Instance().ImageDecoders().AddImageDecoder(std::make_shared<ui::ImageDecoder_GIF_EX>());
+
+
+
 
 
 }

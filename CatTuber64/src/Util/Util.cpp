@@ -26,6 +26,28 @@ unsigned char* util::SDL_LoadFileToMem(const char* path, size_t* size)
 	return (unsigned char*)buffer;
 }
 
+std::vector<uint8_t> util::SDL_LoadFileToMem(const char* path)
+{
+    //通过SDL加载文件
+    SDL_IOStream* modelFileStream = SDL_IOFromFile(path, "r");
+    if (!modelFileStream)
+    {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Open File Failed: %s", path);
+        return std::vector<uint8_t>();
+    }
+    uint64_t _size = SDL_GetIOSize(modelFileStream);
+    std::vector<uint8_t> result;
+    result.resize(_size);
+
+    SDL_ReadIO(modelFileStream, result.data(), _size);
+
+    SDL_CloseIO(modelFileStream); // 关闭文件流
+
+
+    return result;
+
+}
+
 void util::SDL_FreeMem(unsigned char* mem)
 {
     SDL_free(mem);
@@ -95,6 +117,60 @@ bool util::SaveJsonToFile(const Json::Value& json, const char* filePath)
     //ofs.close();
     //return true;
 }
+
+
+
+#if 0
+std::string util::ReadJsonStringWithLang(const Json::Value& json, const char* curLang, const char* fullback)
+{
+    //从json中按语言读取字符串
+   // "Name": { 
+     //   "schinese": "米米",
+     //       "english" : "Mimi"
+   // },
+    
+    //最先尝试目标curLang, 然后依次尝试curLang的后备语言，如果没有项目则返回空
+ 
+    if (nullptr == fullback)fullback = "";
+
+
+	if (json.isNull())return std::string(fullback);
+
+    if (json.isMember(curLang) && json[curLang].isString())
+    {
+		return json[curLang].asString();
+    }
+
+	//未匹配//尝试后备语言
+    const std::vector<std::string>& fullbackLangVec=AppSettings::GetLocalLanguageFullbackVec();
+
+
+    for (auto& x : fullbackLangVec)
+    {
+        if (json.isMember(x) && json[x].isString())
+        {
+            return json[curLang].asString();
+        }
+    }
+
+    //未匹配//尝试任意内容项目
+	Json::Value::Members members=json.getMemberNames();
+    for (auto& x : members)
+    {
+        if (json.isMember(x) && json[x].isString())
+        {
+            return json[curLang].asString();
+        }
+    }
+    
+
+	//未匹配 //返回默认值
+
+    return std::string(fullback);
+}
+#endif
+
+
 
 bool util::IsStringEndsWith(const std::string& str, const char* end)
 {

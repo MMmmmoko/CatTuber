@@ -1,4 +1,5 @@
 #include"Util/Util.h"
+#include"AppSettings.h"
 #include "AppContext.h"
 
 AppContext::~AppContext()
@@ -38,6 +39,47 @@ const char* AppContext::GetWorkShopPath()
 	//TODD/Fixme:创意工坊
 	SDL_assert(false);
 	return nullptr;
+}
+
+const char* AppContext::GetAppLang()
+{
+	return AppSettings::GetIns().GetMiscLanguage().c_str();
+}
+
+const char* AppContext::GetClassicCharacterFolderPath()
+{
+	if (_ref()._classicCharacterFolderPath.empty())
+	{
+		_ref()._classicCharacterFolderPath = std::string(GetAppBasePath()) + "Resources/Character/";
+	}
+	return _ref()._classicCharacterFolderPath.c_str();
+}
+
+const char* AppContext::GetClassicTableFolderPath()
+{
+	if (_ref()._classicTableFolderPath.empty())
+	{
+		_ref()._classicTableFolderPath = std::string(GetAppBasePath()) + "Resources/Table/";
+	}
+	return _ref()._classicTableFolderPath.c_str();
+}
+
+const char* AppContext::GetClassicHandheldItemFolderPath()
+{
+	if (_ref()._classicHandheldItemFolderPath.empty())
+	{
+		_ref()._classicHandheldItemFolderPath = std::string(GetAppBasePath()) + "Resources/HandheldItem/";
+	}
+	return _ref()._classicHandheldItemFolderPath.c_str();
+}
+
+const char* AppContext::GetBongoCatFolderPath()
+{
+	if (_ref()._BongoCatFolderPath.empty())
+	{
+		_ref()._BongoCatFolderPath = std::string(GetAppBasePath()) + "Resources/BongoCatMver/";
+	}
+	return _ref()._BongoCatFolderPath.c_str();
 }
 
 std::string AppContext::ResolvePathToAbsolute(const std::string& pathToResolve)

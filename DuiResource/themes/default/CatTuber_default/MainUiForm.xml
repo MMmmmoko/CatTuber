@@ -7,7 +7,7 @@
    		xmlns:xs="http://www.w3.org/2001/XMLSchema"
 		xmlns="http://tempuri.org/NIMDUISchema.xsd"
 		>
-	<VBox bkcolor="bk_wnd_darkcolor" visible="true">
+	<VBox bkcolor="panelBkColor" visible="true">
 
 
 		<!-- 工作区域，除了标题栏外的内容都放在这个大的Box区域 -->
@@ -18,12 +18,14 @@
 				<Button bkimage="file='CatTuberLogo_64px.png' dest='28,18,92,82'" height="100" width="auto" font="system_bold_22" text="atTuber" text_padding="70,10,20,0" normal_text_color="subjectColor"
 						 cursor_type="hand" padding="20,0,20,0" halign="center"/>
 				
-				<!-- 场景设置区域VBOX -->
-				<VBox margin="20,0,20,10">
-					<Button text="未命名场景" fade_hot="true" hot_color="itemHoverColor" height="30" width="stretch" text_padding="20,0,0,0" text_align="left,vcenter"/>
-			<Label name="tooltip" text="场景设置区" height="100%" width="100%" text_align="hcenter,vcenter"/>
-		
-				</VBox>
+				
+				
+				<!-- 主物品容器 如对于经典模型，这里就是角色桌子鼠标插槽 -->
+				<VBox name="box_scenePanelContainer"/>
+				
+				
+				
+				
 				<!-- 基础控制区VBOX 有固定高度-->
 				<VTileBox margin="0,0,0,0"  height="220" bkcolor="panelBkColor" item_size="80,80">
 					<ButtonBox name="baseControl_btn_settings" hot_color="itemHoverColor" mouse_child="false">
@@ -34,10 +36,14 @@
 					</ButtonBox>
 				</VTileBox>
 			</VBox>
-			
+
+			<VBox width="1" >
+				<Control width="1" bkcolor="panelBkColor" bkcolor2="subjectColor" bkcolor2_direction="2"/>
+				<Control width="1" bkcolor="subjectColor" bkcolor2="panelBkColor" bkcolor2_direction="2"/>
+			</VBox>
 			<!-- 工作区容器-->
 			<!-- 点场景中的物品时工作区显示对应的设置项-->
-			<VBox  bkcolor="panelBkColor" >
+			<VBox>
 				<!-- 标题栏区域 -->
 				<HBox name="window_caption_bar" width="stretch" height="auto">
 					<Button name="btn_pageBack" width="48" height="48" margin="10,6,10,0" 

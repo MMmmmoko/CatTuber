@@ -57,6 +57,9 @@
     <Filter Include="_CodePatch">
       <UniqueIdentifier>{9149d81c-d75a-4819-8fb7-094bbca56243}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Dui\ImageDecoder">
+      <UniqueIdentifier>{50253076-93d0-4d01-9aa2-d17408f9dcd2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dui\DuiCommon.h">
@@ -221,6 +224,24 @@
     <ClInclude Include="Dui\Form\SettingsPage_aboutCatTuber.h">
       <Filter>Dui\Form</Filter>
     </ClInclude>
+    <ClInclude Include="Dui\Form\ItemSelectPage.h">
+      <Filter>Dui\Form</Filter>
+    </ClInclude>
+    <ClInclude Include="Dui\UserControl\UISceneMainItemSlot_Classic.h">
+      <Filter>Dui\UserControl</Filter>
+    </ClInclude>
+    <ClInclude Include="Dui\Form\UIModelItemSelect_Page.h">
+      <Filter>Dui\Form</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Item\ItemPack.h">
+      <Filter>源文件\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="Dui\ImageDecoder\ImageDecoder_EX.h">
+      <Filter>Dui\ImageDecoder</Filter>
+    </ClInclude>
+    <ClInclude Include="Dui\UserControl\UIScenePanel.h">
+      <Filter>Dui\UserControl</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -355,9 +376,6 @@
     <ClCompile Include="Dui\Dialog\UISceneCreateNew_Dlg.cpp">
       <Filter>Dui\Dialog</Filter>
     </ClCompile>
-    <ClCompile Include="src\Item\SceneManager.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="_CodePatch\nanosvg_patch.cpp">
       <Filter>_CodePatch</Filter>
     </ClCompile>
@@ -378,6 +396,21 @@
     </ClCompile>
     <ClCompile Include="Dui\Form\SettingsPage_aboutCatTuber.cpp">
       <Filter>Dui\Form</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Item\SceneManager.cpp">
+      <Filter>源文件\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="Dui\UserControl\UISceneMainItemSlot_Classic.cpp">
+      <Filter>Dui\UserControl</Filter>
+    </ClCompile>
+    <ClCompile Include="Dui\Form\UIModelItemSelect_Page.cpp">
+      <Filter>Dui\Form</Filter>
+    </ClCompile>
+    <ClCompile Include="Dui\ImageDecoder\ImageDecoder_EX.cpp">
+      <Filter>Dui\ImageDecoder</Filter>
+    </ClCompile>
+    <ClCompile Include="Dui\UserControl\UIScenePanel.cpp">
+      <Filter>Dui\UserControl</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -439,6 +472,21 @@
     </Xml>
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\UISceneCreateNew_Dlg.xml">
       <Filter>Dui\Dialog</Filter>
+    </Xml>
+    <Xml Include="..\DuiResource\themes\default\CatTuber_default\UISceneMainItemSlot_Classic.xml">
+      <Filter>Dui\UserControl</Filter>
+    </Xml>
+    <Xml Include="..\DuiResource\themes\default\CatTuber_default\UIModelItem.xml">
+      <Filter>Dui\Form</Filter>
+    </Xml>
+    <Xml Include="..\DuiResource\themes\default\CatTuber_default\UIModelItemMenu.xml">
+      <Filter>Dui\Form</Filter>
+    </Xml>
+    <Xml Include="..\DuiResource\themes\default\CatTuber_default\ItemSelectPage.xml">
+      <Filter>Dui\Form</Filter>
+    </Xml>
+    <Xml Include="..\DuiResource\themes\default\CatTuber_default\UIScenePanel.xml">
+      <Filter>Dui\UserControl</Filter>
     </Xml>
   </ItemGroup>
   <ItemGroup>
