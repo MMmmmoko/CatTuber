@@ -27,11 +27,18 @@
 				
 				
 				<!-- 基础控制区VBOX 有固定高度-->
-				<VTileBox margin="0,0,0,0"  height="220" bkcolor="panelBkColor" item_size="80,80">
-					<ButtonBox name="baseControl_btn_settings" hot_color="itemHoverColor" mouse_child="false">
+				<VTileBox margin="12,8,12,16"  height="180" bkcolor="panelBkColor" item_size="60,60" border_round="15,15" border_size="1" border_color="panelBorderColor"
+						   padding="4,8,4,8" child_margin="4" columns="4">
+					<ButtonBox name="baseControl_btn_settings" hot_color="itemHoverColor" mouse_child="false" border_round="8,8">
 						<VBox >
-							<Control bkimage="baseControl_settings.svg" width="auto" height="auto"/>
-							<Label text_id="STRID_BASECONTROL_SETTINGS"  normal_text_color="textNormalColor"/>
+							<Control bkimage="baseControl_settings.svg" width="auto" height="auto" halign="center"  margin="0,6,0,4"/>
+							<Label text_id="STRID_BASECONTROL_SETTINGS"  normal_text_color="textNormalColor" halign="center" valign="center"/>
+						</VBox>
+					</ButtonBox>
+					<ButtonBox name="baseControl_btn_help" hot_color="itemHoverColor" mouse_child="false" border_round="8,8">
+						<VBox >
+							<Control bkimage="baseControl_help.svg" width="auto" height="auto" halign="center" margin="0,6,0,4"/>
+							<Label text_id="STRID_BASECONTROL_HELP"  normal_text_color="textNormalColor" halign="center" valign="center"/>
 						</VBox>
 					</ButtonBox>
 				</VTileBox>
@@ -55,7 +62,6 @@
 							 normal_image="file='NavigationRight32x36.svg' dest='8,6,40,42'" 
 							hot_image="file='NavigationRight32x36_hot.svg' dest='8,6,40,42'"
 							disabled_image="file='NavigationRight32x36_disable.svg' dest='8,6,40,42'"
-							
 							/>
 					<Control />
 					<Button class="btn_wnd_min_11" height="32" width="40" name="minbtn" margin="0,2,0,2" />

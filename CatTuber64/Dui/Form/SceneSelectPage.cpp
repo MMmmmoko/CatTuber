@@ -747,7 +747,10 @@ void SceneSelectPage::InitContents()
 
 
     ui::VirtualVTileListBox* container= (ui::VirtualVTileListBox*)FindSubControl(L"sceneItemContainer");
-    
+    container->GetLayout()->SetChildHAlignType(ui::HorAlignType::kAlignLeft);
+
+
+
     provider = new SceneItemProvider;
     container->SetDataProvider(provider);
     provider->LoadSceneList();

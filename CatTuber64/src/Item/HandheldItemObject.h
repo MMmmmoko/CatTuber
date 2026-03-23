@@ -58,8 +58,8 @@ private:
 	void UnregisterAllActionFunc();//Action与实际成员函数的绑定
 
 
-	void OnButtonDown(int btnIndex);//控制参数的同时还要触发按钮上绑定的动画//发送一个TableButtonDown的Action（当Event用）
-	void OnButtonUp(int btnIndex);//发送一个TableButtonUp的Action（当Event用）
+	void OnButtonDown(int btnIndex);//控制参数的同时还要触发按钮上绑定的动画//发送一个DeskButtonDown的Action（当Event用）
+	void OnButtonUp(int btnIndex);//发送一个DeskButtonUp的Action（当Event用）
 	void OnAxisValueChange(int axisGroupIndex, int axisIndex, float value);//控制对应参数
 	void OnAnimationPlay(int animationIndex);
 	void _UpdateAxisVec();

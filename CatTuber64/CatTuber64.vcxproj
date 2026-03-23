@@ -104,7 +104,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <LanguageStandard_C>stdc11</LanguageStandard_C>
-      <AdditionalIncludeDirectories>..\..\ThirdPart\SDL-release-3.2.16\include;..\..\ThirdPart\SDL_image-release-3.2.4\include;..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Core\include;..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src;..\..\ThirdPart\glm-1.0.1-light;src;src\Util;..\..\ThirdPart\nim_duilib-main;Dui;..\..\ThirdPart\skia</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ThirdPart\SDL-release-3.2.16\include;..\..\ThirdPart\SDL_image-release-3.2.4\include;..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Core\include;..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src;..\..\ThirdPart\glm-1.0.1-light;src;src\Util;..\..\ThirdPart\nim_duilib-main;Dui;..\..\ThirdPart\skia;..\</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -124,7 +124,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <LanguageStandard_C>stdc11</LanguageStandard_C>
-      <AdditionalIncludeDirectories>..\..\ThirdPart\SDL-release-3.2.16\include;..\..\ThirdPart\SDL_image-release-3.2.4\include;..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Core\include;..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src;..\..\ThirdPart\glm-1.0.1-light;src;src\Util;..\..\ThirdPart\nim_duilib-main;Dui;..\..\ThirdPart\skia</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ThirdPart\SDL-release-3.2.16\include;..\..\ThirdPart\SDL_image-release-3.2.4\include;..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Core\include;..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src;..\..\ThirdPart\glm-1.0.1-light;src;src\Util;..\..\ThirdPart\nim_duilib-main;Dui;..\..\ThirdPart\skia;..\</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -168,16 +168,19 @@
     <ClInclude Include="src\Input\MouseInput.h" />
     <ClInclude Include="src\Item\CharacterObject.h" />
     <ClInclude Include="src\Item\ClassicItem.h" />
+    <ClInclude Include="src\Item\DecorationItem.h" />
+    <ClInclude Include="src\Item\DecorationObject.h" />
     <ClInclude Include="src\Item\HandheldItemObject.h" />
     <ClInclude Include="src\Item\ItemPack.h" />
     <ClInclude Include="src\Item\MainSceneItem.h" />
     <ClInclude Include="src\Item\MeshMapping.h" />
     <ClInclude Include="src\Item\ModelControl.h" />
+    <ClInclude Include="src\Item\ObjectBase.h" />
     <ClInclude Include="src\Item\Scene.h" />
     <ClInclude Include="src\Item\SceneItem.h" />
     <ClInclude Include="src\Item\SceneManager.h" />
     <ClInclude Include="src\Item\StraightMovingPoint.h" />
-    <ClInclude Include="src\Item\TableObject.h" />
+    <ClInclude Include="src\Item\DeskObject.h" />
     <ClInclude Include="src\Model\IModel.h" />
     <ClInclude Include="src\Model\Live2DModelBase.h" />
     <ClInclude Include="src\Model\ModelManager.h" />
@@ -229,6 +232,8 @@
     <ClCompile Include="src\Input\InputParser.cpp" />
     <ClCompile Include="src\Item\CharacterObject.cpp" />
     <ClCompile Include="src\Item\ClassicItem.cpp" />
+    <ClCompile Include="src\Item\DecorationItem.cpp" />
+    <ClCompile Include="src\Item\DecorationObject.cpp" />
     <ClCompile Include="src\Item\HandheldItemObject.cpp" />
     <ClCompile Include="src\Item\MainSceneItem.cpp" />
     <ClCompile Include="src\Item\MeshMapping.cpp" />
@@ -237,7 +242,7 @@
     <ClCompile Include="src\Item\SceneItem.cpp" />
     <ClCompile Include="src\Item\SceneManager.cpp" />
     <ClCompile Include="src\Item\StraightMovingPoint.cpp" />
-    <ClCompile Include="src\Item\TableObject.cpp" />
+    <ClCompile Include="src\Item\DeskObject.cpp" />
     <ClCompile Include="src\Model\IModel.cpp" />
     <ClCompile Include="src\Model\Live2DModelBase.cpp" />
     <ClCompile Include="src\Model\ModelManager.cpp" />

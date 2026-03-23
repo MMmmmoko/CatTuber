@@ -88,7 +88,7 @@ void HandheldItemObject::Update(uint64_t deltaTicksNS)
 		auto curTickMs = SDL_GetTicks();
 
 
-		//pushedButtnVec是table那边的代码用的，用于给当前帧处于按下状态的按钮打表来减少遍历长度
+		//pushedButtnVec是desk那边的代码用的，用于给当前帧处于按下状态的按钮打表来减少遍历长度
 		// 按下的键是用于计算手部位置的，所以handheldItem不需要
 		//std::vector<ModelButtonControl*> pushedButtnVec;
 		for (auto& button : modelButtonVec)

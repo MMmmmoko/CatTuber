@@ -1,4 +1,4 @@
-#include"Core/WindowBuilder.h"
+#include"duilib/Core/WindowBuilder.h"
 
 #include "duilib/Core/GlobalManager.h"
 #include "duilib/Core/Window.h"

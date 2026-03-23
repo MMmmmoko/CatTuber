@@ -21,9 +21,9 @@ void BindingInfo::RegisterBinding(int index, int index2)
 	{
 		//向InputManager注册关于物理按键的绑定
 
-		//构造actionname  Table.Button.0.Down
-		std::string downActionName = "Table.Button." + std::to_string(index) + ".Down";
-		std::string upActionName = "Table.Button." + std::to_string(index) + ".Up";
+		//构造actionname  Desk.Button.0.Down
+		std::string downActionName = "Desk.Button." + std::to_string(index) + ".Down";
+		std::string upActionName = "Desk.Button." + std::to_string(index) + ".Up";
 		_bindingHandleList.push_back(
 			im.RegisterButtonActionBinding(downActionName.c_str(), upActionName.c_str(), controllList.data(), static_cast<int>(controllList.size()))
 		);
@@ -32,9 +32,9 @@ void BindingInfo::RegisterBinding(int index, int index2)
 	}
 	case BindingInfo::Button_ActualAxisToButton:
 	{
-		//构造actionname  Table.Button.0.Down
-		std::string downActionName = "Table.Button." + std::to_string(index) + ".Down";
-		std::string upActionName = "Table.Button." + std::to_string(index) + ".Up";
+		//构造actionname  Desk.Button.0.Down
+		std::string downActionName = "Desk.Button." + std::to_string(index) + ".Down";
+		std::string upActionName = "Desk.Button." + std::to_string(index) + ".Up";
 
 		if (controlValue > 0)
 		{
@@ -55,16 +55,16 @@ void BindingInfo::RegisterBinding(int index, int index2)
 	}
 	case BindingInfo::Axis_ActualAxis:
 	{
-		//构造actionname  Table.Axis.0.0.Change
-		std::string axisActionName = "Table.Axis." + std::to_string(index) + "." + std::to_string(index2) +".Change";
+		//构造actionname  Desk.Axis.0.0.Change
+		std::string axisActionName = "Desk.Axis." + std::to_string(index) + "." + std::to_string(index2) +".Change";
 		_bindingHandleList.push_back(
 			im.RegisterAxisChangeActionBinding(axisActionName.c_str(), controllList[0].c_str()));
 		break;
 	}
 	case BindingInfo::Axis_ActualButtonToAxis:
 	{
-		//构造actionname  Table.Axis.0.1.Change
-		std::string axisActionName = "Table.Axis." + std::to_string(index) + "." + std::to_string(index2) + ".Change";
+		//构造actionname  Desk.Axis.0.1.Change
+		std::string axisActionName = "Desk.Axis." + std::to_string(index) + "." + std::to_string(index2) + ".Change";
 
 		_bindingHandleList.push_back(
 			im.RegisterButtonToAxisActionBinding(axisActionName.c_str(), controllList[0].c_str(), controlValue));
@@ -72,8 +72,8 @@ void BindingInfo::RegisterBinding(int index, int index2)
 	}
 	case BindingInfo::Animation_ActualButton:
 	{
-		//用物理按键触发动画 Table.Animation.animationName.Start
-		std::string animationActionName = "Table.Animation." + std::to_string(index) + ".Start";
+		//用物理按键触发动画 Desk.Animation.animationName.Start
+		std::string animationActionName = "Desk.Animation." + std::to_string(index) + ".Start";
 		_bindingHandleList.push_back(
 			im.RegisterButtonActionBinding(animationActionName.c_str(), NULL, controllList.data(), static_cast<int>(controllList.size()))
 		);
@@ -81,7 +81,7 @@ void BindingInfo::RegisterBinding(int index, int index2)
 	}
 	case BindingInfo::Animation_ActualAxisActive:
 	{
-		std::string animationActionName = "Table.Animation." + std::to_string(index) + ".Start";
+		std::string animationActionName = "Desk.Animation." + std::to_string(index) + ".Start";
 
 		if (controlValue > 0)
 		{
@@ -99,7 +99,7 @@ void BindingInfo::RegisterBinding(int index, int index2)
 	}
 	case BindingInfo::Animation_ActualAxisInactive:
 	{
-		std::string animationActionName = "Table.Animation." + std::to_string(index) + ".Start";
+		std::string animationActionName = "Desk.Animation." + std::to_string(index) + ".Start";
 
 		if (controlValue < 0)
 		{
@@ -115,7 +115,7 @@ void BindingInfo::RegisterBinding(int index, int index2)
 	}
 	case BindingInfo::Animation_Action:
 	{
-		std::string animationActionName = "Table.Animation." + std::to_string(index) + ".Start";
+		std::string animationActionName = "Desk.Animation." + std::to_string(index) + ".Start";
 		_bindingHandleList.push_back(
 			im.RegisterActionByActionBinding(animationActionName.c_str(), controllList[0].c_str(), controlValue));
 		break;
@@ -155,7 +155,7 @@ const char* BindingInfo::GetTypeJsonStr(Type type)
 
 bool ModelControl::LoadBindingByName(const std::string& packPath, const char* bindingName, std::vector<ModelButtonControl>* modelButtonVec, std::vector<ModelAxisControl>* modelAxisVec, std::vector<ModelAnimationControl>* modelAnimationVec)
 {
-	//preferpath/Bindings/88KTable_0.binding
+	//preferpath/Bindings/88KDesk_0.binding
 //Pack文件名_id 如 88KKeyboard_0 
 
 //构建要寻找的目标路径

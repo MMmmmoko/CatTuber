@@ -49,7 +49,7 @@ public:
 
 
 
-	//注册由按键触发的Action// EG actionName: Table.Button.1
+	//注册由按键触发的Action// EG actionName: Desk.Button.1
 	//为每个键设置监听？
 	//可能需要将buttonBaseName的格式换为string
 	ActionBindingHandle RegisterButtonActionBinding(const char* downActionName, const char* upActionName, std::string* strArray, int buttonCount = 1);

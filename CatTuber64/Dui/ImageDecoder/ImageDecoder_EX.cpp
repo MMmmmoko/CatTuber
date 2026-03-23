@@ -19,35 +19,6 @@
 namespace ui
 {
 
-    //资源包路径分为两个部分[无"/"的资源包路径]资源包内部路径
-    static std::wstring GetPackPath(const DString& imageFilePath)
-    {
-        size_t i = 0;
-        int stackCount = 0;
-        for (i = 0; i < imageFilePath.size(); i++)
-        {
-            if (imageFilePath[i] == L'[')stackCount++;
-            if (imageFilePath[i] == L']')stackCount--;
-            if (0 == stackCount)break;
-        }
-        if (0 == i)return L"";
-        if (stackCount != 0)return L"";
-        return imageFilePath.substr(1, i - 1);
-    }
-    static std::wstring GetFilePathInPack(const DString& imageFilePath)
-    {
-        size_t i = 0;
-        int stackCount = 0;
-        for (i = 0; i < imageFilePath.size(); i++)
-        {
-            if (imageFilePath[i] == L'[')stackCount++;
-            if (imageFilePath[i] == L']')stackCount--;
-            if (0 == stackCount)break;
-        }
-        if (0 == i)return L"";
-        if (stackCount != 0)return L"";
-        return imageFilePath.substr(i+1);
-    }
 
 
 
@@ -60,7 +31,7 @@ namespace ui
 
     bool ui::ImageDecoder_PNG_EX::CanDecode(const DString& imageFilePath) const
     {
-        if (GetPackPath(imageFilePath).empty())return false;
+        if (Pack::PackPath_GetPackPath(imageFilePath).empty())return false;
         return __super::CanDecode(imageFilePath);
     }
 
@@ -85,10 +56,10 @@ namespace ui
         //插入从数据包中读文件的代码
         if (decodeParam.m_pFileData == nullptr)
         {
-            std::string packPath = StringConvert::WStringToUTF8(  GetPackPath(imageFilePath.ToString()));
+            std::string packPath = StringConvert::WStringToUTF8(Pack::PackPath_GetPackPath(imageFilePath.ToString()));
             Pack pack;
             if(!pack.Open(packPath.c_str()))return nullptr;
-            fileData=pack.LoadFile(StringConvert::WStringToUTF8(GetFilePathInPack(imageFilePath.ToString())).c_str());
+            fileData=pack.LoadFile(StringConvert::WStringToUTF8(Pack::PackPath_GetFilePathInPack(imageFilePath.ToString())).c_str());
         }
 
 
@@ -134,8 +105,10 @@ namespace ui
     bool ImageDecoder_JPG_EX::CanDecode(const DString& imageFilePath) const
     {
 
-        if (GetPackPath(imageFilePath).empty())return false;
-        return __super::CanDecode(imageFilePath);
+        if (Pack::PackPath_GetPackPath(imageFilePath).empty())return false;
+
+
+        return __super::CanDecode(Pack::PackPath_GetFilePathInPack(imageFilePath));
     }
 
 
@@ -154,10 +127,10 @@ namespace ui
 
         if (decodeParam.m_pFileData == nullptr)
         {
-            std::string packPath = StringConvert::WStringToUTF8(GetPackPath(imageFilePath.ToString()));
+            std::string packPath = StringConvert::WStringToUTF8(Pack::PackPath_GetPackPath(imageFilePath.ToString()));
             Pack pack;
             if (!pack.Open(packPath.c_str()))return nullptr;
-            fileData = pack.LoadFile(StringConvert::WStringToUTF8(GetFilePathInPack(imageFilePath.ToString())).c_str());
+            fileData = pack.LoadFile(StringConvert::WStringToUTF8(Pack::PackPath_GetFilePathInPack(imageFilePath.ToString())).c_str());
         }
 
 
@@ -197,7 +170,7 @@ namespace ui
 
     bool ImageDecoder_GIF_EX::CanDecode(const DString& imageFilePath) const
     {
-        if (GetPackPath(imageFilePath).empty())return false;
+        if (Pack::PackPath_GetPackPath(imageFilePath).empty())return false;
         return __super::CanDecode(imageFilePath);
     }
 
@@ -217,10 +190,10 @@ namespace ui
 
         if (decodeParam.m_pFileData == nullptr)
         {
-            std::string packPath = StringConvert::WStringToUTF8(GetPackPath(imageFilePath.ToString()));
+            std::string packPath = StringConvert::WStringToUTF8(Pack::PackPath_GetPackPath(imageFilePath.ToString()));
             Pack pack;
             if (!pack.Open(packPath.c_str()))return nullptr;
-            fileData = pack.LoadFile(StringConvert::WStringToUTF8(GetFilePathInPack(imageFilePath.ToString())).c_str());
+            fileData = pack.LoadFile(StringConvert::WStringToUTF8(Pack::PackPath_GetFilePathInPack(imageFilePath.ToString())).c_str());
         }
 
 

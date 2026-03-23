@@ -11,7 +11,7 @@
 					 valign="center" tooltip_text_id="STRID_SCENESELECT_BUTTON_TOOLTIP_CREATENEW"/>
 			</HBox>
 		<VirtualVTileListBox name="itemContainer" width="stretch" height="stretch" child_margin="2" 
-							 item_size="236,236" vscrollbar="true" select_none_when_click_blank="false">
+							 item_size="180,200" vscrollbar="true" select_none_when_click_blank="false">
 			
 		</VirtualVTileListBox>
 		

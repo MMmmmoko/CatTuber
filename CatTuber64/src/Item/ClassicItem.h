@@ -4,7 +4,7 @@
 #include<glm/glm.hpp>
 
 //经典CatTuber组合 角色桌子鼠标
-class TableObject;
+class DeskObject;
 class CharacterObject;
 class HandheldItemObject;
 class ClassicItem :public MainSceneItem
@@ -30,7 +30,7 @@ public:
 	void SetTransform(float posX, float posY, float posZ);
 	void SetScale(float scale);
 
-	TableObject* GetTable() { return _table; };
+	DeskObject* GetDesk() { return _desk; };
 	CharacterObject* GetCharacter() { return _character; };
 	HandheldItemObject* GetHandheldItem() { return _handHeldItem; };
 
@@ -50,7 +50,7 @@ private:
 
 
 
-	TableObject* _table = nullptr;
+	DeskObject* _desk = nullptr;
 	CharacterObject* _character = nullptr;
 	//QUESTION 手持物品到底有没有必要与桌子分开设置？
 	HandheldItemObject* _handHeldItem = nullptr;

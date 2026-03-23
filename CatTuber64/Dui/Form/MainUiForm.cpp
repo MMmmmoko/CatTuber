@@ -6,6 +6,7 @@
 #include"SceneSelectPage.h"
 #include"UIModelItemSelect_Page.h"
 #include"UserControl/UIScenePanel.h"
+#include"AppContext.h"
 MainUiForm::MainUiForm()
 {
 }
@@ -23,14 +24,11 @@ void MainUiForm::OnInitWindow()
 
 
 	//基础控件区
-	auto baseControl_btn_settings = dynamic_cast<ui::ButtonBox*>( FindControl(L"baseControl_btn_settings"));
-	if (baseControl_btn_settings)
-	{
-		baseControl_btn_settings->AttachClick([this](const ui::EventArgs&) ->bool{
-			GoToPage(L"SETTINGS_PAGE");
-			return true;
-			});
-	}
+	auto baseControl_btn = dynamic_cast<ui::ButtonBox*>( FindControl(L"baseControl_btn_settings"));
+	baseControl_btn->AttachClick(ui::UiBind(&MainUiForm::OnBaseControlBtnClicked, this, std::placeholders::_1));
+	baseControl_btn = dynamic_cast<ui::ButtonBox*>( FindControl(L"baseControl_btn_help"));
+	baseControl_btn->AttachClick(ui::UiBind(&MainUiForm::OnBaseControlBtnClicked, this, std::placeholders::_1));
+
 
 
 	//导航按钮
@@ -136,6 +134,40 @@ bool MainUiForm::OnNavigationBtnClicked(const ui::EventArgs& msg)
 	return true;
 }
 
+bool MainUiForm::OnBaseControlBtnClicked(const ui::EventArgs& msg)
+{
+	std::wstring senderName = msg.GetSender()->GetName();
+
+	if (senderName==L"baseControl_btn_settings")
+	{
+		GoToPage(L"SETTINGS_PAGE");
+	}
+	else if (senderName == L"baseControl_btn_help")
+	{
+		//todo 完善语言系统，当前获取的语言是unspecified
+
+		//打开软件的帮助页面
+		//构建链接
+		std::string appBasePath=AppContext::GetAppBasePath();
+		//获取当前语言链接
+		if (0 == strcmp("schinese", AppContext::GetAppLang()))
+		{
+			appBasePath += "Docs/schinese/index.html";
+		}
+		else
+		{
+			appBasePath += "Docs/english/index.html";
+		}
+		SDL_OpenURL(appBasePath.c_str());
+
+
+	}
+
+
+
+	return true;
+}
+
 void MainUiForm::GoToPage(const std::wstring& pageName)
 {
 	//先从pagecontainer里检索
@@ -230,9 +262,9 @@ ui::Box* MainUiForm::BuildPage(const std::wstring& pageName)
 		page->InitContents();
 		return page;
 	}
-	else if (pageName == L"CLASSIC_TABLE_SELECT_PAGE")
+	else if (pageName == L"CLASSIC_DESK_SELECT_PAGE")
 	{
-		auto page = new UIModelItemSelect_Page(this, UIModelItemType_ClassicTable);
+		auto page = new UIModelItemSelect_Page(this, UIModelItemType_ClassicDesk);
 		page->InitContents();
 		return page;
 	}

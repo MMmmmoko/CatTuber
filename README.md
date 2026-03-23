@@ -13,7 +13,7 @@
  - 可编辑桌面系统（见下图，用户可以在网点阵列中自行设计自己的键盘而不需要有任何的美术基础）
 	
 	
-<img src="Docs/Images/TableEditor.gif" alt="可编辑桌面系统"/>
+<img src="Docs/Images/DeskEditor.gif" alt="可编辑桌面系统"/>
 	
 	
 

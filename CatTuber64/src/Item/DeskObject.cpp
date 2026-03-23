@@ -7,7 +7,7 @@
 #include"Model/Live2DModelBase.h"
 
 #include"Item/Scene.h"
-#include"Item/TableObject.h"
+#include"Item/DeskObject.h"
 #include"Item/CharacterObject.h"
 #include"Item/HandheldItemObject.h"
 #include"Item/ModelControl.h"
@@ -15,7 +15,7 @@
 //入参应该是个文件夹或者资源包
 
 //PACK中有一个Model文件夹和一些关于此资源的信息（封面、作者信息等）
-bool TableObject::LoadFromPath(const char* u8PackPath, const Json::Value& bindingJson)
+bool DeskObject::LoadFromPath(const char* u8PackPath, const Json::Value& bindingJson)
 {
 	//如果重新加载
 	if (_model)
@@ -103,7 +103,7 @@ bool TableObject::LoadFromPath(const char* u8PackPath, const Json::Value& bindin
 		//desc["Animation"]["Track"]=1;
 		// 
 		// 
-		//desc[DefaultBinding]存放物理按键与建模按键的绑定TableObject.h
+		//desc[DefaultBinding]存放物理按键与建模按键的绑定DeskObject.h
 
 		//在这个Loadmodel里即完成绑定的加载。
 
@@ -136,7 +136,7 @@ bool TableObject::LoadFromPath(const char* u8PackPath, const Json::Value& bindin
 			{
 				std::string keyName=paramStr.substr(sizeof(CATTUBER_MODEL_BUTTON_PARAM_HEAD)-1);
 				
-				std::string actionName = "Table.Button."+ std::to_string(buttonIndex) + ".Down";
+				std::string actionName = "Desk.Button."+ std::to_string(buttonIndex) + ".Down";
 				
 
 				
@@ -156,7 +156,7 @@ bool TableObject::LoadFromPath(const char* u8PackPath, const Json::Value& bindin
 			{
 				std::string axisName = paramStr.substr(sizeof(CATTUBER_MODEL_AXIS_PARAM_HEAD) - 1);
 			
-				std::string actionName = "Table.Axis." + std::to_string(axisIndex) + ".Change";
+				std::string actionName = "Desk.Axis." + std::to_string(axisIndex) + ".Change";
 			
 				const char* baseName = input::AxisNameToBaseName(axisName);
 
@@ -183,7 +183,7 @@ bool TableObject::LoadFromPath(const char* u8PackPath, const Json::Value& bindin
 }
 
 
-void TableObject::Update(uint64_t deltaTicksNS)
+void DeskObject::Update(uint64_t deltaTicksNS)
 {
 	if (working)
 	{
@@ -521,7 +521,7 @@ else {sumRHandX+=X*weight; sumRHandY+=Y*weight;sumRWeights+=weight;}
 }
 
 
-void TableObject::Draw(MixDrawList* drawList)
+void DeskObject::Draw(MixDrawList* drawList)
 {
 	if (working)
 	{
@@ -529,7 +529,7 @@ void TableObject::Draw(MixDrawList* drawList)
 	}
 }
 
-void TableObject::OnLoopEnd()
+void DeskObject::OnLoopEnd()
 {
 	//绘制之后的调用，可以用于状态清理重置
 	for (auto& axisGroup:modelAxisVec)
@@ -538,7 +538,7 @@ void TableObject::OnLoopEnd()
 	}
 }
 
-Json::Value TableObject::GenerateAttributes()
+Json::Value DeskObject::GenerateAttributes()
 {
 	if (resourcePath.empty())
 	{
@@ -553,19 +553,19 @@ Json::Value TableObject::GenerateAttributes()
 	return json;
 }
 
-TableObject* TableObject::CreateFromAttributes(const Json::Value& applyJson)
+DeskObject* DeskObject::CreateFromAttributes(const Json::Value& applyJson)
 {
 	if (!(applyJson.isMember("PackPath")&& applyJson["PackPath"].isString()))
 	{
-		SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Create Table with invalid json! No path info exist.");
+		SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Create Desk with invalid json! No path info exist.");
 		return nullptr;
 	}
-	auto resultObj = new TableObject;
+	auto resultObj = new DeskObject;
 	
 	std::string pathStr = AppContext::ResolvePathToAbsolute(applyJson["PackPath"].asString());
 	if (!resultObj->LoadFromPath(pathStr.c_str(), applyJson["Bindings"]))
 	{
-		SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Can not create Table at path: %s.", pathStr.c_str());
+		SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Can not create Desk at path: %s.", pathStr.c_str());
 		delete resultObj;
 		return nullptr;
 	}
@@ -576,7 +576,7 @@ TableObject* TableObject::CreateFromAttributes(const Json::Value& applyJson)
 	return resultObj;
 }
 
-void TableObject::ReleaseObj(TableObject* obj)
+void DeskObject::ReleaseObj(DeskObject* obj)
 {
 	//上面怎么创建，这里就怎么释放
 	if (!obj)return;
@@ -594,12 +594,12 @@ void TableObject::ReleaseObj(TableObject* obj)
 	delete obj;
 }
 
-bool TableObject::LoadBindingByName(const char* bindingName)
+bool DeskObject::LoadBindingByName(const char* bindingName)
 {
 	return ModelControl::LoadBindingByName(resourcePath, bindingName,&modelButtonVec,&modelAxisVec,&modelAnimationVec);
 }
 
-void TableObject::LoadBinding()
+void DeskObject::LoadBinding()
 {
 	if (LoadBindingByName("##Save"))
 	{
@@ -626,7 +626,7 @@ void TableObject::LoadBinding()
 	}
 }
 
-void TableObject::ClearBinding()
+void DeskObject::ClearBinding()
 {
 	for (auto& x : modelButtonVec)
 	{
@@ -652,7 +652,7 @@ void TableObject::ClearBinding()
 
 
 //具体action到函数成员方法
-void TableObject::RegisterAllActionFunc(bool falseToUnregister)
+void DeskObject::RegisterAllActionFunc(bool falseToUnregister)
 {
 	//模型控件相关
 	auto& im = InputManager::GetIns();
@@ -661,20 +661,20 @@ void TableObject::RegisterAllActionFunc(bool falseToUnregister)
 		downActionCallBack.userData = this;
 		downActionCallBack.callback = [](const char* actionName, float value, void* userData, uint64_t userData2)
 			{
-				((TableObject*)userData)->OnButtonDown(UTIL_GETLOW32VALUE(userData2));
+				((DeskObject*)userData)->OnButtonDown(UTIL_GETLOW32VALUE(userData2));
 			};
 
 		ActionCallback upActionCallBack;
 		upActionCallBack.userData = this;
 		upActionCallBack.callback = [](const char* actionName, float value, void* userData, uint64_t userData2)
 			{
-				((TableObject*)userData)->OnButtonUp(UTIL_GETLOW32VALUE(userData2));
+				((DeskObject*)userData)->OnButtonUp(UTIL_GETLOW32VALUE(userData2));
 			};
 
 		for (int i = 0; i < modelButtonVec.size(); i++)
 		{
-			std::string downActionName = "Table.Button." + std::to_string(i) + ".Down";
-			std::string upActionName = "Table.Button." + std::to_string(i) + ".Up";
+			std::string downActionName = "Desk.Button." + std::to_string(i) + ".Down";
+			std::string upActionName = "Desk.Button." + std::to_string(i) + ".Up";
 
 			UTIL_SETLOW32VALUE(downActionCallBack.userData2,i);
 			UTIL_SETLOW32VALUE(upActionCallBack.userData2,i);
@@ -702,7 +702,7 @@ void TableObject::RegisterAllActionFunc(bool falseToUnregister)
 			{
 				//由于多轴的存在，这里userData2需要拆分成两个参数
 				//低位是轴组的索引，高位是轴在组中的索引
-				((TableObject*)userData)->OnAxisValueChange(UTIL_GETLOW32VALUE(userData2),UTIL_GETHIGH32VALUE(userData2), value);
+				((DeskObject*)userData)->OnAxisValueChange(UTIL_GETLOW32VALUE(userData2),UTIL_GETHIGH32VALUE(userData2), value);
 			};
 
 		for (int i = 0; i < modelAxisVec.size(); i++)
@@ -713,7 +713,7 @@ void TableObject::RegisterAllActionFunc(bool falseToUnregister)
 			{
 				UTIL_SETHIGH32VALUE(axisActionCallBack.userData2, j);
 
-				std::string axisActionName = "Table.Axis." + std::to_string(i) + "."+ std::to_string(j) +"Change";
+				std::string axisActionName = "Desk.Axis." + std::to_string(i) + "."+ std::to_string(j) +"Change";
 				if (falseToUnregister)
 					im.RegisterActionCallback(axisActionName.c_str(), axisActionCallBack);
 				else
@@ -728,12 +728,12 @@ void TableObject::RegisterAllActionFunc(bool falseToUnregister)
 		animationActionCallBack.userData = this;
 		animationActionCallBack.callback = [](const char* actionName, float value, void* userData, uint64_t userData2)
 			{
-				((TableObject*)userData)->OnAnimationPlay(UTIL_GETLOW32VALUE(userData2));
+				((DeskObject*)userData)->OnAnimationPlay(UTIL_GETLOW32VALUE(userData2));
 			};
 
 		for (int i = 0; i < modelAnimationVec.size(); i++)
 		{
-			std::string animationActionName = "Table.Animation." + std::to_string(i) + ".Start";
+			std::string animationActionName = "Desk.Animation." + std::to_string(i) + ".Start";
 			UTIL_SETLOW32VALUE(animationActionCallBack.userData2, i);
 			if(falseToUnregister)
 			im.RegisterActionCallback(animationActionName.c_str(), animationActionCallBack);
@@ -744,12 +744,12 @@ void TableObject::RegisterAllActionFunc(bool falseToUnregister)
 	}
 }
 
-void TableObject::UnregisterAllActionFunc()
+void DeskObject::UnregisterAllActionFunc()
 {
 	RegisterAllActionFunc(false);
 }
 
-void TableObject::OnButtonDown(int btnIndex)
+void DeskObject::OnButtonDown(int btnIndex)
 {
 	if (btnIndex >= modelButtonVec.size())return;
 
@@ -761,7 +761,7 @@ void TableObject::OnButtonDown(int btnIndex)
 		InputManager::GetIns().RiseAction(curButton.downAction);
 }
 
-void TableObject::OnButtonUp(int btnIndex)
+void DeskObject::OnButtonUp(int btnIndex)
 {
 	if (btnIndex >= modelButtonVec.size())return;
 
@@ -777,7 +777,7 @@ void TableObject::OnButtonUp(int btnIndex)
 
 }
 
-void TableObject::OnAxisValueChange(int axisGroupIndex, int axisIndex, float value)
+void DeskObject::OnAxisValueChange(int axisGroupIndex, int axisIndex, float value)
 {
 	if (axisGroupIndex >= modelAxisVec.size()
 		|| axisIndex>= modelAxisVec[axisGroupIndex].axisVec.size()
@@ -832,7 +832,7 @@ void TableObject::OnAxisValueChange(int axisGroupIndex, int axisIndex, float val
 	//curAxis.value = value;
 }
 
-void TableObject::OnAnimationPlay(int animationIndex)
+void DeskObject::OnAnimationPlay(int animationIndex)
 {
 	if (animationIndex >= modelAnimationVec.size())return;
 
@@ -843,7 +843,7 @@ void TableObject::OnAnimationPlay(int animationIndex)
 
 }
 
-void TableObject::_UpdateAxisVec()
+void DeskObject::_UpdateAxisVec()
 {
 	//为了防止axis组的多次触发，先收集好信息后再调用此函数进行动作触发
 

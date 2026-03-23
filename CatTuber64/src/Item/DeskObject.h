@@ -1,5 +1,5 @@
-#ifndef _TableObject_h
-#define _TableObject_h
+#ifndef _DeskObject_h
+#define _DeskObject_h
 
 
 //桌子对象除了自身之外还将为笔和角色提供运动数据
@@ -15,7 +15,7 @@ class MixDrawList;
 
 
 
-class TableObject
+class DeskObject
 {
 	friend class ClassicItem;
 
@@ -44,8 +44,8 @@ public:
 
 	virtual Json::Value GenerateAttributes();
 	//如果出现问题返回空
-	static TableObject* CreateFromAttributes(const Json::Value& applyJson);
-	static void ReleaseObj(TableObject*);//Release需要和Create搭配，免得其他人不知道怎么正确释放资源
+	static DeskObject* CreateFromAttributes(const Json::Value& applyJson);
+	static void ReleaseObj(DeskObject*);//Release需要和Create搭配，免得其他人不知道怎么正确释放资源
 
 
 
@@ -69,8 +69,8 @@ public:
 	//直接按索引来吗？
 	//JsonRoot[Buttons][0][Type]="ButtonToAction"
 	//JsonRoot[Buttons][0][Button][0]="Keyborad.A"//WinKeyboardInput.cpp
-	//JsonRoot[Buttons][0][DownAction]="Table.Button.0.Down"
-	//JsonRoot[Buttons][0][UpAction]="Table.Button.0.Up"
+	//JsonRoot[Buttons][0][DownAction]="Desk.Button.0.Down"
+	//JsonRoot[Buttons][0][UpAction]="Desk.Button.0.Up"
 	//Action
 	
 
@@ -87,8 +87,8 @@ private:
 	void UnregisterAllActionFunc();//Action与实际成员函数的绑定
 
 
-	void OnButtonDown(int btnIndex);//控制参数的同时还要触发按钮上绑定的动画//发送一个TableButtonDown的Action（当Event用）
-	void OnButtonUp(int btnIndex);//发送一个TableButtonUp的Action（当Event用）
+	void OnButtonDown(int btnIndex);//控制参数的同时还要触发按钮上绑定的动画//发送一个DeskButtonDown的Action（当Event用）
+	void OnButtonUp(int btnIndex);//发送一个DeskButtonUp的Action（当Event用）
 	void OnAxisValueChange(int axisGroupIndex, int axisIndex,float value);//控制对应参数
 	void OnAnimationPlay(int animationIndex);
 

@@ -10,7 +10,7 @@ enum UIModelItemType
 {
 	UIModelItemType_Empty,
 	UIModelItemType_ClassicCharacter,
-	UIModelItemType_ClassicTable,
+	UIModelItemType_ClassicDesk,
 	UIModelItemType_ClassicHandheldItem,
 
 	UIModelItemType_BongoCat,//BongoCatMver
@@ -53,7 +53,7 @@ private:
 
 	ui::Control* imgCover=nullptr;
 	ui::Control* imgFavoriteIcon =nullptr;
-	ui::Label* labelSceneName=nullptr;
+	ui::Label* labelItenName=nullptr;
 	size_t index=MAXSIZE_T;
 	bool isSelected = false;
 	bool isFavorite = false;
@@ -143,6 +143,7 @@ private:
 
 
 	std::vector<ItemInfo> itemList;
+	std::vector<std::shared_ptr<ui::ImageInfo>> imageCache;
 
 
 

@@ -52,6 +52,18 @@ namespace util {
 	
 	inline float NanoTicksToSeconds(uint64_t ticks);
 
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 

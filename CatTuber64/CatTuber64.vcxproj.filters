@@ -152,7 +152,7 @@
     <ClInclude Include="src\Item\StraightMovingPoint.h">
       <Filter>源文件\Item</Filter>
     </ClInclude>
-    <ClInclude Include="src\Item\TableObject.h">
+    <ClInclude Include="src\Item\DeskObject.h">
       <Filter>源文件\Item</Filter>
     </ClInclude>
     <ClInclude Include="src\Item\CharacterObject.h">
@@ -242,6 +242,15 @@
     <ClInclude Include="Dui\UserControl\UIScenePanel.h">
       <Filter>Dui\UserControl</Filter>
     </ClInclude>
+    <ClInclude Include="src\Item\DecorationObject.h">
+      <Filter>源文件\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Item\ObjectBase.h">
+      <Filter>源文件\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Item\DecorationItem.h">
+      <Filter>源文件\Item</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -283,7 +292,7 @@
     <ClCompile Include="src\Util\WeakSupport.cpp">
       <Filter>源文件\Util</Filter>
     </ClCompile>
-    <ClCompile Include="src\Item\TableObject.cpp">
+    <ClCompile Include="src\Item\DeskObject.cpp">
       <Filter>源文件\Item</Filter>
     </ClCompile>
     <ClCompile Include="src\Pack\Pack.cpp">
@@ -411,6 +420,12 @@
     </ClCompile>
     <ClCompile Include="Dui\UserControl\UIScenePanel.cpp">
       <Filter>Dui\UserControl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Item\DecorationObject.cpp">
+      <Filter>源文件\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Item\DecorationItem.cpp">
+      <Filter>源文件\Item</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

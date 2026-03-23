@@ -23,9 +23,9 @@ const char* InputParser::ParamNameToButtonBaseName(const std::string& paramName)
 		keyName = upper.substr(sizeof("CAT_KEY_") - 1);
 	if (!keyName.empty())
 	{
-		auto& keyTable = GetIns().keyTable;
-		auto it = keyTable.find(keyName);
-		if (it != keyTable.end())
+		auto& keyDesk = GetIns().keyDesk;
+		auto it = keyDesk.find(keyName);
+		if (it != keyDesk.end())
 			return it->second;
 	}
 
@@ -74,235 +74,235 @@ const char* InputParser::ButtonBaseNameToUIName(const char* buttonBaseName)
 
 InputParser::InputParser()
 {
-	//keyTable
+	//keyDesk
 	{
-		keyTable["ESCAPE"] = "Keyboard.ESC";
-		keyTable["ESC"] = "Keyboard.ESC";
+		keyDesk["ESCAPE"] = "Keyboard.ESC";
+		keyDesk["ESC"] = "Keyboard.ESC";
 
-		keyTable["1"] = "Keyboard.1";
-		keyTable["2"] = "Keyboard.2";
-		keyTable["3"] = "Keyboard.3";
-		keyTable["4"] = "Keyboard.4";
-		keyTable["5"] = "Keyboard.5";
-		keyTable["6"] = "Keyboard.6";
-		keyTable["7"] = "Keyboard.7";
-		keyTable["8"] = "Keyboard.8";
-		keyTable["9"] = "Keyboard.9";
-		keyTable["0"] = "Keyboard.0";
+		keyDesk["1"] = "Keyboard.1";
+		keyDesk["2"] = "Keyboard.2";
+		keyDesk["3"] = "Keyboard.3";
+		keyDesk["4"] = "Keyboard.4";
+		keyDesk["5"] = "Keyboard.5";
+		keyDesk["6"] = "Keyboard.6";
+		keyDesk["7"] = "Keyboard.7";
+		keyDesk["8"] = "Keyboard.8";
+		keyDesk["9"] = "Keyboard.9";
+		keyDesk["0"] = "Keyboard.0";
 
-		keyTable["MINUS"] = "Keyboard.MINUS";
-		keyTable["EQUALS"] = "Keyboard.EQUALS";
-		keyTable["BACKSPACE"] = "Keyboard.BACKSPACE";
-		keyTable["BACK"] = "Keyboard.BACKSPACE";
-		keyTable["TAB"] = "Keyboard.TAB";
+		keyDesk["MINUS"] = "Keyboard.MINUS";
+		keyDesk["EQUALS"] = "Keyboard.EQUALS";
+		keyDesk["BACKSPACE"] = "Keyboard.BACKSPACE";
+		keyDesk["BACK"] = "Keyboard.BACKSPACE";
+		keyDesk["TAB"] = "Keyboard.TAB";
 
 
-		keyTable["Q"] = "Keyboard.Q";
-		keyTable["W"] = "Keyboard.W";
-		keyTable["E"] = "Keyboard.E";
-		keyTable["R"] = "Keyboard.R";
-		keyTable["T"] = "Keyboard.T";
-		keyTable["Y"] = "Keyboard.Y";
-		keyTable["U"] = "Keyboard.U";
-		keyTable["I"] = "Keyboard.I";
-		keyTable["O"] = "Keyboard.O";
-		keyTable["P"] = "Keyboard.P";
+		keyDesk["Q"] = "Keyboard.Q";
+		keyDesk["W"] = "Keyboard.W";
+		keyDesk["E"] = "Keyboard.E";
+		keyDesk["R"] = "Keyboard.R";
+		keyDesk["T"] = "Keyboard.T";
+		keyDesk["Y"] = "Keyboard.Y";
+		keyDesk["U"] = "Keyboard.U";
+		keyDesk["I"] = "Keyboard.I";
+		keyDesk["O"] = "Keyboard.O";
+		keyDesk["P"] = "Keyboard.P";
 
 
 #define _TOSTR(X) #X
-#define PUSHTABLE(X) keyTable[#X]= _TOSTR(Keyboard.##X);
-		PUSHTABLE(LBRACKET);
-		PUSHTABLE(RBRACKET);
-		keyTable["ENTER"] = "Keyboard.RETURN";
-		keyTable["RETURN"] = "Keyboard.RETURN";
-		keyTable["LCONTROL"] = "Keyboard.LCTRL";
-		keyTable["LCTRL"] = "Keyboard.LCTRL";
+#define PUSHDESK(X) keyDesk[#X]= _TOSTR(Keyboard.##X);
+		PUSHDESK(LBRACKET);
+		PUSHDESK(RBRACKET);
+		keyDesk["ENTER"] = "Keyboard.RETURN";
+		keyDesk["RETURN"] = "Keyboard.RETURN";
+		keyDesk["LCONTROL"] = "Keyboard.LCTRL";
+		keyDesk["LCTRL"] = "Keyboard.LCTRL";
 
-		PUSHTABLE(A);
-		PUSHTABLE(S);
-		PUSHTABLE(D);
-		PUSHTABLE(F);
-		PUSHTABLE(G);
-		PUSHTABLE(H);
-		PUSHTABLE(J);
-		PUSHTABLE(K);
-		PUSHTABLE(L);
+		PUSHDESK(A);
+		PUSHDESK(S);
+		PUSHDESK(D);
+		PUSHDESK(F);
+		PUSHDESK(G);
+		PUSHDESK(H);
+		PUSHDESK(J);
+		PUSHDESK(K);
+		PUSHDESK(L);
 
-		PUSHTABLE(SEMICOLON);
-		PUSHTABLE(APOSTROPHE);
-		PUSHTABLE(GRAVE);
-		PUSHTABLE(LSHIFT);
-		PUSHTABLE(BACKSLASH);
-
-
-		PUSHTABLE(Z);
-		PUSHTABLE(X);
-		PUSHTABLE(C);
-		PUSHTABLE(V);
-		PUSHTABLE(B);
-		PUSHTABLE(N);
-		PUSHTABLE(M);
-
-		PUSHTABLE(COMMA);
-		PUSHTABLE(PERIOD);
-		PUSHTABLE(SLASH);
-		PUSHTABLE(RSHIFT);
-
-		keyTable["MULTIPLY"] = "Keyboard.KP_MULTIPLY";
-		keyTable["NUM_STAR"] = "Keyboard.KP_MULTIPLY";
-		keyTable["NUM_MULTIPLY"] = "Keyboard.KP_MULTIPLY";
-		keyTable["KP_MULTIPLY"] = "Keyboard.KP_MULTIPLY";
-
-		keyTable["LMENU"] = "Keyboard.LALT";
-		keyTable["LALT"] = "Keyboard.LALT";
-		PUSHTABLE(SPACE);
-		keyTable["CAPITAL"] = "Keyboard.CAPSLOCK";
-		keyTable["CAPSLOCK"] = "Keyboard.CAPSLOCK";
-		keyTable["CAPS"] = "Keyboard.CAPSLOCK";
-
-		PUSHTABLE(F1);
-		PUSHTABLE(F2);
-		PUSHTABLE(F3);
-		PUSHTABLE(F4);
-		PUSHTABLE(F5);
-		PUSHTABLE(F6);
-		PUSHTABLE(F7);
-		PUSHTABLE(F8);
-		PUSHTABLE(F9);
-		PUSHTABLE(F10);
+		PUSHDESK(SEMICOLON);
+		PUSHDESK(APOSTROPHE);
+		PUSHDESK(GRAVE);
+		PUSHDESK(LSHIFT);
+		PUSHDESK(BACKSLASH);
 
 
-		keyTable["NUM"] = "Keyboard.NUMLOCK";
-		keyTable["NUMLOCK"] = "Keyboard.NUMLOCK";
-		keyTable["SCROLL"] = "Keyboard.SCROLLLOCK";
-		keyTable["SCROLLLOCK"] = "Keyboard.SCROLLLOCK";
+		PUSHDESK(Z);
+		PUSHDESK(X);
+		PUSHDESK(C);
+		PUSHDESK(V);
+		PUSHDESK(B);
+		PUSHDESK(N);
+		PUSHDESK(M);
 
-#define PUSHTABLE_NUM(X) keyTable[_TOSTR(NUMPAD##X)]=_TOSTR(Keyboard.KP_##X);\
-keyTable[_TOSTR(KP_##X)]=_TOSTR(Keyboard.KP_##X);\
-keyTable[_TOSTR(NUM_##X)]=_TOSTR(Keyboard.KP_##X)
-		keyTable["NUMPAD7"] = "Keyboard.KP_7";
-		keyTable["KP_7"] = "Keyboard.KP_7";
-		keyTable["NUM_7"] = "Keyboard.KP_7";
-		PUSHTABLE_NUM(8);
-		PUSHTABLE_NUM(9);
-		keyTable["SUBTRACT"] = "Keyboard.KP_MINUS";
-		keyTable["NUMPADMINUS"] = "Keyboard.KP_MINUS";
-		keyTable["KP_MINUS"] = "Keyboard.KP_MINUS";
-		PUSHTABLE_NUM(4);
-		PUSHTABLE_NUM(5);
-		PUSHTABLE_NUM(6);
-		keyTable["ADD"] = "Keyboard.KP_PLUS";
-		keyTable["NUMPADPLUS"] = "Keyboard.KP_PLUS";
-		keyTable["NUM_PLUS"] = "Keyboard.KP_PLUS";
-		keyTable["KP_PLUS"] = "Keyboard.KP_PLUS";
-		PUSHTABLE_NUM(1);
-		PUSHTABLE_NUM(2);
-		PUSHTABLE_NUM(3);
-		PUSHTABLE_NUM(0);
-		keyTable["DECIMAL"] = "Keyboard.KP_PERIOD";
-		keyTable["NUM_DECIMAL"] = "Keyboard.KP_PERIOD";
-		keyTable["NUM_PERIOD"] = "Keyboard.KP_PERIOD";
-		keyTable["NUMPADPERIOD"] = "Keyboard.KP_PERIOD";
-		keyTable["KP_PERIOD"] = "Keyboard.KP_PERIOD";
-		keyTable["OEM_102"] = "Keyboard.NONUSBACKSLASH";
-		keyTable["NONUSBACKSLASH"] = "Keyboard.NONUSBACKSLASH";
+		PUSHDESK(COMMA);
+		PUSHDESK(PERIOD);
+		PUSHDESK(SLASH);
+		PUSHDESK(RSHIFT);
+
+		keyDesk["MULTIPLY"] = "Keyboard.KP_MULTIPLY";
+		keyDesk["NUM_STAR"] = "Keyboard.KP_MULTIPLY";
+		keyDesk["NUM_MULTIPLY"] = "Keyboard.KP_MULTIPLY";
+		keyDesk["KP_MULTIPLY"] = "Keyboard.KP_MULTIPLY";
+
+		keyDesk["LMENU"] = "Keyboard.LALT";
+		keyDesk["LALT"] = "Keyboard.LALT";
+		PUSHDESK(SPACE);
+		keyDesk["CAPITAL"] = "Keyboard.CAPSLOCK";
+		keyDesk["CAPSLOCK"] = "Keyboard.CAPSLOCK";
+		keyDesk["CAPS"] = "Keyboard.CAPSLOCK";
+
+		PUSHDESK(F1);
+		PUSHDESK(F2);
+		PUSHDESK(F3);
+		PUSHDESK(F4);
+		PUSHDESK(F5);
+		PUSHDESK(F6);
+		PUSHDESK(F7);
+		PUSHDESK(F8);
+		PUSHDESK(F9);
+		PUSHDESK(F10);
 
 
-		PUSHTABLE(F11);
-		PUSHTABLE(F12);
-		PUSHTABLE(F13);
-		PUSHTABLE(F14);
-		PUSHTABLE(F15);
+		keyDesk["NUM"] = "Keyboard.NUMLOCK";
+		keyDesk["NUMLOCK"] = "Keyboard.NUMLOCK";
+		keyDesk["SCROLL"] = "Keyboard.SCROLLLOCK";
+		keyDesk["SCROLLLOCK"] = "Keyboard.SCROLLLOCK";
 
-		PUSHTABLE(KANA);
-		PUSHTABLE(YEN);
+#define PUSHDESK_NUM(X) keyDesk[_TOSTR(NUMPAD##X)]=_TOSTR(Keyboard.KP_##X);\
+keyDesk[_TOSTR(KP_##X)]=_TOSTR(Keyboard.KP_##X);\
+keyDesk[_TOSTR(NUM_##X)]=_TOSTR(Keyboard.KP_##X)
+		keyDesk["NUMPAD7"] = "Keyboard.KP_7";
+		keyDesk["KP_7"] = "Keyboard.KP_7";
+		keyDesk["NUM_7"] = "Keyboard.KP_7";
+		PUSHDESK_NUM(8);
+		PUSHDESK_NUM(9);
+		keyDesk["SUBTRACT"] = "Keyboard.KP_MINUS";
+		keyDesk["NUMPADMINUS"] = "Keyboard.KP_MINUS";
+		keyDesk["KP_MINUS"] = "Keyboard.KP_MINUS";
+		PUSHDESK_NUM(4);
+		PUSHDESK_NUM(5);
+		PUSHDESK_NUM(6);
+		keyDesk["ADD"] = "Keyboard.KP_PLUS";
+		keyDesk["NUMPADPLUS"] = "Keyboard.KP_PLUS";
+		keyDesk["NUM_PLUS"] = "Keyboard.KP_PLUS";
+		keyDesk["KP_PLUS"] = "Keyboard.KP_PLUS";
+		PUSHDESK_NUM(1);
+		PUSHDESK_NUM(2);
+		PUSHDESK_NUM(3);
+		PUSHDESK_NUM(0);
+		keyDesk["DECIMAL"] = "Keyboard.KP_PERIOD";
+		keyDesk["NUM_DECIMAL"] = "Keyboard.KP_PERIOD";
+		keyDesk["NUM_PERIOD"] = "Keyboard.KP_PERIOD";
+		keyDesk["NUMPADPERIOD"] = "Keyboard.KP_PERIOD";
+		keyDesk["KP_PERIOD"] = "Keyboard.KP_PERIOD";
+		keyDesk["OEM_102"] = "Keyboard.NONUSBACKSLASH";
+		keyDesk["NONUSBACKSLASH"] = "Keyboard.NONUSBACKSLASH";
 
-		keyTable["NUMPADEQUALS"] = "Keyboard.KP_EQUALS";
-		keyTable["KP_EQUALS"] = "Keyboard.KP_EQUALS";
-		keyTable["NUM_EQUALS"] = "Keyboard.KP_EQUALS";
 
-		keyTable["PREVTRACK"] = "Keyboard.MEDIA_PREVTRACK";
-		keyTable["MEDIA_PREVTRACK"] = "Keyboard.MEDIA_PREVTRACK";
-		keyTable["AT"] = "Keyboard.KP_AT";
-		keyTable["KP_AT"] = "Keyboard.KP_AT";
-		keyTable["COLON"] = "Keyboard.KP_COLON";
-		keyTable["KP_COLON"] = "Keyboard.KP_COLON";
-		keyTable["STOP"] = "Keyboard.MEDIA_STOP";
-		keyTable["MEDIA_STOP"] = "Keyboard.MEDIA_STOP";
-		keyTable["NEXTTRACK"] = "Keyboard.MEDIA_NEXTTRACK";
-		keyTable["MEDIA_NEXTTRACK"] = "Keyboard.MEDIA_NEXTTRACK";
+		PUSHDESK(F11);
+		PUSHDESK(F12);
+		PUSHDESK(F13);
+		PUSHDESK(F14);
+		PUSHDESK(F15);
 
-		keyTable["NUMPADENTER"] = "Keyboard.KP_ENTER";
-		keyTable["NUM_ENTER"] = "Keyboard.KP_ENTER";
-		keyTable["KP_ENTER"] = "Keyboard.KP_ENTER";
-		keyTable["RCONTROL"] = "Keyboard.RCTRL";
-		keyTable["RCTRL"] = "Keyboard.RCTRL";
+		PUSHDESK(KANA);
+		PUSHDESK(YEN);
 
-		keyTable["MUTE"] = "Keyboard.MUTE";
-		keyTable["PLAYPAUSE"] = "Keyboard.MEDIA_PLAYPAUSE";
-		keyTable["MEDIA_PLAYPAUSE"] = "Keyboard.MEDIA_PLAYPAUSE";
-		keyTable["MEDIASTOP"] = "Keyboard.MEDIA_STOP";
-		keyTable["MEDIA_STOP"] = "Keyboard.MEDIA_STOP";
+		keyDesk["NUMPADEQUALS"] = "Keyboard.KP_EQUALS";
+		keyDesk["KP_EQUALS"] = "Keyboard.KP_EQUALS";
+		keyDesk["NUM_EQUALS"] = "Keyboard.KP_EQUALS";
 
-		PUSHTABLE(VOLUMEDOWN);
-		PUSHTABLE(VOLUMEUP);
-		PUSHTABLE(WEBHOME);
+		keyDesk["PREVTRACK"] = "Keyboard.MEDIA_PREVTRACK";
+		keyDesk["MEDIA_PREVTRACK"] = "Keyboard.MEDIA_PREVTRACK";
+		keyDesk["AT"] = "Keyboard.KP_AT";
+		keyDesk["KP_AT"] = "Keyboard.KP_AT";
+		keyDesk["COLON"] = "Keyboard.KP_COLON";
+		keyDesk["KP_COLON"] = "Keyboard.KP_COLON";
+		keyDesk["STOP"] = "Keyboard.MEDIA_STOP";
+		keyDesk["MEDIA_STOP"] = "Keyboard.MEDIA_STOP";
+		keyDesk["NEXTTRACK"] = "Keyboard.MEDIA_NEXTTRACK";
+		keyDesk["MEDIA_NEXTTRACK"] = "Keyboard.MEDIA_NEXTTRACK";
 
-		keyTable["NUMPADCOMMA"] = "Keyboard.KP_COMMA";
-		keyTable["NUM_COMMA"] = "Keyboard.KP_COMMA";
-		keyTable["KP_COMMA"] = "Keyboard.KP_COMMA";
-		keyTable["DIVIDE"] = "Keyboard.KP_DIVIDE";
-		keyTable["NUMPADSLASH"] = "Keyboard.KP_DIVIDE";
-		keyTable["NUM_DIVIDE"] = "Keyboard.KP_DIVIDE";
-		keyTable["KP_DIVIDE"] = "Keyboard.KP_DIVIDE";
-		keyTable["SYSRQ"] = "Keyboard.SYSREQ";
-		keyTable["SYSREQ"] = "Keyboard.SYSREQ";
-		keyTable["RMENU"] = "Keyboard.RALT";
-		keyTable["RALT"] = "Keyboard.RALT";
-		PUSHTABLE(PAUSE);
-		PUSHTABLE(HOME);
-		PUSHTABLE(UP);
-		keyTable["PRIOR"] = "Keyboard.PAGEUP";
-		keyTable["PAGEUP"] = "Keyboard.PAGEUP";
-		keyTable["PGUP"] = "Keyboard.PAGEUP";
-		PUSHTABLE(LEFT);
-		PUSHTABLE(RIGHT);
-		PUSHTABLE(END);
-		PUSHTABLE(DOWN);
-		keyTable["NEXT"] = "Keyboard.PAGEDOWN";
-		keyTable["PAGEDOWN"] = "Keyboard.PAGEDOWN";
-		keyTable["PGDN"] = "Keyboard.PAGEDOWN";
+		keyDesk["NUMPADENTER"] = "Keyboard.KP_ENTER";
+		keyDesk["NUM_ENTER"] = "Keyboard.KP_ENTER";
+		keyDesk["KP_ENTER"] = "Keyboard.KP_ENTER";
+		keyDesk["RCONTROL"] = "Keyboard.RCTRL";
+		keyDesk["RCTRL"] = "Keyboard.RCTRL";
 
-		PUSHTABLE(INSERT);
-		PUSHTABLE(DELETE);
-		PUSHTABLE(LWIN);
-		PUSHTABLE(RWIN);
-		keyTable["LCOMMAND"] = "Keyboard.LWIN";
-		keyTable["LCMD"] = "Keyboard.LWIN";
-		keyTable["RCOMMAND"] = "Keyboard.RWIN";
-		keyTable["RCMD"] = "Keyboard.RWIN";
-		PUSHTABLE(POWER);
-		PUSHTABLE(SLEEP);
-		PUSHTABLE(WAKE);
-		PUSHTABLE(WEBSEARCH);
-		keyTable["WEBFAVORITES"] = "Keyboard.BOOKMARKS";
-		keyTable["BOOKMARKS"] = "Keyboard.BOOKMARKS";
-		PUSHTABLE(WEBREFRESH);
-		PUSHTABLE(WEBSTOP);
-		PUSHTABLE(WEBFORWARD);
-		PUSHTABLE(WEBBACK);
+		keyDesk["MUTE"] = "Keyboard.MUTE";
+		keyDesk["PLAYPAUSE"] = "Keyboard.MEDIA_PLAYPAUSE";
+		keyDesk["MEDIA_PLAYPAUSE"] = "Keyboard.MEDIA_PLAYPAUSE";
+		keyDesk["MEDIASTOP"] = "Keyboard.MEDIA_STOP";
+		keyDesk["MEDIA_STOP"] = "Keyboard.MEDIA_STOP";
 
-		keyTable["MEDIASELECT"] = "Keyboard.MEDIA_SELECT";
-		keyTable["MEDIA_SELECT"] = "Keyboard.MEDIA_SELECT";
+		PUSHDESK(VOLUMEDOWN);
+		PUSHDESK(VOLUMEUP);
+		PUSHDESK(WEBHOME);
+
+		keyDesk["NUMPADCOMMA"] = "Keyboard.KP_COMMA";
+		keyDesk["NUM_COMMA"] = "Keyboard.KP_COMMA";
+		keyDesk["KP_COMMA"] = "Keyboard.KP_COMMA";
+		keyDesk["DIVIDE"] = "Keyboard.KP_DIVIDE";
+		keyDesk["NUMPADSLASH"] = "Keyboard.KP_DIVIDE";
+		keyDesk["NUM_DIVIDE"] = "Keyboard.KP_DIVIDE";
+		keyDesk["KP_DIVIDE"] = "Keyboard.KP_DIVIDE";
+		keyDesk["SYSRQ"] = "Keyboard.SYSREQ";
+		keyDesk["SYSREQ"] = "Keyboard.SYSREQ";
+		keyDesk["RMENU"] = "Keyboard.RALT";
+		keyDesk["RALT"] = "Keyboard.RALT";
+		PUSHDESK(PAUSE);
+		PUSHDESK(HOME);
+		PUSHDESK(UP);
+		keyDesk["PRIOR"] = "Keyboard.PAGEUP";
+		keyDesk["PAGEUP"] = "Keyboard.PAGEUP";
+		keyDesk["PGUP"] = "Keyboard.PAGEUP";
+		PUSHDESK(LEFT);
+		PUSHDESK(RIGHT);
+		PUSHDESK(END);
+		PUSHDESK(DOWN);
+		keyDesk["NEXT"] = "Keyboard.PAGEDOWN";
+		keyDesk["PAGEDOWN"] = "Keyboard.PAGEDOWN";
+		keyDesk["PGDN"] = "Keyboard.PAGEDOWN";
+
+		PUSHDESK(INSERT);
+		PUSHDESK(DELETE);
+		PUSHDESK(LWIN);
+		PUSHDESK(RWIN);
+		keyDesk["LCOMMAND"] = "Keyboard.LWIN";
+		keyDesk["LCMD"] = "Keyboard.LWIN";
+		keyDesk["RCOMMAND"] = "Keyboard.RWIN";
+		keyDesk["RCMD"] = "Keyboard.RWIN";
+		PUSHDESK(POWER);
+		PUSHDESK(SLEEP);
+		PUSHDESK(WAKE);
+		PUSHDESK(WEBSEARCH);
+		keyDesk["WEBFAVORITES"] = "Keyboard.BOOKMARKS";
+		keyDesk["BOOKMARKS"] = "Keyboard.BOOKMARKS";
+		PUSHDESK(WEBREFRESH);
+		PUSHDESK(WEBSTOP);
+		PUSHDESK(WEBFORWARD);
+		PUSHDESK(WEBBACK);
+
+		keyDesk["MEDIASELECT"] = "Keyboard.MEDIA_SELECT";
+		keyDesk["MEDIA_SELECT"] = "Keyboard.MEDIA_SELECT";
 
 
 
 		//鼠标按键
-		keyTable["MB1"] = "Mouse.Left";
-		keyTable["MB2"] = "Mouse.Right";
-		keyTable["MB3"] = "Mouse.Middle";
-		keyTable["MB4"] = "Mouse.X1";
-		keyTable["MB5"] = "Mouse.X2";
+		keyDesk["MB1"] = "Mouse.Left";
+		keyDesk["MB2"] = "Mouse.Right";
+		keyDesk["MB3"] = "Mouse.Middle";
+		keyDesk["MB4"] = "Mouse.X1";
+		keyDesk["MB5"] = "Mouse.X2";
 
 
 

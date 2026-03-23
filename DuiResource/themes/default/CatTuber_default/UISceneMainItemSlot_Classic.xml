@@ -13,7 +13,7 @@
 		<Button name="classicSlot_Character" bkimage="ClassicSlotNoItemBG_Character.png" normal_image="">
 		</Button>
 
-		<Button name="classicSlot_Table" bkimage="ClassicSlotNoItemBG_Table.png">
+		<Button name="classicSlot_Desk" bkimage="ClassicSlotNoItemBG_Desk.png">
 		</Button>
 
 	<Button name="classicSlot_HandheldItem" bkimage="ClassicSlotNoItemBG_HandheldItem.png">

@@ -22,7 +22,7 @@ static const wchar_t* itemTypeStr[UIModelItemType_Count] =
 {
 L"Empty",
 L"ClassicCharacter",
-L"ClassicTable",
+L"ClassicDesk",
 L"ClassicHandheldItem",
 L"BongoCat"
 };
@@ -52,7 +52,7 @@ void UIModelItem::InitSubControls(const std::string& name, const std::string& im
 
         imgCover =dynamic_cast<ui::Control*>(FindSubControl(L"item_cover"));
         imgFavoriteIcon =dynamic_cast<ui::Control*>(FindSubControl(L"item_favorite"));
-        labelSceneName =dynamic_cast<ui::Label*>(FindSubControl(L"item_name"));
+        labelItenName =dynamic_cast<ui::Label*>(FindSubControl(L"item_name"));
 
 
         //右键菜单
@@ -62,13 +62,13 @@ void UIModelItem::InitSubControls(const std::string& name, const std::string& im
         auto textColorFunc=[this](const ui::EventArgs&)->bool {
             if (IsSelected())
             {
-                labelSceneName->SetStateTextColor(ui::kControlStateNormal, L"subjectColor_content");
+                labelItenName->SetStateTextColor(ui::kControlStateNormal, L"subjectColor_content");
                 //this->SetStateColor(ui::kControlStateNormal,L"subjectColor");
                 //this->SetSelectedStateColor(ui::);
             }
             else
             {
-                labelSceneName->SetStateTextColor(ui::kControlStateNormal, L"textNormalColor");
+                labelItenName->SetStateTextColor(ui::kControlStateNormal, L"textNormalColor");
                 //this->SetStateColor(ui::kControlStateNormal, L"");
             }
             return true;
@@ -77,13 +77,15 @@ void UIModelItem::InitSubControls(const std::string& name, const std::string& im
         AttachUnSelect(textColorFunc);
         if (selected)
         {
-            labelSceneName->SetStateTextColor(ui::kControlStateNormal, L"subjectColor_content");
+            labelItenName->SetStateTextColor(ui::kControlStateNormal, L"subjectColor_content");
         }
 
     }
     auto testPtr = dynamic_cast<ui::VBox*> (this);
+
+
     imgCover->SetUTF8BkImage(img);
-    labelSceneName->SetUTF8Text(name);
+    labelItenName->SetUTF8Text(name);
     //if (isSelected != selected)
     //{
     //    isSelected = selected;
@@ -103,7 +105,17 @@ void UIModelItem::InitSubControls(const std::string& name, const std::string& im
 
 
 
+    if (isEmptyItem)
+    {
+        labelItenName->SetTextId(L"STRID_MODELITEM_ITEM_EMPTY");
+        imgCover->SetBoxShadow(L"blurradius='0'");
 
+
+
+        //imgCover->LoadImageInfo
+
+
+    }
 
 
 
@@ -341,7 +353,7 @@ void UIModelItemProvider::LoadItemList()
     //无论如何塞个空物体
     auto& emptyEmpty=itemList.emplace_back();
     emptyEmpty.emptyItem = true;
-    emptyEmpty.imgPath = "ModelItem_Empty.png";
+    emptyEmpty.imgPath = "ModelItem_Empty.svg";
 
 
 
@@ -351,8 +363,8 @@ void UIModelItemProvider::LoadItemList()
     case UIModelItemType_ClassicCharacter:
 		itemFoldPath = AppContext::GetClassicCharacterFolderPath();
         break;
-    case UIModelItemType_ClassicTable:
-		itemFoldPath = AppContext::GetClassicTableFolderPath();
+    case UIModelItemType_ClassicDesk:
+		itemFoldPath = AppContext::GetClassicDeskFolderPath();
         break;
     case UIModelItemType_ClassicHandheldItem:
 		itemFoldPath = AppContext::GetClassicHandheldItemFolderPath();
@@ -402,7 +414,26 @@ void UIModelItemProvider::LoadItemList()
                 else if(pack.IsFileExist("Cover.gif"))imgFile= "Cover.gif";
                 if (imgFile)
                 {
-					info.imgPath = std::string("[") + pathBuf + "]" + imgFile;
+					info.imgPath = std::string("[") + pathBuf + "]" + "["+imgFile+"]";
+
+
+                    //ui::ImageLoadParam imgLoad;
+                    //ui::ImageLoadPath imgLoadPath;
+                    //imgLoadPath.m_imageFullPath = ui::StringConvert::UTF8ToWString(info.imgPath);
+                    //imgLoadPath.m_pathType = ui::ImageLoadPathType::kVirtualPath;
+                    //imgLoad.SetImageLoadPath(imgLoadPath);
+                    //bool isLoadFromCache = false;
+                    //auto imgResult = ui::GlobalManager::Instance().Image().GetImage(imgLoad, isLoadFromCache);
+                    //if(imgResult)
+                    //static_cast<UIModelItemProvider*>(userdata)->imageCache.push_back(imgResult
+                    //    );
+                    //ui::Control::ClearImageCache
+                    //ui::Control::SetBkImage
+                    uint32_t nIconId= ui::GlobalManager::Instance().Icon().AddIcon(ui::StringConvert::UTF8ToWString(info.imgPath));
+                    info.imgPath  = ui::StringConvert::WStringToUTF8(   ui::GlobalManager::Instance().Icon().GetIconString(nIconId));
+                    
+
+                    
                 }
                 else
                 {
@@ -456,9 +487,9 @@ UIModelItemSelect_Page::UIModelItemSelect_Page(ui::Window* pWindow, UIModelItemT
         this->SetName(L"CLASSIC_CHARACTER_SELECT_PAGE");
         title->SetTextId(L"STRID_MODELITEM_TITLE_CLASSIC_CHARACTER");
         break;
-    case UIModelItemType_ClassicTable:
-        this->SetName(L"CLASSIC_TABLE_SELECT_PAGE");
-        title->SetTextId(L"STRID_MODELITEM_TITLE_CLASSIC_TABLE");
+    case UIModelItemType_ClassicDesk:
+        this->SetName(L"CLASSIC_DESK_SELECT_PAGE");
+        title->SetTextId(L"STRID_MODELITEM_TITLE_CLASSIC_DESK");
         break;
     case UIModelItemType_ClassicHandheldItem:
         this->SetName(L"CLASSIC_HANDHELDITEM_SELECT_PAGE");
@@ -485,7 +516,8 @@ void UIModelItemSelect_Page::InitContents()
 
 
     ui::VirtualVTileListBox* container= (ui::VirtualVTileListBox*)FindSubControl(L"itemContainer");
-    
+    container->GetLayout()->SetChildHAlignType(ui::HorAlignType::kAlignLeft);
+
     provider = new UIModelItemProvider(itemType);
     container->SetDataProvider(provider);
     provider->LoadItemList();

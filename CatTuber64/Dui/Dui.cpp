@@ -6,7 +6,7 @@
 
 #include"ImageDecoder/ImageDecoder_EX.h"
 #include"../../ThirdPart/skia/include/utils/SkParse.h"
-
+#include"Pack/Pack.h"
 
 static bool duiInited = false;
 static std::unique_ptr<UIMainThread> uiMainThread;
@@ -37,6 +37,7 @@ void Dui::Init()
 	colorManager.AddColor(L"itemSeparatorColor", ui::UiColor(0xFFEBEDF1));
 
 	colorManager.AddColor(L"iconNormalColor", ui::UiColor(0xFFabb1b6));
+	colorManager.AddColor(L"iconNormalColor_high", ui::UiColor(0xFF8E99A6));
 	colorManager.AddColor(L"iconHotColor", ui::UiColor(0xFF283248));
 	colorManager.AddColor(L"iconDisableColor", ui::UiColor(0xFFe2e4e6));
 
@@ -86,6 +87,27 @@ void Dui::Init()
 
 
 
+
+	//PACK路径识别函数 将以下路径合法化
+	//[C:pack.pack][fileInPack.txt]
+	auto packFileToUIFullPath = [](const ui::FilePath& packFilePath)-> ui::FilePath
+		{
+			//如果这里速度变慢，可能应该在确认是Pack路径之后直接返回，而不是确定文件是否存在
+			std::wstring path = packFilePath.ToString();
+			std::wstring packPath = Pack::PackPath_GetPackPath(path);
+			if (packPath.empty())return ui::FilePath();
+			Pack pack;
+			if (pack.Open(ui::StringConvert::WStringToUTF8(packPath).c_str()))
+			{
+				if (pack.IsFileExist(ui::StringConvert::WStringToUTF8(Pack::PackPath_GetFilePathInPack(path)).c_str()))
+				{
+					return packFilePath;
+				}
+			}
+
+			return ui::FilePath();
+		};
+	ui::GlobalManager::Instance().SetFilePathToFullPathFuncFunc(packFileToUIFullPath);
 
 
 }

@@ -136,7 +136,7 @@ namespace input
 
 
 
-//ActionName eg:   Table.Button.1.Down Character.Animation.Jump
+//ActionName eg:   Desk.Button.1.Down Character.Animation.Jump
 //看一下其他库的action设计
 //区分用于模型的Action和设置界面中的CommandAction
 

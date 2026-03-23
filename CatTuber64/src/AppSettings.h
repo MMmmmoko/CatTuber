@@ -104,6 +104,10 @@ private:
     static void _Save_SDL_Color_Type(Json::Value& json, const SDL_Color& value);
     static SDL_Color _Get_SDL_Color(Json::Value& json);
 
+    static bool _Is_SDL_Rect_Type(Json::Value& json);
+    static void _Save_SDL_Rect_Type(Json::Value& json, const SDL_Color& value);
+    static SDL_Color _Get_Rect_Color(Json::Value& json);
+
 
 
     static AppSettings ins;

@@ -4,7 +4,7 @@
 #include"Item/Scene.h"
 #include"Item/MainSceneItem.h"
 #include"Item/ClassicItem.h"
-#include"Item/TableObject.h"
+#include"Item/DeskObject.h"
 #include"Item/HandheldItemObject.h"
 #include"Item/CharacterObject.h"
 
@@ -13,10 +13,10 @@ void ClassicItem::Update(uint64_t deltaTicksNS)
 {
 	//TODO 处理“预览”
 	//先刷新桌子
-	if (_table)
+	if (_desk)
 	{
-		_table->_pParentItem = this;
-		_table->Update(deltaTicksNS);
+		_desk->_pParentItem = this;
+		_desk->Update(deltaTicksNS);
 	}
 	if (_character)
 	{
@@ -38,10 +38,10 @@ void ClassicItem::Draw(SDL_GPURenderPass* mainRenderPass, int width, int height,
 	auto& _2dMat = GetScene()->Get2DProj();
 
 
-	if (_table)
+	if (_desk)
 	{
-		_table->GetModel()->SetScene(scene);
-		_table->Draw(&mixDraw);
+		_desk->GetModel()->SetScene(scene);
+		_desk->Draw(&mixDraw);
 	}
 
 	//已确认添加角色模型后桌子绘制出现问题是因为SDL每个slot、每个管线阶段只申请一块uniform buffer，
@@ -74,13 +74,13 @@ void ClassicItem::Draw(SDL_GPURenderPass* mainRenderPass, int width, int height,
 }
 void ClassicItem::DrawMix(MixDrawList* mix)
 {
-	if (_table)
+	if (_desk)
 	{
-		_table->Draw(mix);
+		_desk->Draw(mix);
 	}
 	if (_character)
 	{
-		_table->Draw(mix);
+		_desk->Draw(mix);
 	}
 	if (_handHeldItem)
 	{
@@ -89,9 +89,9 @@ void ClassicItem::DrawMix(MixDrawList* mix)
 }
 void ClassicItem::OnLoopEnd()
 {
-	if (_table)
+	if (_desk)
 	{
-		_table->OnLoopEnd();
+		_desk->OnLoopEnd();
 	}
 	//character目前没有loopend的方法
 	//if (_character)
@@ -114,9 +114,9 @@ Json::Value ClassicItem::GenerateAttributes()
 	json["Transform"]["Offset"][1] = offsetY;
 	json["Transform"]["Scale"] = scale;
 
-	if (_table)
+	if (_desk)
 	{
-		json["Table"] = _table->GenerateAttributes();
+		json["Desk"] = _desk->GenerateAttributes();
 	}
 	if (_character)
 	{
@@ -149,9 +149,9 @@ void ClassicItem::ApplyAttributes(const Json::Value& applyJson)
 
 
 
-	if (applyJson.isMember("Table"))
+	if (applyJson.isMember("Desk"))
 	{
-		_table = TableObject::CreateFromAttributes(applyJson["Table"]);
+		_desk = DeskObject::CreateFromAttributes(applyJson["Desk"]);
 	}
 	if (applyJson.isMember("Character"))
 	{
@@ -214,10 +214,10 @@ void ClassicItem::Reset()
 	offsetZ = 0.f;
 	scale = 1.f;
 
-	if (_table)
+	if (_desk)
 	{
-		TableObject::ReleaseObj(_table);
-		_table = nullptr;
+		DeskObject::ReleaseObj(_desk);
+		_desk = nullptr;
 	}
 	if (_character)
 	{

@@ -43,7 +43,7 @@ private:
 	//经典面板涉及的控件
 	ui::VBox* scenePanel_classic = nullptr;
 	ui::Button* classicPanel_slotCharacter = nullptr;
-	ui::Button* classicPanel_slotTable = nullptr;
+	ui::Button* classicPanel_slotDesk = nullptr;
 	ui::Button* classicPanel_slotHandheldItem = nullptr;
 
 	//BongoCat面板涉及的控件

@@ -29,7 +29,7 @@ private:
 	class ClassicItem* pClassicItem = nullptr;
 	class MainUiForm* mainForm = nullptr;
 	ui::Option* slot_Character;
-	ui::Option* slot_Table;
+	ui::Option* slot_Desk;
 	ui::Option* slot_HandheldItem;
 };
 

@@ -932,6 +932,21 @@
 		<xs:attribute name="selected_fore_pushed_image" default="" type="IMG" ><xs:annotation><xs:documentation>选择状态时，选中的鼠标按下状态的前景图片</xs:documentation></xs:annotation></xs:attribute>
 		<xs:attribute name="selected_fore_disabled_image" default="" type="IMG" ><xs:annotation><xs:documentation>选择状态时，选中的禁用状态的前景图片</xs:documentation></xs:annotation></xs:attribute>
 
+		<xs:attribute name="selected_normal_color" default="" type="COLOR" />
+		<xs:attribute name="selected_hot_color" default="" type="COLOR" />
+		<xs:attribute name="selected_pushed_color" default="" type="COLOR" />
+		<xs:attribute name="selected_disabled_color" default="" type="COLOR" />
+		
+		<xs:attribute name="selected_normal_color_margin" type="RECT" />
+		<xs:attribute name="selected_hot_color_margin" type="RECT" />
+		<xs:attribute name="selected_pushed_color_margin" type="RECT" />
+		<xs:attribute name="selected_disabled_color_margin" type="RECT" />
+		
+		<xs:attribute name="selected_normal_color_round" type="SIZE" />
+		<xs:attribute name="selected_hot_color_round" type="SIZE" />
+		<xs:attribute name="selected_pushed_color_round" type="SIZE" />
+		<xs:attribute name="selected_disabled_color_round" type="SIZE" />
+		
 		<xs:attribute name="part_selected_normal_image" default="" type="IMG" ><xs:annotation><xs:documentation>部分选择时，选中的普通状态图片</xs:documentation></xs:annotation></xs:attribute>
 		<xs:attribute name="part_selected_hot_image" default="" type="IMG" ><xs:annotation><xs:documentation>部分选择时，选中的鼠标悬浮的状态图片</xs:documentation></xs:annotation></xs:attribute>
 		<xs:attribute name="part_selected_pushed_image" default="" type="IMG" ><xs:annotation><xs:documentation>部分选择时，选中的鼠标按下的状态图片</xs:documentation></xs:annotation></xs:attribute>
@@ -940,27 +955,6 @@
 		<xs:attribute name="part_selected_fore_hot_image" default="" type="IMG" ><xs:annotation><xs:documentation>部分选择时，选中的鼠标悬浮状态的图片</xs:documentation></xs:annotation></xs:attribute>
 		<xs:attribute name="part_selected_fore_pushed_image" default="" type="IMG" ><xs:annotation><xs:documentation>部分选择时，选中的鼠标按下状态的前景图片</xs:documentation></xs:annotation></xs:attribute>
 		<xs:attribute name="part_selected_fore_disabled_image" default="" type="IMG" ><xs:annotation><xs:documentation>部分选择时，选中的禁用状态的前景图片</xs:documentation></xs:annotation></xs:attribute>
-
-		<xs:attribute name="selected_normal_color" default="" type="COLOR" >
-			<xs:annotation>
-				<xs:documentation>选中状态颜色,如(blue)</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-		<xs:attribute name="selected_hot_color" default="" type="COLOR" >
-			<xs:annotation>
-				<xs:documentation>选中悬浮颜色,如(blue)</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-		<xs:attribute name="selected_pushed_color" default="" type="COLOR" >
-			<xs:annotation>
-				<xs:documentation>选中按下颜色,如(blue)</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-		<xs:attribute name="selected_disabled_color" default="" type="COLOR" >
-			<xs:annotation>
-				<xs:documentation>选中禁用颜色,如(blue)</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
 
 
 

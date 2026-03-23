@@ -21,7 +21,7 @@ private:
 	static InputParser& GetIns() { static InputParser ref; return ref; }
 	InputParser();
 
-	std::unordered_map<std::string, const char*> keyTable;//eg   "A"/"a" -> "Keyboard.A"
+	std::unordered_map<std::string, const char*> keyDesk;//eg   "A"/"a" -> "Keyboard.A"
 	std::unordered_map<std::string, SDL_Scancode> baseNameToScanCodeMap;
 	
 

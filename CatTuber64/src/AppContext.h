@@ -148,7 +148,7 @@ public:
     static const char* GetAppLang();
 
     static const char* GetClassicCharacterFolderPath();//Classic角色模型文件夹所在路径 （结尾有"/"符号）
-    static const char* GetClassicTableFolderPath();//Classic角色模型文件夹所在路径 （结尾有"/"符号）
+    static const char* GetClassicDeskFolderPath();//Classic角色模型文件夹所在路径 （结尾有"/"符号）
     static const char* GetClassicHandheldItemFolderPath();//Classic角色模型文件夹所在路径 （结尾有"/"符号）
     static const char* GetBongoCatFolderPath();//BongoCat模型文件夹所在路径 （结尾有"/"符号）
 
@@ -174,7 +174,7 @@ private:
     char* _prefPath = NULL;
     std::string _sceneFolderPath;
     std::string _classicCharacterFolderPath;
-    std::string _classicTableFolderPath;
+    std::string _classicDeskFolderPath;
     std::string _classicHandheldItemFolderPath;
     std::string _BongoCatFolderPath;
 

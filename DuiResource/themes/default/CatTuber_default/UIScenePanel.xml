@@ -6,22 +6,24 @@
 
 
 
-	<Class name="classicSlotButton" border_round="15,15"  hot_color="itemHoverColor"/>
+	<Class name="classicSlotButton" border_round="15,15" fore_hot_image="ItemForeHot_White.png"/>
+	
+	<Class name="itemListButton"  hot_color="itemHoverColor" margin="2,2,2,2" padding="2,2,2,2"/>
 
 
 	<!-- 场景设置区域VBOX -->
-	<VBox margin="15,0,15,10" >
+	<VBox margin="5,0,5,5" >
 		<Button name="scenePanel_btnSceneTitle" fade_hot="true" hot_color="itemHoverColor" height="30" width="stretch" text_padding="20,0,0,0" text_align="left,vcenter"/>
 
 		
 		
 		<!--Classic CatTuber模型有三个槽位，上到下分别为角色 桌子 手持道具-->
 		<VBox name="scenePanel_classicItemPanel" visible="false" height="auto">
-			<Button class="classicSlotButton" width="260" height="70" name="classicSlot_Character" bkimage="ClassicSlotNoItemBG_Character.png"/>
-			<HBox margin="0,8,0,0" height="auto">
-				<Button class="classicSlotButton" width="70" height="70" name="classicSlot_HandheldItem" bkimage="ClassicSlotNoItemBG_HandheldItem.png"/>
-				<Control width="8" />
-				<Button class="classicSlotButton" width="182" height="70" name="classicSlot_Table" bkimage="ClassicSlotNoItemBG_Table.png"/>
+			<Button class="classicSlotButton" margin="10,10,10,0" width="260" height="70"  name="classicSlot_Character" bkimage="ClassicSlotNoItemBG_Character.png"/>
+			<HBox height="auto">
+				<Button class="classicSlotButton" width="70" margin="10,8,4,10" height="70" name="classicSlot_HandheldItem" bkimage="ClassicSlotNoItemBG_HandheldItem.png"/>
+				<!--<Control width="8" />-->
+				<Button class="classicSlotButton" width="182" margin="4,8,10,10" height="70" name="classicSlot_Desk" bkimage="ClassicSlotNoItemBG_Desk.png"/>
 			</HBox>
 		</VBox>
 		<VBox name="scenePanel_bongoCatPanel" visible="false" height="auto">
@@ -32,8 +34,22 @@
 		<!--<VBox name="integralItemPanel" visible="false">
 			<Button name="bongoCatSlot_Character" bkimage="ClassicSlotNoItemBG_Character.png" normal_image=""/>
 		</VBox>-->
+		<VBox  width="260" halign="center">
+			<Label text_id="STRID_SCENEPANEL_CONTENTS" height="30" text_padding="20,0,0,0" />
+		<VBox bkcolor="gray">
 
-		<Label name="tooltip" text="场景设置区" height="100%" width="100%" text_align="hcenter,vcenter"/>
+			<Label name="tooltip" text="场景设置区" height="100%" width="100%" text_align="hcenter,vcenter"/>
+			
+		</VBox>
+		<HBox height="auto">
+			<!--场景物品的功能按钮-->
+			<Button class="itemListButton" name="scenePanel_btnItemAdd" bkimage="file='list_add.svg'"  />
+			<Button class="itemListButton" name="scenePanel_btnItemRemove" bkimage="file='list_delete.svg'" disabled_image="list_delete_disable.svg"/>
+			<Button class="itemListButton" name="scenePanel_btnItemMoveUp" bkimage="file='list_moveDown.svg'" disabled_image="file='list_moveDown_disable.svg'"/>
+			<Button class="itemListButton" name="scenePanel_btnItemMoveDown" bkimage="file='list_moveUp.svg'" disabled_image="file='list_moveUp_disable.svg'"/>
 
+
+		</HBox>
+	</VBox>
 	</VBox>
 </Window>

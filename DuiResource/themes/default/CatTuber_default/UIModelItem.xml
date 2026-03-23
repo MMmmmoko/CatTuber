@@ -3,11 +3,11 @@
    		xmlns:xs="http://www.w3.org/2001/XMLSchema"
 		xmlns="http://tempuri.org/NIMDUISchema.xsd"
 		>
-	<ListBoxItemV width="236" height="236" mouse_child="false" hot_color="itemHoverColor" pushed_color="itemPushColor" selected_normal_color="subjectColor"
+	<ListBoxItemV width="180" height="200" mouse_child="false" hot_color="itemHoverColor" pushed_color="itemPushColor" selected_normal_color="subjectColor"
 				   selected_normal_text_color="subjectColor_content" border_round="6,6">
-			<Control name="item_cover" width="180" margin="28,20,28,0" height="180" border_round="6,6"  box_shadow="color='shadowColor' blurradius='4' offset='0,1' spreadradius='0'"/>
+			<Control name="item_cover" width="140" margin="0,15,0,0" halign="center" height="140" border_round="6,6"  box_shadow="color='shadowColor' blurradius='4' offset='0,1' spreadradius='0'"/>
 			<Control height="40%"/>
-			<Label name="item_name" width="236" text_align="center" multi_line="true"/>
+			<Label name="item_name" width="stretch" text_align="center" multi_line="true"/>
 			<Control height="60%"/>
 			<Control name="item_favorite" float="true" width="20" height="20" bkimage="20x_star_2.png" visible="false"
 					  margin="24,20,0,0" keep_float_pos="true"

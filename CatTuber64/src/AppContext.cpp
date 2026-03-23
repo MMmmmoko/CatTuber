@@ -55,13 +55,13 @@ const char* AppContext::GetClassicCharacterFolderPath()
 	return _ref()._classicCharacterFolderPath.c_str();
 }
 
-const char* AppContext::GetClassicTableFolderPath()
+const char* AppContext::GetClassicDeskFolderPath()
 {
-	if (_ref()._classicTableFolderPath.empty())
+	if (_ref()._classicDeskFolderPath.empty())
 	{
-		_ref()._classicTableFolderPath = std::string(GetAppBasePath()) + "Resources/Table/";
+		_ref()._classicDeskFolderPath = std::string(GetAppBasePath()) + "Resources/Desk/";
 	}
-	return _ref()._classicTableFolderPath.c_str();
+	return _ref()._classicDeskFolderPath.c_str();
 }
 
 const char* AppContext::GetClassicHandheldItemFolderPath()

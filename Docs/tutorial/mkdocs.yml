@@ -1,0 +1,34 @@
+site_name: My Docs
+
+
+theme:
+  name: material
+  language: zh             # 设置界面语言为中文
+  palette:                 # 配色方案（允许用户切换）
+    - scheme: default      # 浅色模式
+      toggle:
+        icon: material/brightness-7
+        name: 切换到深色模式
+    - scheme: slate        # 深色模式
+      toggle:
+        icon: material/brightness-4
+        name: 切换到浅色模式
+  font:
+    text: Roboto           # 正文字体
+    code: Roboto Mono      # 代码字体
+  features:                # 启用高级功能
+    - navigation.tabs      # 顶部导航栏标签页
+    - navigation.sections  # 侧边栏分组
+    - navigation.top       # 回到顶部按钮
+    - search.highlight     # 搜索高亮
+    - content.code.copy    # 代码块复制按钮
+
+
+extra:
+  alternate:
+   - name: English
+     link: /english/
+     lang: en
+   - name: 简体中文
+     link: /schinese/
+     lang: zh

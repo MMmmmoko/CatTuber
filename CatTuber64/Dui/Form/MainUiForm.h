@@ -21,6 +21,7 @@ public:
 	bool OnLanguageBtnClicked(ui::EventArgs* msg);
 	bool OnLanguageMenuBtnClicked(ui::EventArgs* msg);
 	bool OnNavigationBtnClicked(const ui::EventArgs& msg);
+	bool OnBaseControlBtnClicked(const ui::EventArgs& msg);
 
 	void GoToPage(const std::wstring& pageName);
 	ui::Box* BuildPage(const std::wstring& pageName);

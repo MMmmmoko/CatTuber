@@ -9,6 +9,64 @@
     F(Pack_ver1)
 
 
+
+
+
+std::wstring Pack::PackPath_GetPackPath(const std::wstring& PackFullPath)
+{
+	size_t i = 0;
+	int stackCount = 0;
+	for (i = 0; i < PackFullPath.size(); i++)
+	{
+		if (PackFullPath[i] == L'[')stackCount++;
+		if (PackFullPath[i] == L']')stackCount--;
+		if (0 == stackCount)break;
+	}
+	if (0 == i)return L"";
+	if (stackCount != 0)return L"";
+	return PackFullPath.substr(1, i - 1);
+}
+
+std::wstring Pack::PackPath_GetFilePathInPack(const std::wstring& PackFullPath)
+{
+	size_t i = 0;
+	int stackCount = 0;
+	for (i = 0; i < PackFullPath.size(); i++)
+	{
+		if (PackFullPath[i] == L'[')stackCount++;
+		if (PackFullPath[i] == L']')stackCount--;
+		if (0 == stackCount)break;
+	}
+	if (0 == i)return L"";
+	if (stackCount != 0)return L"";
+	//return imageFilePath.substr(i+1);
+
+
+	//[][]
+	return PackFullPath.substr(i + 2, PackFullPath.size() - i - 3);
+}
+
+std::wstring Pack::PackPath_BuildPackFullPath(const std::wstring& packFilePath, const std::wstring& fileInPack)
+{
+	return L"["+ packFilePath+L"]["+ fileInPack+L"]";
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 bool Pack::Open(const char* packFilePath)
 {
 	

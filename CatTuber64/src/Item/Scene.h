@@ -12,10 +12,10 @@
 
 #include"Model/IModel.h"
 #include"json/json.h"
-class TableObject;
+class DeskObject;
 class CharacterObject;
 class HandheldItemObject;
-class Decorationbject;
+class DecorationObject;
 
 
 class ISceneItem;
