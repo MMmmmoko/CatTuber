@@ -192,7 +192,7 @@ bool CatTuberApp::Init(int argC, char* argV[])
 		Live2D::Cubism::Framework::Rendering::CubismRenderer_SDL3::InitializeConstantSettings(1, AppContext::GetGraphicDevice());
 		//创建Live2d用的SDL3 render context
 		Csm::Rendering::CubismRenderContext_SDL3* context = Csm::Rendering::CubismRenderContext_SDL3::CreateSDLGpuRenderContext(AppContext::GetGraphicDevice());
-		AppContext::_ref()._l2dRenderContext = context;
+		AppContext::_ref()._SDL3RenderContext = context;
 
 	}
 	
@@ -348,10 +348,10 @@ void CatTuberApp::ShutDown()
 	//不需要对Live2D相关资源进行清理(Live2D的demo中没有进行清理)
 	//如果一些资源与线程强绑定的话（在哪个线程创建就在哪个线程清除）
 	//那么可能还需要分线程进行清理
-	if (AppContext::_ref()._l2dRenderContext)
+	if (AppContext::_ref()._SDL3RenderContext)
 	{
-		Csm::Rendering::CubismRenderContext_SDL3::ReleaseSDLGpuRenderContext(AppContext::_ref()._l2dRenderContext);
-		AppContext::_ref()._l2dRenderContext = NULL;
+		Csm::Rendering::CubismRenderContext_SDL3::ReleaseSDLGpuRenderContext(AppContext::_ref()._SDL3RenderContext);
+		AppContext::_ref()._SDL3RenderContext = NULL;
 	}
 
 	//Live2D的各种manager

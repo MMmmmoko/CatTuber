@@ -1,8 +1,10 @@
 #include<SDL3/SDL.h>
+#include<SDL3_image/SDL_image.h>
 #include<fstream>
 #include"Util/Util.h"
 #include"AppSettings.h"
-
+#include"AppContext.h"
+#include"Pack/Pack.h"
 
 
 unsigned char* util::SDL_LoadFileToMem(const char* path, size_t* size)
@@ -44,7 +46,7 @@ std::vector<uint8_t> util::SDL_LoadFileToMem(const char* path)
     SDL_CloseIO(modelFileStream); // 关闭文件流
 
 
-    return result;
+    return std::move(result);
 
 }
 
@@ -281,7 +283,7 @@ std::string util::GetStringFromMultiLangJsonNode(const Json::Value& json)
 
     //先查询UI设置的语言
     std::string UISettingLang = AppSettings::GetIns().GetMiscLanguage();
-    if (json.isMember(UISettingLang)&& json[UISettingLang].isString())
+    if (UISettingLang!="unspecified"&& json.isMember(UISettingLang) && json[UISettingLang].isString())
     {
         return json[UISettingLang].asString();
     }
@@ -318,6 +320,44 @@ std::string util::GetStringFromMultiLangJsonNode(const Json::Value& json)
 
 
 
+
+
+SDL_GPUTexture* util::LoadTextureFromPack(Pack* pack, const char* pathInPack, int* w , int* h )
+{
+    std::vector<uint8_t> fileBytes= pack->LoadFile(pathInPack);
+    SDL_IOStream* io = SDL_IOFromConstMem(fileBytes.data(), fileBytes.size());
+    if (!io) {
+        SDL_LogError(SDL_LOG_CATEGORY_RENDER, "SDL_IOFromConstMem failed: %s/%s:%s", SDL_GetError(), pack->GetPath(), pathInPack);
+        return nullptr;
+    }
+
+    SDL_Surface* surface = IMG_Load_IO(io, true);
+    if (!surface)
+    {
+        SDL_LogError(SDL_LOG_CATEGORY_RENDER, "WARNING: Can not load texture:%s:%s", pack->GetPath(), pathInPack);  
+        return nullptr;
+    }
+
+    SDL_GPUTextureCreateInfo texInfo = {};
+    texInfo.type = SDL_GPU_TEXTURETYPE_2D,
+        texInfo.format = SDL_GPU_TEXTUREFORMAT_R8G8B8A8_UNORM,
+        texInfo.width = (surface != NULL) ? static_cast<uint32_t>(surface->w) : 10,
+        texInfo.height = (surface != NULL) ? static_cast<uint32_t>(surface->h) : 10,
+        texInfo.layer_count_or_depth = 1,
+        //texInfo.num_levels = 1,
+        texInfo.num_levels = (uint32_t)floor(log2((double)(texInfo.width > texInfo.height ? texInfo.width : texInfo.height))) + 1;
+    texInfo.usage = (texInfo.num_levels == 1) ? SDL_GPU_TEXTUREUSAGE_SAMPLER : (SDL_GPU_TEXTUREUSAGE_SAMPLER | SDL_GPU_TEXTUREUSAGE_COLOR_TARGET);
+    //SDL_GPUTexture* s
+
+    SDL_GPUTexture* gpuTexture = SDL_CreateGPUTexture(AppContext::GetGraphicDevice(), &texInfo);
+    if (gpuTexture)
+    {
+        if (w)*w = surface->w;
+        if (h)*h = surface->h;
+    }
+
+    return gpuTexture;
+}
 
 
 

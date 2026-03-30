@@ -60,6 +60,12 @@
     <Filter Include="Dui\ImageDecoder">
       <UniqueIdentifier>{50253076-93d0-4d01-9aa2-d17408f9dcd2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="源文件\Renderer\Shader">
+      <UniqueIdentifier>{51df2c18-0998-4685-a438-a3ab721d12e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Renderer\Bindable">
+      <UniqueIdentifier>{70f74086-35c4-46ff-b82c-cdf015dd7a3d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dui\DuiCommon.h">
@@ -118,9 +124,6 @@
     </ClInclude>
     <ClInclude Include="src\Util\Util.h">
       <Filter>源文件\Util</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Renderer\CatRenderState.h">
-      <Filter>源文件\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer\MixDrawList.h">
       <Filter>源文件\Renderer</Filter>
@@ -250,6 +253,33 @@
     </ClInclude>
     <ClInclude Include="src\Item\DecorationItem.h">
       <Filter>源文件\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Item\BongoCatItem.h">
+      <Filter>源文件\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Item\BongoCatObject.h">
+      <Filter>源文件\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Item\BongoCatSprite.h">
+      <Filter>源文件\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Item\BongoCatHand.h">
+      <Filter>源文件\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Renderer\GlobalGraphicResourceManager.h">
+      <Filter>源文件\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Renderer\Bindable\Bindable.h">
+      <Filter>源文件\Renderer\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Renderer\Bindable\VertexBuffer.h">
+      <Filter>源文件\Renderer\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Renderer\Bindable\Bindables.h">
+      <Filter>源文件\Renderer\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Renderer\Bindable\IndexBuffer.h">
+      <Filter>源文件\Renderer\Bindable</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -427,6 +457,33 @@
     <ClCompile Include="src\Item\DecorationItem.cpp">
       <Filter>源文件\Item</Filter>
     </ClCompile>
+    <ClCompile Include="src\Item\BongoCatItem.cpp">
+      <Filter>源文件\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Item\BongoCatObject.cpp">
+      <Filter>源文件\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Item\BongoCatSprite.cpp">
+      <Filter>源文件\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Item\BongoCatObject_Standard.cpp">
+      <Filter>源文件\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Item\BongoCatHand.cpp">
+      <Filter>源文件\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer\GlobalGraphicResourceManager.cpp">
+      <Filter>源文件\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer\GlobalGraphicResourceManager_Shader.cpp">
+      <Filter>源文件\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer\Bindable\VertexBuffer.cpp">
+      <Filter>源文件\Renderer\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer\Bindable\IndexBuffer.cpp">
+      <Filter>源文件\Renderer\Bindable</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CatTuber64.rc">
@@ -503,10 +560,18 @@
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\UIScenePanel.xml">
       <Filter>Dui\UserControl</Filter>
     </Xml>
+    <Xml Include="..\DuiResource\themes\default\CatTuber_default\UIScenePanelItemAddMenu.xml">
+      <Filter>Dui\UserControl</Filter>
+    </Xml>
   </ItemGroup>
   <ItemGroup>
     <Image Include="CatTuberLogo.ico">
       <Filter>资源文件</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="src\Renderer\Shader\BongoCatSpriteVS.hlsl">
+      <Filter>源文件\Renderer\Shader</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

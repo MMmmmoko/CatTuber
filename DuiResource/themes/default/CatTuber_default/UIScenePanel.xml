@@ -44,9 +44,9 @@
 		<HBox height="auto">
 			<!--场景物品的功能按钮-->
 			<Button class="itemListButton" name="scenePanel_btnItemAdd" bkimage="file='list_add.svg'"  />
-			<Button class="itemListButton" name="scenePanel_btnItemRemove" bkimage="file='list_delete.svg'" disabled_image="list_delete_disable.svg"/>
-			<Button class="itemListButton" name="scenePanel_btnItemMoveUp" bkimage="file='list_moveDown.svg'" disabled_image="file='list_moveDown_disable.svg'"/>
-			<Button class="itemListButton" name="scenePanel_btnItemMoveDown" bkimage="file='list_moveUp.svg'" disabled_image="file='list_moveUp_disable.svg'"/>
+			<Button class="itemListButton" name="scenePanel_btnItemRemove" bkimage="file='list_delete.svg'" disabled_image="list_delete_disable.svg" enabled="false"/>
+			<Button class="itemListButton" name="scenePanel_btnItemMoveUp" bkimage="file='list_moveDown.svg'" disabled_image="file='list_moveDown_disable.svg'" enabled="false"/>
+			<Button class="itemListButton" name="scenePanel_btnItemMoveDown" bkimage="file='list_moveUp.svg'" disabled_image="file='list_moveUp_disable.svg'" enabled="false"/>
 
 
 		</HBox>

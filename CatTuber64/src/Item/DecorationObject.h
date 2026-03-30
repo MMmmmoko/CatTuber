@@ -1,5 +1,5 @@
-#ifndef _CharacterObject_h
-#define _CharacterObject_h
+#ifndef _DecorationObject_h
+#define _DecorationObject_h
 
 
 //角色对象

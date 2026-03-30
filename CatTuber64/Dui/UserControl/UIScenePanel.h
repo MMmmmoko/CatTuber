@@ -26,6 +26,8 @@ private:
 
 	bool OnSceneTitleClicked(const ui::EventArgs& msg);
 	bool OnMainItemSlotClicked(const ui::EventArgs& msg);
+	bool OnSceneContentListControlButtonClicked(const ui::EventArgs& msg);
+	bool OnSceneItemAddMenuClicked(const ui::EventArgs& msg);
 
 
 
@@ -49,6 +51,13 @@ private:
 	//BongoCat面板涉及的控件
 	ui::VBox* scenePanel_bongoCat = nullptr;
 	ui::Button* bongoCatPanel_slot = nullptr;
+
+	//场景内容列表控件
+	ui::Button* scenePanel_btnItemAdd = nullptr;
+	ui::Button* scenePanel_btnItemRemove = nullptr;
+	ui::Button* scenePanel_btnItemMoveUp = nullptr;
+	ui::Button* scenePanel_btnItemMoveDown = nullptr;
+
 
 
 

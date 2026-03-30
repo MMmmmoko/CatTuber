@@ -37,7 +37,9 @@ public:
 
 	//合法性检查
 	bool Open(const char* packFilePath);
-	
+	bool IsAvaliable() { return type!= PackType_Unknown; };
+
+
 	//packPath中无反斜杠，这里会组合成packPath+/+path
 
 

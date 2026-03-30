@@ -3,6 +3,7 @@
 
 
 #include <SDL3/SDL.h>
+#include"Renderer/CatRendererContext.h"
 #include<iostream>
 
 
@@ -108,15 +109,15 @@ DISABLE_WARNING_GCC("-Wshift-negative-value")
 
 
 //声明live2d所用的renderContext
-namespace Live2D {
-    namespace Cubism {
-        namespace Framework {
-            namespace Rendering {
-                class CubismRenderContext_SDL3;
-            }
-        }
-    }
-}
+//namespace Live2D {
+//    namespace Cubism {
+//        namespace Framework {
+//            namespace Rendering {
+//                class CubismRenderContext_SDL3;
+//            }
+//        }
+//    }
+//}
 
 
 class AppContext
@@ -127,7 +128,8 @@ public:
 
     static SDL_GPUDevice* GetGraphicDevice() { return _ref()._gpudevice; };
     static SDL_GPUTextureFormat GetSwapchainFormat() { return  _ref()._swapchanFormat; };
-    static Live2D::Cubism::Framework::Rendering::CubismRenderContext_SDL3* GetLive2DRenderContext() { return _ref()._l2dRenderContext; };
+    static Live2D::Cubism::Framework::Rendering::CubismRenderContext_SDL3* GetLive2DRenderContext() { return _ref()._SDL3RenderContext; };
+    static SDL3Context* GetSDL3RenderContext() { return _ref()._SDL3RenderContext; };
 
 	static const char* GetAppVersionStr() { return CATTUBER_VER_STR; };
 	static uint32_t GetAppVersion() { return CATTUBER_VER; };
@@ -181,7 +183,7 @@ private:
 
     SDL_GPUDevice* _gpudevice=NULL;
     SDL_GPUTextureFormat _swapchanFormat= SDL_GPUTextureFormat::SDL_GPU_TEXTUREFORMAT_B8G8R8A8_UNORM;
-    Live2D::Cubism::Framework::Rendering::CubismRenderContext_SDL3* _l2dRenderContext = NULL;
+    Live2D::Cubism::Framework::Rendering::CubismRenderContext_SDL3* _SDL3RenderContext = NULL;
      //
 
 

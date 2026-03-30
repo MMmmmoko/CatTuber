@@ -27,6 +27,9 @@ class Scene;
 class IModel
 {
 public:
+	typedef void (*BeganAnimationCallback)(void* userData);
+	typedef void (*FinishedAnimationCallback)(void* userData);
+
 	virtual ~IModel() = default;
 
 	static IModel* CreateFromFolder(const char* packPath,const char* folderInpack);
@@ -51,7 +54,14 @@ public:
 	//对于Live2D，组名即动画名，播放动画时在组里随机播放
 	//好像暂时不需要设置动画轨道（即动画混合）
 	//模型自身管理动画轨道“Track”
-	virtual void PlayAnimation(const std::string& name, bool loop=false)=0;
+	virtual void PlayAnimation(const char* name, bool loop=false)=0;
+	void PlayAnimation(const std::string& name, bool loop = false) { return PlayAnimation(name.c_str(), loop); };
+	virtual void PlayAnimationEX(const char* name,int index=0, FinishedAnimationCallback finishedCall=nullptr,void* finishedCallUserData = nullptr,
+		BeganAnimationCallback beganCall=nullptr,void* beganCallUserData=nullptr)=0;
+	virtual void SetExpression(const char* expressionID)=0;
+	virtual void SetExpression(int expressionIndex)=0;
+
+
 	virtual ParamHandle GetParamHandle(const std::string& param)=0;
 	virtual void SetParamValue(ParamHandle param,float value,bool normallizeValue=true,bool longTerm=false)=0;//未设置长期longTerm的话，修改只对当前帧有效
 	virtual void AddParamValue(ParamHandle param,float value, bool normallizeValue = true,bool longTerm = false)=0;

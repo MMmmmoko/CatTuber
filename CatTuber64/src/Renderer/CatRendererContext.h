@@ -2,8 +2,120 @@
 #define _CatRendererContext_h
 
 
-//对SDL渲染进行一次封装
 
+#include"Live2DFramework/SDL3Renderer/CubismRenderContext_SDL3.hpp"
+//已经在LIVE2D项目中有了比较完整的实现
+//所以这里直接进行一个重命名
+
+
+typedef Live2D::Cubism::Framework::Rendering::CubismRenderContext_SDL3 SDL3Context;
+typedef Live2D::Cubism::Framework::Rendering::_CubismRenderSDL3PipelineState SDL3PipelineState;
+
+
+
+typedef Live2D::Cubism::Framework::Rendering::CubismRenderState_SDL3::Blend SDL3Blend;
+typedef Live2D::Cubism::Framework::Rendering::CubismRenderState_SDL3::Cull SDL3Cull;
+typedef Live2D::Cubism::Framework::Rendering::CubismRenderState_SDL3::Depth SDL3Depth;
+typedef Live2D::Cubism::Framework::Rendering::CubismRenderState_SDL3::Sampler SDL3Sampler;
+
+
+
+
+
+
+//对SDL顶点绑定所需参数进行一下封装
+//optimize: needRebinding可以改进为同时判断是否需要绑定、如果需要则进行绑定、如果数值改变则重新赋值
+struct CatVertexBufferBinding
+{
+	uint32_t startSlot;
+	uint32_t numBuffers;
+	SDL_GPUBufferBinding buffers[4];
+
+	bool needRebinding(const CatVertexBufferBinding* anotherBinding)
+	{
+		if (startSlot == anotherBinding->startSlot && numBuffers == anotherBinding->numBuffers)
+		{
+			for (uint32_t i = 0; i < numBuffers; i++)
+			{
+				if (buffers[i].buffer != anotherBinding->buffers[i].buffer
+					|| buffers[i].offset != anotherBinding->buffers[i].offset)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+		return true;
+	}
+};
+struct CatIndexBufferBinding
+{
+	SDL_GPUIndexElementSize index_element_size;
+	SDL_GPUBufferBinding buffer;
+
+	bool needRebinding(const CatIndexBufferBinding* anotherBinding)
+	{
+		if (index_element_size == anotherBinding->index_element_size
+			&& buffer.buffer == anotherBinding->buffer.buffer
+			&& buffer.offset == anotherBinding->buffer.offset)
+		{
+			return false;
+		}
+		return true;
+	}
+};
+struct CatTextureBinding
+{
+	uint32_t startSlot;
+	uint32_t numTextures;
+	SDL_GPUTextureSamplerBinding textures[8];
+
+	bool needRebinding(const CatTextureBinding* anotherBinding)
+	{
+		if (numTextures == anotherBinding->numTextures)
+		{
+			for (uint32_t i = 0; i < numTextures; i++)
+			{
+				if (textures[i].texture != anotherBinding->textures[i].texture || textures[i].sampler != anotherBinding->textures[i].sampler)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+		return true;
+	}
+};
+//需要修改Live2D渲染相关部分,让UniformData数据持久化？
+struct CatUniformDataBinding
+{
+	uint32_t slot;
+	const void* data = NULL;
+	uint32_t datalength;
+
+	bool needRebinding(const CatUniformDataBinding* anotherBinding)
+	{
+		return SDL_memcmp(this, anotherBinding, sizeof(CatUniformDataBinding)) != 0;
+	}
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#if 0
+//对SDL渲染进行一次封装
 
 #include<SDL3/SDL.h>
 
@@ -196,6 +308,13 @@ struct CatUniformDataBinding
 
 
 
+
+
+
+
+
+
+#endif
 
 
 

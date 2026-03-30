@@ -394,7 +394,7 @@ void HandheldItemObject::OnButtonDown(int btnIndex)
 	auto& curButton = modelButtonVec[btnIndex];
 	curButton.isDown = true;
 	if (!curButton.downAnimation.empty())
-		_model->PlayAnimation(curButton.downAnimation);
+		_model->PlayAnimation(curButton.downAnimation.c_str());
 	if (curButton.downAction)
 		InputManager::GetIns().RiseAction(curButton.downAction);
 }

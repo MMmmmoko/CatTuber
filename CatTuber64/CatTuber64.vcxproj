@@ -113,6 +113,13 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir);..\..\ThirdPart\nim_duilib-main\lib\x64;..\..\ThirdPart\skia\out;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <FxCompile>
+      <VariableName>%(Filename)</VariableName>
+    </FxCompile>
+    <FxCompile>
+      <HeaderFileOutput>G:\Projects\CatTuber64\project\CatTuber64\Shader\DXIL\%(Filename).h</HeaderFileOutput>
+      <EntryPointName>%(Filename)</EntryPointName>
+    </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -133,6 +140,13 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir);..\..\ThirdPart\nim_duilib-main\lib\x64;..\..\ThirdPart\skia\out;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <FxCompile>
+      <VariableName>%(Filename)</VariableName>
+    </FxCompile>
+    <FxCompile>
+      <HeaderFileOutput>G:\Projects\CatTuber64\project\CatTuber64\Shader\DXIL\%(Filename).h</HeaderFileOutput>
+      <EntryPointName>%(Filename)</EntryPointName>
+    </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Dui\Dialog\DuiMessageBox.h" />
@@ -166,6 +180,10 @@
     <ClInclude Include="src\Input\InputParser.h" />
     <ClInclude Include="src\Input\KeyboardInput.h" />
     <ClInclude Include="src\Input\MouseInput.h" />
+    <ClInclude Include="src\Item\BongoCatHand.h" />
+    <ClInclude Include="src\Item\BongoCatItem.h" />
+    <ClInclude Include="src\Item\BongoCatObject.h" />
+    <ClInclude Include="src\Item\BongoCatSprite.h" />
     <ClInclude Include="src\Item\CharacterObject.h" />
     <ClInclude Include="src\Item\ClassicItem.h" />
     <ClInclude Include="src\Item\DecorationItem.h" />
@@ -185,8 +203,12 @@
     <ClInclude Include="src\Model\Live2DModelBase.h" />
     <ClInclude Include="src\Model\ModelManager.h" />
     <ClInclude Include="src\Pack\Pack.h" />
+    <ClInclude Include="src\Renderer\Bindable\Bindable.h" />
+    <ClInclude Include="src\Renderer\Bindable\Bindables.h" />
+    <ClInclude Include="src\Renderer\Bindable\IndexBuffer.h" />
+    <ClInclude Include="src\Renderer\Bindable\VertexBuffer.h" />
     <ClInclude Include="src\Renderer\CatRendererContext.h" />
-    <ClInclude Include="src\Renderer\CatRenderState.h" />
+    <ClInclude Include="src\Renderer\GlobalGraphicResourceManager.h" />
     <ClInclude Include="src\Renderer\MixDrawList.h" />
     <ClInclude Include="src\RenderThread.h" />
     <ClInclude Include="src\RenderWindowManager.h" />
@@ -230,6 +252,11 @@
     <ClCompile Include="src\Input\InputCommon.cpp" />
     <ClCompile Include="src\Input\InputManager.cpp" />
     <ClCompile Include="src\Input\InputParser.cpp" />
+    <ClCompile Include="src\Item\BongoCatHand.cpp" />
+    <ClCompile Include="src\Item\BongoCatItem.cpp" />
+    <ClCompile Include="src\Item\BongoCatObject.cpp" />
+    <ClCompile Include="src\Item\BongoCatObject_Standard.cpp" />
+    <ClCompile Include="src\Item\BongoCatSprite.cpp" />
     <ClCompile Include="src\Item\CharacterObject.cpp" />
     <ClCompile Include="src\Item\ClassicItem.cpp" />
     <ClCompile Include="src\Item\DecorationItem.cpp" />
@@ -247,6 +274,10 @@
     <ClCompile Include="src\Model\Live2DModelBase.cpp" />
     <ClCompile Include="src\Model\ModelManager.cpp" />
     <ClCompile Include="src\Pack\Pack.cpp" />
+    <ClCompile Include="src\Renderer\Bindable\IndexBuffer.cpp" />
+    <ClCompile Include="src\Renderer\Bindable\VertexBuffer.cpp" />
+    <ClCompile Include="src\Renderer\GlobalGraphicResourceManager.cpp" />
+    <ClCompile Include="src\Renderer\GlobalGraphicResourceManager_Shader.cpp" />
     <ClCompile Include="src\Renderer\MixDrawList.cpp" />
     <ClCompile Include="src\RenderThread.cpp" />
     <ClCompile Include="src\RenderWindowManager.cpp" />
@@ -301,6 +332,7 @@
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\ItemSelectPage.xml" />
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\MainUiForm.xml" />
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\MainWindowMenu.xml" />
+    <Xml Include="..\DuiResource\themes\default\CatTuber_default\UIScenePanelItemAddMenu.xml" />
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\SceneSelectPage.xml" />
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\SettingsPage.xml" />
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\UIModelItem.xml" />
@@ -316,6 +348,14 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="CatTuberLogo.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="src\Renderer\Shader\BongoCatSpriteVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

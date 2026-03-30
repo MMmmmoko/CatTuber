@@ -223,7 +223,7 @@ void DecorationObject::OnAnimationPlay(int animationIndex)
 
 	if (!modelAnimationVec[animationIndex].controlName.empty())
 	{
-		_model->PlayAnimation(modelAnimationVec[animationIndex].controlName);
+		_model->PlayAnimation(modelAnimationVec[animationIndex].controlName.c_str());
 	}
 
 

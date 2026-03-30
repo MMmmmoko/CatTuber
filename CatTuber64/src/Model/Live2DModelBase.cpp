@@ -33,6 +33,32 @@
 //DISABLE_WARNING_GCC("-Wsign-conversion")
 using namespace Live2D::Cubism::Framework;
 
+
+
+
+
+static void Live2DFinishedMotionCallBack(Csm::ACubismMotion* motion)
+{
+	IModel::FinishedAnimationCallback finishedCall=(IModel::FinishedAnimationCallback) motion->GetFinishedMotionCustomData();
+	if (finishedCall)finishedCall(motion->GetFinishedMotionCustomData2());
+}
+
+
+static void Live2DBeganMotionCallBack(Csm::ACubismMotion* motion)
+{
+	IModel::BeganAnimationCallback beganCall=(IModel::BeganAnimationCallback) motion->GetBeganMotionCustomData();
+	if (beganCall)beganCall(motion->GetBeganMotionCustomDat2());
+}
+
+
+
+
+
+
+
+
+
+
 CubismLive2DModel::~CubismLive2DModel()
 {
 	ReleaseMotions();
@@ -113,7 +139,9 @@ bool CubismLive2DModel::LoadFromFile(const char* packPath, const char* pathInPac
 
 
 
-Csm::CubismMotionQueueEntryHandle CubismLive2DModel::StartMotion(const Csm::csmChar* group, Csm::csmInt32 no, Csm::csmInt32 priority, Csm::ACubismMotion::FinishedMotionCallback onFinishedMotionHandler, Csm::ACubismMotion::BeganMotionCallback onBeganMotionHandler)
+Csm::CubismMotionQueueEntryHandle CubismLive2DModel::StartMotion(const Csm::csmChar* group, Csm::csmInt32 no, Csm::csmInt32 priority, 
+	IModel::FinishedAnimationCallback finishedMotionCall, void* finishedMotionUserHandlerUserData,
+	IModel::BeganAnimationCallback beganMotionCall, void* beganMotionUserHandlerUserData)
 {
 	//获取对应的track
 	int track = 0;
@@ -174,7 +202,7 @@ Csm::CubismMotionQueueEntryHandle CubismLive2DModel::StartMotion(const Csm::csmC
 		size_t size;
 
 		buffer = CreateBuffer(path.GetRawString(), &size);
-		motion = static_cast<CubismMotion*>(LoadMotion(buffer, static_cast<Csm::csmSizeInt>(size), NULL, onFinishedMotionHandler, onBeganMotionHandler, _modelSetting, group, no));
+		motion = static_cast<CubismMotion*>(LoadMotion(buffer, static_cast<Csm::csmSizeInt>(size), NULL, nullptr, nullptr, _modelSetting, group, no));
 
 		if (motion)
 		{
@@ -184,10 +212,13 @@ Csm::CubismMotionQueueEntryHandle CubismLive2DModel::StartMotion(const Csm::csmC
 
 		DeleteBuffer(buffer, path.GetRawString());
 	}
-	else
+
+	if (motion)
 	{
-		motion->SetBeganMotionHandler(onBeganMotionHandler);
-		motion->SetFinishedMotionHandler(onFinishedMotionHandler);
+		motion->SetBeganMotionHandler(beganMotionCall?Live2DBeganMotionCallBack:nullptr);
+		motion->SetBeganMotionCustomData(beganMotionUserHandlerUserData);
+		motion->SetFinishedMotionHandler(finishedMotionCall?Live2DFinishedMotionCallBack:nullptr);
+		motion->SetFinishedMotionCustomData(finishedMotionUserHandlerUserData);
 	}
 
 	//voice
@@ -210,7 +241,9 @@ Csm::CubismMotionQueueEntryHandle CubismLive2DModel::StartMotion(const Csm::csmC
 
 }
 
-Csm::CubismMotionQueueEntryHandle CubismLive2DModel::StartRandomMotion(const Csm::csmChar* group, Csm::csmInt32 priority,Csm::ACubismMotion::FinishedMotionCallback onFinishedMotionHandler, Csm::ACubismMotion::BeganMotionCallback onBeganMotionHandler)
+Csm::CubismMotionQueueEntryHandle CubismLive2DModel::StartRandomMotion(const Csm::csmChar* group, Csm::csmInt32 priority,
+	IModel::FinishedAnimationCallback finishedMotionCall, void* finishedMotionUserHandlerUserData,
+	IModel::BeganAnimationCallback beganMotionCall, void* beganMotionUserHandlerUserData)
 {
 
 	if (_modelSetting->GetMotionCount(group) == 0)
@@ -218,7 +251,69 @@ Csm::CubismMotionQueueEntryHandle CubismLive2DModel::StartRandomMotion(const Csm
 		return InvalidMotionQueueEntryHandleValue;
 	}
 	auto no=SDL_rand(_modelSetting->GetMotionCount(group));
-	return StartMotion(group,no,priority, onFinishedMotionHandler,onBeganMotionHandler);
+	return StartMotion(group,no,priority, finishedMotionCall, finishedMotionUserHandlerUserData, beganMotionCall, beganMotionUserHandlerUserData);
+}
+
+void CubismLive2DModel::SetExpression(const Csm::csmChar* expressionID)
+{
+	ACubismMotion* motion = _expressions[expressionID];
+	if (_debugMode)
+	{
+		SDL_Log("[APP]expression: [%s]", expressionID);
+	}
+
+	if (motion != NULL)
+	{
+		_expressionManager->StartMotionPriority(motion, false,  /*PriorityForce*/3);
+		currentExpression = motion;
+	}
+	else
+	{
+		if (_debugMode)
+		{
+			SDL_Log("[APP]expression[%s] is null ", expressionID);
+		}
+	}
+}
+
+void CubismLive2DModel::SetExpression(Csm::csmInt32 no)
+{
+	if (_expressions.GetSize() == 0)
+	{
+		return;
+	}
+
+	csmMap<csmString, ACubismMotion*>::const_iterator map_ite;
+	csmInt32 i = 0;
+	for (map_ite = _expressions.Begin(); map_ite != _expressions.End(); map_ite++)
+	{
+		if (i == no)
+		{
+			csmString name = (*map_ite).First;
+			SetExpression(name.GetRawString());
+			return;
+		}
+		i++;
+	}
+}
+
+void CubismLive2DModel::StopExpression()
+{
+	if (!_expressionManager->IsFinished()&& currentExpression)
+	{
+		_expressionManager->StartMotion(currentExpression,false);
+	}
+}
+
+void CubismLive2DModel::SetRandomExpression()
+{
+	if (_expressions.GetSize() == 0)
+	{
+		return;
+	}
+	csmInt32 no = rand() % _expressions.GetSize();
+	SetExpression(no);
+
 }
 
 std::vector<std::string> CubismLive2DModel::GetParamList()
@@ -914,11 +1009,39 @@ std::vector<std::string> Live2DModelBase::GetAnimationList()
 	return l2dmodel.GetAnimationList();
 }
 
-void Live2DModelBase::PlayAnimation(const std::string& name, bool loop)
+void Live2DModelBase::PlayAnimation(const char* name, bool loop)
 {
 	//TODO/FIXME LOOP
-	l2dmodel.StartRandomMotion(name.c_str(), Live2DMitonPriority_Force);
+	l2dmodel.StartRandomMotion(name, Live2DMitonPriority_Force);
 
+}
+
+
+
+
+
+
+
+void Live2DModelBase::PlayAnimationEX(const  char* name, int index, FinishedAnimationCallback finishedCall, void* finishedCallUserData, BeganAnimationCallback beganCall, void* beganCallUserData)
+{
+
+	
+	l2dmodel.StartMotion(name,index, Live2DMitonPriority_Force, 
+		finishedCall, finishedCallUserData,
+		beganCall , beganCallUserData
+	);
+
+
+}
+
+void Live2DModelBase::SetExpression(const char* expressionID)
+{
+	l2dmodel.SetExpression(expressionID);
+}
+
+void Live2DModelBase::SetExpression(int expressionIndex)
+{
+	l2dmodel.SetExpression(expressionIndex);
 }
 
 ParamHandle Live2DModelBase::GetParamHandle(const std::string& param)

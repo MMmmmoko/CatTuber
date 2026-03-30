@@ -22,20 +22,24 @@ namespace Live2D {
                     SDL_GPUShader* _fragmentShader = NULL;
 
                     //输入布局
-                    SDL_GPUVertexInputState _vertexInputState;
-                    SDL_GPUVertexBufferDescription _vertexBufferDescription;
-                    SDL_GPUVertexAttribute _vertexAttr[2];//针对live2D开发的，目前live2D顶点只有xy、uv两组(没有颜色)
+                    SDL_GPUVertexInputState _vertexInputState;//后方的_vertexBufferDescription和_vertexAttr均是_vertexInputState内部指向的内容
+                    SDL_GPUVertexBufferDescription _vertexBufferDescription = {};//暂时应该每次渲染只需要一组顶点，后续再考虑这里改为数组
+                    SDL_GPUVertexAttribute _vertexAttr[4];//针对live2D开发的，目前live2D顶点只有xy、uv两组(没有颜色)
 
 
                     //用于hash的函数
                     //size_t operator()(_PipelineState const&) const noexcept;
                     bool operator==(const _CubismRenderSDL3PipelineState & o) const noexcept
                     {
-
-                        return memcmp(this,&o,
-                            sizeof(_blend)+ sizeof(_cullmode) + sizeof(_depthEnable) + sizeof(_topology) 
-                            +sizeof(_vertexShader) + sizeof(_fragmentShader)
-                        )==0;
+                        return memcmp(this, &o,
+                            sizeof(_blend) + sizeof(_cullmode) + sizeof(_depthEnable) + sizeof(_topology)
+                            + sizeof(_vertexShader) + sizeof(_fragmentShader)
+                        ) == 0
+                            && _vertexInputState.num_vertex_attributes == o._vertexInputState.num_vertex_attributes
+                            && _vertexInputState.num_vertex_buffers == o._vertexInputState.num_vertex_buffers
+                            && memcmp(&_vertexBufferDescription,&o._vertexBufferDescription,sizeof(_vertexInputState))==0
+                            && memcmp(_vertexAttr,o._vertexAttr,sizeof(SDL_GPUVertexAttribute)* _vertexInputState.num_vertex_attributes)==0
+                            ;
                     }
                     //bool operator()(const _PipelineState& a, const _PipelineState& b);
                 };
@@ -150,6 +154,7 @@ namespace Live2D {
                     void GetRenderTargets(SDL_GPUTexture** renderTex, SDL_GPUTexture** depthTex);
                     void SetBlendState(CubismRenderState_SDL3::Blend blend);
                     void SetCullMode(CubismRenderState_SDL3::Cull cullmode);
+                    void GetViewport(SDL_GPUViewport* pviewPortOut);
                     void SetViewport(SDL_GPUViewport* pviewPort);
                     void SetZEnable(CubismRenderState_SDL3::Depth depthEnable);
                     void SetTopology(SDL_GPUPrimitiveType topology);
@@ -157,9 +162,10 @@ namespace Live2D {
 
                     void SetVertexShader(SDL_GPUShader* vs);
                     void SetVertexBuffers(uint32_t startSlot, uint32_t numBuffers, SDL_GPUBufferBinding* buffers);
-                    void SetIndexBuffer(SDL_GPUBuffer* indexBuffer, SDL_GPUIndexElementSize index_element_size,uint32_t offset);
+                    void SetIndexBuffer(SDL_GPUBuffer* indexBuffer, SDL_GPUIndexElementSize index_element_size= SDL_GPUIndexElementSize::SDL_GPU_INDEXELEMENTSIZE_16BIT,uint32_t offset=0);
                     //这是给Live2D写的渲染器，因为Live2D不使用全局数据，所以这里不再提供Uniform接口
-                    //void SetVertexUniformData(uint32_t slot, const void* data, uint32_t datalength);
+                    //还是得捡起来，因为CatTuber里要用到
+                    void SetVertexUniformData(uint32_t slot, const void* data, uint32_t datalength);
                     void SetVertexConstantBuffer(uint32_t startSlot, uint32_t numBuffers, SDL_GPUBuffer** buffers);
 
                     void SetInputLayout(SDL_GPUVertexInputState* inputstate);
@@ -178,7 +184,7 @@ namespace Live2D {
                     void ClearDepth(float depth);
                     void ClearStencil(uint8_t stencil);
                     
-                    void DrawIndexed(uint32_t count,uint32_t startIndex);
+                    void DrawIndexed(uint32_t count,uint32_t startIndex=0);
 
                     SDL_GPUGraphicsPipeline* GetPipelineFromCurState();
 

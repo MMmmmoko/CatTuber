@@ -6,7 +6,7 @@
 
 class Pack;
 
-
+struct SDL_GPUTexture;
 
 
 namespace util {
@@ -54,8 +54,8 @@ namespace util {
 
 
 
-
-
+	//从Pack中加载SDL纹理
+	SDL_GPUTexture* LoadTextureFromPack(class Pack* pack, const char* pathInPack,int* w=nullptr, int* h =nullptr );
 
 
 
@@ -87,6 +87,7 @@ inline float util::NanoTicksToSeconds(uint64_t ticks)
 {
 	return static_cast<float>(ticks) / 1'000'000'000.0f;
 }
+
 
 
 

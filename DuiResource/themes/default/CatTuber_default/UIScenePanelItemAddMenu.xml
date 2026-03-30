@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Window shadow_type="menu_round" shadow_attached="true" layered_window="true"
+		xmlns:xs="http://www.w3.org/2001/XMLSchema"
+		xmlns="http://tempuri.org/NIMDUISchema.xsd"
+		
+		>
+	<!--todo给每个选项加上一个图标-->
+	<MenuListBox class="menu" name="itemAddMenu">
+		<MenuItem class="menu_element" name="itemAddMenu_ClassicItem" width="auto">
+			<HBox width="auto">
+				<Control normal_image="itemAdd_Classic2.svg"  disabled_image="itemAdd_Classic2_disable.svg" width="80" height="24" valign="center" margin="0,0,16,0"/>
+				<Label class="menu_text"  text_id="STRID_SCENEITEMADDMENU_CLASSIC" mouse_enabled="false" keyboard_enabled="false"/>
+			</HBox>
+		</MenuItem>
+		<MenuItem class="menu_element" name="itemAddMenu_BongoCatItem" width="auto">
+			<HBox width="auto">
+				<Control normal_image="itemAdd_BongoCat.svg" disabled_image="itemAdd_BongoCat_disable.svg" width="42" height="24" valign="center" margin="21,0,33,0"/>
+				<Label class="menu_text"  text_id="STRID_SCENEITEMADDMENU_BONGOCAT" mouse_enabled="false" keyboard_enabled="false"/>
+			</HBox>
+		</MenuItem>
+
+		<Control height="1" bkcolor="itemSeparatorColor" margin="10,0,10,0"/>
+		 
+		<MenuItem class="menu_element" name="itemAddMenu_DecorationItem" width="auto">
+			<HBox width="auto">
+				<Control bkimage="itemAdd_Decoration.svg" disabled_image="itemAdd_Decoration_disable.svg" width="24" height="24" valign="center" margin="30,0,42,0"/>
+			<Label class="menu_text"  text_id="STRID_SCENEITEMADDMENU_DECORATION" mouse_enabled="false" keyboard_enabled="false"/>
+			</HBox>
+		</MenuItem>
+		
+		
+	</MenuListBox>
+</Window>

@@ -47,13 +47,20 @@ public:
 
 	//返回一个动作标识，给IsFinished()调用来确定动作是否结束。如果动作无法开始，返回-1
 	Csm::CubismMotionQueueEntryHandle StartMotion(const Csm::csmChar* group, Csm::csmInt32 no, Csm::csmInt32 priority,
-		Csm::ACubismMotion::FinishedMotionCallback onFinishedMotionHandler = NULL, Csm::ACubismMotion::BeganMotionCallback onBeganMotionHandler = NULL
+		IModel::FinishedAnimationCallback finishedMotionCall=nullptr, void* finishedMotionUserHandlerUserData=nullptr,
+		IModel::BeganAnimationCallback beganMotionCall = nullptr, void* beganMotionUserHandlerUserData = nullptr
 		);
 	//CatTuber采用组内随机的方式播放动画，组名即动画名
 	Csm::CubismMotionQueueEntryHandle StartRandomMotion(const Csm::csmChar* group,Csm::csmInt32 priority, 
-		Csm::ACubismMotion::FinishedMotionCallback onFinishedMotionHandler = NULL, Csm::ACubismMotion::BeganMotionCallback onBeganMotionHandler = NULL
+		IModel::FinishedAnimationCallback finishedMotionCall = nullptr, void* finishedMotionUserHandlerUserData = nullptr,
+		IModel::BeganAnimationCallback beganMotionCall = nullptr, void* beganMotionUserHandlerUserData = nullptr
 		);
 
+
+	void SetExpression(const Csm::csmChar* expressionID);
+	void SetExpression(Csm::csmInt32 no);
+	void StopExpression();
+	void SetRandomExpression();
 
 	//获取的是CatTuber可控的参数和动画
 	std::vector<std::string> GetParamList();
@@ -105,6 +112,9 @@ private:
 	std::unordered_map<Csm::csmInt32, Csm::CubismMotionManager*>   _motionManagers;
 	std::unordered_map<std::string, int>   _animationTrackMap;
 	int _idleMotionTrack = 0;//待机动作的轨道
+
+	Csm::ACubismMotion* currentExpression = nullptr;
+
 	//std::unordered_map<>
 
 
@@ -150,7 +160,14 @@ public:
 
 
 
-	virtual void PlayAnimation(const std::string& name, bool loop = false)override;
+	virtual void PlayAnimation(const char* name, bool loop = false)override;
+	virtual void PlayAnimationEX(const char* name, int index = 0, FinishedAnimationCallback finishedCall = nullptr, void* finishedCallUserData = nullptr,
+		BeganAnimationCallback beganCall = nullptr, void* beganCallUserData = nullptr)override;
+
+	virtual void SetExpression(const char* expressionID)override;
+	virtual void SetExpression(int expressionIndex)override;
+
+
 	virtual ParamHandle GetParamHandle(const std::string& param)override;
 	virtual HandPosHandle GetHandHandle(const std::string& param)override;
 	virtual void GetHandPosFromHandle(HandPosHandle handPosHandle, float* x, float* y)override;

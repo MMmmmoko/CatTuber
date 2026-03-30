@@ -202,6 +202,11 @@ namespace Live2D {
 					_pipelineState._cullmode = cullmode;
 				}
 
+				void CubismRenderContext_SDL3::GetViewport(SDL_GPUViewport* pviewPortOut)
+				{
+					 *pviewPortOut = viewPort;
+				}
+
 				void CubismRenderContext_SDL3::SetViewport(SDL_GPUViewport* pviewPort)
 				{
 					viewPort = *pviewPort;
@@ -235,15 +240,15 @@ namespace Live2D {
 					SDL_BindGPUIndexBuffer(_pass, &binding, index_element_size);
 				}
 
-				//void CubismRenderContext_SDL3::SetVertexUniformData(uint32_t slot, const void* data, uint32_t datalength)
-				//{
-				//	//SDL_assert(_cmd&&"command buffer should not be null");
-				//	//修改为多缓冲后，需要区分缓冲区.....
-				//	if(_renderTarget || _depthStencil)
-				//		SDL_PushGPUVertexUniformData(_cmd_copy, slot, data, datalength);
-				//	else
-				//		SDL_PushGPUVertexUniformData(_cmd, slot, data, datalength);
-				//}
+				void CubismRenderContext_SDL3::SetVertexUniformData(uint32_t slot, const void* data, uint32_t datalength)
+				{
+					//SDL_assert(_cmd&&"command buffer should not be null");
+					//修改为多缓冲后，需要区分缓冲区.....
+					if(_renderTarget || _depthStencil)
+						SDL_PushGPUVertexUniformData(_cmd_copy, slot, data, datalength);
+					else
+						SDL_PushGPUVertexUniformData(_cmd, slot, data, datalength);
+				}
 
 				void CubismRenderContext_SDL3::SetVertexConstantBuffer(uint32_t startSlot, uint32_t numBuffers, SDL_GPUBuffer** buffers)
 				{
