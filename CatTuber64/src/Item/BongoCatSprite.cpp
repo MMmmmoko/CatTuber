@@ -59,8 +59,8 @@ BongoCatSprite::BongoCatSprite()
     //AddBind(tcb);
 
 
-    vs_sprite = GlobalGraphicResourceManager::GetIns().GetShaderByName("SpriteVS");
-	ps_sprite = GlobalGraphicResourceManager::GetIns().GetShaderByName("SpritePS");
+    vs_sprite = GlobalGraphicResourceManager::GetIns().GetShaderByName("BongoCatSpriteVS");
+	ps_sprite = GlobalGraphicResourceManager::GetIns().GetShaderByName("BongoCatSpritePS");
 
 
 
@@ -124,12 +124,19 @@ void BongoCatSprite::Draw()
 		bottom /= (0.5f * canvasH);
 
 
+		//SpriteVertex vertices[] =
+		//{
+		//	{left,top,0.f,0.f},//左上
+		//	{right,top,1.f,0.f},
+		//	{left,bottom,0.f,1.f},
+		//	{right,bottom,1.f,1.f},
+		//};
 		SpriteVertex vertices[] =
 		{
-			{left,top,0.f,0.f},//左上
-			{right,top,1.f,0.f},
-			{left,bottom,0.f,1.f},
-			{right,bottom,1.f,1.f},
+			{spriteRect.x,spriteRect.y,0.f,0.f},//左上
+			{spriteRect.x+ spriteRect.w,spriteRect.y,1.f,0.f},//右上
+			{spriteRect.x,spriteRect.y+ spriteRect.h,0.f,1.f},//左下
+			{spriteRect.x + spriteRect.w,spriteRect.y + spriteRect.h,1.f,1.f},//右下
 		};
 		vertexbuffer.UpdateVertex(vertices,sizeof(vertices));
 
@@ -144,7 +151,7 @@ void BongoCatSprite::Draw()
 	//pContext->SetVertexUniformData(0, &subdata, sizeof(subdata));
 
 	pContext->SetBlendState(SDL3Blend::Blend_Normal);
-	pContext->SetCullMode(SDL3Cull::Cull_Ccw);
+	pContext->SetCullMode(SDL3Cull::Cull_None);
 
 
 

@@ -35,6 +35,12 @@
 							<Label text_id="STRID_BASECONTROL_SETTINGS"  normal_text_color="textNormalColor" halign="center" valign="center"/>
 						</VBox>
 					</ButtonBox>
+					<ButtonBox name="baseControl_btn_animation" hot_color="itemHoverColor" mouse_child="false" border_round="8,8">
+						<VBox >
+							<Control bkimage="baseControl_animation.svg" width="auto" height="auto" halign="center" margin="0,6,0,4"/>
+							<Label text_id="STRID_BASECONTROL_ANIMATION"  normal_text_color="textNormalColor" halign="center" valign="center"/>
+						</VBox>
+					</ButtonBox>
 					<ButtonBox name="baseControl_btn_help" hot_color="itemHoverColor" mouse_child="false" border_round="8,8">
 						<VBox >
 							<Control bkimage="baseControl_help.svg" width="auto" height="auto" halign="center" margin="0,6,0,4"/>

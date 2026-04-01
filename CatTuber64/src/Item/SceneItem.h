@@ -37,7 +37,8 @@ public:
 	//virtual Json::Value GetSettingPage() = 0;......
 
 
-
+	//获取可播放的动画列表？？
+	//virtual std::vector<std::string> GetPlayableAnimationList() { return std::vector<std::string>(); };
 
 	
 	Scene* GetScene() { return scene; }

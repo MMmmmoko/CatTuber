@@ -31,6 +31,7 @@ public:
 
 	void Update(uint64_t deltaTicksNS);
 	void Draw(MixDrawList* drawList);
+	void Draw();
 
 
 	//有时希望不显示模型让模型不工作，但暂时不希望删除模型（如预览其他模式时），
@@ -160,7 +161,7 @@ private:
 		//SDL_GPUTexture* armL = nullptr;
 		//SDL_GPUTexture* armR = nullptr;
 
-		std::vector<BongoCatSprite>facevec;
+		std::vector<BongoCatSprite>facevec;//vector扩展的时候会触发析构导致出错？
 		std::vector<BongoCatSprite>LHandvec;
 		std::vector<BongoCatSprite>RHandvec;
 		std::vector<BongoCatSprite>keyboardvec;

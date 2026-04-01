@@ -24,7 +24,7 @@ void GlobalGraphicResourceManager::CleanUp()
 		SDL_ReleaseGPUShader(pDevice,x.second);
 	shaderPool.clear();
 
-
+	bindsMap.clear();
 
 
 	//SDL_CreateGPUBuffer

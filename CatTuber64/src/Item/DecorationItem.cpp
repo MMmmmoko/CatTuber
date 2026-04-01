@@ -29,7 +29,7 @@ void DecorationItem::Draw(SDL_GPURenderPass* mainRenderPass, int width, int heig
 	if (_itemObj)
 	{
 		_itemObj->GetModel()->SetScene(scene);
-		_itemObj->Draw(nullptr);
+		_itemObj->GetModel()->Draw();
 		//_desk->Draw(&mixDraw);
 	}
 

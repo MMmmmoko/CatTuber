@@ -20,7 +20,11 @@ void BongoCatItem::Draw(SDL_GPURenderPass* mainRenderPass, int width, int height
 {
 	auto& _2dMat = GetScene()->Get2DProj();
 
-
+	if (_itemObj)
+	{
+		_itemObj->GetModel()->SetScene(scene);
+		_itemObj->Draw();
+	}
 
 }
 void BongoCatItem::DrawMix(MixDrawList* mix)
@@ -64,7 +68,10 @@ void BongoCatItem::ApplyAttributes(const Json::Value& applyJson)
 	}
 
 
-
+	if (applyJson.isMember("Object"))
+	{
+		_itemObj= BongoCatObject::CreateFromAttributes(applyJson["Object"]);
+	}
 
 
 

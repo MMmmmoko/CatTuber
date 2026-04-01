@@ -126,62 +126,23 @@ bool BongoCatObject::LoadFromPath(const char* u8PackPath, const Json::Value& bin
 
 
 	//基于上述参数加载文件
+	bool resourceLoadResult = false;
 	switch (mode)
 	{
 	case BongoCatObject::BongoCatMverMode_Standard:
-		return _LoadResource_Standard(config);
+		resourceLoadResult=_LoadResource_Standard(config);
 		break;
 	case BongoCatObject::BongoCatMverMode_Keyboard:
-		return _LoadResource_Keyboard(config);
+		resourceLoadResult = _LoadResource_Keyboard(config);
 		break;
 	case BongoCatObject::BongoCatMverMode_Gamepad:
-		return _LoadResource_Gamepad(config);
+		resourceLoadResult = _LoadResource_Gamepad(config);
 		break;
 	default:
 		break;
 	}
 
-
-	const char* modeFolderPath[BongoCatMverMode_MaxCount] = {
-"img/standard/",
-"img/keyboard/",
-"img/gamepad/"
-	};
-	std::string modeFolder = modeFolderPath[mode];
-	//角色模型
-	if (isUsingLive2D)
-	{
-		if (!_model)
-		{
-			std::string l2dModelFolder = modeFolder + "cat_model";
-			_model = IModel::CreateFromFolder(u8PackPath, l2dModelFolder.c_str());
-			if (!_model)
-			{
-				SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Can not create model from : %s/%s", u8PackPath, l2dModelFolder.c_str());
-				return false;
-			}
-		}
-	}
-	else
-	{
-		pngResource.cat;
-	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	if (!resourceLoadResult)return false;
 
 
 
@@ -225,20 +186,139 @@ void BongoCatObject::Update(uint64_t deltaTicksNS)
 	if (working)
 	{
 
-		uint64_t curMsTicks = SDL_GetTicks();
-
-
-
-		_model->Update(deltaTicksNS);
+		switch (mode)
+		{
+		case BongoCatObject::BongoCatMverMode_Standard:
+			_Update_Standard(deltaTicksNS);
+			break;
+		case BongoCatObject::BongoCatMverMode_Keyboard:
+			_Update_Standard(deltaTicksNS);
+			break;
+		case BongoCatObject::BongoCatMverMode_Gamepad:
+			_Update_Standard(deltaTicksNS);
+			break;
+		default:
+			break;
+		}
 	}
 }
 
 
-void BongoCatObject::Draw(MixDrawList* drawList)
+//void BongoCatObject::Draw(MixDrawList* drawList)
+//{
+//	if (working)
+//	{
+//		_model->DrawMix(drawList);
+//	}
+//}
+
+void BongoCatObject::Draw()
 {
 	if (working)
 	{
-		_model->DrawMix(drawList);
+		//BongoCat部分const资源需要在外部设置
+		//因为Sprite的顶点单位是像素，且Y轴向下，且需要模拟特定视口
+		//SDL_Rect vp;//特定于BongoCat的vp？
+		//float canvasW;
+		//float canvasH;
+		//float rtW;//渲染目标
+		//float rtH;
+
+
+
+		//float curXinCanvas;
+		//float curYinCanvas;
+
+		//float x = curXinCanvas / canvasW;
+		//float y=curXinCanvas / canvasH;
+		//float realX = vp.x + vp.w * x;
+		//float realY = vp.y + vp.h * y;
+		//float vertexPosX = 2.f* realX / rtW  - 1.f;
+		//float vertexPosY = 1.f - 2.f * realY / rtH;
+
+	
+
+		
+		struct
+		{
+			SDL_FRect bongoCatVp;
+			float _1_canvasW;
+			float _1_canvasH;
+			float _1_rtW;
+			float _1_rtH;
+		}uniformData;
+
+
+
+		auto pContext=AppContext::GetSDL3RenderContext();
+		auto& vp = pContext->GetViewport();
+
+		float rtW = vp.w;
+		float rtH = vp.h;
+
+		uniformData._1_canvasW = 1.f / decoration.initialSize[0];
+		uniformData._1_canvasH = 1.f / decoration.initialSize[1];
+		uniformData._1_rtW = 1.f/ rtW;
+		uniformData._1_rtH = 1.f / rtH;
+		
+
+
+
+		if (rtW * decoration.initialSize[1] > decoration.initialSize[0] * rtH)
+		{
+			//渲染目标比BongoCat比例更宽的时候
+			//BongoCat高度占满，两侧留空
+			uniformData.bongoCatVp.h = rtH;
+			uniformData.bongoCatVp.w = uniformData.bongoCatVp.h * ((float)decoration.initialSize[0] / decoration.initialSize[1]);
+			uniformData.bongoCatVp.x = (rtW - uniformData.bongoCatVp.w)*0.5f;
+			uniformData.bongoCatVp.y = 0;
+		}
+		else
+		{	
+			//BongoCat宽度占满，上下留空
+			uniformData.bongoCatVp.w =rtW;
+			uniformData.bongoCatVp.h = uniformData.bongoCatVp.w * ((float)decoration.initialSize[1] / decoration.initialSize[0]);
+			uniformData.bongoCatVp.x = 0;
+			uniformData.bongoCatVp.y = (rtH - uniformData.bongoCatVp.h) * 0.5f;
+		}
+
+		//计算uniformData offset
+		uniformData.bongoCatVp.x = uniformData.bongoCatVp.x-(scale * 0.5f * uniformData.bongoCatVp.w- 0.5f * uniformData.bongoCatVp.w);
+		uniformData.bongoCatVp.y = uniformData.bongoCatVp.y-(scale * 0.5f * uniformData.bongoCatVp.h- 0.5f * uniformData.bongoCatVp.h);
+		uniformData.bongoCatVp.x += offsetX;//应该不能单位为像素吧...
+		uniformData.bongoCatVp.y += offsetY;
+		uniformData.bongoCatVp.w *= scale;
+		uniformData.bongoCatVp.h *= scale;
+
+
+
+
+
+
+
+		pContext->SetVertexUniformData(0,&uniformData,sizeof(uniformData));
+
+
+
+
+
+
+
+
+		switch (mode)
+		{
+		case BongoCatObject::BongoCatMverMode_Standard:
+			_Draw_Standard();
+			break;
+		case BongoCatObject::BongoCatMverMode_Keyboard:
+			_Draw_Keyboard();
+			break;
+		case BongoCatObject::BongoCatMverMode_Gamepad:
+			_Draw_Gamepad();
+			break;
+		default:
+			break;
+		}
 	}
 }
 

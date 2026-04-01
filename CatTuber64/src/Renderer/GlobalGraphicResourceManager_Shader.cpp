@@ -5,6 +5,11 @@
 #ifdef SDL_PLATFORM_WINDOWS
 typedef  uint8_t BYTE;
 #include"Shader/DXIL/BongoCatSpriteVS.h"
+#include"Shader/DXIL/BongoCatSpritePS.h"
+#include"Shader/DXIL/BongoCatHandVS.h"
+#include"Shader/DXIL/BongoCatHandPS.h"
+#include"Shader/DXIL/BongoCatHandTexVS.h"
+#include"Shader/DXIL/BongoCatHandTexPS.h"
 
 
 
@@ -32,7 +37,12 @@ typedef  uint8_t BYTE;
 // num_storage_buffers,
 // num_uniform_buffers
 #define CATTUBER_SHADER_LIST(F) \
-F(BongoCatSpriteVS,VS,0,0,1,0)
+F(BongoCatSpriteVS,VS,0,0,0,1)\
+F(BongoCatSpritePS,PS,1,0,0,0)\
+F(BongoCatHandVS,VS,0,0,0,1)\
+F(BongoCatHandPS,PS,1,0,0,0)\
+F(BongoCatHandTexVS,VS,0,0,0,1)\
+F(BongoCatHandTexPS,PS,1,0,0,0)\
 
 
 

@@ -352,8 +352,53 @@ SDL_GPUTexture* util::LoadTextureFromPack(Pack* pack, const char* pathInPack, in
     SDL_GPUTexture* gpuTexture = SDL_CreateGPUTexture(AppContext::GetGraphicDevice(), &texInfo);
     if (gpuTexture)
     {
-        if (w)*w = surface->w;
-        if (h)*h = surface->h;
+        //上传纹理
+        if (surface)
+        {
+            SDL_GPUTransferBufferCreateInfo tbInfo = {};
+            tbInfo.usage = SDL_GPU_TRANSFERBUFFERUSAGE_UPLOAD;
+            tbInfo.size = surface->pitch * surface->h;
+
+
+            SDL_GPUTransferBuffer* transferBuffer = SDL_CreateGPUTransferBuffer(AppContext::GetGraphicDevice(), &tbInfo);
+            void* mapped = SDL_MapGPUTransferBuffer(AppContext::GetGraphicDevice(), transferBuffer, false);
+            memcpy(mapped, surface->pixels, tbInfo.size);
+            SDL_UnmapGPUTransferBuffer(AppContext::GetGraphicDevice(), transferBuffer);
+
+            
+            SDL_GPUCommandBuffer* cmd = AppContext::GetSDL3RenderContext()->GetCopyCommandBuffer();
+            SDL_GPUCopyPass* copyPass = SDL_BeginGPUCopyPass(cmd);
+
+            SDL_GPUTextureTransferInfo src = { };
+            src.offset = 0;
+            src.pixels_per_row = surface->w;
+            src.rows_per_layer = surface->h;
+            src.transfer_buffer = transferBuffer;
+
+            SDL_GPUTextureRegion dst = {};
+            dst.texture = gpuTexture;
+            //mip_level layer被初始化为0了，不管
+            dst.w = surface->w;
+            dst.h = surface->h;
+            dst.d = 1;
+
+
+            SDL_UploadToGPUTexture(copyPass, &src, &dst, false);
+            SDL_EndGPUCopyPass(copyPass);
+
+            //MIPMAP
+            if (texInfo.num_levels > 1)
+                SDL_GenerateMipmapsForGPUTexture(cmd, gpuTexture);
+
+            //SDL_SubmitGPUCommandBuffer(cmd);
+
+            SDL_ReleaseGPUTransferBuffer(AppContext::GetGraphicDevice(), transferBuffer);
+
+
+            if (w)*w = surface->w;
+            if (h)*h = surface->h;
+            SDL_DestroySurface(surface);
+        }
     }
 
     return gpuTexture;

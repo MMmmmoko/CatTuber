@@ -62,6 +62,7 @@ void rendering::VertexBuffer::UpdateVertex(void* data, size_t dataSize)
 
     if (mapped)
     {
+        SDL_memcpy(mapped, data, dataSize);
 
         SDL_UnmapGPUTransferBuffer(pContext->GetDevice(), pTransferBuffer);
        

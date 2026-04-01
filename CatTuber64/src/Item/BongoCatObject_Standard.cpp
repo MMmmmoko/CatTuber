@@ -96,10 +96,11 @@ bool BongoCatObject::_LoadResource_Standard(Json::Value& config)
 
 
 	//按键表情
+	pngResource.facevec.reserve(faceKeyVec.size());
 	for (int i = 0; i < faceKeyVec.size(); i++)
 	{
 		auto& psprite = pngResource.facevec.emplace_back();
-		_LoadSprite(("img/standard/face" + std::to_string(i) + ".png").c_str(), psprite);
+		_LoadSprite(("img/standard/face/" + std::to_string(i) + ".png").c_str(), psprite);
 	}
 
 
@@ -163,11 +164,11 @@ bool BongoCatObject::_LoadResource_Standard(Json::Value& config)
 
 		_LoadSprite("img/standard/up.png", pngResource.leftUp);
 
-
+		pngResource.LHandvec.reserve(leftHandKeyVec.size());
 		for (int i = 0; i < leftHandKeyVec.size(); i++)
 		{
 			auto& psprite = pngResource.LHandvec.emplace_back();
-			_LoadSprite(("img/standard/hand" + std::to_string(i) + ".png").c_str(), psprite);
+			_LoadSprite(("img/standard/hand/" + std::to_string(i) + ".png").c_str(), psprite);
 		}
 
 	}
@@ -196,10 +197,11 @@ bool BongoCatObject::_LoadResource_Standard(Json::Value& config)
 
 
 		//键盘光效
+		pngResource.keyboardvec.reserve(keyboardKeyVec.size());
 		for (int i = 0; i < keyboardKeyVec.size(); i++)
 		{
 			auto& psprite = pngResource.keyboardvec.emplace_back();
-			_LoadSprite( ("img/standard/keyboard" + std::to_string(i) + ".png").c_str(), psprite);
+			_LoadSprite( ("img/standard/keyboard/" + std::to_string(i) + ".png").c_str(), psprite);
 		}
 	}
 
@@ -214,7 +216,6 @@ bool BongoCatObject::_LoadResource_Standard(Json::Value& config)
 	//		psound = soundManager.CreateSound(stdpath + "\\sounds\\" + std::to_string(i) + ".flac");
 	//	if (psound)psound->SetMultiInstance(decoration.soundKeep);
 	//}
-
 
 
 

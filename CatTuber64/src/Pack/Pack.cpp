@@ -30,6 +30,7 @@ std::wstring Pack::PackPath_GetPackPath(const std::wstring& PackFullPath)
 std::wstring Pack::PackPath_GetFilePathInPack(const std::wstring& PackFullPath)
 {
 	size_t i = 0;
+	size_t stepIndex = 0;
 	int stackCount = 0;
 	for (i = 0; i < PackFullPath.size(); i++)
 	{
@@ -42,13 +43,73 @@ std::wstring Pack::PackPath_GetFilePathInPack(const std::wstring& PackFullPath)
 	//return imageFilePath.substr(i+1);
 
 
+	stepIndex = i + 1;
+	for (i = i + 1; i < PackFullPath.size(); i++)
+	{
+		if (PackFullPath[i] == L'[')stackCount++;
+		if (PackFullPath[i] == L']')stackCount--;
+		if (0 == stackCount)break;
+	}
+	if (i == stepIndex)return L"";
+	if (stackCount != 0)return L"";
+
+
+
 	//[][]
-	return PackFullPath.substr(i + 2, PackFullPath.size() - i - 3);
+	return PackFullPath.substr(stepIndex + 1, i - stepIndex - 1);
+	//return PackFullPath.substr(i + 2, PackFullPath.size() - i - 3);
+}
+
+std::wstring Pack::PackPath_GetFileLoadParam(const std::wstring& PackFullPath)
+{
+	size_t i = 0;
+	int stackCount = 0;
+	size_t stepIndex = 0;
+	for (i = 0; i < PackFullPath.size(); i++)
+	{
+		if (PackFullPath[i] == L'[')stackCount++;
+		if (PackFullPath[i] == L']')stackCount--;
+		if (0 == stackCount)break;
+	}
+	if (0 == i)return L"";
+	if (stackCount != 0)return L"";
+	//return imageFilePath.substr(i+1);
+
+	stepIndex = i + 1;
+	for (i = stepIndex; i < PackFullPath.size(); i++)
+	{
+		if (PackFullPath[i] == L'[')stackCount++;
+		if (PackFullPath[i] == L']')stackCount--;
+		if (0 == stackCount)break;
+	}
+	if (i == stepIndex)return L"";
+	if (stackCount != 0)return L"";
+
+
+
+	stepIndex = i + 1;
+	for (i = i + 1; i < PackFullPath.size(); i++)
+	{
+		if (PackFullPath[i] == L'[')stackCount++;
+		if (PackFullPath[i] == L']')stackCount--;
+		if (0 == stackCount)break;
+	}
+	if (i == stepIndex)return L"";
+	if (stackCount != 0)return L"";
+
+
+
+	return PackFullPath.substr(stepIndex+1,  i - stepIndex-1);
 }
 
 std::wstring Pack::PackPath_BuildPackFullPath(const std::wstring& packFilePath, const std::wstring& fileInPack)
 {
 	return L"["+ packFilePath+L"]["+ fileInPack+L"]";
+}
+
+std::wstring Pack::PackPath_BuildPackFullPath(const std::wstring& packFilePath, const std::wstring& fileInPack, const std::wstring& fileLoadParam)
+{
+	return L"[" + packFilePath + L"][" + fileInPack + L"][" + fileLoadParam + L"]";
 }
 
 

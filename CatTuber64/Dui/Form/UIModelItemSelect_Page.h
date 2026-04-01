@@ -113,8 +113,6 @@ public:
 	
 
 
-	//这里传入的是Scene文件夹里的图片路径，即调用前已经在指定位置生成好了新的封面
-	void OnCoverSetted(size_t index,const char* imageFileInSceneFolder);
 
 
 
@@ -143,7 +141,7 @@ private:
 
 
 	std::vector<ItemInfo> itemList;
-	std::vector<std::shared_ptr<ui::ImageInfo>> imageCache;
+	//std::vector<std::shared_ptr<ui::ImageInfo>> imageCache;
 
 
 

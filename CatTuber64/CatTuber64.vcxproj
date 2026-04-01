@@ -119,6 +119,7 @@
     <FxCompile>
       <HeaderFileOutput>G:\Projects\CatTuber64\project\CatTuber64\Shader\DXIL\%(Filename).h</HeaderFileOutput>
       <EntryPointName>%(Filename)</EntryPointName>
+      <ShaderModel>6.0</ShaderModel>
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -146,6 +147,7 @@
     <FxCompile>
       <HeaderFileOutput>G:\Projects\CatTuber64\project\CatTuber64\Shader\DXIL\%(Filename).h</HeaderFileOutput>
       <EntryPointName>%(Filename)</EntryPointName>
+      <ShaderModel>6.0</ShaderModel>
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -332,6 +334,7 @@
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\ItemSelectPage.xml" />
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\MainUiForm.xml" />
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\MainWindowMenu.xml" />
+    <Xml Include="..\DuiResource\themes\default\CatTuber_default\UISceneContentListItem.xml" />
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\UIScenePanelItemAddMenu.xml" />
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\SceneSelectPage.xml" />
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\SettingsPage.xml" />
@@ -350,6 +353,36 @@
     <Image Include="CatTuberLogo.ico" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="src\Renderer\Shader\BongoCatHandPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="src\Renderer\Shader\BongoCatHandTexPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="src\Renderer\Shader\BongoCatHandTexVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="src\Renderer\Shader\BongoCatHandVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="src\Renderer\Shader\BongoCatSpritePS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
     <FxCompile Include="src\Renderer\Shader\BongoCatSpriteVS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>

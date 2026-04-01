@@ -563,6 +563,9 @@
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\UIScenePanelItemAddMenu.xml">
       <Filter>Dui\UserControl</Filter>
     </Xml>
+    <Xml Include="..\DuiResource\themes\default\CatTuber_default\UISceneContentListItem.xml">
+      <Filter>Dui\UserControl</Filter>
+    </Xml>
   </ItemGroup>
   <ItemGroup>
     <Image Include="CatTuberLogo.ico">
@@ -571,6 +574,21 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="src\Renderer\Shader\BongoCatSpriteVS.hlsl">
+      <Filter>源文件\Renderer\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="src\Renderer\Shader\BongoCatSpritePS.hlsl">
+      <Filter>源文件\Renderer\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="src\Renderer\Shader\BongoCatHandPS.hlsl">
+      <Filter>源文件\Renderer\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="src\Renderer\Shader\BongoCatHandTexPS.hlsl">
+      <Filter>源文件\Renderer\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="src\Renderer\Shader\BongoCatHandTexVS.hlsl">
+      <Filter>源文件\Renderer\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="src\Renderer\Shader\BongoCatHandVS.hlsl">
       <Filter>源文件\Renderer\Shader</Filter>
     </FxCompile>
   </ItemGroup>

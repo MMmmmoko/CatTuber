@@ -61,7 +61,8 @@ void UISceneItem::InitSubControls(const std::string& name, const std::string& im
 
     }
     auto testPtr = dynamic_cast<ui::VBox*> (this);
-    imgCover->SetUTF8BkImage(img);
+    imgCover->SetUTF8BkImage(img); 
+    //imgCover->SetUTF8BkImage("file='"+img+"' adaptive_dest_rect='true' halign='center' valign='center'");
     labelSceneName->SetUTF8Text(name);
     //if (isSelected != selected)
     //{

@@ -15,7 +15,7 @@
 #include"Item/SceneManager.h"
 #include "CatTuberApp.h"
 #include"UserEvent.h"
-
+#include"Renderer/GlobalGraphicResourceManager.h"
 
 
 
@@ -126,7 +126,7 @@ bool CatTuberApp::Init(int argC, char* argV[])
 #elif defined SDL_PLATFORM_LINUX
 	pdevice = SDL_CreateGPUDevice(SDL_GPU_SHADERFORMAT_SPIRV, b_debug, "vulkan");
 #endif // 
-
+	GlobalGraphicResourceManager::GetIns().SetUp(pdevice);
 	if (NULL == pdevice)
 	{
 		//设备无效抛出异常

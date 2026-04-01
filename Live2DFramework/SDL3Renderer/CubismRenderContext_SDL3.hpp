@@ -139,10 +139,14 @@ namespace Live2D {
                     //不能从外面传入pass，因为无法同时存在多个pass
                     // 在live2d内部会存在切换渲染目标的情况（离屏）
                     //所以这里改为传入创建一个pass所必须的信息，在pass失效后由渲染器自行重建pass
-                    void StartFrame(SDL_GPUCommandBuffer* cmdCurFrame,SDL_GPURenderPass* mainRenderPass, SDL_GPUCommandBuffer* copyBuffer);//每帧数传入当前帧
-
-                    SDL_GPUCommandBuffer* GetCommandBuffer() { return _cmd; };
-                    SDL_GPUCommandBuffer* GetCopyCommandBuffer() { return _cmd_copy; };
+                    //void StartFrame(SDL_GPUCommandBuffer* cmdCurFrame,SDL_GPURenderPass* mainRenderPass, SDL_GPUCommandBuffer* copyBuffer);//每帧数传入当前帧
+                    void StartFrame(SDL_GPURenderPass* mainRenderPass);
+                    SDL_GPUCommandBuffer* GetCommandBuffer();
+                    SDL_GPUCommandBuffer* GetCopyCommandBuffer();
+					void SubmitCommandBuffer();
+					void SubmitCopyCommandBuffer();
+					SDL_GPUFence* SubmitCommandBufferAndAcquireFence();
+					SDL_GPUFence* SubmitCopyCommandBufferAndAcquireFence();
 
 
 
@@ -154,7 +158,7 @@ namespace Live2D {
                     void GetRenderTargets(SDL_GPUTexture** renderTex, SDL_GPUTexture** depthTex);
                     void SetBlendState(CubismRenderState_SDL3::Blend blend);
                     void SetCullMode(CubismRenderState_SDL3::Cull cullmode);
-                    void GetViewport(SDL_GPUViewport* pviewPortOut);
+                    const SDL_GPUViewport& GetViewport() { return viewPort; };
                     void SetViewport(SDL_GPUViewport* pviewPort);
                     void SetZEnable(CubismRenderState_SDL3::Depth depthEnable);
                     void SetTopology(SDL_GPUPrimitiveType topology);

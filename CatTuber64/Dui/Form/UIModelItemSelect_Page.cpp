@@ -182,9 +182,9 @@ bool UIModelItem::OnRightClick(const ui::EventArgs& args)
     }
 
 
-    ItemMenu_Select->SetFixedWidth(ui::UiFixedInt(maxW), true, false);
-    ItemMenu_Deselect->SetFixedWidth(ui::UiFixedInt(maxW), true, false);
-    ItemMenu_Favorite->SetFixedWidth(ui::UiFixedInt(maxW), true, false);
+    ItemMenu_Select->SetFixedWidth(ui::UiFixedInt(maxW), false, false);
+    ItemMenu_Deselect->SetFixedWidth(ui::UiFixedInt(maxW), false, false);
+    ItemMenu_Favorite->SetFixedWidth(ui::UiFixedInt(maxW), false, false);
     ItemMenu_Unfavorite->SetFixedWidth(ui::UiFixedInt(maxW), true, false);
 
 
@@ -350,11 +350,7 @@ void UIModelItemProvider::LoadItemList()
     //创建时也不能使用重复的名字
     itemList.clear();
 
-    //无论如何塞个空物体
-    auto& emptyEmpty=itemList.emplace_back();
-    emptyEmpty.emptyItem = true;
-    emptyEmpty.imgPath = "ModelItem_Empty.svg";
-
+	bool enableEmptyItem = false;
 
 
     std::string itemFoldPath;
@@ -362,21 +358,35 @@ void UIModelItemProvider::LoadItemList()
     {
     case UIModelItemType_ClassicCharacter:
 		itemFoldPath = AppContext::GetClassicCharacterFolderPath();
+        enableEmptyItem = true;
         break;
     case UIModelItemType_ClassicDesk:
 		itemFoldPath = AppContext::GetClassicDeskFolderPath();
+        enableEmptyItem = true;
         break;
     case UIModelItemType_ClassicHandheldItem:
 		itemFoldPath = AppContext::GetClassicHandheldItemFolderPath();
+        enableEmptyItem = true;
         break;
     case UIModelItemType_BongoCat:
 		itemFoldPath = AppContext::GetBongoCatFolderPath();
+        enableEmptyItem = false;
         break;
     default:
 		ASSERT(false&&"ERROR itemType");
         break;
     }
     
+    if (enableEmptyItem)
+    {
+        auto& emptyEmpty = itemList.emplace_back();
+        emptyEmpty.emptyItem = true;
+        emptyEmpty.imgPath = "ModelItem_Empty.svg";
+    }
+
+
+
+
 
 
 

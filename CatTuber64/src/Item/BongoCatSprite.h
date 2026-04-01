@@ -17,9 +17,9 @@ public:
 	bool Avaliable() { return pTexture; };
 	void SetUp(struct SDL_GPUTexture* texture,int w,int h);
 	void SetPosition(float x,float y);
-	void SetViewInfo(float canvasW,float canvasH,float windowW,float windowH);
+	//void SetViewInfo(float canvasW,float canvasH,float windowW,float windowH);
 
-
+	//由于BongoCat特殊性，需要在外部设置uniform
 	void Draw();
 
 

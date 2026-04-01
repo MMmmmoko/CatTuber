@@ -34,17 +34,22 @@ namespace Live2D {
 						}
 					}
 					rc.pipelinePool.clear();
-
+					if (rc._cmd)SDL_CancelGPUCommandBuffer(rc._cmd);
+					if (rc._cmd_copy)SDL_CancelGPUCommandBuffer(rc._cmd_copy);
+					rc._cmd = nullptr;
+					rc._cmd_copy = nullptr;
 				}
 
 
-				void CubismRenderContext_SDL3::StartFrame(SDL_GPUCommandBuffer* cmdCurFrame, SDL_GPURenderPass* mainRenderPass, SDL_GPUCommandBuffer* copyBuffer)
+				//void CubismRenderContext_SDL3::StartFrame(SDL_GPUCommandBuffer* cmdCurFrame, SDL_GPURenderPass* mainRenderPass, SDL_GPUCommandBuffer* copyBuffer)
+				void CubismRenderContext_SDL3::StartFrame( SDL_GPURenderPass* mainRenderPass)
 				{
 
-					_cmd = cmdCurFrame;
-					_cmd_copy = copyBuffer;
+					//_cmd = cmdCurFrame;
+					//_cmd_copy = copyBuffer;
 
 					_pass_orig = mainRenderPass;
+					_pass = _pass_orig;
 				}
 
 				void CubismRenderContext_SDL3::EndFrame()
@@ -66,6 +71,60 @@ namespace Live2D {
 				}
 
 
+
+				SDL_GPUCommandBuffer* CubismRenderContext_SDL3::GetCommandBuffer()
+				{
+					if (_cmd)return _cmd;
+					_cmd = SDL_AcquireGPUCommandBuffer(_device);
+					return _cmd;
+				}
+
+				SDL_GPUCommandBuffer* CubismRenderContext_SDL3::GetCopyCommandBuffer()
+				{
+					if (_cmd_copy)return _cmd_copy;
+					_cmd_copy = SDL_AcquireGPUCommandBuffer(_device);
+					return _cmd_copy;
+				}
+
+				void CubismRenderContext_SDL3::SubmitCommandBuffer()
+				{
+					if (_cmd)
+					{
+						SDL_SubmitGPUCommandBuffer(_cmd);
+						_cmd = SDL_AcquireGPUCommandBuffer(_device);
+					}
+				}
+
+				void CubismRenderContext_SDL3::SubmitCopyCommandBuffer()
+				{
+					if (_cmd_copy)
+					{
+						SDL_SubmitGPUCommandBuffer(_cmd_copy);
+						_cmd_copy = SDL_AcquireGPUCommandBuffer(_device);
+					}
+				}
+
+				SDL_GPUFence* CubismRenderContext_SDL3::SubmitCommandBufferAndAcquireFence()
+				{
+					if(_cmd)
+					{
+						SDL_GPUFence* fence=SDL_SubmitGPUCommandBufferAndAcquireFence(_cmd);
+						_cmd = SDL_AcquireGPUCommandBuffer(_device);
+						return fence;
+					}
+					return nullptr;
+				}
+
+				SDL_GPUFence* CubismRenderContext_SDL3::SubmitCopyCommandBufferAndAcquireFence()
+				{
+					if(_cmd_copy)
+					{
+						SDL_GPUFence* fence=SDL_SubmitGPUCommandBufferAndAcquireFence(_cmd_copy);
+						_cmd_copy = SDL_AcquireGPUCommandBuffer(_device);
+						return fence;
+					}
+					return nullptr;
+				}
 
 				void CubismRenderContext_SDL3::StartRender()
 				{
@@ -175,8 +234,13 @@ namespace Live2D {
 
 					if (_renderTarget || _depthStencil)
 					{
-						SDL_EndGPURenderPass(_pass);
-						_pass = NULL;
+						
+						//_pass = NULL;
+						if (_pass != _pass_orig)
+						{
+							SDL_EndGPURenderPass(_pass);
+							_pass = _pass_orig;
+						}
 					}
 				}
 
@@ -202,10 +266,10 @@ namespace Live2D {
 					_pipelineState._cullmode = cullmode;
 				}
 
-				void CubismRenderContext_SDL3::GetViewport(SDL_GPUViewport* pviewPortOut)
-				{
-					 *pviewPortOut = viewPort;
-				}
+				//void CubismRenderContext_SDL3::GetViewport(SDL_GPUViewport* pviewPortOut)
+				//{
+				//	 *pviewPortOut = viewPort;
+				//}
 
 				void CubismRenderContext_SDL3::SetViewport(SDL_GPUViewport* pviewPort)
 				{
@@ -219,7 +283,7 @@ namespace Live2D {
 
 				void CubismRenderContext_SDL3::SetTopology(SDL_GPUPrimitiveType topology)
 				{
-					_pipelineState._topology = _pipelineState._topology;
+					_pipelineState._topology = topology;
 				}
 
 				void CubismRenderContext_SDL3::SetVertexShader(SDL_GPUShader* vs)

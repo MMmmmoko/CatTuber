@@ -546,13 +546,14 @@ void RenderWindowController::Render() {
 
         //好像这个cmd还是放外面好点
         //创建当前帧的命令缓存
-        cmdCurframe = SDL_AcquireGPUCommandBuffer(AppContext::GetGraphicDevice());
-        cmdCurframeCopy = SDL_AcquireGPUCommandBuffer(AppContext::GetGraphicDevice());
-        if (!cmdCurframe || !cmdCurframeCopy)
-        {
-            break;
-        }
-        auto cmd = cmdCurframe;
+        //cmdCurframe = SDL_AcquireGPUCommandBuffer(AppContext::GetGraphicDevice());
+        //cmdCurframeCopy = SDL_AcquireGPUCommandBuffer(AppContext::GetGraphicDevice());
+        //if (!cmdCurframe || !cmdCurframeCopy)
+        //{
+        //    break;
+        //}
+        auto cmd = pContext->GetCommandBuffer();
+        auto cmdCurframeCopy = pContext->GetCopyCommandBuffer();
 
 
 
@@ -616,7 +617,8 @@ void RenderWindowController::Render() {
             }
 
 
-            pContext->StartFrame(cmdCurframe,_clearPass,cmdCurframeCopy);
+            //pContext->StartFrame(cmdCurframe,_clearPass,cmdCurframeCopy);
+            pContext->StartFrame(_clearPass);
             //SDL_EndGPURenderPass(_clearPass);
         }
 
@@ -666,16 +668,16 @@ void RenderWindowController::Render() {
     }while (false);
 
     //中间出了问题，不进行渲染，进行可能的资源清理
-    if (cmdCurframe)
-    {
-        SDL_CancelGPUCommandBuffer(cmdCurframe);
-        cmdCurframe = NULL;
-    }
-    if (cmdCurframeCopy)
-    {
-        SDL_CancelGPUCommandBuffer(cmdCurframeCopy);
-        cmdCurframe = NULL;
-    }
+    //if (cmdCurframe)
+    //{
+    //    SDL_CancelGPUCommandBuffer(cmdCurframe);
+    //    cmdCurframe = NULL;
+    //}
+    //if (cmdCurframeCopy)
+    //{
+    //    SDL_CancelGPUCommandBuffer(cmdCurframeCopy);
+    //    cmdCurframe = NULL;
+    //}
 
     return;
 }
@@ -684,8 +686,9 @@ void RenderWindowController::Render() {
 
 void RenderWindowController::Present()
 {
-    if (!cmdCurframe)return;
-    auto cmd = cmdCurframe;
+    //if (!cmdCurframe)return;
+	auto pContext = AppContext::GetSDL3RenderContext();
+    auto cmd = pContext->GetCommandBuffer();
 
     if (isTransparent)
     {
@@ -802,10 +805,12 @@ void RenderWindowController::Present()
 
 
 
+        
 
 
-
-        SDL_SubmitGPUCommandBuffer(cmdCurframeCopy);
+        //SDL_SubmitGPUCommandBuffer(cmdCurframeCopy);
+        pContext->SubmitCopyCommandBuffer();
+        //SDL_SubmitGPUCommandBuffer(cmdCurframeCopy);
         //SDL_SubmitGPUCommandBuffer(cmd);
         //确保下方的SDL_RenderPresent已经执行完？
         SDL_GPUFence* fence= SDL_SubmitGPUCommandBufferAndAcquireFence(cmd);
@@ -861,8 +866,9 @@ void RenderWindowController::Present()
         SDL_CopyGPUTextureToTexture(copyPass,&source,&destination,
             SDL_min(static_cast<Uint32>(renderW), swapchainTextureWidth), SDL_min(static_cast<Uint32>(renderH), swapchainTextureHeight),1,false);
         SDL_EndGPUCopyPass(copyPass);
-        SDL_SubmitGPUCommandBuffer(cmdCurframeCopy);
-        SDL_SubmitGPUCommandBuffer(cmd);
+
+        pContext->SubmitCopyCommandBuffer();
+        pContext->SubmitCommandBuffer();
     }
 
 
@@ -931,8 +937,8 @@ void RenderWindowController::Present()
 
 
     //无论如何两个cmd指针都不可用了，设置为空
-    cmdCurframe = NULL;
-    cmdCurframeCopy = NULL;
+    //cmdCurframe = NULL;
+    //cmdCurframeCopy = NULL;
 }
 
 void RenderWindowController::_OnResize(int newW, int newH)
@@ -1653,11 +1659,35 @@ bool RenderWindowManager::_BuildFromJson(const Json::Value& json)
         defaultWindowJson["Size"][1] = 300;
 
         //默认构造一个CatTuber经典场景
+#define LLLLL3
+#ifdef LLLLL1
         auto& item0 = defaultWindowJson["Scene"]["Items"][0];
         item0["Type"] = "ClassicItem";
         //item0["Detail"]["Desk"]; //DeskObject::CreateFromAttributes
         item0["Detail"]["Desk"]["PackPath"] = "[AppBasePath]/Resources/Desk/28kGameKeyboard";
         item0["Detail"]["Character"]["PackPath"] = "[AppBasePath]/Resources/Character/Mimi";
+#endif
+
+#ifdef LLLLL2
+        //测试bongo cat
+        auto& item0 = defaultWindowJson["Scene"]["Items"][0];
+        item0["Type"] = "BongoCatItem";
+        item0["Detail"]["Object"]["PackPath"] = "[AppBasePath]/Resources/BongoCatMver/DefaultBongoCat";
+#endif
+
+#ifdef LLLLL3
+        auto& item0 = defaultWindowJson["Scene"]["Items"][0];
+        item0["Type"] = "ClassicItem";
+        //item0["Detail"]["Desk"]; //DeskObject::CreateFromAttributes
+        item0["Detail"]["Desk"]["PackPath"] = "[AppBasePath]/Resources/Desk/28kGameKeyboard";
+        item0["Detail"]["Character"]["PackPath"] = "[AppBasePath]/Resources/Character/Mimi";
+        auto& item1 = defaultWindowJson["Scene"]["Items"][1];
+        item1["Type"] = "DecorationItem";
+        item1["Detail"]["Object"]["PackPath"] = "[AppBasePath]/Resources/Decoration/KPS_OSU";
+#endif
+
+
+
         //TODO/FIXME
         //item0["Detail"]["Character"];
         //item0["Detail"]["HandheldItem"];

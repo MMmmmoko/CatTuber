@@ -30,7 +30,7 @@ public:
 	void SetTransform(float posX, float posY, float posZ);
 	void SetScale(float scale);
 
-
+	BongoCatObject* GetObj() { return _itemObj; };
 
 private:
 	//重置并释放资源

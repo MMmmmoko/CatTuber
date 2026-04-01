@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Window 
+   		xmlns:xs="http://www.w3.org/2001/XMLSchema"
+		xmlns="http://tempuri.org/NIMDUISchema.xsd"
+		>
+	<ListBoxItem width="260" height="40" mouse_child="false"  border_round="6,6" selected_fore_hot_image="ItemForeHot_White.png" fore_hot_image="ItemForeHot_White.png"
+				   focus_border_color="subjectColor_push" border_size="1"
+				 >
+		<!--focus_border_color="subjectColor_push"-->
+	</ListBoxItem>
+</Window>

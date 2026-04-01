@@ -8,7 +8,7 @@
 
 	<Class name="classicSlotButton" border_round="15,15" fore_hot_image="ItemForeHot_White.png"/>
 	
-	<Class name="itemListButton"  hot_color="itemHoverColor" margin="2,2,2,2" padding="2,2,2,2"/>
+	<Class name="itemListButton"  hot_color="itemHoverColor" margin="2,2,2,2" padding="2,2,2,2"  no_focus="true"/>
 
 
 	<!-- 场景设置区域VBOX -->
@@ -27,7 +27,7 @@
 			</HBox>
 		</VBox>
 		<VBox name="scenePanel_bongoCatPanel" visible="false" height="auto">
-			<Button name="bongoCatSlot" bkimage="ClassicSlotNoItemBG_Character.png" normal_image=""/>
+			<Button class="classicSlotButton" name="bongoCatSlot" bkimage="ClassicSlotNoItemBG_Character.png" margin="10,10,10,10" width="260" height="150"/>
 		</VBox>
 		
 		<!--独立模型功能在开发完成后再开放-->
@@ -36,17 +36,13 @@
 		</VBox>-->
 		<VBox  width="260" halign="center">
 			<Label text_id="STRID_SCENEPANEL_CONTENTS" height="30" text_padding="20,0,0,0" />
-		<VBox bkcolor="gray">
-
-			<Label name="tooltip" text="场景设置区" height="100%" width="100%" text_align="hcenter,vcenter"/>
-			
-		</VBox>
+			<VirtualVListBox name="sceneItemList" bkcolor="gray" select_none_when_click_blank="true"/>
 		<HBox height="auto">
 			<!--场景物品的功能按钮-->
 			<Button class="itemListButton" name="scenePanel_btnItemAdd" bkimage="file='list_add.svg'"  />
 			<Button class="itemListButton" name="scenePanel_btnItemRemove" bkimage="file='list_delete.svg'" disabled_image="list_delete_disable.svg" enabled="false"/>
-			<Button class="itemListButton" name="scenePanel_btnItemMoveUp" bkimage="file='list_moveDown.svg'" disabled_image="file='list_moveDown_disable.svg'" enabled="false"/>
-			<Button class="itemListButton" name="scenePanel_btnItemMoveDown" bkimage="file='list_moveUp.svg'" disabled_image="file='list_moveUp_disable.svg'" enabled="false"/>
+			<Button class="itemListButton" name="scenePanel_btnItemMoveDown" bkimage="file='list_moveDown.svg'" disabled_image="file='list_moveDown_disable.svg'" enabled="false"/>
+			<Button class="itemListButton" name="scenePanel_btnItemMoveUp" bkimage="file='list_moveUp.svg'" disabled_image="file='list_moveUp_disable.svg'" enabled="false"/>
 
 
 		</HBox>

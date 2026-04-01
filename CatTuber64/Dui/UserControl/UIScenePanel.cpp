@@ -9,7 +9,637 @@
 #include"../Item/CharacterObject.h"
 #include"../Item/DeskObject.h"
 #include"../Item/HandheldItemObject.h"
+#include"../Item/BongoCatItem.h"
+#include"../Item/BongoCatObject.h"
+#include"../Item/DecorationItem.h"
+#include"../Item/DecorationObject.h"
+
 #include"Pack/Pack.h"
+
+
+
+
+
+UISceneContentListItem::UISceneContentListItem(UIScenePanel* pParent)
+	//:ui::ListBoxItem(pWindow)
+	//:ui::ControlDragable(pWindow)
+	:ui::ControlDragableT<ui::ListBoxItem>(pParent->GetWindow()), pParent(pParent)
+{
+	ui::GlobalManager::Instance().FillBoxWithCache(this, ui::FilePath(L"CatTuber_default/UISceneContentListItem.xml"));
+
+
+	ui::ControlDragableT<ui::ListBoxItem>::SetEnableDragOut(false);
+	
+}
+
+void UISceneContentListItem::InitSubControls(
+	const std::wstring& imgstr1,
+	const std::wstring& imgstr2,
+	const std::wstring& imgstr3,
+	size_t dataIndex)
+{
+	if (index == MAXSIZE_T)
+	{
+		//img1 = dynamic_cast<ui::Control*>(FindSubControl(L"listitem_img"));
+		//img2 = dynamic_cast<ui::Control*>(FindSubControl(L"listitem_img2"));
+		//img3 = dynamic_cast<ui::Control*>(FindSubControl(L"listitem_img3"));
+
+
+		//右键菜单
+		AttachRClick(ui::UiBind(&UISceneContentListItem::OnRightClick, this, std::placeholders::_1));
+
+	
+
+		
+
+		AttachSelect(ui::UiBind(&UISceneContentListItem::OnLeftClick, this, std::placeholders::_1));
+		AttachUnSelect(ui::UiBind(&UISceneContentListItem::OnLeftClick, this, std::placeholders::_1));
+
+
+		AttachSetFocus( [this](const ui::EventArgs&)->bool {
+			pParent->UpdatePanelButtonEnable(); return true;
+			});
+
+		AttachKillFocus([this](const ui::EventArgs&)->bool {
+
+			ui::VirtualVListBox* parent = dynamic_cast<ui::VirtualVListBox*>(GetOwner());
+			
+			//parent->SetSelectNone();
+			this->Selected(false,true,0);
+			pParent->UpdatePanelButtonEnable(); return true;
+			});
+	}
+
+
+
+
+
+
+
+
+	//adaptive_dest_rect_fill;
+
+	{
+		if (!imgstr1.empty()) {
+			if (img1 == nullptr) {
+				img1 = std::make_unique<ui::Image>();
+				img1->SetControl(this);
+			}
+		}
+		if (!imgstr2.empty()) {
+			if (img2 == nullptr) {
+				img2 = std::make_unique<ui::Image>();
+				img2->SetControl(this);
+			}
+		}
+		if (!imgstr3.empty()) {
+			if (img3 == nullptr) {
+				img3 = std::make_unique<ui::Image>();
+				img3->SetControl(this);
+			}
+		}
+		bool bChanged = false;
+		if (img1 != nullptr) {
+			if (img1->GetImageString() != imgstr1) {
+				bChanged = true;
+				img1->SetImageString(imgstr1, Dpi());
+			}
+		}
+		if (img2 != nullptr) {
+			if (img2->GetImageString() != imgstr2) {
+				bChanged = true;
+				img2->SetImageString(imgstr2, Dpi());
+			}
+		}
+		if (img3 != nullptr) {
+			if (img3->GetImageString() != imgstr3) {
+				bChanged = true;
+				img3->SetImageString(imgstr3, Dpi());
+			}
+		}
+		if (bChanged) {
+			RelayoutOrRedraw();
+		}
+	}
+	index = dataIndex;
+}
+
+
+
+
+void UISceneContentListItem::PaintBkImage(ui::IRender* pRender)
+{
+	__super::PaintBkImage(pRender);
+	if (img1 != nullptr)PaintImage(pRender, img1.get());
+	if (img2 != nullptr)PaintImage(pRender, img2.get());
+	if (img3 != nullptr)PaintImage(pRender, img3.get());
+
+}
+
+bool UISceneContentListItem::OnRightClick(const ui::EventArgs& args)
+{
+
+
+	//创建菜单
+
+	//右键弹出菜单
+	ui::Menu* menu = new ui::Menu(this->GetWindow(), this);
+	menu->SetSkinFolder(L"CatTuber_default");
+	DString xml(L"UISceneListItemMenu.xml");
+
+
+	ui::UiPoint curPoint(args.ptMouse.x, args.ptMouse.y + 4);
+	this->GetWindow()->ClientToScreen(curPoint);
+	menu->ShowMenu(xml, curPoint);
+
+
+	ui::MenuItem* ItemMenu_Settings = dynamic_cast<ui::MenuItem*>(menu->FindControl(L"SceneListItemMenu_Settings"));
+
+	ui::MenuItem* ItemMenu_MoveUp = dynamic_cast<ui::MenuItem*>(menu->FindControl(L"SceneListItemMenu_MoveUp"));
+	ui::MenuItem* ItemMenu_MoveDown = dynamic_cast<ui::MenuItem*>(menu->FindControl(L"SceneListItemMenu_MoveDown"));
+	ui::MenuItem* ItemMenu_MoveTop = dynamic_cast<ui::MenuItem*>(menu->FindControl(L"SceneListItemMenu_MoveTop"));
+	ui::MenuItem* ItemMenu_MoveButtom = dynamic_cast<ui::MenuItem*>(menu->FindControl(L"SceneListItemMenu_MoveButtom"));
+	
+	ui::MenuItem* ItemMenu_Remove = dynamic_cast<ui::MenuItem*>(menu->FindControl(L"SceneListItemMenu_Remove"));
+
+
+
+
+	ui::UiSize sizeMax(9999, 9999);
+	int32_t maxW = 0;
+#define MAXWCALC(ctl) if (ctl) { int32_t curW = ctl->EstimateSize(sizeMax).cx.GetInt32(); if (curW > maxW)maxW = curW; }
+	MAXWCALC(ItemMenu_Settings);
+	MAXWCALC(ItemMenu_MoveUp);
+	MAXWCALC(ItemMenu_MoveDown);
+	MAXWCALC(ItemMenu_MoveTop);
+	MAXWCALC(ItemMenu_MoveButtom);
+	MAXWCALC(ItemMenu_Remove);
+
+
+	ItemMenu_Settings->SetFixedWidth(ui::UiFixedInt(maxW), false, false);
+	ItemMenu_MoveUp->SetFixedWidth(ui::UiFixedInt(maxW), false, false);
+	ItemMenu_MoveDown->SetFixedWidth(ui::UiFixedInt(maxW), false, false);
+	ItemMenu_MoveTop->SetFixedWidth(ui::UiFixedInt(maxW), false, false);
+	ItemMenu_MoveButtom->SetFixedWidth(ui::UiFixedInt(maxW), false, false);
+	ItemMenu_Remove->SetFixedWidth(ui::UiFixedInt(maxW), true, false);
+
+
+
+
+	//添加按钮功能
+	//ItemMenu_Select->AttachClick(ui::UiBind(&UIModelItem::OnSelectItem, this, std::placeholders::_1));
+	//ItemMenu_Deselect->AttachClick(ui::UiBind(&UIModelItem::OnDeselectItem, this, std::placeholders::_1));
+	//ItemMenu_Favorite->AttachClick(ui::UiBind(&UIModelItem::OnFavoriteClick, this, std::placeholders::_1));
+	//ItemMenu_Unfavorite->AttachClick(ui::UiBind(&UIModelItem::OnUnfavoriteClick, this, std::placeholders::_1));
+
+
+
+	return true;
+}
+
+
+
+bool UISceneContentListItem::OnLeftClick(const ui::EventArgs& args)
+{
+	
+	//if (IsSelected())SetBorderColor(L"subjectColor_push");
+	if (IsSelected())SetBorderSize({1,1,1,1},false);
+	else {
+		SetBorderSize({ }, false);
+		ui::VirtualVListBox* parent = dynamic_cast<ui::VirtualVListBox*>(GetOwner());
+		parent->SetSelectNone();
+	}
+	pParent->UpdatePanelButtonEnable();
+	return true;
+}
+
+
+
+
+
+
+
+UISceneItemListProvider* UISceneContentListItem::GetProvider()
+{
+	ui::VirtualVListBox* parent = dynamic_cast<ui::VirtualVListBox*>(GetOwner());
+	if (parent)
+	{
+		return dynamic_cast<UISceneItemListProvider*>(parent->GetDataProvider());
+	}
+	return nullptr;
+}
+
+void UISceneContentListItem::OnItemOrdersChanged(size_t nOldItemIndex, size_t nNewItemIndex)
+{
+	GetProvider()->ItemOrderChange(nOldItemIndex, nNewItemIndex);
+}
+
+
+
+void UISceneItemListProvider::LoadItemList()
+{
+
+	itemList.clear();
+
+	auto& sceneItemList=SceneManager::GetInstance().GetCurrentSceneItemList();
+	for (auto& item : sceneItemList)
+	{
+		auto& curItem=itemList.emplace_back();
+		curItem.item = item;
+
+		//根据控件计算图片
+		{
+			//ISceneItem* item = GetProvider()->GetItemInfo(dataIndex).item;
+
+			if (item->GetType() == ClassicItem::_GetType())
+			{
+				ClassicItem* classicItem = (ClassicItem*)item;
+				auto pCharacterObj = classicItem->GetCharacter();
+				auto pDeskObj = classicItem->GetDesk();
+				auto pHandheldObj = classicItem->GetHandheldItem();
+
+				
+				//img1->SetVisible(pDeskObj);
+				//img2->SetVisible(pCharacterObj);
+				//img3->SetVisible(pHandheldObj);
+
+
+				if (pCharacterObj)
+				{
+					Pack pack;
+					std::wstring imgFile;
+					pack.Open(pCharacterObj->GetPackPath());
+					if (pack.IsFileExist("List.png"))imgFile = L"List.png";
+					else if (pack.IsFileExist("List.jpg"))imgFile = L"List.jpg";
+					else if (pack.IsFileExist("List.gif"))imgFile = L"List.gif";
+
+					if (!imgFile.empty())
+					{
+						if (!pDeskObj && !pHandheldObj)
+						{
+							imgFile = Pack::PackPath_BuildPackFullPath(ui::StringConvert::UTF8ToWString(pack.GetPath()), imgFile);
+
+							curItem.imgPath2 = imgFile;
+
+						}
+						else if ((pDeskObj && !pHandheldObj) )
+						{
+							imgFile = Pack::PackPath_BuildPackFullPath(ui::StringConvert::UTF8ToWString(pack.GetPath()), imgFile,
+								//3:4    429
+								//L"fadeH:\"400,500,1000,1000\" destSize:\"260,40\" centerPos:\"0.725\""
+								L"fadeH:\"379,479,1000,1000\" destSize:\"260,40\" centerPos:\"0.714\""
+							);
+							curItem.imgPath2 = imgFile;
+						}
+						else if ((!pDeskObj && pHandheldObj) )
+						{
+							imgFile = Pack::PackPath_BuildPackFullPath(ui::StringConvert::UTF8ToWString(pack.GetPath()), imgFile,
+								//2:4    过渡由鼠标提供，因为鼠标所在的图层更高
+								//
+								//L"fadeH:\"400,500,1000,1000\" destSize:\"260,40\" centerPos:\"0.725\""
+								L"destSize:\"260,40\" centerPos:\"0.667\""
+							);
+							curItem.imgPath2 = imgFile;
+						}
+						else if (pDeskObj && pHandheldObj)
+						{
+							imgFile = Pack::PackPath_BuildPackFullPath(ui::StringConvert::UTF8ToWString(pack.GetPath()), imgFile,
+								//2:3:5 250
+								//2:3:4 556
+								//L"fadeH:\"450,550,1000,1000\" destSize:\"260,40\" centerPos:\"0.75\""
+								L"fadeH:\"506,606,1000,1000\" destSize:\"260,40\" centerPos:\"0.778\""
+							);
+
+							curItem.imgPath2 = imgFile;
+						}
+					}
+				}
+				if (pDeskObj)
+				{
+					Pack pack;
+					std::wstring imgFile;
+					pack.Open(pDeskObj->GetPackPath());
+					if (pack.IsFileExist("List.png"))imgFile = L"List.png";
+					else if (pack.IsFileExist("List.jpg"))imgFile = L"List.jpg";
+					else if (pack.IsFileExist("List.gif"))imgFile = L"List.gif";
+
+					if (!imgFile.empty())
+					{
+						//桌子均在下方
+						if (!pCharacterObj && !pHandheldObj)
+						{
+							imgFile = Pack::PackPath_BuildPackFullPath(ui::StringConvert::UTF8ToWString(pack.GetPath()), imgFile);
+							curItem.imgPath1 = imgFile;
+						}
+						else if ((pCharacterObj && !pHandheldObj))
+						{
+							//桌子和角色3:4
+							imgFile = Pack::PackPath_BuildPackFullPath(ui::StringConvert::UTF8ToWString(pack.GetPath()), imgFile,
+								//3:4    429
+								L"destSize:\"260,40\" centerPos:\"0.2143\""
+							);
+							curItem.imgPath1 = imgFile;
+						}
+						else if ((!pCharacterObj && pHandheldObj))
+						{
+							//鼠2:3桌
+							imgFile = Pack::PackPath_BuildPackFullPath(ui::StringConvert::UTF8ToWString(pack.GetPath()), imgFile,
+								//2:3    400
+								L"destSize:\"260,40\" centerPos:\"0.7\""
+							);
+							curItem.imgPath1 = imgFile;
+						}
+						else if ((pCharacterObj && pHandheldObj))
+						{
+							//2:3:4
+							imgFile = Pack::PackPath_BuildPackFullPath(ui::StringConvert::UTF8ToWString(pack.GetPath()), imgFile,
+								//2:3    400
+								L"destSize:\"260,40\" centerPos:\"0.389\""
+							);
+							curItem.imgPath1 = imgFile;
+						}
+					}
+
+				}
+
+				if (pHandheldObj)
+				{
+					Pack pack;
+					std::wstring imgFile;
+					pack.Open(pHandheldObj->GetPackPath());
+					if (pack.IsFileExist("List.png"))imgFile = L"List.png";
+					else if (pack.IsFileExist("List.jpg"))imgFile = L"List.jpg";
+					else if (pack.IsFileExist("List.gif"))imgFile = L"List.gif";
+
+					if (!imgFile.empty())
+					{
+
+						if (!pDeskObj && !pCharacterObj)
+						{
+							imgFile = Pack::PackPath_BuildPackFullPath(ui::StringConvert::UTF8ToWString(pack.GetPath()), imgFile);
+							curItem.imgPath3 = imgFile;
+						}
+						else if ((pDeskObj && !pCharacterObj))
+						{
+
+							imgFile = Pack::PackPath_BuildPackFullPath(ui::StringConvert::UTF8ToWString(pack.GetPath()), imgFile,
+								//鼠2:3桌
+								L"fadeH:\"0,0,350,450\" destSize:\"260,40\" centerPos:\"0.2\""
+							); 
+							curItem.imgPath3 = imgFile;
+						}
+						else if ((!pDeskObj && pCharacterObj))
+						{
+
+							imgFile = Pack::PackPath_BuildPackFullPath(ui::StringConvert::UTF8ToWString(pack.GetPath()), imgFile,
+								//鼠2:4角色 333
+								//过渡由鼠标提供，因为鼠标图层高
+								L"fadeH:\"0,0,283,383\" destSize:\"260,40\" centerPos:\"0.167\""
+							); 
+							curItem.imgPath3 = imgFile;
+						}
+						else if (pDeskObj && pCharacterObj)
+						{
+
+							imgFile = Pack::PackPath_BuildPackFullPath(ui::StringConvert::UTF8ToWString(pack.GetPath()), imgFile,
+								//2:3:4    222
+								L"fadeH:\"0,0,172,272\" destSize:\"260,40\" centerPos:\"0.111\""
+							);
+							curItem.imgPath3 = imgFile;
+						}
+					}
+
+				}
+
+
+				if (!pCharacterObj && !pDeskObj && !pHandheldObj)
+				{
+					ASSERT(false);
+					//默认图片
+					//curItem.imgPath1 = "";
+				}
+			}
+
+
+			//BONGO CAT
+			else if (item->GetType() == BongoCatItem::_GetType())
+			{
+				auto pBongoCatObj = ((BongoCatItem*)item)->GetObj();
+
+				Pack pack;
+				std::wstring imgFile;
+				pack.Open(pBongoCatObj->GetPackPath());
+				if (pack.IsFileExist("List.png"))imgFile = L"List.png";
+				else if (pack.IsFileExist("List.jpg"))imgFile = L"List.jpg";
+				else if (pack.IsFileExist("List.gif"))imgFile = L"List.gif";
+				if (!imgFile.empty())
+				{
+					imgFile = Pack::PackPath_BuildPackFullPath(ui::StringConvert::UTF8ToWString(pack.GetPath()), imgFile);
+					curItem.imgPath1 = imgFile;
+				}
+				else
+				{
+
+				}
+			}
+
+			//DecorationItem
+			else if (item->GetType() == DecorationItem::_GetType())
+			{
+				auto pDecorationObj = ((DecorationItem*)item)->GetObj();
+
+				Pack pack;
+				std::wstring imgFile;
+				pack.Open(pDecorationObj->GetPackPath());
+				if (pack.IsFileExist("List.png"))imgFile = L"List.png";
+				else if (pack.IsFileExist("List.jpg"))imgFile = L"List.jpg";
+				else if (pack.IsFileExist("List.gif"))imgFile = L"List.gif";
+				if (!imgFile.empty())
+				{
+					imgFile = Pack::PackPath_BuildPackFullPath(ui::StringConvert::UTF8ToWString(pack.GetPath()), imgFile);
+					curItem.imgPath1 = imgFile;
+				}
+				else
+				{
+
+				}
+			}
+
+
+
+
+
+
+
+
+
+			//img->SetUTF8BkImage(imgstr);
+
+			if (!curItem.imgPath1.empty())
+			{
+				curItem.imgPath1 = L"file='" + curItem.imgPath1 + L"' adaptive_dest_rect_fill='true'";
+			}
+			if (!curItem.imgPath2.empty())
+			{
+				curItem.imgPath2 = L"file='" + curItem.imgPath2 + L"' adaptive_dest_rect_fill='true'";
+			}
+			if (!curItem.imgPath3.empty())
+			{
+				curItem.imgPath3 = L"file='" + curItem.imgPath3 + L"' adaptive_dest_rect_fill='true'";
+			}
+
+
+		}
+
+
+	}
+	return;
+
+
+}
+
+
+
+
+
+
+
+
+ui::Control* UISceneItemListProvider::CreateElement(ui::VirtualListBox* pVirtualListBox)
+{
+	UISceneContentListItem* item = new UISceneContentListItem(pParent);
+	//item->SetFixedHeight(ui::UiFixedInt(30),true,true);
+	return item;
+}
+
+
+
+bool UISceneItemListProvider::FillElement(ui::Control* pControl, size_t nElementIndex)
+{
+	//示例中这里用了一个锁
+	UISceneContentListItem* pItem = dynamic_cast<UISceneContentListItem*>(pControl);
+	ASSERT(pItem != nullptr);
+	if (pItem == NULL || nElementIndex >= itemList.size())
+	{
+		return false;
+	}
+
+	//pItem->InitSubControls(itemList[nElementIndex].imgPath, nElementIndex);
+	pItem->InitSubControls(
+		itemList[nElementIndex].imgPath1,
+		itemList[nElementIndex].imgPath2,
+		itemList[nElementIndex].imgPath3,
+		nElementIndex);
+	return true;
+}
+
+size_t UISceneItemListProvider::GetElementCount() const
+{
+	return itemList.size();
+}
+
+void UISceneItemListProvider::SetElementSelected(size_t nElementIndex, bool bSelected)
+{
+
+	if (nElementIndex >= itemList.size())return;
+	itemList[nElementIndex].selected = bSelected;
+	if (bSelected)
+		for (size_t index = 0; index < itemList.size(); index++)
+		{
+			if (index != nElementIndex)
+				itemList[index].selected = false;
+		}
+}
+
+bool UISceneItemListProvider::IsElementSelected(size_t nElementIndex) const
+{
+	if (nElementIndex >= itemList.size())return false;
+	return itemList[nElementIndex].selected;
+}
+
+void UISceneItemListProvider::GetSelectedElements(std::vector<size_t>& selectedIndexs) const
+{
+	selectedIndexs.clear();
+	selectedIndexs.reserve(itemList.size());
+	for (size_t i = 0; i < itemList.size(); i++)
+	{
+		if (itemList[i].selected)
+			selectedIndexs.push_back(i);
+	}
+}
+
+
+
+UISceneItemListProvider::ItemInfo& UISceneItemListProvider::GetItemInfo(size_t nElementIndex)
+{
+	ASSERT(nElementIndex < itemList.size());
+	return itemList[nElementIndex];
+}
+
+void UISceneItemListProvider::ItemOrderChange(size_t nOldItemIndex, size_t nNewItemIndex)
+{
+
+	ASSERT(nOldItemIndex < itemList.size());
+	ASSERT(nNewItemIndex < itemList.size());
+
+	auto element_to_move = std::move(itemList[nOldItemIndex]);
+
+
+	itemList.erase(itemList.begin() + nOldItemIndex);
+
+	itemList.emplace(itemList.begin() + nNewItemIndex, std::move(element_to_move));
+
+	//不进行全局刷新
+	EmitDataChanged(SDL_min(nOldItemIndex, nNewItemIndex), SDL_max(nOldItemIndex, nNewItemIndex));
+
+
+}
+
+void UISceneItemListProvider::ItemMoveUp(size_t nItemIndex)
+{
+	if (0 == nItemIndex)return;
+	ItemOrderChange(nItemIndex, nItemIndex-1);
+	this->pParent->GetSceneItemListBox()->GetItemAt(nItemIndex - 1)->SetFocus();
+	this->pParent->UpdatePanelButtonEnable();
+}
+
+void UISceneItemListProvider::ItemMoveDown(size_t nItemIndex)
+{
+	if (itemList.size()-1 == nItemIndex)return;
+	ItemOrderChange(nItemIndex, nItemIndex+1);
+	this->pParent->GetSceneItemListBox()->GetItemAt(nItemIndex + 1)->SetFocus();	
+	this->pParent->UpdatePanelButtonEnable();
+}
+
+void UISceneItemListProvider::RemoveItem(size_t nItemIndex)
+{
+	ASSERT(nItemIndex < itemList.size());
+	itemList.erase(itemList.begin() + nItemIndex);
+	EmitCountChanged();
+	if (nItemIndex < itemList.size())
+	{
+		this->pParent->GetSceneItemListBox()->GetItemAt(nItemIndex)->SetFocus();
+	}
+	this->pParent->UpdatePanelButtonEnable();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 UIScenePanel::UIScenePanel(MainUiForm* pParent)
 	:pParent(pParent),ui::VBox(pParent)
 {
@@ -64,6 +694,24 @@ UIScenePanel::UIScenePanel(MainUiForm* pParent)
 	scenePanel_btnItemMoveUp->AttachClick(ui::UiBind(&UIScenePanel::OnSceneContentListControlButtonClicked, this, std::placeholders::_1));
 	scenePanel_btnItemMoveDown->AttachClick(ui::UiBind(&UIScenePanel::OnSceneContentListControlButtonClicked, this, std::placeholders::_1));
 	
+	container = (ui::VirtualVListBox*)FindSubControl(L"sceneItemList");
+
+
+
+	provider = new UISceneItemListProvider(this);
+	
+	auto vlayout=dynamic_cast<ui::VirtualVLayout*>(container->GetLayout());
+	ui::UiSize itemSize;
+	itemSize.cx = 260;
+	itemSize.cy = 40;
+	//vlayout->SetAutoCalcItemWidth(true);
+	vlayout->SetItemSize(itemSize, true);
+	container->SetDataProvider(provider);
+	provider->LoadItemList();
+
+
+
+	
 
 
 }
@@ -88,6 +736,11 @@ void UIScenePanel::InitContents()
 
 	scenePanel_classic->SetVisible(false);
 	scenePanel_bongoCat->SetVisible(false);
+
+
+
+
+
 
 
 
@@ -151,7 +804,40 @@ classicPanel_slot##ItemType->SetBoxShadow(L"blurradius='0'");\
 				break;
 			case MainSceneItem::MainSceneItemType_BongoCat:
 				//显示BongoCat面板
+			{
 				scenePanel_bongoCat->SetVisible(true);
+				BongoCatItem* pBongoCatItem = dynamic_cast<BongoCatItem*>(mainItem);
+				BongoCatObject* pBongoCatObj = pBongoCatItem->GetObj();
+				if (pBongoCatObj)
+				{
+					const char* bongoCatPackPath = pBongoCatObj->GetPackPath();
+					Pack bongoCatPack;
+					std::wstring imgFile;
+					if (bongoCatPack.Open(bongoCatPackPath))
+					{
+						if (bongoCatPack.IsFileExist("Slot.png"))imgFile = L"Slot.png";
+						else if (bongoCatPack.IsFileExist("Slot.jpg"))imgFile = L"Slot.jpg";
+						else if (bongoCatPack.IsFileExist("Slot.gif"))imgFile = L"Slot.gif";
+						if (!imgFile.empty())
+						{
+							imgFile = Pack::PackPath_BuildPackFullPath(ui::StringConvert::UTF8ToWString(bongoCatPackPath), imgFile);
+						}
+					}
+					if (imgFile.empty())
+						imgFile = L"DefaultBongoCatSlot.png";
+					bongoCatPanel_slot->SetBkImage(imgFile);
+					bongoCatPanel_slot->SetBoxShadow(L"color='shadowColor' blurradius='4' offset='0,1' spreadradius='0'");
+				}
+				else
+				{
+					bongoCatPanel_slot->SetBkImage(L"DefaultBongoCatSlot.png");
+					bongoCatPanel_slot->SetBoxShadow(L"blurradius='0'");
+				}
+
+			}
+
+
+
 				break;
 		default:
 			break;
@@ -169,6 +855,35 @@ classicPanel_slot##ItemType->SetBoxShadow(L"blurradius='0'");\
 
 
 
+
+}
+
+//void UIScenePanel::UpdatePanelButtonEnable(ui::Control* pChild)
+//{
+//	if()
+//}
+
+void UIScenePanel::UpdatePanelButtonEnable(/*UISceneContentListItem* pChild*/)
+{
+	//panelFocusedButton = pChild;
+
+
+	std::vector<size_t> selectElement;
+	provider->GetSelectedElements(selectElement);
+	if (!selectElement.empty())
+	{
+		container->GetItemAt(selectElement[0])->SetFocus();
+		scenePanel_btnItemRemove->SetEnabled(true);
+		scenePanel_btnItemMoveUp->SetEnabled(true);
+		scenePanel_btnItemMoveDown->SetEnabled(true);
+
+	}
+	else
+	{
+		scenePanel_btnItemRemove->SetEnabled(false);
+		scenePanel_btnItemMoveUp->SetEnabled(false);
+		scenePanel_btnItemMoveDown->SetEnabled(false);
+	}
 
 }
 
@@ -261,12 +976,32 @@ bool UIScenePanel::OnSceneContentListControlButtonClicked(const ui::EventArgs& m
 	}
 	else if (scenePanel_btnItemRemove == msg.GetSender())
 	{
+
+		std::vector<size_t> selectElement;
+		provider->GetSelectedElements(selectElement);
+		if (!selectElement.empty())
+		{
+			provider->RemoveItem(selectElement[0]);
+		}
+
 	}
 	else if (scenePanel_btnItemMoveUp == msg.GetSender())
 	{
+		std::vector<size_t> selectElement;
+		provider->GetSelectedElements(selectElement);
+		if (!selectElement.empty())
+		{
+			provider->ItemMoveUp(selectElement[0]);
+		}
 	}
 	else if (scenePanel_btnItemMoveDown == msg.GetSender())
 	{
+		std::vector<size_t> selectElement;
+		provider->GetSelectedElements(selectElement);
+		if (!selectElement.empty())
+		{
+			provider->ItemMoveDown(selectElement[0]);
+		}
 	}
 
 	return true;
@@ -298,3 +1033,4 @@ bool UIScenePanel::OnSceneItemAddMenuClicked(const ui::EventArgs& msg)
 
 	return true;
 }
+

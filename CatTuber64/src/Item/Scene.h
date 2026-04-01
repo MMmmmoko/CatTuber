@@ -64,6 +64,7 @@ public:
 	//外部获取信息的接口
 //	std::string GetSceneName() { return sceneName; };
 	MainSceneItem* GetMainItem() { return _mainItem; };
+	const std::vector<ISceneItem*>& GetItemList() { return _itemList; };
 //
 //
 //

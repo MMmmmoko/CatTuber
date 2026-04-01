@@ -118,8 +118,8 @@ private:
     SDL_GPUTexture* offscreenTex = NULL;
     SDL_GPUTransferBuffer* offscreenTexTb = NULL;
 
-    SDL_GPUCommandBuffer* cmdCurframe = NULL;
-    SDL_GPUCommandBuffer* cmdCurframeCopy = NULL;//处理顶点上传、离线渲染（用于准备阶段，内容绘制后的后处理过程中的copy不再使用这个）
+    //SDL_GPUCommandBuffer* cmdCurframe = NULL;
+    //SDL_GPUCommandBuffer* cmdCurframeCopy = NULL;//处理顶点上传、离线渲染（用于准备阶段，内容绘制后的后处理过程中的copy不再使用这个）
 
 
     //SDL3 2D Renderer API

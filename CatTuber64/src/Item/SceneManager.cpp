@@ -250,3 +250,9 @@ MainSceneItem* SceneManager::GetCurrentMainSceneItem()
     if (!window)return nullptr;
     return window->GetScene().GetMainItem();
 }
+
+const std::vector<class ISceneItem*>& SceneManager::GetCurrentSceneItemList()
+{
+    auto window = RenderWindowManager::GetIns().GetWindowController(0);
+    return window->GetScene().GetItemList();
+}

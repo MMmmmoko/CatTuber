@@ -29,6 +29,7 @@ public:
 	void SetScale(float scale);
 
 
+	DecorationObject* GetObj() { return _itemObj; };
 private:
 	//重置并释放资源
 	void Reset();

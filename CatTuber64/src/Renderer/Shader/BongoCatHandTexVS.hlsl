@@ -1,8 +1,5 @@
-cbuffer CBuffer : register(b0, space1)
+cbuffer CBuffer : register(b0, space3)
 {
-    //float4 bongoCatVp;
-    //float4 _1_canvas__1_rtW;
-    
     float bongoCatVp_X;
     float bongoCatVp_Y;
     float bongoCatVp_W;
@@ -29,21 +26,10 @@ struct VSOut
 
 
 
-VSOut BongoCatSpriteVS(VS_IN In)
+VSOut BongoCatHandTexVS(VS_IN In)
 {
     VSOut vso;
-	//vso.pos=mul(float4(pod,0.0f,1.0f))
-    //float _1_canvasW = _1_canvas__1_rtW.x;
-    //float _1_canvasH = _1_canvas__1_rtW.y;
-    //float _1_rtW = _1_canvas__1_rtW.z;
-    //float _1_rtH = _1_canvas__1_rtW.w;
-    //float bongoCatVp_X = bongoCatVp.x;
-    //float bongoCatVp_Y = bongoCatVp.y;
-    //float bongoCatVp_W = bongoCatVp.z;
-    //float bongoCatVp_H = bongoCatVp.w;
-    
-    
-    
+    //vso.pos = float4(In.pos.x * _1_width * 2.f - 1.f, 1.f - In.pos.y * _1_height * 2.f, 0.0f, 1.0f);
     
     
     float x = In.pos.x * _1_canvasW;
@@ -56,7 +42,10 @@ VSOut BongoCatSpriteVS(VS_IN In)
     
     
     
-    vso.pos = float4(x,y, 0.0f, 1.0f);
+    vso.pos = float4(x, y, 0.0f, 1.0f);
+    
+    
+    
     vso.tex = In.tex;
     return vso;
 }

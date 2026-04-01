@@ -28,7 +28,9 @@ public:
 
 	static std::wstring PackPath_GetPackPath(const std::wstring& PackFullPath);
 	static std::wstring PackPath_GetFilePathInPack(const std::wstring& PackFullPath);
+	static std::wstring PackPath_GetFileLoadParam(const std::wstring& PackFullPath);
 	static std::wstring PackPath_BuildPackFullPath(const std::wstring& packFilePath,const std::wstring& fileInPack);
+	static std::wstring PackPath_BuildPackFullPath(const std::wstring& packFilePath,const std::wstring& fileInPack, const std::wstring& fileLoadParam);
 
 
 
