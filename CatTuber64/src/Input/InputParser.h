@@ -14,6 +14,7 @@ public:
 	static const char* ParamNameToButtonBaseName(const std::string& paramName);
 	static const char* ParamNameToAxisBaseName(const std::string& paramName);
 	static const char* ButtonBaseNameToUIName(const char* buttonBaseName);
+	static const char* BongoCatKeyToButtonBaseName(uint32_t bongoCatKeyIndex,bool isGamepad=false);
 
 	SDL_Scancode ButtonBaseNameToScanCode(const char* buttonBaseName);
 
@@ -23,7 +24,7 @@ private:
 
 	std::unordered_map<std::string, const char*> keyDesk;//eg   "A"/"a" -> "Keyboard.A"
 	std::unordered_map<std::string, SDL_Scancode> baseNameToScanCodeMap;
-	
+	const char* bongoCatKeyNameTable[256] = {};
 
 };
 

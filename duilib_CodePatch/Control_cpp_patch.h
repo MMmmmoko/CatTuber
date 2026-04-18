@@ -16,6 +16,13 @@
 
 	//cpp中插入LoadImageInfo函数的ImageLoadPathType::kVirtualPath判别条件前
 
+
+
+
+//作为提醒写在这里：
+// 之后更换duilib库的时候要在release项目中添加如下预处理器定义
+//_DISABLE_CONSTEXPR_MUTEX_CONSTRUCTOR=1
+
 if (sImagePath[0]==L'[')
 {
 	imageLoadPath.m_pathType = ImageLoadPathType::kVirtualPath;

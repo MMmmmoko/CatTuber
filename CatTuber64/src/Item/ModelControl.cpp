@@ -130,6 +130,127 @@ void BindingInfo::RegisterBinding(int index, int index2)
 
 }
 
+void BindingInfo::RegisterBindingEx(const char* head, int index, int index2)
+{
+	UnRegisterBinding();
+	auto& im = InputManager::GetIns();
+
+	if (controllList.empty())return;
+
+	switch (type)
+	{
+	case BindingInfo::Undefined:
+		break;
+	case BindingInfo::Button_ActualButton:
+	{
+		//向InputManager注册关于物理按键的绑定
+
+		//构造actionname  Desk.Button.0.Down
+		std::string downActionName = head + std::to_string(index) + ".Down";
+		std::string upActionName = head + std::to_string(index) + ".Up";
+		_bindingHandleList.push_back(
+			im.RegisterButtonActionBinding(downActionName.c_str(), upActionName.c_str(), controllList.data(), static_cast<int>(controllList.size()))
+		);
+
+		break;
+	}
+	case BindingInfo::Button_ActualAxisToButton:
+	{
+		//构造actionname  Desk.Button.0.Down
+		std::string downActionName = head + std::to_string(index) + ".Down";
+		std::string upActionName = head + std::to_string(index) + ".Up";
+
+		if (controlValue > 0)
+		{
+			_bindingHandleList.push_back(
+				im.RegisterAxisExceedActionBinding(downActionName.c_str(), controllList[0].c_str(), controlValue));
+			_bindingHandleList.push_back(
+				im.RegisterAxisDroppedActionBinding(upActionName.c_str(), controllList[0].c_str(), controlValue));
+		}
+		else
+		{
+
+			_bindingHandleList.push_back(
+				im.RegisterAxisDroppedActionBinding(downActionName.c_str(), controllList[0].c_str(), controlValue));
+			_bindingHandleList.push_back(
+				im.RegisterAxisExceedActionBinding(upActionName.c_str(), controllList[0].c_str(), controlValue));
+		}
+		break;
+	}
+	case BindingInfo::Axis_ActualAxis:
+	{
+		//构造actionname  Desk.Axis.0.0.Change
+		std::string axisActionName = head + std::to_string(index) + "." + std::to_string(index2) + ".Change";
+		_bindingHandleList.push_back(
+			im.RegisterAxisChangeActionBinding(axisActionName.c_str(), controllList[0].c_str()));
+		break;
+	}
+	case BindingInfo::Axis_ActualButtonToAxis:
+	{
+		//构造actionname  Desk.Axis.0.1.Change
+		std::string axisActionName = head + std::to_string(index) + "." + std::to_string(index2) + ".Change";
+
+		_bindingHandleList.push_back(
+			im.RegisterButtonToAxisActionBinding(axisActionName.c_str(), controllList[0].c_str(), controlValue));
+		break;
+	}
+	case BindingInfo::Animation_ActualButton:
+	{
+		//用物理按键触发动画 Desk.Animation.animationName.Start
+		std::string animationActionName = head + std::to_string(index) + ".Start";
+		_bindingHandleList.push_back(
+			im.RegisterButtonActionBinding(animationActionName.c_str(), NULL, controllList.data(), static_cast<int>(controllList.size()))
+		);
+		break;
+	}
+	case BindingInfo::Animation_ActualAxisActive:
+	{
+		std::string animationActionName = head + std::to_string(index) + ".Start";
+
+		if (controlValue > 0)
+		{
+			_bindingHandleList.push_back(
+				im.RegisterAxisExceedActionBinding(animationActionName.c_str(), controllList[0].c_str(), controlValue));
+		}
+		else
+		{
+
+			_bindingHandleList.push_back(
+				im.RegisterAxisDroppedActionBinding(animationActionName.c_str(), controllList[0].c_str(), controlValue));
+		}
+
+		break;
+	}
+	case BindingInfo::Animation_ActualAxisInactive:
+	{
+		std::string animationActionName = head + std::to_string(index) + ".Start";
+
+		if (controlValue < 0)
+		{
+			_bindingHandleList.push_back(
+				im.RegisterAxisExceedActionBinding(animationActionName.c_str(), controllList[0].c_str(), controlValue));
+		}
+		else
+		{
+			_bindingHandleList.push_back(
+				im.RegisterAxisDroppedActionBinding(animationActionName.c_str(), controllList[0].c_str(), controlValue));
+		}
+		break;
+	}
+	case BindingInfo::Animation_Action:
+	{
+		std::string animationActionName = head + std::to_string(index) + ".Start";
+		_bindingHandleList.push_back(
+			im.RegisterActionByActionBinding(animationActionName.c_str(), controllList[0].c_str(), controlValue));
+		break;
+	}
+	default:
+		break;
+	}
+
+
+}
+
 void BindingInfo::UnRegisterBinding()
 {
 	//取消注册

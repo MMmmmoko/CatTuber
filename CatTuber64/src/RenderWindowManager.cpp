@@ -1659,13 +1659,14 @@ bool RenderWindowManager::_BuildFromJson(const Json::Value& json)
         defaultWindowJson["Size"][1] = 300;
 
         //默认构造一个CatTuber经典场景
-#define LLLLL3
+#define LLLLL2
 #ifdef LLLLL1
         auto& item0 = defaultWindowJson["Scene"]["Items"][0];
         item0["Type"] = "ClassicItem";
         //item0["Detail"]["Desk"]; //DeskObject::CreateFromAttributes
         item0["Detail"]["Desk"]["PackPath"] = "[AppBasePath]/Resources/Desk/28kGameKeyboard";
         item0["Detail"]["Character"]["PackPath"] = "[AppBasePath]/Resources/Character/Mimi";
+        item0["Detail"]["HandheldItem"]["PackPath"] = "[AppBasePath]/Resources/HandheldItem/blackRGBmouse_0_4_0";
 #endif
 
 #ifdef LLLLL2

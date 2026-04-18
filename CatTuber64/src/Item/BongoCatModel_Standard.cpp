@@ -1,3 +1,4 @@
+#if 0
 #include"AppContext.h"
 #include"Pack/Pack.h" 
 #include"Util/Util.h"
@@ -7,214 +8,12 @@
 #include"Model/Live2DModelBase.h"
 
 #include"Item/Scene.h"
-#include"Item/BongoCatObject.h"
-
-
-#if 0
-
-void BongoCatObject::_Update_Standard(uint64_t dtNS)
-{
-	if (isUsingLive2D)
-	{
-		_model->Update(dtNS);
-	}
-}
-
-
-void BongoCatObject::_Draw_Standard()
-{
-
-	//CubismMatrix44 _projection = decoration.projection;
-	//pmodel->DrawDirect(_projection);
-
-	//return;
-	if (isUsingLive2D)
-	{
-
-
-		if (!isUsingLive2DDesk)
-			pngResource.mousebg.Draw();//绘制背景
+#include"Model/BongoCatModel.h"
 
 
 
 
-		if (!isUsingLive2DDesk)
-		{
-			for (int i = 0; i < currentStates.keyboardStates.size(); i++)
-			{
-				if (currentStates.keyboardStates[i])
-				{
-					_DRAW(pngResource.keyboardvec[i]);
-				}
-			}
-		}
-
-
-		//Live2D模型在左手之下
-		//CubismMatrix44 _projection = decoration.projection;
-		//pmodel->DrawDirect(_projection);
-		_model->Draw();
-
-
-		if (!isUsingLive2DHand)
-		{
-			if (!currentStates.isLockingHand && !currentStates.leftHandStateStack.empty())
-			{
-				_DRAW(pngResource.LHandvec[currentStates.leftHandStateStack.back()]);
-			}
-		}
-
-
-
-
-
-		if (currentStates.emoticonIndex >= 0)
-		{
-			_DRAW(pngResource.facevec[currentStates.emoticonIndex]);
-		}
-
-
-
-
-
-	}
-	else
-	{
-		_DRAW(pngResource.cat);
-
-		//绘制背景
-
-		_DRAW(pngResource.mousebg);
-		//TODO 绘制鼠标手
-		//pngResource.mouse->SetPosition();
-
-
-
-		for (int i = 0; i < currentStates.keyboardStates.size(); i++)
-		{
-			if (currentStates.keyboardStates[i])
-			{
-				_DRAW(pngResource.keyboardvec[i]);
-			}
-		}
-
-
-
-		righthand.Update();
-
-		float posx, posy;
-		righthand.GetMousePos(posx, posy);
-
-
-		if (!isUsingPen)
-		{
-			posx += decoration.mousePNGOffset[0];
-			posy += decoration.mousePNGOffset[1];
-
-
-			pngResource.mouse.SetPosition(posx, posy);
-			_DRAW(pngResource.mouse);
-			if (currentStates.mouseButtonStates[0])
-			{
-				{
-					pngResource.mouse_left.SetPosition(posx, posy);
-					_DRAW(pngResource.mouse_left);
-				}
-			}
-			if (currentStates.mouseButtonStates[1])
-			{
-				{
-					pngResource.mouse_right.SetPosition(posx, posy);
-					pngResource.mouse_right.Draw();
-				}
-			}
-			if (currentStates.mouseButtonStates[2])
-			{
-				{
-					pngResource.mouse_side.SetPosition(posx, posy);
-					pngResource.mouse_side.Draw();
-				}
-			}
-		}
-
-		righthand.Draw();
-
-
-		if (isUsingPen)
-		{
-			posx += decoration.penPNGOffset[0];
-			posy += decoration.penPNGOffset[1];
-
-			bool hasDrawPen = false;
-			//if (pngResource.pen)
-			//{
-			//	pngResource.pen->SetPosition(posx, posy);
-			//	_DRAW(pngResource.pen);
-			//}
-			if (currentStates.mouseButtonStates[2])
-			{
-				if (pngResource.mouse_side.Avaliable())
-				{
-					pngResource.mouse_side.SetPosition(posx, posy);
-					pngResource.mouse_side.Draw();
-					hasDrawPen = true;
-				}
-			}
-			else
-				if (currentStates.mouseButtonStates[1])
-				{
-					if (pngResource.mouse_right.Avaliable())
-					{
-						pngResource.mouse_right.SetPosition(posx, posy);
-						pngResource.mouse_right.Draw();
-						hasDrawPen = true;
-					}
-				}
-				else if (currentStates.mouseButtonStates[0])
-				{
-					if (pngResource.mouse_left.Avaliable())
-					{
-						pngResource.mouse_left.SetPosition(posx, posy);
-						pngResource.mouse_left.Draw();
-						hasDrawPen = true;
-					}
-				}
-
-			if (!hasDrawPen)
-			{
-				if (pngResource.mouse.Avaliable())
-				{
-					pngResource.mouse.SetPosition(posx, posy);
-					pngResource.mouse.Draw();
-				}
-			}
-
-		}
-
-		if (!currentStates.leftHandStateStack.empty())
-			_DRAW(pngResource.LHandvec[currentStates.leftHandStateStack.back()]);
-		else
-		{
-			_DRAW(pngResource.leftUp);
-		}
-
-		if (currentStates.emoticonIndex >= 0)
-		{
-			_DRAW(pngResource.facevec[currentStates.emoticonIndex]);
-		}
-	}
-
-
-
-}
-
-#else
-
-
-
-
-
-bool BongoCatObject::_LoadResource_Standard(Json::Value& config)
+bool BongoCatModel::_LoadResource_Standard(Json::Value& config)
 {
 	//读取键表
 	auto& stdjson = config["standard"];
@@ -271,7 +70,7 @@ bool BongoCatObject::_LoadResource_Standard(Json::Value& config)
 			mouseSide_KeyVec.push_back(6);
 		}
 	}
-	_ReadKeysFromJsonArray(stdjson["sounds"], soundsKeyVec);
+	_ReadKeysFromJsonArray(stdjson["sounds"], sounds_KeyVec);
 
 
 
@@ -280,6 +79,7 @@ bool BongoCatObject::_LoadResource_Standard(Json::Value& config)
 	//角色模型
 	if (isUsingLive2D)
 	{
+		auto& _model = l2dmodel;
 		if (!_model)
 		{
 			const char* l2dModelFolder = "img/standard/cat_model";
@@ -438,16 +238,16 @@ bool BongoCatObject::_LoadResource_Standard(Json::Value& config)
 }
 
 
-void BongoCatObject::_Update_Standard(uint64_t dtNS)
+void BongoCatModel::_Update_Standard(uint64_t dtNS)
 {
 	if (isUsingLive2D)
 	{
-		_model->Update(dtNS);
+		l2dmodel->Update(dtNS);
 	}
 }
 
 
-void BongoCatObject::_Draw_Standard()
+void BongoCatModel::_Draw_Standard()
 {
 
 	//CubismMatrix44 _projection = decoration.projection;
@@ -479,7 +279,7 @@ void BongoCatObject::_Draw_Standard()
 		//Live2D模型在左手之下
 		//CubismMatrix44 _projection = decoration.projection;
 		//pmodel->DrawDirect(_projection);
-		_model->Draw();
+		l2dmodel->Draw();
 
 
 		if (!isUsingLive2DHand)
@@ -633,5 +433,4 @@ void BongoCatObject::_Draw_Standard()
 
 
 }
-
 #endif

@@ -104,7 +104,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <LanguageStandard_C>stdc11</LanguageStandard_C>
-      <AdditionalIncludeDirectories>..\..\ThirdPart\SDL-release-3.2.16\include;..\..\ThirdPart\SDL_image-release-3.2.4\include;..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Core\include;..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src;..\..\ThirdPart\glm-1.0.1-light;src;src\Util;..\..\ThirdPart\nim_duilib-main;Dui;..\..\ThirdPart\skia;..\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ThirdPart\SDL-release-3.2.16\include;..\..\ThirdPart\SDL_image-release-3.2.4\include;..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Core\include;..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src;..\..\ThirdPart\glm-1.0.1-light;src;src\Util;..\..\ThirdPart\nim_duilib-main;Dui;..\..\ThirdPart\skia;..\;..\..\ThirdPart\SDL3_mixer-devel-3.2.0-VC\SDL3_mixer-3.2.0\include</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -132,7 +132,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <LanguageStandard_C>stdc11</LanguageStandard_C>
-      <AdditionalIncludeDirectories>..\..\ThirdPart\SDL-release-3.2.16\include;..\..\ThirdPart\SDL_image-release-3.2.4\include;..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Core\include;..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src;..\..\ThirdPart\glm-1.0.1-light;src;src\Util;..\..\ThirdPart\nim_duilib-main;Dui;..\..\ThirdPart\skia;..\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ThirdPart\SDL-release-3.2.16\include;..\..\ThirdPart\SDL_image-release-3.2.4\include;..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Core\include;..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src;..\..\ThirdPart\glm-1.0.1-light;src;src\Util;..\..\ThirdPart\nim_duilib-main;Dui;..\..\ThirdPart\skia;..\;..\..\ThirdPart\SDL3_mixer-devel-3.2.0-VC\SDL3_mixer-3.2.0\include</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -201,6 +201,7 @@
     <ClInclude Include="src\Item\SceneManager.h" />
     <ClInclude Include="src\Item\StraightMovingPoint.h" />
     <ClInclude Include="src\Item\DeskObject.h" />
+    <ClInclude Include="src\Model\BongoCatModel.h" />
     <ClInclude Include="src\Model\IModel.h" />
     <ClInclude Include="src\Model\Live2DModelBase.h" />
     <ClInclude Include="src\Model\ModelManager.h" />
@@ -256,6 +257,7 @@
     <ClCompile Include="src\Input\InputParser.cpp" />
     <ClCompile Include="src\Item\BongoCatHand.cpp" />
     <ClCompile Include="src\Item\BongoCatItem.cpp" />
+    <ClCompile Include="src\Item\BongoCatModel_Standard.cpp" />
     <ClCompile Include="src\Item\BongoCatObject.cpp" />
     <ClCompile Include="src\Item\BongoCatObject_Standard.cpp" />
     <ClCompile Include="src\Item\BongoCatSprite.cpp" />
@@ -272,6 +274,7 @@
     <ClCompile Include="src\Item\SceneManager.cpp" />
     <ClCompile Include="src\Item\StraightMovingPoint.cpp" />
     <ClCompile Include="src\Item\DeskObject.cpp" />
+    <ClCompile Include="src\Model\BongoCatModel.cpp" />
     <ClCompile Include="src\Model\IModel.cpp" />
     <ClCompile Include="src\Model\Live2DModelBase.cpp" />
     <ClCompile Include="src\Model\ModelManager.cpp" />

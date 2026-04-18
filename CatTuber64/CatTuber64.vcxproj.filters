@@ -281,6 +281,9 @@
     <ClInclude Include="src\Renderer\Bindable\IndexBuffer.h">
       <Filter>源文件\Renderer\Bindable</Filter>
     </ClInclude>
+    <ClInclude Include="src\Model\BongoCatModel.h">
+      <Filter>源文件\Model</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -483,6 +486,12 @@
     </ClCompile>
     <ClCompile Include="src\Renderer\Bindable\IndexBuffer.cpp">
       <Filter>源文件\Renderer\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Model\BongoCatModel.cpp">
+      <Filter>源文件\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Item\BongoCatModel_Standard.cpp">
+      <Filter>源文件\Item</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

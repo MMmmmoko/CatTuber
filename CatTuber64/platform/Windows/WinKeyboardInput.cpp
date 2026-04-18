@@ -31,6 +31,7 @@ bool KeyboardInput::Init()
 
 	//填充索引
 	{
+		SDL_SCANCODE_0;
 		auto& im=InputManager::GetIns();
 		buttnList[DIK_ESCAPE]= im.GetButton("Keyboard.ESC");
 		buttnList[DIK_1]= im.GetButton("Keyboard.1");

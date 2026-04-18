@@ -32,9 +32,12 @@ struct BindingInfo
 	float controlValue = 0.38268343236508f;//某些特殊类型的绑定需要用到一些参数//可能得使用union//数值为sin22.5
 
 	void RegisterBinding(int index,int index2=0);//参数为按钮、轴、动画的索引？//轴可用到index2
+	//注册的字符串类似"Desk.Button.i.Down"
+	//head提供上述的"Desk.Button."部分
+	void RegisterBindingEx(const char* head,int index,int index2=0);//参数为按钮、轴、动画的索引？//轴可用到index2
 	void UnRegisterBinding();
 	static const char* GetTypeJsonStr(Type type);
-private:
+//private:
 	std::vector<ActionBindingHandle> _bindingHandleList;
 };
 
