@@ -351,6 +351,8 @@ void KeyboardInput::Release()
 	inited = false;
 }
 
+
+
 void KeyboardInput::ResetData()
 {
 	for (int i = 0; i < 256; i++)

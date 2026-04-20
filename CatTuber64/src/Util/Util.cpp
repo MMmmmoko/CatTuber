@@ -1,5 +1,6 @@
 #include<SDL3/SDL.h>
 #include<SDL3_image/SDL_image.h>
+#include"Net/SDL_net.h"
 #include<fstream>
 #include"Util/Util.h"
 #include"AppSettings.h"
@@ -402,6 +403,52 @@ SDL_GPUTexture* util::LoadTextureFromPack(Pack* pack, const char* pathInPack, in
     }
 
     return gpuTexture;
+}
+
+MIX_Audio* util::LoadSoundFromPack(Pack* pack, const char* pathInPack)
+{
+    std::vector<uint8_t> fileBytes = pack->LoadFile(pathInPack);
+    SDL_IOStream* io = SDL_IOFromConstMem(fileBytes.data(), fileBytes.size());
+    if (!io) {
+        SDL_LogError(SDL_LOG_CATEGORY_RENDER, "SDL_IOFromConstMem failed: %s/%s:%s", SDL_GetError(), pack->GetPath(), pathInPack);
+        return nullptr;
+    }
+    MIX_Audio* audio=MIX_LoadAudio_IO(AppContext::GetMixerDevice(),io,true,true);
+    if (!audio)
+    {
+        SDL_LogError(SDL_LOG_CATEGORY_RENDER, "WARNING: Can not load audio:%s:%s", pack->GetPath(), pathInPack);
+        return nullptr;
+    }
+    return audio;
+}
+
+
+
+
+
+std::string util::GetLocalIP()
+{
+    //这个方法得到的地址数量太多了，换一个方法获取地址
+    //int addrCount;
+    //NET_Address** addrs= NET_GetLocalAddresses(&addrCount);
+    //for (int i = 0; i < addrCount; i++)
+    //{
+    //    SDL_Log("Local IP:%s", NET_GetAddressString(addrs[i]));
+    //}
+    //return std::string();
+
+
+
+    // The method here is to connect a UDP socket to a public ip,
+    // and get the local socket address with the getsockname function.
+    // UDP connection will not send anything to the network, so this function won't cause any overhead.
+
+    char buf[100];
+    if (NET_GetLocalLANAddressStr(buf, sizeof(buf)))
+    {
+        return buf;
+    }
+    return std::string();
 }
 
 

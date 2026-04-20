@@ -17,9 +17,10 @@
 #include"UserEvent.h"
 #include"Renderer/GlobalGraphicResourceManager.h"
 
-
-
-
+#include"Net/SDL_net.h"
+#include"Util/Util.h"
+#include"Steam/CatSteam.h"
+#include"Input/GamepadInput.h"
 Live2DModelBase* model;
 
 bool CatTuberApp::Init(int argC, char* argV[])
@@ -89,13 +90,71 @@ bool CatTuberApp::Init(int argC, char* argV[])
 
 
 
+	//测试STEAM手柄
+	//先初始化Steam
+			//Steam初始化相关
+
+
+	{
+		if (!cat::steam::CheckSteam(true))
+		{
+			SDL_Log("Steam Init Failed");
+			//return 1;
+		}
+	}
+
 
 	//SDL初始化
-	if (!SDL_Init(SDL_INIT_VIDEO)) {
+	SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS,"1");
+	if (!SDL_Init(SDL_INIT_VIDEO|SDL_INIT_GAMEPAD)) {
 		SDL_Log("Can not init SDL: %s", SDL_GetError());
 		return false;
 	}
+	if (!MIX_Init()) {
+		SDL_Log("Can not init SDL_mixer: %s", SDL_GetError());
+		return false;
+	}
+	if (!NET_Init()) {
+		SDL_Log("Can not init SDL_net: %s", SDL_GetError());
+		return false;
+	}
 	UserEvent::Init();
+
+
+
+
+
+	{
+		int joystickCount;
+		SDL_JoystickID* joysticks= SDL_GetJoysticks(&joystickCount);
+
+		for (int i = 0; i < joystickCount; i++)
+		{
+
+			if (SDL_IsGamepad(joysticks[i]))
+			{
+				auto pcontroller = SDL_OpenGamepad(joysticks[i]);
+				if (pcontroller)
+				{
+					SDL_Log("Link Gamepad Name: %s\n", SDL_GetGamepadName(pcontroller));
+				}
+			}
+
+
+			
+			//auto pjoystick = SDL_JoystickOpen(i);
+			//if (pjoystick) {
+			//	auto& joystickinfo = pthis->joystickList.emplace_back();
+			//	joystickinfo.guid = SDL_JoystickGetGUID(pjoystick);
+			//	joystickinfo.sdl_jid = SDL_JoystickInstanceID(pjoystick);
+			//	std::string namestr(SDL_JoystickName(pjoystick));
+			//	memcpy_s(joystickinfo.name, sizeof(joystickinfo.name) - 1, namestr.data(), namestr.size());
+			//}
+		}
+
+	}
+
+	util::GetLocalIP();
 
 
 
@@ -117,7 +176,7 @@ bool CatTuberApp::Init(int argC, char* argV[])
 
 
 
-
+	//图形 Device
 	SDL_GPUDevice* pdevice = NULL;
 #if defined SDL_PLATFORM_WINDOWS
 	pdevice = SDL_CreateGPUDevice(SDL_GPU_SHADERFORMAT_DXIL, b_debug, "direct3d12");
@@ -137,6 +196,16 @@ bool CatTuberApp::Init(int argC, char* argV[])
 	}
 	AppContext::_ref()._gpudevice = pdevice;
 
+
+	//音频 Device
+	MIX_Mixer* pMixerDevice = MIX_CreateMixerDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK,NULL);
+	if (!pMixerDevice)
+	{
+		//设备无效抛出异常
+		SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_AUDIO, "Can not create a SDL_mixer Device. %s", SDL_GetError());
+		return false;
+	}
+	AppContext::_ref()._mixer = pMixerDevice;
 
 
 
@@ -232,14 +301,21 @@ void CatTuberApp::Run()
 		if (event.type == SDL_EVENT_QUIT) {
 			Quit();
 		}
-		if (event.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED&& wm.controllers.size() == 1) {
+		else if (event.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED&& wm.controllers.size() == 1) {
 			Quit();
 		}
-		if (event.type >= SDL_EVENT_USER && event.type < SDL_EVENT_LAST)
+		else if (event.type >= SDL_EVENT_USER && event.type < SDL_EVENT_LAST)
 		{
 			UserEvent::HandleUserEvent(&event.user);
 		}
+		else if (event.type==SDL_EVENT_GAMEPAD_BUTTON_DOWN)
+		{
+			SDL_GamepadButton::SDL_GAMEPAD_BUTTON_BACK;
+			SDL_Log("Gamepad Button Down:%s", GamepadInput::GetSDLButtonKeyName((SDL_GamepadButton)event.gbutton.button));
 
+
+
+		}
 		wm.HandleEvent(event);
 	}
 
@@ -374,6 +450,8 @@ void CatTuberApp::ShutDown()
 
 	Dui::ShutDown();
 
+	NET_Quit();
+	MIX_Quit();
 	SDL_Quit();
 	//
 

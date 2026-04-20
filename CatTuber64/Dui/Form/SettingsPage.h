@@ -43,8 +43,18 @@ private:
 	ui::VListBox* vbox_container;
 	bool _skip_scrollChangeEvent = false;//按按钮时跳过一次滚动数据
 #define UISETTINGSPAGE_TABOP_Declarations(op) ui::Option* tabop_##op;ui::Box* header_##op;SettingsPage_##op settingsPage_##op;
-	UISETTINGSPAGE_TABOP_LIST(UISETTINGSPAGE_TABOP_Declarations)
+	UISETTINGSPAGE_TABOP_LIST(UISETTINGSPAGE_TABOP_Declarations);
 #undef UISETTINGSPAGE_TABOP_Declarations
+
+
+
+		
+	
+	//音频
+	bool OnSoundSliderValueChanged(const ui::EventArgs& msg);
+	ui::Slider* slider_volume;
+
+
 };
 
 

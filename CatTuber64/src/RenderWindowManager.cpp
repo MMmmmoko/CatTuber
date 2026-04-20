@@ -47,9 +47,14 @@ bool RenderWindowController::_CreateWindow()
     SDL_SetBooleanProperty(props, SDL_PROP_WINDOW_CREATE_RESIZABLE_BOOLEAN, true);
 
 
+    //高像素密度
+    SDL_SetBooleanProperty(props, SDL_PROP_WINDOW_CREATE_HIGH_PIXEL_DENSITY_BOOLEAN, true);
+
+
 
 
     isTransparent = AppSettings::GetIns().GetWindowTransparent();
+    //isTransparent = true;
     SetClearColor(AppSettings::GetIns().GetWindowBackgroundColor());
 
 
@@ -77,6 +82,13 @@ bool RenderWindowController::_CreateWindow()
         return false;
     }
 
+#ifdef _DEBUG
+    if (!SDL_ClaimWindowForGPUDevice(AppContext::GetGraphicDevice(), window))
+    {
+
+        SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Unable to SDL_ClaimWindowForGPUDevice window: %s", SDL_GetError());
+    }
+#endif // _DEBUG
 
 
 
@@ -692,9 +704,69 @@ void RenderWindowController::Present()
 
     if (isTransparent)
     {
+        {
+            if (!texToD3D12Copy)
+            {
+                auto props = SDL_CreateProperties();
+                SDL_SetNumberProperty(props, SDL_PROP_TEXTURE_CREATE_WIDTH_NUMBER, renderW);
+                SDL_SetNumberProperty(props, SDL_PROP_TEXTURE_CREATE_HEIGHT_NUMBER, renderH);
+                SDL_SetNumberProperty(props, SDL_PROP_TEXTURE_CREATE_FORMAT_NUMBER, SDL_PIXELFORMAT_ARGB8888);
+                SDL_SetPointerProperty(props, SDL_PROP_TEXTURE_CREATE_GPU_TEXTURE_POINTER, offscreenTex);
+                texToD3D12Copy = SDL_CreateTextureWithProperties(renderer, props);
+                if (!texToD3D12Copy)
+                    SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "SDL_CreateTextureWithProperties Failed. %s", SDL_GetError());
+                SDL_DestroyProperties(props);
+            }
+
+        }
 
 
 
+
+
+        pContext->SubmitCopyCommandBuffer();
+        //pContext->SubmitCommandBuffer();
+        SDL_GPUFence* fence = pContext->SubmitCommandBufferAndAcquireFence();
+        if (!fence)
+        {
+            SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "SubmitGPUCommandBufferAndAcquireFence failed! %s", SDL_GetError());
+            return;
+        }
+
+        if (!SDL_WaitForGPUFences(AppContext::GetGraphicDevice(), 0, &fence, 1))
+        {
+            SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "WaitForGPUFences failed! %s", SDL_GetError());
+            SDL_ReleaseGPUFence(AppContext::GetGraphicDevice(), fence);
+            return;
+        }
+
+        {
+            SDL_DestroyTexture(texToD3D12Copy);
+            auto props = SDL_CreateProperties();
+            SDL_SetNumberProperty(props, SDL_PROP_TEXTURE_CREATE_WIDTH_NUMBER, renderW);
+            SDL_SetNumberProperty(props, SDL_PROP_TEXTURE_CREATE_HEIGHT_NUMBER, renderH);
+            SDL_SetNumberProperty(props, SDL_PROP_TEXTURE_CREATE_FORMAT_NUMBER, SDL_PIXELFORMAT_ARGB8888);
+            SDL_SetPointerProperty(props, SDL_PROP_TEXTURE_CREATE_GPU_TEXTURE_POINTER, offscreenTex);
+            texToD3D12Copy = SDL_CreateTextureWithProperties(renderer, props);
+            if (!texToD3D12Copy)
+                SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "SDL_CreateTextureWithProperties Failed. %s", SDL_GetError());
+            SDL_DestroyProperties(props);
+        }
+
+
+
+        //渲染完成将D3D11纹理copy到交换链上
+        SDL_RenderTexture(renderer, texToD3D12Copy, NULL, NULL);
+        SDL_RenderPresent(renderer);
+        //按理来说应该需要个手段防止下一帧渲染到共享纹理的时候共享纹理没有使用完成。（D3D11\D3D12并行）
+        //但这里因为太麻烦而不进行任何作为吗？哈基妮，你这家伙
+
+        //optimize
+        //PRESENT里等待的情况比较多,且每个窗口相对较为独立
+        //有必要给每个窗口单独开个渲染线程吗？
+
+
+#if 0
         //windows中sdl renderder使用direct3D11 ，GPU API使用direct3D12
         //虽然SDL本身不提供这个两个图形API的互通，但它们实际上是能互通而不需要通过内存互通
         //所以为了性能考虑，这里需要特殊处理
@@ -716,8 +788,8 @@ void RenderWindowController::Present()
                 textureDesc.num_levels = 1;
 
                 auto props = SDL_CreateProperties();
-                SDL_SetBooleanProperty(props, SDL_PROP_GPU_TEXTURE_CREATE_D3D12_SHARE_BOOL, true);
-                SDL_SetPointerProperty(props, SDL_PROP_GPU_TEXTURE_CREATE_D3D12_SHARE_HANDLE_POINTER, &shareHandle);
+                //SDL_SetBooleanProperty(props, SDL_PROP_GPU_TEXTURE_CREATE_D3D12_SHARE_BOOL, true);
+                //SDL_SetPointerProperty(props, SDL_PROP_GPU_TEXTURE_CREATE_D3D12_SHARE_HANDLE_POINTER, &shareHandle);
                 textureDesc.props = props;
 
                 d3d12ShareTex = SDL_CreateGPUTexture(AppContext::GetGraphicDevice(), &textureDesc);
@@ -838,7 +910,7 @@ void RenderWindowController::Present()
         //有必要给每个窗口单独开个渲染线程吗？
 
 
-
+#endif
     }
     else
     {

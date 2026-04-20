@@ -38,7 +38,7 @@ public:
 
 	void Update(float time);
 
-	void Draw();
+	void Draw(glm::mat4x4& view_projMat);
 	void DrawMix(MixDrawList* pMix,glm::mat4x4& view_projMat);
 
 	//因为采用从文件夹加载的策略，所以使用了一个寻找文件夹中模型的函数
@@ -116,6 +116,9 @@ private:
 	Csm::ACubismMotion* currentExpression = nullptr;
 
 	//std::unordered_map<>
+	//音频系统
+	std::unordered_map<std::string,struct MIX_Audio*> sounds;
+	struct MIX_Track* soundTrack=nullptr;
 
 
 	struct _ParamInfo

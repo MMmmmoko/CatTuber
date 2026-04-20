@@ -5,7 +5,7 @@
 #include <SDL3/SDL.h>
 #include"Renderer/CatRendererContext.h"
 #include<iostream>
-
+#include<SDL3_mixer/SDL_mixer.h>
 
 //device等变量、 软件版本号、  软件config
 
@@ -127,6 +127,7 @@ public:
     ~AppContext();
 
     static SDL_GPUDevice* GetGraphicDevice() { return _ref()._gpudevice; };
+    static MIX_Mixer* GetMixerDevice() { return _ref()._mixer; };
     static SDL_GPUTextureFormat GetSwapchainFormat() { return  _ref()._swapchanFormat; };
     static Live2D::Cubism::Framework::Rendering::CubismRenderContext_SDL3* GetLive2DRenderContext() { return _ref()._SDL3RenderContext; };
     static SDL3Context* GetSDL3RenderContext() { return _ref()._SDL3RenderContext; };
@@ -182,6 +183,7 @@ private:
 
 
     SDL_GPUDevice* _gpudevice=NULL;
+    MIX_Mixer* _mixer=NULL;
     SDL_GPUTextureFormat _swapchanFormat= SDL_GPUTextureFormat::SDL_GPU_TEXTUREFORMAT_B8G8R8A8_UNORM;
     Live2D::Cubism::Framework::Rendering::CubismRenderContext_SDL3* _SDL3RenderContext = NULL;
      //

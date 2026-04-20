@@ -276,7 +276,10 @@ void AppSettings::_OnWindowBackgroundColorChange(const SDL_Color& value)
 void AppSettings::_OnVolumeValueChange(const double& value)
 {
 	//音量等待sdl_mix3库
-	SDL_assert(false);
+	//Value:0~100
+
+	MIX_SetMixerGain(AppContext::GetMixerDevice(), float(value/100.));
+	//SDL_assert(false);
 }
 
 void AppSettings::_OnMouseRelativeMoveChange(const bool& value)

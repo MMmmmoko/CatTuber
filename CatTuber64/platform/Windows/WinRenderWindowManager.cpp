@@ -250,7 +250,8 @@ extern "C" {
 }
 bool RenderWindowController::_ResizeSwapchain(SDL_GPUCommandBuffer* commandBuffer, SDL_Window* window)
 {
-     return  SDL_D3D12_ResizeSwapchain(commandBuffer,window);
+    return true;
+     //return  SDL_D3D12_ResizeSwapchain(commandBuffer,window);
 }
 
 

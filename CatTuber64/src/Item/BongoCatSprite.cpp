@@ -150,7 +150,7 @@ void BongoCatSprite::Draw()
 
 	//pContext->SetVertexUniformData(0, &subdata, sizeof(subdata));
 
-	pContext->SetBlendState(SDL3Blend::Blend_Normal);
+	pContext->SetBlendState(SDL3Blend::Blend_Normal);//Normal需要在管线中对源图像进行预乘
 	pContext->SetCullMode(SDL3Cull::Cull_None);
 
 
@@ -167,6 +167,10 @@ void BongoCatSprite::Draw()
 
 
 	//重新设置视口
+	//视口在外部设置
+
+
+	//设置混合模式
 
 
 

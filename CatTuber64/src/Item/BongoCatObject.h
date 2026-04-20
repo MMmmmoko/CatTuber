@@ -333,6 +333,11 @@ private:
 
 
 	}pngResource = {};
+	std::vector<struct MIX_Track*>audioTrackResource;
+	std::vector<struct MIX_Audio*>audioSoundResource;
+	MIX_Track* mainTrack=nullptr;
+
+
 	BongoCatHand lefthand;
 	BongoCatHand righthand;
 
@@ -343,12 +348,13 @@ private:
 		unsigned char armColor[3] = { 0 };
 		float l2dScale = 1.0;
 		float l2dOffset[2] = { 0,-0.005f };
+		bool usel2dDecoration=false;
 		float handOffset[2] = { 0,0 };
 		float mousePNGOffset[2] = { 10,-10 };
 		float penPNGOffset[2] = { 11,-65 };
 		float mousePNGscale = 1.f;
 		float penPNGscale = 1.f;
-		bool soundKeep = true;//true时 同时多次按键同时播放音频，false后按键的音频会打断正在播放的音频
+		bool soundKeep = true;//可以考虑改名为多音轨 //true时 同时多次按键同时播放音频，false后按键的音频会打断正在播放的音频
 		bool emoticonKeep = true;//true时 取消表情为再次按表情键，false松手取消按键
 		std::vector<unsigned char> soundClearKey;//停止音频播放的按键
 		std::vector<unsigned char> emoticonClearKey;//停止音频播放的按键

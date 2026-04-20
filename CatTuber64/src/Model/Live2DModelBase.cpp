@@ -87,6 +87,19 @@ CubismLive2DModel::~CubismLive2DModel()
 	}
 	_motionManagers.clear();
 
+
+
+
+
+	//音频
+	for (auto& x : sounds)
+	{
+		MIX_DestroyAudio(x.second);
+	}
+	sounds.clear();
+	MIX_DestroyTrack(soundTrack);
+
+
 }
 
 bool CubismLive2DModel::LoadFromFile(const char* packPath, const char* pathInPack)
@@ -222,15 +235,40 @@ Csm::CubismMotionQueueEntryHandle CubismLive2DModel::StartMotion(const Csm::csmC
 	}
 
 	//voice
-	csmString voice = _modelSetting->GetMotionSoundFileName(group, no);
-	if (strcmp(voice.GetRawString(), "") != 0)
+	std::string voice = _modelSetting->GetMotionSoundFileName(group, no);
+	if (!voice.empty())
 	{
 		//暂时等待SDL3_mixer发布稳定版本
 		//https://github.com/libsdl-org/SDL_mixer
 
-		//csmString path = voice;
-		//path = _modelHomeDir + path;
+
+
+		std::string  path = voice;
+		path = _modelHomeDir.GetRawString() + path;
 		//_wavFileHandler.Start(path);
+		MIX_Audio* curSound = sounds[path];
+		if (!curSound)
+		{
+			if (_pack.IsFileExist(path.c_str()))
+			{
+				curSound=util::LoadSoundFromPack(&_pack, path.c_str());
+				sounds[path] = curSound;
+			}
+		}
+		if (curSound)
+		{
+			if (!soundTrack)
+			{
+				soundTrack = MIX_CreateTrack(AppContext::GetMixerDevice());
+			}
+			if (soundTrack)
+			{
+				MIX_SetTrackAudio(soundTrack, curSound);
+				MIX_PlayTrack(soundTrack,0);
+			}
+
+		}
+
 	}
 
 	if (_debugMode)
@@ -830,7 +868,7 @@ void CubismLive2DModel::Update(float deltaTimeSeconds)
 
 }
 
-void CubismLive2DModel::Draw()
+void CubismLive2DModel::Draw(glm::mat4x4& view_projMat)
 {
 	//OPTIMIZE:Live2D的HIT AREA会调用DrawCall，即使其中没有任何东西需要绘制。
 	//因为Live2D的hit area其实就是个图像为透明的正常图层（纹理为16*16方块）
@@ -843,23 +881,11 @@ void CubismLive2DModel::Draw()
 		return;
 	}
 
-	//这里有个投影计算 先不管  (view mat)
-	//matrix.MultiplyByMatrix(_modelMatrix);
-	//renderer->SetMvpMatrix(&matrix);
-	//CubismMatrix44 projection;
-
-	////调渲染问题暂时先手动设置
-	//projection.Scale(2.f,2.f);
-	//projection.Translate(400,400);
-
-	//projection.MultiplyByMatrix(_modelMatrix);
-
-	//GetRenderer<Rendering::CubismRenderer_SDL3>()->SetMvpMatrix(&projection);
 
 
-
-
-	//renderer->UseHighPrecisionMask(true);
+	auto csmMat = Csm::Rendering::ConvertToCsmMat(view_projMat);
+	csmMat.MultiplyByMatrix(_modelMatrix);
+	renderer->Rendering::CubismRenderer::SetMvpMatrix(&csmMat);
 
 
 
@@ -874,14 +900,14 @@ void CubismLive2DModel::DrawMix(MixDrawList* pMix, glm::mat4x4& view_projMat)
 	//auto projMat=Csm::Rendering::ConvertToCsmMat(view_projMat);
 
 	//目前没有设置model矩阵， 直接传入view-proj矩阵
-	auto csmMat = Csm::Rendering::ConvertToCsmMat(view_projMat);
-	csmMat.MultiplyByMatrix(_modelMatrix);
-	renderer->Rendering::CubismRenderer::SetMvpMatrix(&csmMat);
+	//auto csmMat = Csm::Rendering::ConvertToCsmMat(view_projMat);
+	//csmMat.MultiplyByMatrix(_modelMatrix);
+	//renderer->Rendering::CubismRenderer::SetMvpMatrix(&csmMat);
 	
 
 	renderer->SetMixCallback(MixDrawList::InsertDrawCommandCallback, pMix);
 	renderer->SetMixDraw(true);
-	Draw();
+	Draw(view_projMat);
 	renderer->SetMixDraw(false);
 
 }
@@ -990,7 +1016,7 @@ void Live2DModelBase::Update(uint64_t deltaTicksNS)
 
 void Live2DModelBase::Draw()
 {
-	l2dmodel.Draw();
+	l2dmodel.Draw(GetScene()->Get2DProj());
 }
 
 void Live2DModelBase::DrawMix(MixDrawList* pMix)

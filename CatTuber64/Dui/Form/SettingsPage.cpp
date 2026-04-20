@@ -1,6 +1,6 @@
 #include"Dui.h"
 #include"SettingsPage.h"
-
+#include"AppSettings.h"
 
 
 
@@ -54,6 +54,22 @@ settingsPage_##op.InitContents(this);
 
 
     tabop_window->Selected(true,true);
+
+
+
+
+
+    //音频
+    {
+        double volumevalue=AppSettings::GetIns().GetVolumeValue();
+        slider_volume= static_cast<ui::Slider*>(FindSubControl(L"slider_volume"));
+        slider_volume->SetValue(volumevalue*100.);
+        slider_volume->AttachValueChanged(ui::UiBind(&SettingsPage::OnSoundSliderValueChanged, this, std::placeholders::_1));
+    }
+
+
+
+
 }
 
 
@@ -140,4 +156,14 @@ void SettingsPage::_ClearTabOpStates()
     }
     UISETTINGSPAGE_TABOP_LIST(UISETTINGSPAGE_ClearTabOpStates);
 #undef UISETTINGSPAGE_ScroolChange
+}
+
+bool SettingsPage::OnSoundSliderValueChanged(const ui::EventArgs& msg)
+{
+    //音频只有一个滑块
+    
+    double value=slider_volume->GetValue();
+    //100
+    AppSettings::GetIns().SetVolumeValue(value/100.);
+    return true;
 }

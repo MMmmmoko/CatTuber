@@ -7,6 +7,7 @@
 class Pack;
 
 struct SDL_GPUTexture;
+struct MIX_Audio;
 
 
 namespace util {
@@ -56,11 +57,11 @@ namespace util {
 
 	//从Pack中加载SDL纹理
 	SDL_GPUTexture* LoadTextureFromPack(class Pack* pack, const char* pathInPack,int* w=nullptr, int* h =nullptr );
+	MIX_Audio* LoadSoundFromPack(class Pack* pack, const char* pathInPack);
 
 
 
-
-
+	std::string GetLocalIP();
 
 
 

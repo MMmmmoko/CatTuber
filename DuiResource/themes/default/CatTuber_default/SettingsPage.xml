@@ -52,7 +52,8 @@
 				<VBox>
 					<HBox>
 						<Label text_id="STRID_SETTINGS_SOUND_VOLUME"/>
-						<Slider />
+						<Slider class="ctb_slider_default" name="slider_volume" width="stretch" min="0" max="10000" step="100"/>
+						<Label class="Label_Head" text="100" width="60"/>
 					</HBox>
 				</VBox>
 			</HBox>

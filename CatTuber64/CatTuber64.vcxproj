@@ -104,7 +104,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <LanguageStandard_C>stdc11</LanguageStandard_C>
-      <AdditionalIncludeDirectories>..\..\ThirdPart\SDL-release-3.2.16\include;..\..\ThirdPart\SDL_image-release-3.2.4\include;..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Core\include;..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src;..\..\ThirdPart\glm-1.0.1-light;src;src\Util;..\..\ThirdPart\nim_duilib-main;Dui;..\..\ThirdPart\skia;..\;..\..\ThirdPart\SDL3_mixer-devel-3.2.0-VC\SDL3_mixer-3.2.0\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ThirdPart\SDL-release\include;..\..\ThirdPart\SDL_image-release-3.2.4\include;..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Core\include;..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src;..\..\ThirdPart\glm-1.0.1-light;src;src\Util;..\..\ThirdPart\nim_duilib-main;Dui;..\..\ThirdPart\skia;..\;..\..\ThirdPart\SDL3_mixer-devel-3.2.0-VC\SDL3_mixer-3.2.0\include;..\..\ThirdPart\steamworks_sdk\sdk\public\steam</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -132,7 +132,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <LanguageStandard_C>stdc11</LanguageStandard_C>
-      <AdditionalIncludeDirectories>..\..\ThirdPart\SDL-release-3.2.16\include;..\..\ThirdPart\SDL_image-release-3.2.4\include;..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Core\include;..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src;..\..\ThirdPart\glm-1.0.1-light;src;src\Util;..\..\ThirdPart\nim_duilib-main;Dui;..\..\ThirdPart\skia;..\;..\..\ThirdPart\SDL3_mixer-devel-3.2.0-VC\SDL3_mixer-3.2.0\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ThirdPart\SDL-release\include;..\..\ThirdPart\SDL_image-release-3.2.4\include;..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Core\include;..\..\ThirdPart\CubismSdkForNative-5-r.4.1\Framework\src;..\..\ThirdPart\glm-1.0.1-light;src;src\Util;..\..\ThirdPart\nim_duilib-main;Dui;..\..\ThirdPart\skia;..\;..\..\ThirdPart\SDL3_mixer-devel-3.2.0-VC\SDL3_mixer-3.2.0\include;..\..\ThirdPart\steamworks_sdk\sdk\public\steam</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -177,6 +177,7 @@
     <ClInclude Include="src\AppSettings.h" />
     <ClInclude Include="src\CatTuberApp.h" />
     <ClInclude Include="src\Graphic.h" />
+    <ClInclude Include="src\Input\GamepadInput.h" />
     <ClInclude Include="src\Input\InputCommon.h" />
     <ClInclude Include="src\Input\InputManager.h" />
     <ClInclude Include="src\Input\InputParser.h" />
@@ -205,6 +206,8 @@
     <ClInclude Include="src\Model\IModel.h" />
     <ClInclude Include="src\Model\Live2DModelBase.h" />
     <ClInclude Include="src\Model\ModelManager.h" />
+    <ClInclude Include="src\Net\SDL3_net_c_patch.inl" />
+    <ClInclude Include="src\Net\SDL_net.h" />
     <ClInclude Include="src\Pack\Pack.h" />
     <ClInclude Include="src\Renderer\Bindable\Bindable.h" />
     <ClInclude Include="src\Renderer\Bindable\Bindables.h" />
@@ -215,6 +218,8 @@
     <ClInclude Include="src\Renderer\MixDrawList.h" />
     <ClInclude Include="src\RenderThread.h" />
     <ClInclude Include="src\RenderWindowManager.h" />
+    <ClInclude Include="src\Steam\CatSteam.h" />
+    <ClInclude Include="src\Steam\WorkshopItemManager.h" />
     <ClInclude Include="src\Tray.h" />
     <ClInclude Include="src\UserEvent.h" />
     <ClInclude Include="src\Util\ObjectPool.h" />
@@ -246,12 +251,14 @@
     <ClCompile Include="Dui\UserControl\UISceneMainItemSlot_Classic.cpp" />
     <ClCompile Include="Dui\UserControl\UIScenePanel.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="platform\Windows\WinGamepadInput.cpp" />
     <ClCompile Include="platform\Windows\WinKeyboardInput.cpp" />
     <ClCompile Include="platform\Windows\WinMouseInput.cpp" />
     <ClCompile Include="platform\Windows\WinRenderWindowManager.cpp" />
     <ClCompile Include="src\AppContext.cpp" />
     <ClCompile Include="src\AppSettings.cpp" />
     <ClCompile Include="src\CatTuberApp.cpp" />
+    <ClCompile Include="src\Input\GamepadInput.cpp" />
     <ClCompile Include="src\Input\InputCommon.cpp" />
     <ClCompile Include="src\Input\InputManager.cpp" />
     <ClCompile Include="src\Input\InputParser.cpp" />
@@ -278,6 +285,7 @@
     <ClCompile Include="src\Model\IModel.cpp" />
     <ClCompile Include="src\Model\Live2DModelBase.cpp" />
     <ClCompile Include="src\Model\ModelManager.cpp" />
+    <ClCompile Include="src\Net\SDL3_net.c" />
     <ClCompile Include="src\Pack\Pack.cpp" />
     <ClCompile Include="src\Renderer\Bindable\IndexBuffer.cpp" />
     <ClCompile Include="src\Renderer\Bindable\VertexBuffer.cpp" />
@@ -286,6 +294,8 @@
     <ClCompile Include="src\Renderer\MixDrawList.cpp" />
     <ClCompile Include="src\RenderThread.cpp" />
     <ClCompile Include="src\RenderWindowManager.cpp" />
+    <ClCompile Include="src\Steam\CatSteam.cpp" />
+    <ClCompile Include="src\Steam\WorkshopItemManager.cpp" />
     <ClCompile Include="src\Tray.cpp" />
     <ClCompile Include="src\UserEvent.cpp" />
     <ClCompile Include="src\Util\json\json_reader.cpp" />
@@ -305,11 +315,14 @@
     <ProjectReference Include="..\..\ThirdPart\nim_duilib-main\duilib\duilib.vcxproj">
       <Project>{e106acd7-4e53-4aee-942b-d0dd426db34e}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\..\ThirdPart\SDL-release-3.2.16\VisualC\SDL\SDL.vcxproj">
+    <ProjectReference Include="..\..\ThirdPart\SDL-release\VisualC\SDL\SDL.vcxproj">
       <Project>{81ce8daf-ebb2-4761-8e45-b71abcca8c68}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\ThirdPart\SDL_image-release-3.2.4\VisualC\SDL_image.vcxproj">
       <Project>{2bd5534e-00e2-4bea-ac96-d9a92ea24696}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ThirdPart\SDL_mixer-release-3.2.0\VisualC\SDL_mixer.vcxproj">
+      <Project>{f7e944b3-0815-40cd-b3e4-90b2a15b0e33}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

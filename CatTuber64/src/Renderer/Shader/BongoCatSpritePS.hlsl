@@ -15,7 +15,7 @@ struct VSOut
 float4 BongoCatSpritePS(VSOut In) : SV_TARGET
 {
     float4 psout = mainTexture.Sample(mainSampler, In.tex);
-    //psout.xyz *= psout.w; //预乘
+    psout.xyz *= psout.w; //预乘
 	
     //return float4(0.5f,0.5f,0.5f,1.f);
     

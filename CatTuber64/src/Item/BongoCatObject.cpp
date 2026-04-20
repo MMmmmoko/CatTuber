@@ -376,6 +376,19 @@ static bool bcmbuttonInited = false;
 
 BongoCatObject::~BongoCatObject()
 {
+	for (auto x : audioTrackResource)
+	{
+		MIX_DestroyTrack(x);
+	}
+	for (auto x : audioSoundResource)
+	{
+		MIX_DestroyAudio(x);
+	}
+	audioTrackResource.clear();
+	audioSoundResource.clear();
+
+	MIX_DestroyTrack(mainTrack);
+	mainTrack = nullptr;
 
 }
 
@@ -722,6 +735,11 @@ bool BongoCatObject::LoadFromPath(const char* u8PackPath, const Json::Value& bin
 	{
 		isUsingPen = config["standard"]["mouse"].asBool();
 	}
+
+
+	//MAINTRACK
+	mainTrack = MIX_CreateTrack(AppContext::GetMixerDevice());
+
 
 
 
@@ -1243,6 +1261,46 @@ void BongoCatObject::RegisterAllActionFunc(bool falseToUnregister)
 			}
 		}
 	}
+	//音频
+	{
+		ActionCallback downActionCallBack;
+		downActionCallBack.userData = this;
+		downActionCallBack.callback = [](const char* actionName, float value, void* userData, uint64_t userData2)
+			{
+				((BongoCatObject*)userData)->Play_Sound(UTIL_GETLOW32VALUE(userData2));
+			};
+
+		ActionCallback upActionCallBack;
+		upActionCallBack.userData = this;
+		upActionCallBack.callback = [](const char* actionName, float value, void* userData, uint64_t userData2)
+			{
+				((BongoCatObject*)userData)->Play_Sound(UTIL_GETLOW32VALUE(userData2));
+			};
+
+
+
+		for (int i = 0; i < keyboardKeyVec.size(); i++)
+		{
+			std::string downActionName = "BCM.Sound." + std::to_string(i) + ".Down";
+			//std::string upActionName = "BCM.Sound." + std::to_string(i) + ".Up";
+
+			UTIL_SETLOW32VALUE(downActionCallBack.userData2, i);
+			UTIL_SETLOW32VALUE(upActionCallBack.userData2, i);
+			//downActionCallBack.userData2 = (void*)i;
+			//upActionCallBack.userData2 = (void*)i;
+			if (falseToUnregister)
+			{
+				im.RegisterActionCallback(downActionName.c_str(), downActionCallBack);
+				//im.RegisterActionCallback(upActionName.c_str(), upActionCallBack);
+			}
+			else
+			{
+				im.UnregisterActionCallback(downActionName.c_str(), downActionCallBack);
+				//im.UnregisterActionCallback(upActionName.c_str(), upActionCallBack);
+
+			}
+		}
+	}
 
 
 
@@ -1407,6 +1465,32 @@ void BongoCatObject::ApplyControlBindings()
 
 
 
+
+void BongoCatObject::Play_Sound(int index)
+{
+	//if (false)
+	if (decoration.soundKeep)
+	{
+		if (index < audioTrackResource.size())
+		{
+			auto curTrack = audioTrackResource[index];
+			if (curTrack)
+			{
+				MIX_PlayTrack(curTrack, 0);
+			}
+		}
+	}
+	else
+	{
+		if (mainTrack)
+		{
+			MIX_SetTrackAudio(mainTrack, audioSoundResource[index]);
+			MIX_PlayTrack(mainTrack,0);
+		}
+	}
+
+
+}
 
 void BongoCatObject::SetLeftHandState(int index, bool bdown)
 {

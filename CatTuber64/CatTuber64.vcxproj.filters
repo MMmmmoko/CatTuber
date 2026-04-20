@@ -66,6 +66,12 @@
     <Filter Include="源文件\Renderer\Bindable">
       <UniqueIdentifier>{70f74086-35c4-46ff-b82c-cdf015dd7a3d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="源文件\Net">
+      <UniqueIdentifier>{f950f23d-5691-4ed1-8f61-77917c9d8969}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Steam">
+      <UniqueIdentifier>{49e94c3d-35ad-416d-a837-ab2fc08152b0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dui\DuiCommon.h">
@@ -284,6 +290,21 @@
     <ClInclude Include="src\Model\BongoCatModel.h">
       <Filter>源文件\Model</Filter>
     </ClInclude>
+    <ClInclude Include="src\Net\SDL_net.h">
+      <Filter>源文件\Net</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Net\SDL3_net_c_patch.inl">
+      <Filter>源文件\Net</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Input\GamepadInput.h">
+      <Filter>源文件\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Steam\CatSteam.h">
+      <Filter>源文件\Steam</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Steam\WorkshopItemManager.h">
+      <Filter>源文件\Steam</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -492,6 +513,21 @@
     </ClCompile>
     <ClCompile Include="src\Item\BongoCatModel_Standard.cpp">
       <Filter>源文件\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Net\SDL3_net.c">
+      <Filter>源文件\Net</Filter>
+    </ClCompile>
+    <ClCompile Include="platform\Windows\WinGamepadInput.cpp">
+      <Filter>平台\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Steam\CatSteam.cpp">
+      <Filter>源文件\Steam</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Steam\WorkshopItemManager.cpp">
+      <Filter>源文件\Steam</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Input\GamepadInput.cpp">
+      <Filter>源文件\Input</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

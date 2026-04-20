@@ -13,6 +13,15 @@
 
 //库
 #ifdef _WINDOWS
+
+
+
+//SDL_Mixer
+//#pragma comment(lib,"../ThirdPart/SDL3_mixer-devel-3.2.0-VC/SDL3_mixer-3.2.0/lib/x64/SDL3_mixer.lib")
+//#pragma comment(lib,"G:/Projects/CatTuber64/project/CatTuber64/x64/Debug/SDL3.lib")
+
+
+
 //Windows
 #pragma comment(lib,"dinput8.lib")
 #pragma comment(lib,"dxguid.lib")
@@ -27,7 +36,9 @@
 #pragma comment(lib, "winmm.lib")
 #pragma comment(lib, "setupapi.lib")
 #pragma comment(lib, "version.lib")
-
+//网络
+#pragma comment(lib, "Ws2_32.lib")
+#pragma comment(lib, "Iphlpapi.lib")
 
 
 //Live2D

@@ -8,7 +8,7 @@
 
 #include"Item/Scene.h"
 #include"Item/BongoCatObject.h"
-
+//#include"SDL3_mixer/SDL_mixer.h"
 
 #if 0
 
@@ -407,17 +407,7 @@ bool BongoCatObject::_LoadResource_Standard(Json::Value& config)
 		}
 	}
 
-	//for (int i = 0; i < sounds_KeyVec.size(); i++)
-	//{
-	//	//载入音频
-	//	auto& psound = soundList.emplace_back();
-	//	psound = soundManager.CreateSound(stdpath + "\\sounds\\" + std::to_string(i) + ".wav");
-	//	if (!psound)
-	//		psound = soundManager.CreateSound(stdpath + "\\sounds\\" + std::to_string(i) + ".ogg");
-	//	if (!psound)
-	//		psound = soundManager.CreateSound(stdpath + "\\sounds\\" + std::to_string(i) + ".flac");
-	//	if (psound)psound->SetMultiInstance(decoration.soundKeep);
-	//}
+
 
 
 
@@ -426,6 +416,61 @@ bool BongoCatObject::_LoadResource_Standard(Json::Value& config)
 
 
 
+
+
+
+	//加载音频
+	{
+
+	std::string soundPath;
+	for (int i = 0; i < soundsKeyVec.size(); i++)
+	{
+		//载入音频
+		auto& ptrack = audioTrackResource.emplace_back();
+		auto& psound = audioSoundResource.emplace_back();
+		//加载
+		soundPath = "img/standard/sounds/" + std::to_string(i) + ".wav";
+		bool fileExist = pack.IsFileExist(soundPath.c_str());
+		if (!fileExist)
+		{
+			soundPath = "img/standard/sounds/" + std::to_string(i) + ".ogg";
+			fileExist = pack.IsFileExist(soundPath.c_str());
+		}
+		if (!fileExist)
+		{
+			soundPath = "img/standard/sounds/" + std::to_string(i) + ".mp3";
+			fileExist = pack.IsFileExist(soundPath.c_str());
+		}
+		if (!fileExist)
+		{
+			soundPath = "img/standard/sounds/" + std::to_string(i) + ".flac";
+			fileExist = pack.IsFileExist(soundPath.c_str());
+		}
+		if (fileExist)
+		{
+			psound=util::LoadSoundFromPack(&pack, soundPath.c_str());
+		}
+		else
+		{
+			psound = nullptr;
+		}
+
+		if (psound)
+		{
+			ptrack = MIX_CreateTrack(AppContext::GetMixerDevice());
+
+			if (ptrack)
+				MIX_SetTrackAudio(ptrack, psound);
+			else
+			{
+
+				SDL_LogError(SDL_LOG_CATEGORY_AUDIO, "Can not create track : %s/%s, %s", pack.GetPath(), soundPath.c_str(), SDL_GetError());
+			}
+		}
+	}
+	
+	
+	}
 
 
 
@@ -479,6 +524,8 @@ void BongoCatObject::_Draw_Standard()
 		//Live2D模型在左手之下
 		//CubismMatrix44 _projection = decoration.projection;
 		//pmodel->DrawDirect(_projection);
+
+
 		_model->Draw();
 
 
