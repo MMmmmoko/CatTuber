@@ -370,11 +370,11 @@ void BongoCatHand::Draw()
 	pContext->SetFragmentSampler(SDL3Sampler::Sampler_Normal);
 
 	//pContext->SetVertexConstantBuffer(0, 1, &vertexCbuf);
-	pContext->SetVertexUniformData(0, &subdata, sizeof(subdata));
+	//pContext->SetVertexUniformData(1, &subdata, sizeof(subdata));
 	//vertexCbuf;
 
 	pContext->SetBlendState(SDL3Blend::Blend_Normal);
-	pContext->SetCullMode(SDL3Cull::Cull_Ccw);
+	pContext->SetCullMode(SDL3Cull::Cull_None);
 
 
 

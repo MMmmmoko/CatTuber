@@ -266,6 +266,8 @@
     <ClCompile Include="src\Item\BongoCatItem.cpp" />
     <ClCompile Include="src\Item\BongoCatModel_Standard.cpp" />
     <ClCompile Include="src\Item\BongoCatObject.cpp" />
+    <ClCompile Include="src\Item\BongoCatObject_Gamepad.cpp" />
+    <ClCompile Include="src\Item\BongoCatObject_Keyboard.cpp" />
     <ClCompile Include="src\Item\BongoCatObject_Standard.cpp" />
     <ClCompile Include="src\Item\BongoCatSprite.cpp" />
     <ClCompile Include="src\Item\CharacterObject.cpp" />

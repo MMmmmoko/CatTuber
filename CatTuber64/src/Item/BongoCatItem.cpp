@@ -9,7 +9,10 @@
 
 void BongoCatItem::Update(uint64_t deltaTicksNS)
 {
-
+	if (_itemObj)
+	{
+		_itemObj->Update(deltaTicksNS);
+	}
 
 }
 
@@ -22,7 +25,8 @@ void BongoCatItem::Draw(SDL_GPURenderPass* mainRenderPass, int width, int height
 
 	if (_itemObj)
 	{
-		_itemObj->GetModel()->SetScene(scene);
+		if(_itemObj->GetModel())
+			_itemObj->GetModel()->SetScene(scene);
 		_itemObj->Draw();
 	}
 

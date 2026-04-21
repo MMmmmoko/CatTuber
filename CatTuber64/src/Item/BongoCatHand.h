@@ -81,10 +81,10 @@ class BongoCatHand
 			float g;
 			float b;
 			float a;
-			float _1_width;//视口倒数
-			float _1_height;//视口倒数
-			float unuse;
-			float unuse2;
+			//float _1_width;//视口倒数
+			//float _1_height;//视口倒数
+			//float unuse;
+			//float unuse2;
 		}subdata;
 		
 		//std::shared_ptr<c2d::bind::VertexConstantBuffer<SubData>> vertexCbuf;

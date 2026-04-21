@@ -90,8 +90,12 @@ void BongoCatSprite::SetUp(SDL_GPUTexture* texture, int w, int h)
 
 void BongoCatSprite::SetPosition(float x, float y)
 {
-	spriteRect.x = x;
-	spriteRect.y = y;
+	if (spriteRect.x != x || spriteRect.y != y)
+	{
+		spriteRect.x = x;
+		spriteRect.y = y;
+		needUpdateVertex = true;
+	}
 }
 
 

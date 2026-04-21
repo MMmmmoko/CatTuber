@@ -529,6 +529,12 @@
     <ClCompile Include="src\Input\GamepadInput.cpp">
       <Filter>源文件\Input</Filter>
     </ClCompile>
+    <ClCompile Include="src\Item\BongoCatObject_Keyboard.cpp">
+      <Filter>源文件\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Item\BongoCatObject_Gamepad.cpp">
+      <Filter>源文件\Item</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CatTuber64.rc">

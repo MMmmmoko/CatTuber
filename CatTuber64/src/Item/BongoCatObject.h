@@ -251,6 +251,7 @@ private:
 	void SetEmoticon(int index);
 	void CancelEmoticon(int index);
 	void SetLeftHandState(int index, bool bdown);
+	void SetLeftHandPos(float x,float y);
 	void SetRightHandState(int index, bool bdown);
 	void KeyboardActive(int index, bool bactive);
 
@@ -289,12 +290,19 @@ private:
 		std::vector<bool> keyboardStates;
 		bool mouseButtonStates[3] = { 0 };
 		//float mousePos[2] = { 0 };
-		float rightHandPos[2] = { 0 };
+
 		float leftHandPos[2] = { 0 };
+		float rightHandPos[2] = { 0 };
+
 		bool useRightHandPos=false;
-		bool useLeftHandPos=false;
+		bool useLeftHandPos=false;//手柄时等效于letfStickButtonDown
 
 		bool isLockingHand = false;
+
+
+
+		bool leftHandPosChanged = false;
+		bool rightHandPosChanged = false;
 
 	}currentStates;
 
@@ -316,14 +324,11 @@ private:
 		BongoCatSprite mouse_right;
 		BongoCatSprite mouse_side;
 		BongoCatSprite mousebg;
-		//BongoCatSprite pen;
-		//BongoCatSprite pen_left;
-		//BongoCatSprite pen_right;
-		//BongoCatSprite pen_side;
-		//BongoCatSprite penbg;
 
-		//SDL_GPUTexture* armL = nullptr;
-		//SDL_GPUTexture* armR = nullptr;
+		BongoCatSprite leftStickNormal;
+		BongoCatSprite leftStickDown;
+		BongoCatSprite rightStickNormal;
+		BongoCatSprite rightStickDown;
 
 		std::vector<BongoCatSprite>facevec;//vector扩展的时候会触发析构导致出错？
 		std::vector<BongoCatSprite>LHandvec;
@@ -354,6 +359,9 @@ private:
 		float penPNGOffset[2] = { 11,-65 };
 		float mousePNGscale = 1.f;
 		float penPNGscale = 1.f;
+		float stick_offset_L[3] = { 403,278,19 };
+		float stick_offset_R[3] = { 48,216,15 };
+
 		bool soundKeep = true;//可以考虑改名为多音轨 //true时 同时多次按键同时播放音频，false后按键的音频会打断正在播放的音频
 		bool emoticonKeep = true;//true时 取消表情为再次按表情键，false松手取消按键
 		std::vector<unsigned char> soundClearKey;//停止音频播放的按键
@@ -394,6 +402,9 @@ private:
 	bool isUsingLive2DHand = false;
 	bool isUsingLive2DDesk = false;
 	bool isUsingPen = false;
+	//手柄模式下是否 不在手和键盘的键码中 使用BongoCat手柄键码
+	//因为普通键码其实也有手柄的部分，所以其实是能混合的.
+	bool isUsingGamepadKeycode = false;
 
 
 
@@ -417,13 +428,21 @@ private:
 	std::vector<ModelButtonControl> keyboardButtonVec;
 	std::vector<ModelButtonControl> soundsButtonVec;//音频触发按钮绑定
 	std::vector<ModelButtonControl> emotionButtonVec;//角色表情
+	//std::vector<ModelAxisControl> modelAxisVec;
+	//鼠标轴
+	ModelAxisControl leftHandAxis;
+	ModelAxisControl rightHandAxis;
+
+
 
 	//一些功能绑定？
 	ModelButtonControl controlClearSound;
 	ModelButtonControl controlClearEmotion;
 
 
-	std::vector<ModelAxisControl> modelAxisVec;
+	
+
+
 	std::vector<ModelAnimationControl> modelAnimationVec;
 
 

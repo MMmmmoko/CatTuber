@@ -28,7 +28,10 @@ struct BindingInfo
 		TypeMax
 	};//添加项目的时候要修改GetTypeJsonStr
 	Type type = Undefined;
-	std::vector<std::string> controllList;//如果是按钮相关则表示这个绑定相关的按钮列表，轴相关则表示的是轴列表
+	std::vector<std::string> controllList;//如果是按钮相关则表示这个绑定相关的按钮列表（组合键），轴相关则表示的是轴列表
+	//在轴控制对象里已经区分了子轴了，好像代码中这里没有使用多个轴的情况，数组长度一般是1
+
+
 	float controlValue = 0.38268343236508f;//某些特殊类型的绑定需要用到一些参数//可能得使用union//数值为sin22.5
 
 	void RegisterBinding(int index,int index2=0);//参数为按钮、轴、动画的索引？//轴可用到index2
@@ -133,7 +136,7 @@ struct ModelAxisControl
 
 
 		ParamHandle paramHandle;
-		float value = 0.f;
+		float value = 0.f;//子轴的当前值
 	};
 	std::vector<AxisInfo> axisVec;
 

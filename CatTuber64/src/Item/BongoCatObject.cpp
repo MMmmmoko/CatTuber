@@ -371,8 +371,8 @@ void BongoCatObject::OnAnimationPlay(int animationIndex)
 #else 
 
 //索引为BongoCat键码
-static ButtonProxy bcmbutton[256] = {};
-static bool bcmbuttonInited = false;
+//static ButtonProxy bcmbutton[256] = {};
+//static bool bcmbuttonInited = false;
 
 BongoCatObject::~BongoCatObject()
 {
@@ -394,6 +394,7 @@ BongoCatObject::~BongoCatObject()
 
 bool BongoCatObject::LoadFromPath(const char* u8PackPath, const Json::Value& bindingJson)
 {
+#if 0
 	//填充BongoCat按钮
 	if (!bcmbuttonInited)
 	{
@@ -603,7 +604,7 @@ bool BongoCatObject::LoadFromPath(const char* u8PackPath, const Json::Value& bin
 
 		bcmbuttonInited = true;
 	}
-
+#endif
 
 
 
@@ -783,11 +784,34 @@ bool BongoCatObject::LoadFromPath(const char* u8PackPath, const Json::Value& bin
 		for (auto& y : leftHandKeyVec[buttonIndex])
 		{
 			//检查当前按钮是否已经进行了映射
-			const char* curKey = InputParser::BongoCatKeyToButtonBaseName(y, mode ==BongoCatMverMode_Gamepad);
-
-			curButton.defaultBinding.type = BindingInfo::Button_ActualButton;
-			curButton.defaultBinding.controllList.push_back(curKey);
-			curButton.binding = curButton.defaultBinding;
+			const char* curKey = InputParser::BongoCatKeyToButtonBaseName(y, !isUsingGamepadKeycode&&mode ==BongoCatMverMode_Gamepad);
+			//特殊按键重映射
+			assert(curKey);
+			if (SDL_strcmp(curKey, "GamepadAxis.LT") == 0 || SDL_strcmp(curKey, "GamepadAxis.RT") == 0)
+			{
+				curButton.defaultBinding.type = BindingInfo::Button_ActualAxisToButton;
+				curButton.defaultBinding.controllList.push_back(curKey);
+				curButton.binding = curButton.defaultBinding;
+			}
+			else if (isUsingGamepadKeycode && (y == 0xD3 || y == 0XD7 || y == 0xD5 || y == 0XD9))
+			{
+				curButton.defaultBinding.type = BindingInfo::Button_ActualAxisToButton;
+				curButton.defaultBinding.controllList.push_back(curKey);
+				curButton.binding = curButton.defaultBinding;
+			}
+			else if (isUsingGamepadKeycode && (y == 0xD4 || y == 0XD8 || y == 0xD6 || y == 0XDA))
+			{
+				curButton.defaultBinding.type = BindingInfo::Button_ActualAxisToButton;
+				curButton.defaultBinding.controllList.push_back(curKey);
+				curButton.defaultBinding.controlValue = -curButton.defaultBinding.controlValue;
+				curButton.binding = curButton.defaultBinding;
+			}
+			else
+			{
+				curButton.defaultBinding.type = BindingInfo::Button_ActualButton;
+				curButton.defaultBinding.controllList.push_back(curKey);
+				curButton.binding = curButton.defaultBinding;
+			}
 		}
 
 	}
@@ -799,10 +823,37 @@ bool BongoCatObject::LoadFromPath(const char* u8PackPath, const Json::Value& bin
 		for (auto& y : rightHandKeyVec[buttonIndex])
 		{
 			//检查当前按钮是否已经进行了映射
-			const char* curKey = InputParser::BongoCatKeyToButtonBaseName(y, mode ==BongoCatMverMode_Gamepad);
-			curButton.defaultBinding.type = BindingInfo::Button_ActualButton;
-			curButton.defaultBinding.controllList.push_back(curKey);
-			curButton.binding = curButton.defaultBinding;
+			const char* curKey = InputParser::BongoCatKeyToButtonBaseName(y, !isUsingGamepadKeycode && mode ==BongoCatMverMode_Gamepad);
+			//特殊按键重映射
+			assert(curKey);
+			if (SDL_strcmp (curKey,"GamepadAxis.LT")==0|| SDL_strcmp(curKey, "GamepadAxis.RT")==0)
+			{
+				curButton.defaultBinding.type = BindingInfo::Button_ActualAxisToButton;
+				curButton.defaultBinding.controllList.push_back(curKey);
+				curButton.binding = curButton.defaultBinding;
+			}
+			else if (isUsingGamepadKeycode&&(y==0xD3||y== 0XD7||y==0xD5||y==0XD9))
+			{
+				curButton.defaultBinding.type = BindingInfo::Button_ActualAxisToButton;
+				curButton.defaultBinding.controllList.push_back(curKey);
+				curButton.binding = curButton.defaultBinding;
+			}
+			else if (isUsingGamepadKeycode&&(y==0xD4||y== 0XD8||y==0xD6||y==0XDA))
+			{
+				curButton.defaultBinding.type = BindingInfo::Button_ActualAxisToButton;
+				curButton.defaultBinding.controllList.push_back(curKey);
+				curButton.defaultBinding.controlValue = -curButton.defaultBinding.controlValue;
+				curButton.binding = curButton.defaultBinding;
+			}
+			else
+			{
+				curButton.defaultBinding.type = BindingInfo::Button_ActualButton;
+				curButton.defaultBinding.controllList.push_back(curKey);
+				curButton.binding = curButton.defaultBinding;
+			}
+
+
+
 		}
 	}
 
@@ -814,10 +865,34 @@ bool BongoCatObject::LoadFromPath(const char* u8PackPath, const Json::Value& bin
 		for (auto& y : keyboardKeyVec[buttonIndex])
 		{
 			//检查当前按钮是否已经进行了映射
-			const char* curKey = InputParser::BongoCatKeyToButtonBaseName(y, mode ==BongoCatMverMode_Gamepad);
-			curButton.defaultBinding.type = BindingInfo::Button_ActualButton;
-			curButton.defaultBinding.controllList.push_back(curKey);
-			curButton.binding = curButton.defaultBinding;
+			const char* curKey = InputParser::BongoCatKeyToButtonBaseName(y, !isUsingGamepadKeycode && mode ==BongoCatMverMode_Gamepad);
+			//特殊按键重映射
+			assert(curKey);
+			if (SDL_strcmp(curKey, "GamepadAxis.LT") == 0 || SDL_strcmp(curKey, "GamepadAxis.RT") == 0)
+			{
+				curButton.defaultBinding.type = BindingInfo::Button_ActualAxisToButton;
+				curButton.defaultBinding.controllList.push_back(curKey);
+				curButton.binding = curButton.defaultBinding;
+			}
+			else if (isUsingGamepadKeycode && (y == 0xD3 || y == 0XD7 || y == 0xD5 || y == 0XD9))
+			{
+				curButton.defaultBinding.type = BindingInfo::Button_ActualAxisToButton;
+				curButton.defaultBinding.controllList.push_back(curKey);
+				curButton.binding = curButton.defaultBinding;
+			}
+			else if (isUsingGamepadKeycode && (y == 0xD4 || y == 0XD8 || y == 0xD6 || y == 0XDA))
+			{
+				curButton.defaultBinding.type = BindingInfo::Button_ActualAxisToButton;
+				curButton.defaultBinding.controllList.push_back(curKey);
+				curButton.defaultBinding.controlValue = -curButton.defaultBinding.controlValue;
+				curButton.binding = curButton.defaultBinding;
+			}
+			else
+			{
+				curButton.defaultBinding.type = BindingInfo::Button_ActualButton;
+				curButton.defaultBinding.controllList.push_back(curKey);
+				curButton.binding = curButton.defaultBinding;
+			}
 		}
 	}
 
@@ -859,8 +934,80 @@ bool BongoCatObject::LoadFromPath(const char* u8PackPath, const Json::Value& bin
 		}
 	}
 
+
+	//手轴
+	{
+		if (mode == BongoCatMverMode_Standard)
+		{
+			rightHandAxis.uiName = "RightHand";
+			{
+				ModelAxisControl::AxisInfo mouseX;
+				mouseX.defaultBinding.type = BindingInfo::Axis_ActualAxis;
+				mouseX.defaultBinding.controllList.push_back("Mouse.Pos.X");
+				mouseX.binding = mouseX.defaultBinding;
+				rightHandAxis.axisVec.push_back(mouseX);
+			}
+			{
+				ModelAxisControl::AxisInfo mouseY;
+				mouseY.defaultBinding.type = BindingInfo::Axis_ActualAxis;
+				mouseY.defaultBinding.controllList.push_back("Mouse.Pos.Y");
+				mouseY.binding = mouseY.defaultBinding;
+				rightHandAxis.axisVec.push_back(mouseY);
+			}
+		}
+		else if (mode == BongoCatMverMode_Gamepad)
+		{
+			leftHandAxis.uiName = "LeftHand";
+			{
+				ModelAxisControl::AxisInfo mouseX;
+				mouseX.defaultBinding.type = BindingInfo::Axis_ActualAxis;
+				mouseX.defaultBinding.controllList.push_back("GamepadAxis.LS.X");
+				mouseX.binding = mouseX.defaultBinding;
+				leftHandAxis.axisVec.push_back(mouseX);
+			}
+			{
+				ModelAxisControl::AxisInfo mouseY;
+				mouseY.defaultBinding.type = BindingInfo::Axis_ActualAxis;
+				mouseY.defaultBinding.controllList.push_back("GamepadAxis.LS.Y");
+				mouseY.binding = mouseY.defaultBinding;
+				leftHandAxis.axisVec.push_back(mouseY);
+			}
+			
+			rightHandAxis.uiName = "RightHand";
+			{
+				ModelAxisControl::AxisInfo mouseX;
+				mouseX.defaultBinding.type = BindingInfo::Axis_ActualAxis;
+				mouseX.defaultBinding.controllList.push_back("GamepadAxis.RS.X");
+				mouseX.binding = mouseX.defaultBinding;
+				rightHandAxis.axisVec.push_back(mouseX);
+			}
+			{
+				ModelAxisControl::AxisInfo mouseY;
+				mouseY.defaultBinding.type = BindingInfo::Axis_ActualAxis;
+				mouseY.defaultBinding.controllList.push_back("GamepadAxis.RS.Y");
+				mouseY.binding = mouseY.defaultBinding;
+				rightHandAxis.axisVec.push_back(mouseY);
+			}
+		}
+
+
+
+
+
+	
+
+
+
+	
+	}
+
+
 	//特定渲染状态
-	if (mode == BongoCatMverMode_Standard)currentStates.useRightHandPos = true;
+	if (mode == BongoCatMverMode_Standard)
+	{
+		currentStates.useRightHandPos = true;
+		currentStates.rightHandPosChanged = true;
+	}
 
 
 
@@ -871,7 +1018,7 @@ bool BongoCatObject::LoadFromPath(const char* u8PackPath, const Json::Value& bin
 	bool buttonHandled = false;
 	bool axisHandled = false;
 
-	ModelControl::SetUpDefaultControl(desc, _model, NULL, NULL, &modelAnimationVec);
+	//ModelControl::SetUpDefaultControl(desc, _model, NULL, NULL, &modelAnimationVec);
 	//如果提供的绑定信息，则直接应用（比如来自程序退出时的自动保存）
 	//if (!bindingJson.empty())
 	//	ModelControl::SetUpBindingByJson(bindingJson, NULL, NULL, &modelAnimationVec);
@@ -914,6 +1061,9 @@ void BongoCatObject::Update(uint64_t deltaTicksNS)
 		default:
 			break;
 		}
+
+		currentStates.leftHandPosChanged = false;
+		currentStates.rightHandPosChanged = false;
 	}
 }
 
@@ -1180,6 +1330,26 @@ void BongoCatObject::RegisterAllActionFunc(bool falseToUnregister)
 
 			}
 		}
+		ActionCallback axisActionCallBack;
+		axisActionCallBack.userData = this;
+		axisActionCallBack.callback = [](const char* actionName, float value, void* userData, uint64_t userData2)
+			{
+				//由于多轴的存在，这里userData2需要拆分成两个参数
+				//低位是轴组的索引，高位是轴在组中的索引
+				((BongoCatObject*)userData)->currentStates.leftHandPosChanged = true;
+				((BongoCatObject*)userData)->currentStates.leftHandPos[UTIL_GETHIGH32VALUE(userData2)]=value;
+				//((BongoCatObject*)userData)->OnAxisValueChange(UTIL_GETLOW32VALUE(userData2), UTIL_GETHIGH32VALUE(userData2), value);
+			};
+
+		for (int i = 0; i < leftHandAxis.axisVec.size(); i++)
+		{
+			std::string axisActionName = std::string("BCM.LeftHand.0.") + std::to_string(i) + ".Change";
+			if (falseToUnregister)
+				im.RegisterActionCallback(axisActionName.c_str(), axisActionCallBack);
+			else
+				im.UnregisterActionCallback(axisActionName.c_str(), axisActionCallBack);
+		}
+
 	}
 	//右手
 	{
@@ -1219,6 +1389,28 @@ void BongoCatObject::RegisterAllActionFunc(bool falseToUnregister)
 				im.UnregisterActionCallback(upActionName.c_str(), upActionCallBack);
 
 			}
+		}
+
+
+		ActionCallback axisActionCallBack;
+		axisActionCallBack.userData = this;
+		axisActionCallBack.callback = [](const char* actionName, float value, void* userData, uint64_t userData2)
+			{
+				//由于多轴的存在，这里userData2需要拆分成两个参数
+				//低位是轴组的索引，高位是轴在组中的索引
+				((BongoCatObject*)userData)->currentStates.rightHandPosChanged = true;
+				((BongoCatObject*)userData)->currentStates.rightHandPos[UTIL_GETHIGH32VALUE(userData2)] = value;
+				//((BongoCatObject*)userData)->OnAxisValueChange(UTIL_GETLOW32VALUE(userData2), UTIL_GETHIGH32VALUE(userData2), value);
+			};
+
+		for (int i = 0; i < rightHandAxis.axisVec.size(); i++)
+		{
+			UTIL_SETHIGH32VALUE(axisActionCallBack.userData2, i);
+			std::string axisActionName = std::string("BCM.RightHand.0.") + std::to_string(i) + ".Change";
+			if (falseToUnregister)
+				im.RegisterActionCallback(axisActionName.c_str(), axisActionCallBack);
+			else
+				im.UnregisterActionCallback(axisActionName.c_str(), axisActionCallBack);
 		}
 	}
 	//键盘
@@ -1455,6 +1647,15 @@ void BongoCatObject::ApplyControlBindings()
 		emotionButtonVec[i].binding.RegisterBindingEx("BCM.Emotion.", i);
 	}
 
+	for (int j = 0; j < leftHandAxis.axisVec.size(); j++)
+	{
+		leftHandAxis.axisVec[j].binding.RegisterBindingEx("BCM.LeftHand.", 0,j);
+	}
+	for (int j = 0; j < rightHandAxis.axisVec.size(); j++)
+	{
+		rightHandAxis.axisVec[j].binding.RegisterBindingEx("BCM.RightHand.", 0,j);
+	}
+
 	//controlClearSound.binding.
 
 
@@ -1535,7 +1736,7 @@ void BongoCatObject::KeyboardActive(int index, bool bactive)
 
 
 
-
+//怎么写着写着就一千多行了..
 
 
 

@@ -16,6 +16,5 @@ float4 BongoCatHandTexPS(VSOut In) : SV_TARGET
 {
     float4 psout = mainTexture.Sample(mainSampler, In.tex);
     //psout.xyz *= psout.w; //预乘
-	
     return psout;
 }

@@ -1,4 +1,4 @@
-cbuffer CBuffer : register(b0, space3)
+cbuffer CBuffer : register(b0, space1)
 {
     float bongoCatVp_X;
     float bongoCatVp_Y;

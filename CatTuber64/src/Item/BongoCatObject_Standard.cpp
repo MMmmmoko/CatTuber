@@ -489,6 +489,17 @@ void BongoCatObject::_Update_Standard(uint64_t dtNS)
 	{
 		_model->Update(dtNS);
 	}
+
+
+	if (currentStates.rightHandPosChanged)
+	{
+
+		//[-1,1]映射到[0,1]
+		float _x = currentStates.rightHandPos[0] * 0.5f + 0.5f;
+		float _y = -currentStates.rightHandPos[1] * 0.5f + 0.5f;
+
+		righthand.SetPressPoint(-97.f * _x + 44.f * _y + 184 - 38, -76.f * _x - 40.f * _y + 324 - 50);
+	}
 }
 
 
@@ -572,7 +583,7 @@ void BongoCatObject::_Draw_Standard()
 		}
 
 
-
+		//righthand.SetPressPoint(currentStates.rightHandPos[0], currentStates.rightHandPos[1]);
 		righthand.Update();
 
 		float posx, posy;
@@ -663,6 +674,7 @@ void BongoCatObject::_Draw_Standard()
 			}
 
 		}
+
 
 		if (!currentStates.leftHandStateStack.empty())
 			_DRAW(pngResource.LHandvec[currentStates.leftHandStateStack.back()]);
