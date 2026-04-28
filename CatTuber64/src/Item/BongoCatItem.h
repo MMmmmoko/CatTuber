@@ -26,7 +26,7 @@ public:
 	virtual Json::Value GenerateAttributes()override;
 	virtual void ApplyAttributes(const Json::Value& applyJson)override;
 
-
+	void ResetObj(BongoCatObject* obj);
 	void SetTransform(float posX, float posY, float posZ);
 	void SetScale(float scale);
 

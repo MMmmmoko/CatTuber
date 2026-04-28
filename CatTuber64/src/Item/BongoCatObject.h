@@ -176,6 +176,7 @@ public:
 	virtual Json::Value GenerateAttributes();
 	//如果出现问题返回空
 	static BongoCatObject* CreateFromAttributes(const Json::Value& applyJson);
+	static BongoCatObject* CreateFromPath(const char* packPath);
 	static void ReleaseObj(BongoCatObject*);//Release需要和Create搭配，免得其他人不知道怎么正确释放资源
 
 
@@ -215,19 +216,19 @@ private:
 
 	//资源加载
 	bool _LoadResource_Standard(Json::Value& config);
-	bool _LoadResource_Keyboard(Json::Value& config) { return false; };
-	bool _LoadResource_Gamepad(Json::Value& config) { return false; };
+	bool _LoadResource_Keyboard(Json::Value& config) ;
+	bool _LoadResource_Gamepad(Json::Value& config) ;
 	bool _LoadSprite(const char* pathInPack, BongoCatSprite& sprite);
 
 
 	//Update
 	void _Update_Standard(uint64_t dtNS);
-	void _Update_Keyboard(uint64_t dtNS) { return; };
-	void _Update_Gamepad(uint64_t dtNS) { return; };
+	void _Update_Keyboard(uint64_t dtNS) ;
+	void _Update_Gamepad(uint64_t dtNS) ;
 	//Update
 	void _Draw_Standard();
-	void _Draw_Keyboard() { return; };
-	void _Draw_Gamepad() { return; };
+	void _Draw_Keyboard() ;
+	void _Draw_Gamepad();
 	inline void _DRAW(BongoCatSprite& s) { s.Draw(); };
 
 
@@ -438,7 +439,7 @@ private:
 	//一些功能绑定？
 	ModelButtonControl controlClearSound;
 	ModelButtonControl controlClearEmotion;
-
+	//添加绑定的时候也在ClearBinding中添加代码
 
 	
 

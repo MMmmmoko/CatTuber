@@ -151,3 +151,98 @@ void Scene::SetCanvasSize(int width, int height)
 		x->OnCanvasSizeChange(canvasW, canvasH);
 	}
 }
+
+bool Scene::CreateNewItem(const char* type, int index, const Json::Value& json)
+{
+	bool isMainItem = (SDL_strcmp(type, "ClassicItem")==0
+			|| SDL_strcmp(type, "IntegralItem") == 0
+			|| SDL_strcmp(type, "BongoCatItem") == 0
+		);
+	if (_mainItem&& isMainItem)return false;
+
+	auto pitem = ISceneItem::CreateItem(type, this);
+	if (isMainItem)_mainItem = dynamic_cast<MainSceneItem*>(pitem);
+	if (index < 0 || index >= _itemList.size())
+	{
+		_itemList.push_back(pitem);
+	}
+	else
+	{
+		_itemList.insert(_itemList.begin() + index, pitem);
+	}
+	return true;
+}
+
+ISceneItem* Scene::GetItemAt_TopToBottom(int index)
+{
+	//方便UI交互，原本索引低的先绘制，会被后绘制的覆盖，索引越低，在图层的上下关系中越低，
+	// 而UI中相反，越上方越低
+	// 输入倒序索引
+	if(index<0|| index>=_itemList.size())
+		return nullptr;
+	return _itemList[_itemList.size()-1- index];
+}
+
+void Scene::ItemOrderChange_TopToBottom(size_t nOldItemIndex, size_t nNewItemIndex)
+{
+
+	auto& targetItemLits = GetItemList();
+
+	nOldItemIndex = targetItemLits.size() - 1 - nOldItemIndex;
+	nNewItemIndex = targetItemLits.size() - 1 - nNewItemIndex;
+
+
+	auto element_to_move = std::move(targetItemLits[nOldItemIndex]);
+	targetItemLits.erase(targetItemLits.begin() + nOldItemIndex);
+	//targetItemLits.insert(targetItemLits.begin() + nNewItemIndex, std::move(element_to_move));
+	targetItemLits.emplace(targetItemLits.begin() + nNewItemIndex, std::move(element_to_move));
+
+}
+
+int Scene::RemoveItem(ISceneItem* item)
+{
+	for (int i=0;i< _itemList.size();i++)
+	{
+		if (_itemList[i] == item)
+		{
+			_itemList.erase(_itemList.begin()+i);
+			if (_mainItem == item)
+			{
+				_mainItem = nullptr;
+			}
+
+			//按需释放？
+			ISceneItem::FreeItem(item);
+
+
+			return i;
+		}
+	}
+
+	return -1;
+}
+
+int Scene::GetItemIndex_TopToBottom(ISceneItem* item)
+{
+	for (int i = 0; i < _itemList.size(); i++)
+	{
+		if (_itemList[i] == item)
+		{
+			return (int)_itemList.size()-1-i;
+		}
+	}
+	return -1;
+}
+
+//int Scene::GetItemIndex(ISceneItem* item)
+//{
+//	for (int i = 0; i < _itemList.size(); i++)
+//	{
+//		if (_itemList[i] == item)
+//		{
+//			return i;
+//		}
+//	}
+//
+//	return -1;
+//}

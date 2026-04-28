@@ -6,9 +6,12 @@ DuiSimpleMessageBox::Button DuiSimpleMessageBox::ShowModalDlg(ui::Window* parent
 {
 	DuiSimpleMessageBox::Button returnButton = DuiSimpleMessageBox::BUTTON_CLOSE;
 	DuiSimpleMessageBox* dialog = new DuiSimpleMessageBox(title, content, buttonFlag, &returnButton);
-	dialog->CreateWnd(parent, ui::WindowCreateParam(title,true));
-	dialog->PostQuitMsgWhenClosed(false);
-	dialog->ShowModalFake();
+
+	dialog->DoModal(parent, ui::WindowCreateParam(title, true),false,false);
+	delete dialog;
+	//dialog->CreateWnd(parent, ui::WindowCreateParam(title,true));
+	//dialog->PostQuitMsgWhenClosed(false);
+	//dialog->ShowModalFake();
 	return returnButton;
 }
 
@@ -34,7 +37,7 @@ void DuiSimpleMessageBox::OnInitWindow()
 	//根据buttonFlag设置按钮显示与否
 
 	auto pBtnClose = static_cast<ui::Button*>(FindControl(L"btn_Close"));
-	auto pBtnOk = static_cast<ui::Button*>(FindControl(L"btn_Ok"));
+	auto pBtnOk = static_cast<ui::Button*>(FindControl(L"btn_OK"));
 	auto pBtnCancel = static_cast<ui::Button*>(FindControl(L"btn_Cancel"));
 
 

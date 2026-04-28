@@ -1216,7 +1216,7 @@ BongoCatObject* BongoCatObject::CreateFromAttributes(const Json::Value& applyJso
 {
 	if (!(applyJson.isMember("PackPath") && applyJson["PackPath"].isString()))
 	{
-		SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Create Desk with invalid json! No path info exist.");
+		SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Create BongoCatObject with invalid json! No path info exist.");
 		return nullptr;
 	}
 	auto resultObj = new BongoCatObject;
@@ -1235,6 +1235,19 @@ BongoCatObject* BongoCatObject::CreateFromAttributes(const Json::Value& applyJso
 	return resultObj;
 }
 
+BongoCatObject* BongoCatObject::CreateFromPath(const char* packPath)
+{
+	auto resultObj = new BongoCatObject;
+	if (!resultObj->LoadFromPath(packPath))
+	{
+		SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Can not create Desk at path: %s.", packPath);
+		delete resultObj;
+		return nullptr;
+	}
+	return resultObj;
+
+}
+
 void BongoCatObject::ReleaseObj(BongoCatObject* obj)
 {
 	//上面怎么创建，这里就怎么释放
@@ -1248,7 +1261,6 @@ void BongoCatObject::ReleaseObj(BongoCatObject* obj)
 		obj->_model->Release();
 		obj->_model = nullptr;
 	}
-
 
 	delete obj;
 }
@@ -1279,11 +1291,47 @@ void BongoCatObject::LoadBinding()
 
 void BongoCatObject::ClearBinding()
 {
+	for (auto& x : leftHandButtonVec)
+	{
+			x.binding.UnRegisterBinding();
+	}
+	for (auto& x : rightHandButtonVec)
+	{
+			x.binding.UnRegisterBinding();
+	}
+	for (auto& x : keyboardButtonVec)
+	{
+			x.binding.UnRegisterBinding();
+	}
+	for (auto& x : soundsButtonVec)
+	{
+			x.binding.UnRegisterBinding();
+	}
+	for (auto& x : emotionButtonVec)
+	{
+			x.binding.UnRegisterBinding();
+	}
+	for (auto& x : leftHandAxis.axisVec)
+	{
+			x.binding.UnRegisterBinding();
+	}
+	
+	for (auto& x : rightHandAxis.axisVec)
+	{
+			x.binding.UnRegisterBinding();
+	}
+	controlClearSound.binding.UnRegisterBinding();
+	controlClearEmotion.binding.UnRegisterBinding();
+
 	for (auto& x : modelAnimationVec)
 	{
 		for (auto& y : x.binding)
 			y.UnRegisterBinding();
 	}
+
+
+
+	UnregisterAllActionFunc();
 }
 
 

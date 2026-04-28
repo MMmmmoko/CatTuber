@@ -207,6 +207,33 @@ void ClassicItem::SetScale(float _scale)
 }
 
 
+void ClassicItem::ResetDeskObj(DeskObject* obj)
+{
+	if (_desk)
+	{
+		DeskObject::ReleaseObj(_desk);
+	}
+	_desk = obj;
+}
+
+void ClassicItem::ResetCharacterObj(CharacterObject* obj)
+{
+	if (_character)
+	{
+		CharacterObject::ReleaseObj(_character);
+	}
+	_character = obj;
+}
+
+void ClassicItem::ResetHandheldItemObj(HandheldItemObject* obj)
+{
+	if (_handHeldItem)
+	{
+		HandheldItemObject::ReleaseObj(_handHeldItem);
+	}
+	_handHeldItem = obj;
+}
+
 void ClassicItem::Reset()
 {
 	offsetX = 0.f;

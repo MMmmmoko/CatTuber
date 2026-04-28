@@ -35,6 +35,9 @@ public:
 	HandheldItemObject* GetHandheldItem() { return _handHeldItem; };
 
 
+	void ResetDeskObj(DeskObject* obj);
+	void ResetCharacterObj(CharacterObject* obj);
+	void ResetHandheldItemObj(HandheldItemObject* obj);
 private:
 	//重置并释放资源
 	void Reset();

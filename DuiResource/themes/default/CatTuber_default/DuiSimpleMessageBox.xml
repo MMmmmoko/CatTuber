@@ -19,7 +19,7 @@
 		<!-- 工作区域，除了标题栏外的内容都放在这个大的Box区域 -->
 		<VBox height="auto" width="auto" min_width="280">
 			<Control height="30"/>
-			<Label name="text_Content" halign="center" margin="24,0,24,0" text_align="center" font="system_16"/>
+			<Label name="text_Content" halign="center" margin="24,0,24,0" text_align="left" font="system_16" multi_line="true"/>
 			<Control height="30"/>
 			<!--按钮区-->
 			<HBox margin="8,8,8,8"  halign="center" height="auto">

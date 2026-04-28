@@ -33,6 +33,7 @@ public:
 	virtual Json::Value GenerateAttributes();
 	//如果出现问题返回空
 	static DecorationObject* CreateFromAttributes(const Json::Value& applyJson);
+	static DecorationObject* CreateFromPath(const char* packPath);
 	static void ReleaseObj(DecorationObject*);//Release需要和Create搭配，免得其他人不知道怎么正确释放资源
 
 

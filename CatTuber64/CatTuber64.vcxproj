@@ -167,6 +167,7 @@
     <ClInclude Include="Dui\Form\SettingsPage_other.h" />
     <ClInclude Include="Dui\Form\SettingsPage_sound.h" />
     <ClInclude Include="Dui\Form\SettingsPage_window.h" />
+    <ClInclude Include="Dui\Form\UIPageBase.h" />
     <ClInclude Include="Dui\ImageDecoder\ImageDecoder_EX.h" />
     <ClInclude Include="Dui\UiThread.h" />
     <ClInclude Include="Dui\UserControl\ImageCropperControl.h" />
@@ -353,6 +354,7 @@
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\MainUiForm.xml" />
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\MainWindowMenu.xml" />
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\UISceneContentListItem.xml" />
+    <Xml Include="..\DuiResource\themes\default\CatTuber_default\UISceneListItemMenu.xml" />
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\UIScenePanelItemAddMenu.xml" />
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\SceneSelectPage.xml" />
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\SettingsPage.xml" />

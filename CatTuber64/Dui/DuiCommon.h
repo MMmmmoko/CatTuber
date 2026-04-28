@@ -11,6 +11,6 @@
 #include"duilib/duilib.h"
 
 
-
+#define GETDUISTRING(strid) ui::GlobalManager::Instance().Lang().GetStringViaID(strid)
 
 #endif

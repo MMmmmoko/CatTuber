@@ -41,7 +41,7 @@ public:
 	//保存或载入当前场景内容
 	Json::Value GenerateAttributes();
 	void ApplyAttributes(const Json::Value& jsonvalue);
-
+	//bool LoadItemFromPack();
 
 	 
 
@@ -64,7 +64,20 @@ public:
 	//外部获取信息的接口
 //	std::string GetSceneName() { return sceneName; };
 	MainSceneItem* GetMainItem() { return _mainItem; };
-	const std::vector<ISceneItem*>& GetItemList() { return _itemList; };
+	std::vector<ISceneItem*>& GetItemList() { return _itemList; };
+	//index为插入索引，-1表示插入到末尾
+	bool CreateNewItem(const char* type, int index=-1,const Json::Value& json = Json::Value());
+
+	ISceneItem* GetItemAt_TopToBottom(int index);
+	void ItemOrderChange_TopToBottom(size_t nOldItemIndex, size_t nNewItemIndex);
+
+
+
+	//返回物品原索引,失败返回-1
+	int RemoveItem(ISceneItem* item);
+	int GetItemIndex_TopToBottom(ISceneItem* item);
+	//int GetItemIndex(ISceneItem* item);
+
 //
 //
 //

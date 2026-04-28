@@ -111,6 +111,15 @@ void DecorationItem::_GenerateTransformMat()
 	transform=glm::scale(transform,glm::vec3(scale, scale, scale));
 }
 
+void DecorationItem::ResetObj(DecorationObject* obj)
+{
+	if (_itemObj)
+	{
+		DecorationObject::ReleaseObj(_itemObj);
+	}
+	_itemObj = obj;
+}
+
 void DecorationItem::SetTransform(float posX, float posY, float posZ)
 {
 	if (offsetX != posX || offsetY != posY || offsetZ != posZ)

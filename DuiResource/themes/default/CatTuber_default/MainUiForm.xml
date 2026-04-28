@@ -77,7 +77,7 @@
 					</Box>
 					<Button class="btn_wnd_close_11" height="36" width="40" name="closebtn" margin="0,0,0,2" />
 				</HBox>
-				<Box name="box_workSpaceContainer" />
+				<TabBox name="box_workSpaceContainer" />
 			</VBox>
 		</HBox>
 	</VBox>

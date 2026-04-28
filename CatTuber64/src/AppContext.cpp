@@ -82,6 +82,15 @@ const char* AppContext::GetBongoCatFolderPath()
 	return _ref()._BongoCatFolderPath.c_str();
 }
 
+const char* AppContext::GetDecorationItemFolderPath()
+{
+	if (_ref()._BongoCatFolderPath.empty())
+	{
+		_ref()._BongoCatFolderPath = std::string(GetAppBasePath()) + "Resources/Decoration/";
+	}
+	return _ref()._BongoCatFolderPath.c_str();
+}
+
 std::string AppContext::ResolvePathToAbsolute(const std::string& pathToResolve)
 {
 	std::string path = pathToResolve;

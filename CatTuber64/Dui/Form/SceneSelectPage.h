@@ -1,7 +1,7 @@
 #ifndef _SceneSelectPage_h
 #define _SceneSelectPage_h
 
-
+#include"UIPageBase.h"
 
 //这是UI用于选择的已保存的场景，不是场景中的某个物件
 class UISceneItem :public ui::ListBoxItemV
@@ -123,16 +123,17 @@ private:
 
 
 
-class SceneSelectPage :public ui::VBox
+class SceneSelectPage :public UIPageBase
 {
 
 public:
-	SceneSelectPage(ui::Window* pWindow) :VBox(pWindow) {};
-	void InitContents();
-
+	SceneSelectPage(ui::Window* pWindow) :UIPageBase(pWindow) {};
+	~SceneSelectPage();
+	virtual void InitContents(uintptr_t userdata1=0, uintptr_t userdata2=0)override;
+	virtual MainUiForm::PageEnum GetPageType() override { return MainUiForm::PageEnum::PAGE_SCENESELECT; };
 private:
 	bool OnBtnClicked(const ui::EventArgs& args);
-	class SceneItemProvider* provider;
+	class SceneItemProvider* provider=nullptr;
 };
 
 

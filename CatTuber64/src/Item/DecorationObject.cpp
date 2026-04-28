@@ -114,7 +114,7 @@ DecorationObject* DecorationObject::CreateFromAttributes(const Json::Value& appl
 {
 	if (!(applyJson.isMember("PackPath") && applyJson["PackPath"].isString()))
 	{
-		SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Create Desk with invalid json! No path info exist.");
+		SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Create decoration with invalid json! No path info exist.");
 		return nullptr;
 	}
 	auto resultObj = new DecorationObject;
@@ -122,7 +122,7 @@ DecorationObject* DecorationObject::CreateFromAttributes(const Json::Value& appl
 	std::string pathStr = AppContext::ResolvePathToAbsolute(applyJson["PackPath"].asString());
 	if (!resultObj->LoadFromPath(pathStr.c_str(), applyJson["Bindings"]))
 	{
-		SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Can not create Desk at path: %s.", pathStr.c_str());
+		SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Can not create decoration at path: %s.", pathStr.c_str());
 		delete resultObj;
 		return nullptr;
 	}
@@ -132,6 +132,21 @@ DecorationObject* DecorationObject::CreateFromAttributes(const Json::Value& appl
 
 	return resultObj;
 }
+
+
+DecorationObject* DecorationObject::CreateFromPath(const char* packPath)
+{
+	auto resultObj = new DecorationObject;
+	if (!resultObj->LoadFromPath(packPath))
+	{
+		SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Can not create decoration at path: %s.", packPath);
+		delete resultObj;
+		return nullptr;
+	}
+	return resultObj;
+
+}
+
 
 void DecorationObject::ReleaseObj(DecorationObject* obj)
 {
@@ -182,6 +197,9 @@ void DecorationObject::ClearBinding()
 		for (auto& y : x.binding)
 			y.UnRegisterBinding();
 	}
+
+
+	UnregisterAllActionFunc();
 }
 
 

@@ -2,12 +2,12 @@
 #define _SettingsPage_h
 
 
+#include"UIPageBase.h"
 #include"SettingsPage_window.h"
 #include"SettingsPage_sound.h"
 #include"SettingsPage_input.h"
 #include"SettingsPage_other.h"
 #include"SettingsPage_aboutCatTuber.h"
-
 
 #define UISETTINGSPAGE_TABOP_LIST(F) \
     F(window) \
@@ -17,13 +17,13 @@
     F(aboutCatTuber)
 
 
-class SettingsPage :public ui::VBox
+class SettingsPage :public UIPageBase
 {
 
 public:
-	SettingsPage(ui::Window* pWindow) :VBox(pWindow) {};
-	void InitContents();
-
+	SettingsPage(ui::Window* pWindow) :UIPageBase(pWindow) {};
+	virtual void InitContents(uintptr_t userdata1=0, uintptr_t userdata2=0)override;
+	virtual MainUiForm::PageEnum GetPageType()override { return MainUiForm::PageEnum::PAGE_SETTINGS; };
 
 
 

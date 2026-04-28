@@ -576,6 +576,20 @@ DeskObject* DeskObject::CreateFromAttributes(const Json::Value& applyJson)
 	return resultObj;
 }
 
+DeskObject* DeskObject::CreateFromPath(const char* packPath)
+{
+	auto resultObj = new DeskObject;
+	
+	std::string pathStr = AppContext::ResolvePathToAbsolute(packPath);
+	if (!resultObj->LoadFromPath(pathStr.c_str()))
+	{
+		SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Can not create Desk at path: %s.", pathStr.c_str());
+		delete resultObj;
+		return nullptr;
+	}
+	return resultObj;
+}
+
 void DeskObject::ReleaseObj(DeskObject* obj)
 {
 	//上面怎么创建，这里就怎么释放
@@ -645,7 +659,7 @@ void DeskObject::ClearBinding()
 			y.UnRegisterBinding();
 	}
 
-
+	UnregisterAllActionFunc();
 
 }
 

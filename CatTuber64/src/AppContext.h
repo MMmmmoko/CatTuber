@@ -154,6 +154,7 @@ public:
     static const char* GetClassicDeskFolderPath();//Classic角色模型文件夹所在路径 （结尾有"/"符号）
     static const char* GetClassicHandheldItemFolderPath();//Classic角色模型文件夹所在路径 （结尾有"/"符号）
     static const char* GetBongoCatFolderPath();//BongoCat模型文件夹所在路径 （结尾有"/"符号）
+    static const char* GetDecorationItemFolderPath();//装饰物品模型文件夹所在路径 （结尾有"/"符号）
 
 
     static std::string ResolvePathToAbsolute(const std::string& pathToResolve);//解析路径，将路径中的[AppBasePath]等字符串解析成绝对路径

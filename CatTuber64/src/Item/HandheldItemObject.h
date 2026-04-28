@@ -36,6 +36,7 @@ public:
 	virtual Json::Value GenerateAttributes();
 	//如果出现问题返回空
 	static HandheldItemObject* CreateFromAttributes(const Json::Value& applyJson);
+	static HandheldItemObject* CreateFromPath(const char* packPath);
 	static void ReleaseObj(HandheldItemObject*);//Release需要和Create搭配，免得其他人不知道怎么正确释放资源
 
 	const std::vector<ModelButtonControl>& GetModelButtons() { return modelButtonVec; };

@@ -5,7 +5,7 @@
 
 
 
-void SettingsPage::InitContents()
+void SettingsPage::InitContents(uintptr_t userdata1, uintptr_t userdata2)
 {
 
 

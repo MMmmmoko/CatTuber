@@ -1731,7 +1731,7 @@ bool RenderWindowManager::_BuildFromJson(const Json::Value& json)
         defaultWindowJson["Size"][1] = 300;
 
         //默认构造一个CatTuber经典场景
-#define LLLLL2
+#define LLLLL1
 #ifdef LLLLL1
         auto& item0 = defaultWindowJson["Scene"]["Items"][0];
         item0["Type"] = "ClassicItem";

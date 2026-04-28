@@ -1,4 +1,5 @@
 #include"DuiCommon.h"
+#include"Dialog/DuiMessageBox.h"
 #include"Form/MainUiForm.h"
 #include"UIScenePanel.h"
 
@@ -15,6 +16,8 @@
 #include"../Item/DecorationObject.h"
 
 #include"Pack/Pack.h"
+#include"RenderThread.h"
+#include "RenderWindowManager.h"
 
 
 
@@ -158,7 +161,7 @@ bool UISceneContentListItem::OnRightClick(const ui::EventArgs& args)
 	ui::MenuItem* ItemMenu_MoveUp = dynamic_cast<ui::MenuItem*>(menu->FindControl(L"SceneListItemMenu_MoveUp"));
 	ui::MenuItem* ItemMenu_MoveDown = dynamic_cast<ui::MenuItem*>(menu->FindControl(L"SceneListItemMenu_MoveDown"));
 	ui::MenuItem* ItemMenu_MoveTop = dynamic_cast<ui::MenuItem*>(menu->FindControl(L"SceneListItemMenu_MoveTop"));
-	ui::MenuItem* ItemMenu_MoveButtom = dynamic_cast<ui::MenuItem*>(menu->FindControl(L"SceneListItemMenu_MoveButtom"));
+	ui::MenuItem* ItemMenu_MoveBottom = dynamic_cast<ui::MenuItem*>(menu->FindControl(L"SceneListItemMenu_MoveBottom"));
 	
 	ui::MenuItem* ItemMenu_Remove = dynamic_cast<ui::MenuItem*>(menu->FindControl(L"SceneListItemMenu_Remove"));
 
@@ -172,7 +175,7 @@ bool UISceneContentListItem::OnRightClick(const ui::EventArgs& args)
 	MAXWCALC(ItemMenu_MoveUp);
 	MAXWCALC(ItemMenu_MoveDown);
 	MAXWCALC(ItemMenu_MoveTop);
-	MAXWCALC(ItemMenu_MoveButtom);
+	MAXWCALC(ItemMenu_MoveBottom);
 	MAXWCALC(ItemMenu_Remove);
 
 
@@ -180,18 +183,36 @@ bool UISceneContentListItem::OnRightClick(const ui::EventArgs& args)
 	ItemMenu_MoveUp->SetFixedWidth(ui::UiFixedInt(maxW), false, false);
 	ItemMenu_MoveDown->SetFixedWidth(ui::UiFixedInt(maxW), false, false);
 	ItemMenu_MoveTop->SetFixedWidth(ui::UiFixedInt(maxW), false, false);
-	ItemMenu_MoveButtom->SetFixedWidth(ui::UiFixedInt(maxW), false, false);
+	ItemMenu_MoveBottom->SetFixedWidth(ui::UiFixedInt(maxW), false, false);
 	ItemMenu_Remove->SetFixedWidth(ui::UiFixedInt(maxW), true, false);
 
 
 
-
 	//添加按钮功能
-	//ItemMenu_Select->AttachClick(ui::UiBind(&UIModelItem::OnSelectItem, this, std::placeholders::_1));
-	//ItemMenu_Deselect->AttachClick(ui::UiBind(&UIModelItem::OnDeselectItem, this, std::placeholders::_1));
-	//ItemMenu_Favorite->AttachClick(ui::UiBind(&UIModelItem::OnFavoriteClick, this, std::placeholders::_1));
-	//ItemMenu_Unfavorite->AttachClick(ui::UiBind(&UIModelItem::OnUnfavoriteClick, this, std::placeholders::_1));
-
+	ItemMenu_Settings->AttachClick([this](const ui::EventArgs& args)->bool {
+		assert(false);
+		return true;
+		});
+	ItemMenu_MoveUp->AttachClick([this](const ui::EventArgs& args)->bool {
+		GetProvider()->ItemMoveUp(index);
+		return true;
+		});
+	ItemMenu_MoveDown->AttachClick([this](const ui::EventArgs& args)->bool {
+		GetProvider()->ItemMoveDown(index);
+		return true;
+		});
+	ItemMenu_MoveTop->AttachClick([this](const ui::EventArgs& args)->bool {
+		GetProvider()->ItemMoveTop(index);
+		return true;
+		});
+	ItemMenu_MoveBottom->AttachClick([this](const ui::EventArgs& args)->bool {
+		GetProvider()->ItemMoveBottom(index);
+		return true;
+		});
+	ItemMenu_Remove->AttachClick([this](const ui::EventArgs& args)->bool {
+		GetProvider()->RemoveItem(index);
+		return true;
+		});
 
 
 	return true;
@@ -242,8 +263,9 @@ void UISceneItemListProvider::LoadItemList()
 	itemList.clear();
 
 	auto& sceneItemList=SceneManager::GetInstance().GetCurrentSceneItemList();
-	for (auto& item : sceneItemList)
+	for (auto it = sceneItemList.rbegin(); it != sceneItemList.rend(); ++it)
 	{
+		auto& item = *it;
 		auto& curItem=itemList.emplace_back();
 		curItem.item = item;
 
@@ -589,8 +611,30 @@ void UISceneItemListProvider::ItemOrderChange(size_t nOldItemIndex, size_t nNewI
 
 	itemList.emplace(itemList.begin() + nNewItemIndex, std::move(element_to_move));
 
+
 	//不进行全局刷新
 	EmitDataChanged(SDL_min(nOldItemIndex, nNewItemIndex), SDL_max(nOldItemIndex, nNewItemIndex));
+
+
+
+
+
+
+
+	RenderThread::GetIns().PostTask([](void* userdata, uint64_t userdata2) {
+		
+		int windowIndex = (int)(uintptr_t)userdata;
+		uint32_t nOldItemIndex = ((uint32_t*)&userdata2)[0];
+		uint32_t nNewItemIndex = ((uint32_t*)&userdata2)[1];
+
+		auto& targetScene = RenderWindowManager::GetIns().GetWindowController(windowIndex)->GetScene();
+		targetScene.ItemOrderChange_TopToBottom(nOldItemIndex, nNewItemIndex);
+
+
+
+		}, (void*)0/*window index*/, nOldItemIndex + (nNewItemIndex << 32));
+
+
 
 
 }
@@ -611,16 +655,317 @@ void UISceneItemListProvider::ItemMoveDown(size_t nItemIndex)
 	this->pParent->UpdatePanelButtonEnable();
 }
 
+void UISceneItemListProvider::ItemMoveTop(size_t nItemIndex)
+{
+	if (0 == nItemIndex)return;
+	ItemOrderChange(nItemIndex, 0);
+	this->pParent->GetSceneItemListBox()->GetItemAt(0)->SetFocus();
+	this->pParent->UpdatePanelButtonEnable();
+}
+
+void UISceneItemListProvider::ItemMoveBottom(size_t nItemIndex)
+{
+	if (itemList.size() - 1 == nItemIndex)return;
+	ItemOrderChange(nItemIndex, itemList.size() - 1);
+	this->pParent->GetSceneItemListBox()->GetItemAt(itemList.size() - 1)->SetFocus();
+	this->pParent->UpdatePanelButtonEnable();
+}
+
 void UISceneItemListProvider::RemoveItem(size_t nItemIndex)
 {
 	ASSERT(nItemIndex < itemList.size());
 	itemList.erase(itemList.begin() + nItemIndex);
+
+	
+	uint64_t userdata2=(0llu<<32)+ nItemIndex;
+	RenderThread::GetIns().PostTask(
+		[](void* userdata,uint64_t userdata2) {
+		
+			uint32_t windowIndex = ((uint32_t*)&userdata2)[1];
+			uint32_t itemIndex = ((uint32_t*)&userdata2)[0];
+
+			auto& targetScene = RenderWindowManager::GetIns().GetWindowController(windowIndex)->GetScene();
+			targetScene.RemoveItem(targetScene.GetItemAt_TopToBottom(itemIndex));
+		},nullptr, userdata2
+	
+	);
+
+	
+
 	EmitCountChanged();
 	if (nItemIndex < itemList.size())
 	{
 		this->pParent->GetSceneItemListBox()->GetItemAt(nItemIndex)->SetFocus();
 	}
 	this->pParent->UpdatePanelButtonEnable();
+}
+
+void UISceneItemListProvider::SetListItemImg(size_t nItemIndex, const char* type, const char* packPath, const char* packPath2, const char* packPath3)
+{
+	//ASSERT(nItemIndex <= itemList.size());
+	bool dataCountChanged = false;
+	if (nItemIndex >= itemList.size())
+	{
+		nItemIndex = 0;
+		//itemList.emplace_back();
+		itemList.insert(itemList.begin(),ItemInfo());
+		dataCountChanged = true;
+	}
+
+
+	//根据控件计算图片
+	{
+		//ISceneItem* item = GetProvider()->GetItemInfo(dataIndex).item;
+		auto& curItem = itemList[nItemIndex];
+		curItem.imgPath1 = L"";
+		curItem.imgPath2 = L"";
+		curItem.imgPath3 = L"";
+		if ( type == ClassicItem::_GetType()||SDL_strcmp(type, ClassicItem::_GetType())==0)
+		{
+			auto pCharacterObj = packPath;
+			auto pDeskObj = packPath2;
+			auto pHandheldObj = packPath3;
+
+
+			//img1->SetVisible(pDeskObj);
+			//img2->SetVisible(pCharacterObj);
+			//img3->SetVisible(pHandheldObj);
+
+
+			if (pCharacterObj)
+			{
+				Pack pack;
+				std::wstring imgFile;
+				pack.Open(pCharacterObj);
+				if (pack.IsFileExist("List.png"))imgFile = L"List.png";
+				else if (pack.IsFileExist("List.jpg"))imgFile = L"List.jpg";
+				else if (pack.IsFileExist("List.gif"))imgFile = L"List.gif";
+
+				if (!imgFile.empty())
+				{
+					if (!pDeskObj && !pHandheldObj)
+					{
+						imgFile = Pack::PackPath_BuildPackFullPath(ui::StringConvert::UTF8ToWString(pack.GetPath()), imgFile);
+
+						curItem.imgPath2 = imgFile;
+
+					}
+					else if ((pDeskObj && !pHandheldObj))
+					{
+						imgFile = Pack::PackPath_BuildPackFullPath(ui::StringConvert::UTF8ToWString(pack.GetPath()), imgFile,
+							//3:4    429
+							//L"fadeH:\"400,500,1000,1000\" destSize:\"260,40\" centerPos:\"0.725\""
+							L"fadeH:\"379,479,1000,1000\" destSize:\"260,40\" centerPos:\"0.714\""
+						);
+						curItem.imgPath2 = imgFile;
+					}
+					else if ((!pDeskObj && pHandheldObj))
+					{
+						imgFile = Pack::PackPath_BuildPackFullPath(ui::StringConvert::UTF8ToWString(pack.GetPath()), imgFile,
+							//2:4    过渡由鼠标提供，因为鼠标所在的图层更高
+							//
+							//L"fadeH:\"400,500,1000,1000\" destSize:\"260,40\" centerPos:\"0.725\""
+							L"destSize:\"260,40\" centerPos:\"0.667\""
+						);
+						curItem.imgPath2 = imgFile;
+					}
+					else if (pDeskObj && pHandheldObj)
+					{
+						imgFile = Pack::PackPath_BuildPackFullPath(ui::StringConvert::UTF8ToWString(pack.GetPath()), imgFile,
+							//2:3:5 250
+							//2:3:4 556
+							//L"fadeH:\"450,550,1000,1000\" destSize:\"260,40\" centerPos:\"0.75\""
+							L"fadeH:\"506,606,1000,1000\" destSize:\"260,40\" centerPos:\"0.778\""
+						);
+
+						curItem.imgPath2 = imgFile;
+					}
+				}
+			}
+			if (pDeskObj)
+			{
+				Pack pack;
+				std::wstring imgFile;
+				pack.Open(pDeskObj);
+				if (pack.IsFileExist("List.png"))imgFile = L"List.png";
+				else if (pack.IsFileExist("List.jpg"))imgFile = L"List.jpg";
+				else if (pack.IsFileExist("List.gif"))imgFile = L"List.gif";
+
+				if (!imgFile.empty())
+				{
+					//桌子均在下方
+					if (!pCharacterObj && !pHandheldObj)
+					{
+						imgFile = Pack::PackPath_BuildPackFullPath(ui::StringConvert::UTF8ToWString(pack.GetPath()), imgFile);
+						curItem.imgPath1 = imgFile;
+					}
+					else if ((pCharacterObj && !pHandheldObj))
+					{
+						//桌子和角色3:4
+						imgFile = Pack::PackPath_BuildPackFullPath(ui::StringConvert::UTF8ToWString(pack.GetPath()), imgFile,
+							//3:4    429
+							L"destSize:\"260,40\" centerPos:\"0.2143\""
+						);
+						curItem.imgPath1 = imgFile;
+					}
+					else if ((!pCharacterObj && pHandheldObj))
+					{
+						//鼠2:3桌
+						imgFile = Pack::PackPath_BuildPackFullPath(ui::StringConvert::UTF8ToWString(pack.GetPath()), imgFile,
+							//2:3    400
+							L"destSize:\"260,40\" centerPos:\"0.7\""
+						);
+						curItem.imgPath1 = imgFile;
+					}
+					else if ((pCharacterObj && pHandheldObj))
+					{
+						//2:3:4
+						imgFile = Pack::PackPath_BuildPackFullPath(ui::StringConvert::UTF8ToWString(pack.GetPath()), imgFile,
+							//2:3    400
+							L"destSize:\"260,40\" centerPos:\"0.389\""
+						);
+						curItem.imgPath1 = imgFile;
+					}
+				}
+
+			}
+
+			if (pHandheldObj)
+			{
+				Pack pack;
+				std::wstring imgFile;
+				pack.Open(pHandheldObj);
+				if (pack.IsFileExist("List.png"))imgFile = L"List.png";
+				else if (pack.IsFileExist("List.jpg"))imgFile = L"List.jpg";
+				else if (pack.IsFileExist("List.gif"))imgFile = L"List.gif";
+
+				if (!imgFile.empty())
+				{
+
+					if (!pDeskObj && !pCharacterObj)
+					{
+						imgFile = Pack::PackPath_BuildPackFullPath(ui::StringConvert::UTF8ToWString(pack.GetPath()), imgFile);
+						curItem.imgPath3 = imgFile;
+					}
+					else if ((pDeskObj && !pCharacterObj))
+					{
+
+						imgFile = Pack::PackPath_BuildPackFullPath(ui::StringConvert::UTF8ToWString(pack.GetPath()), imgFile,
+							//鼠2:3桌
+							L"fadeH:\"0,0,350,450\" destSize:\"260,40\" centerPos:\"0.2\""
+						);
+						curItem.imgPath3 = imgFile;
+					}
+					else if ((!pDeskObj && pCharacterObj))
+					{
+
+						imgFile = Pack::PackPath_BuildPackFullPath(ui::StringConvert::UTF8ToWString(pack.GetPath()), imgFile,
+							//鼠2:4角色 333
+							//过渡由鼠标提供，因为鼠标图层高
+							L"fadeH:\"0,0,283,383\" destSize:\"260,40\" centerPos:\"0.167\""
+						);
+						curItem.imgPath3 = imgFile;
+					}
+					else if (pDeskObj && pCharacterObj)
+					{
+
+						imgFile = Pack::PackPath_BuildPackFullPath(ui::StringConvert::UTF8ToWString(pack.GetPath()), imgFile,
+							//2:3:4    222
+							L"fadeH:\"0,0,172,272\" destSize:\"260,40\" centerPos:\"0.111\""
+						);
+						curItem.imgPath3 = imgFile;
+					}
+				}
+
+			}
+
+
+			if (!pCharacterObj && !pDeskObj && !pHandheldObj)
+			{
+				ASSERT(false);
+				//默认图片
+				//curItem.imgPath1 = "";
+			}
+		}
+
+
+		//BONGO CAT
+		else if (type== BongoCatItem::_GetType()||SDL_strcmp(type, BongoCatItem::_GetType())==0)
+		{
+			auto pBongoCatObj = packPath;
+
+			Pack pack;
+			std::wstring imgFile;
+			pack.Open(pBongoCatObj);
+			if (pack.IsFileExist("List.png"))imgFile = L"List.png";
+			else if (pack.IsFileExist("List.jpg"))imgFile = L"List.jpg";
+			else if (pack.IsFileExist("List.gif"))imgFile = L"List.gif";
+			if (!imgFile.empty())
+			{
+				imgFile = Pack::PackPath_BuildPackFullPath(ui::StringConvert::UTF8ToWString(pack.GetPath()), imgFile);
+				curItem.imgPath1 = imgFile;
+			}
+			else
+			{
+				assert(false);
+			}
+		}
+
+		//DecorationItem
+		else if (type == DecorationItem::_GetType()|| SDL_strcmp(type, DecorationItem::_GetType())==0)
+		{
+			auto pDecorationObj = packPath;
+
+			Pack pack;
+			std::wstring imgFile;
+			pack.Open(pDecorationObj);
+			if (pack.IsFileExist("List.png"))imgFile = L"List.png";
+			else if (pack.IsFileExist("List.jpg"))imgFile = L"List.jpg";
+			else if (pack.IsFileExist("List.gif"))imgFile = L"List.gif";
+			if (!imgFile.empty())
+			{
+				imgFile = Pack::PackPath_BuildPackFullPath(ui::StringConvert::UTF8ToWString(pack.GetPath()), imgFile);
+				curItem.imgPath1 = imgFile;
+			}
+			else
+			{
+				assert(false);
+			}
+		}
+
+
+
+
+
+
+
+
+
+		//img->SetUTF8BkImage(imgstr);
+
+		if (!curItem.imgPath1.empty())
+		{
+			curItem.imgPath1 = L"file='" + curItem.imgPath1 + L"' adaptive_dest_rect_fill='true'";
+		}
+		if (!curItem.imgPath2.empty())
+		{
+			curItem.imgPath2 = L"file='" + curItem.imgPath2 + L"' adaptive_dest_rect_fill='true'";
+		}
+		if (!curItem.imgPath3.empty())
+		{
+			curItem.imgPath3 = L"file='" + curItem.imgPath3 + L"' adaptive_dest_rect_fill='true'";
+		}
+
+
+	}
+
+	if (dataCountChanged)
+	{
+		EmitCountChanged();
+	}
+	else
+	EmitDataChanged(nItemIndex, nItemIndex);
+
 }
 
 
@@ -698,22 +1043,19 @@ UIScenePanel::UIScenePanel(MainUiForm* pParent)
 
 
 
-	provider = new UISceneItemListProvider(this);
-	
-	auto vlayout=dynamic_cast<ui::VirtualVLayout*>(container->GetLayout());
-	ui::UiSize itemSize;
-	itemSize.cx = 260;
-	itemSize.cy = 40;
-	//vlayout->SetAutoCalcItemWidth(true);
-	vlayout->SetItemSize(itemSize, true);
-	container->SetDataProvider(provider);
-	provider->LoadItemList();
+
 
 
 
 	
 
 
+}
+
+UIScenePanel::~UIScenePanel()
+{
+	if (provider)delete provider;
+	provider = nullptr;
 }
 
 
@@ -855,7 +1197,17 @@ classicPanel_slot##ItemType->SetBoxShadow(L"blurradius='0'");\
 
 
 
+	if (!provider)
+		provider = new UISceneItemListProvider(this);
 
+	auto vlayout = dynamic_cast<ui::VirtualVLayout*>(container->GetLayout());
+	ui::UiSize itemSize;
+	itemSize.cx = 260;
+	itemSize.cy = 40;
+	//vlayout->SetAutoCalcItemWidth(true);
+	vlayout->SetItemSize(itemSize, true);
+	container->SetDataProvider(provider);
+	provider->LoadItemList();
 }
 
 //void UIScenePanel::UpdatePanelButtonEnable(ui::Control* pChild)
@@ -889,7 +1241,7 @@ void UIScenePanel::UpdatePanelButtonEnable(/*UISceneContentListItem* pChild*/)
 
 bool UIScenePanel::OnSceneTitleClicked(const ui::EventArgs& msg)
 {
-	pParent->GoToPage(L"SCENESELECT_PAGE");
+	pParent->GoToPage(MainUiForm::PAGE_SCENESELECT);
 	return true;
 }
 
@@ -897,19 +1249,19 @@ bool UIScenePanel::OnMainItemSlotClicked(const ui::EventArgs& msg)
 {
 	if (classicPanel_slotCharacter == msg.GetSender())
 	{
-		pParent->GoToPage(L"CLASSIC_CHARACTER_SELECT_PAGE");
+		pParent->GoToPage(MainUiForm::PAGE_CLASSIC_CHARACTER_SELECT);
 	}
 	else if (classicPanel_slotDesk == msg.GetSender())
 	{
-		pParent->GoToPage(L"CLASSIC_DESK_SELECT_PAGE");
+		pParent->GoToPage(MainUiForm::PAGE_CLASSIC_DESK_SELECT);
 	}
 	else if (classicPanel_slotHandheldItem == msg.GetSender())
 	{
-		pParent->GoToPage(L"CLASSIC_HANDHELDITEM_SELECT_PAGE");
+		pParent->GoToPage(MainUiForm::PAGE_CLASSIC_HANDHELDITEM_SELECT);
 	}
 	else if (bongoCatPanel_slot == msg.GetSender())
 	{
-		pParent->GoToPage(L"BONGOCAT_SELECT_PAGE");
+		pParent->GoToPage(MainUiForm::PAGE_BONGOCAT_SELECT);
 	}
 
 	return true;
@@ -1010,22 +1362,86 @@ bool UIScenePanel::OnSceneContentListControlButtonClicked(const ui::EventArgs& m
 bool UIScenePanel::OnSceneItemAddMenuClicked(const ui::EventArgs& msg)
 {
 	std::wstring senderName=msg.GetSender()->GetName();
+
+
 	if (senderName == L"itemAddMenu_ClassicItem")
 	{
+		//检查是否已经有主物品
+		auto mainItem = SceneManager::GetInstance().GetCurrentMainSceneItem();
+		bool showPage = true;
+		if (mainItem)
+		{
+			switch (mainItem->GetMainItemType())
+			{
+			case MainSceneItem::MainSceneItemType_Classic:
+				break;
+			case MainSceneItem::MainSceneItemType_IntegralModel:
+			case MainSceneItem::MainSceneItemType_BongoCat:
+			{
+				//显示一个是否继续的对话框
+				//title  添加%s...
 
+				std::wstring title = ui::GlobalManager::Instance().Lang().GetStringViaID(L"STRID_SCENEITEMADD_DLG_MAINITEMWARNING_TITLE");
+				ui::StringUtil::ReplaceAll(L"[itemType]", GETDUISTRING(L"STRID_SCENEITEMADDMENU_CLASSIC"), title);
+
+				auto button = DuiSimpleMessageBox::ShowModalDlg(GetWindow(), title, GETDUISTRING(L"STRID_SCENEITEMADD_DLG_MAINITEMWARNING_CONTENT_CLASSIC"),
+					DuiSimpleMessageBox::BUTTON_OK | DuiSimpleMessageBox::BUTTON_CANCEL
+				);
+				showPage = (button == DuiSimpleMessageBox::BUTTON_OK);
+			}
+			break;
+			}
+		}
+		//不进行页面切换
+		//if (showPage)
+		//{
+		//	pParent->GoToPage(L"BONGOCAT_SELECT_PAGE");
+		//}
 
 
 	}
 	else if (senderName == L"itemAddMenu_BongoCatItem")
 	{
+		//检查是否已经有主物品
+		auto mainItem = SceneManager::GetInstance().GetCurrentMainSceneItem();
+		bool showPage = true;
+		if (mainItem)
+		{
+			switch (mainItem->GetMainItemType())
+			{
+			case MainSceneItem::MainSceneItemType_Classic:
+			case MainSceneItem::MainSceneItemType_IntegralModel:
+			{
+				//显示一个是否继续的对话框
+				//title  添加%s...
+
+				std::wstring title = ui::GlobalManager::Instance().Lang().GetStringViaID(L"STRID_SCENEITEMADD_DLG_MAINITEMWARNING_TITLE");
+				ui::StringUtil::ReplaceAll(L"[itemType]", GETDUISTRING(L"STRID_SCENEITEMADDMENU_BONGOCAT"),title);
+
+				auto button=DuiSimpleMessageBox::ShowModalDlg(GetWindow(),title, GETDUISTRING(L"STRID_SCENEITEMADD_DLG_MAINITEMWARNING_CONTENT"),
+					DuiSimpleMessageBox::BUTTON_OK| DuiSimpleMessageBox::BUTTON_CANCEL
+					);
+				showPage = (button == DuiSimpleMessageBox::BUTTON_OK);
+			}
+				break;
+			case MainSceneItem::MainSceneItemType_BongoCat:
+				break;
+			}
+		}
+		if (showPage)
+		{
+			pParent->GoToPage(MainUiForm::PAGE_BONGOCAT_SELECT);
+		}
+
 
 
 
 	}
 	else if (senderName == L"itemAddMenu_DecorationItem")
 	{
+		//添加新的装饰物
 
-
+		pParent->GoToPage(MainUiForm::PAGE_DECORATIONITEM_SELECT);
 
 	}
 

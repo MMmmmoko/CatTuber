@@ -91,7 +91,7 @@ public:
 	virtual void SetMultiSelect(bool bMultiSelect) override { /* do nothing */ }
 
 
-
+	
 
 
 
@@ -112,10 +112,13 @@ public:
 	void ItemOrderChange(size_t nOldItemIndex, size_t nNewItemIndex);
 	void ItemMoveUp(size_t nItemIndex);
 	void ItemMoveDown(size_t nItemIndex);
+	void ItemMoveTop(size_t nItemIndex);
+	void ItemMoveBottom(size_t nItemIndex);
 	void RemoveItem(size_t nItemIndex);
 
 
-
+	//用于UI更新
+	void SetListItemImg(size_t nItemIndex, const char* type,const char* packPath, const char* packPath2=nullptr, const char* packPath3=nullptr);
 
 
 private:
@@ -143,34 +146,14 @@ private:
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 class UIScenePanel :public ui::VBox
 {
 
+	friend class UIModelItemProvider;
 public:
 
 	UIScenePanel(class MainUiForm* pParent);
-
+	~UIScenePanel();
 
 	void InitContents();
 
@@ -195,7 +178,7 @@ private:
 
 
 
-	class UISceneItemListProvider* provider;
+	class UISceneItemListProvider* provider=nullptr;
 
 
 	//控件

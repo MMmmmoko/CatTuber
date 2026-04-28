@@ -34,6 +34,7 @@ public:
 	virtual Json::Value GenerateAttributes();
 	//如果出现问题返回空
 	static CharacterObject* CreateFromAttributes(const Json::Value& applyJson);
+	static CharacterObject* CreateFromPath(const char* packPath);
 	static void ReleaseObj(CharacterObject*);//Release需要和Create搭配，免得其他人不知道怎么正确释放资源
 
 

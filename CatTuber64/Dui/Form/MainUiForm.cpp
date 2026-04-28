@@ -1,12 +1,13 @@
 #include"DuiCommon.h"
 
-
 #include"MainUiForm.h"
+#include"UIPageBase.h"
 #include"SettingsPage.h"
 #include"SceneSelectPage.h"
 #include"UIModelItemSelect_Page.h"
 #include"UserControl/UIScenePanel.h"
 #include"AppContext.h"
+
 MainUiForm::MainUiForm()
 {
 }
@@ -20,7 +21,7 @@ void MainUiForm::OnInitWindow()
 	__super::OnInitWindow();
 
 
-	pageContainer= dynamic_cast<ui::Box*>(FindControl(L"box_workSpaceContainer"));
+	pageContainer= dynamic_cast<ui::TabBox*>(FindControl(L"box_workSpaceContainer"));
 
 
 	//基础控件区
@@ -55,7 +56,7 @@ void MainUiForm::OnInitWindow()
 
 
 	//总是以场景选择页开始
-	GoToPage(L"SCENESELECT_PAGE");
+	GoToPage(PAGE_SCENESELECT);
 
 
 
@@ -92,16 +93,25 @@ bool MainUiForm::OnNavigationBtnClicked(const ui::EventArgs& msg)
 		{
 			nextVisitIndex--;
 
-			auto childCount = pageContainer->GetItemCount();
-			for (size_t i = 0; i < childCount; i++)
+
+			if (!GetPage(pageVisitList[nextVisitIndex - 1])->IsValid())
 			{
-				auto curItem = pageContainer->GetItemAt(i);
-				curItem->SetVisible(false);
-				if (curItem->GetName() == pageVisitList[nextVisitIndex-1])
-				{
-					curItem->SetVisible(true);
-				}
+				return OnNavigationBtnClicked(msg);
 			}
+			pageContainer->SelectItem(GetPage(pageVisitList[nextVisitIndex - 1]));
+			GetPage(pageVisitList[nextVisitIndex - 1])->OnEnterThisPage(UIPageBase::PageEnter_NavigationLeft);
+			//GetPage(pageVisitList[nextVisitIndex - 1])->SetVisible(true);
+
+			//auto childCount = pageContainer->GetItemCount();
+			//for (size_t i = 0; i < childCount; i++)
+			//{
+			//	auto curItem = pageContainer->GetItemAt(i);
+			//	curItem->SetVisible(false);
+			//	if (curItem->GetName() == pageVisitList[nextVisitIndex-1])
+			//	{
+			//		curItem->SetVisible(true);
+			//	}
+			//}
 		}
 
 
@@ -112,16 +122,25 @@ bool MainUiForm::OnNavigationBtnClicked(const ui::EventArgs& msg)
 		//向右
 		if (nextVisitIndex< pageVisitList.size())
 		{
-			auto childCount = pageContainer->GetItemCount();
-			for (size_t i = 0; i < childCount; i++)
+			if (!GetPage(pageVisitList[nextVisitIndex])->IsValid())
 			{
-				auto curItem = pageContainer->GetItemAt(i);
-				curItem->SetVisible(false);
-				if (curItem->GetName() == pageVisitList[nextVisitIndex])
-				{
-					curItem->SetVisible(true);
-				}
+				nextVisitIndex++;
+				return OnNavigationBtnClicked(msg);
 			}
+
+			pageContainer->SelectItem(GetPage(pageVisitList[nextVisitIndex]));
+			GetPage(pageVisitList[nextVisitIndex])->OnEnterThisPage(UIPageBase::PageEnter_NavigationRight);
+
+			//auto childCount = pageContainer->GetItemCount();
+			//for (size_t i = 0; i < childCount; i++)
+			//{
+			//	auto curItem = pageContainer->GetItemAt(i);
+			//	curItem->SetVisible(false);
+			//	if (curItem->GetName() == pageVisitList[nextVisitIndex])
+			//	{
+			//		curItem->SetVisible(true);
+			//	}
+			//}
 
 			nextVisitIndex++;
 		}
@@ -140,7 +159,7 @@ bool MainUiForm::OnBaseControlBtnClicked(const ui::EventArgs& msg)
 
 	if (senderName==L"baseControl_btn_settings")
 	{
-		GoToPage(L"SETTINGS_PAGE");
+		GoToPage(PAGE_SETTINGS);
 	}
 	else if (senderName == L"baseControl_btn_help")
 	{
@@ -168,127 +187,87 @@ bool MainUiForm::OnBaseControlBtnClicked(const ui::EventArgs& msg)
 	return true;
 }
 
-void MainUiForm::GoToPage(const std::wstring& pageName)
+//void MainUiForm::GoToPage(const std::wstring& pageName)
+void MainUiForm::GoToPage(PageEnum pageType, uintptr_t userData1, uintptr_t userData2)
 {
 	//先从pagecontainer里检索
 
-	if(pageVisitList.empty()==false&& pageName == pageVisitList[nextVisitIndex-1])return;
-
-
-
-
-
-	auto childCount = pageContainer->GetItemCount();
-
-	bool hasTarget = false;
-	for (size_t i = 0; i < childCount; i++)
+	if (pageVisitList.empty() == false && pageType == pageVisitList[nextVisitIndex - 1])
 	{
-		auto curItem=pageContainer->GetItemAt(i);
-		curItem->SetVisible(false);
-		if (curItem->GetName() == pageName)
+		//需要前往的页面正好是当前页
+		//不需要套后续动作的窗口类型
+		switch (pageType)
 		{
-			hasTarget = true;
-			curItem->SetVisible(true);
-
-			pageVisitList.resize(nextVisitIndex);
-			pageVisitList.push_back(pageName);
-			nextVisitIndex++;
-
-
-
-
-			//根据名称进行特殊处理？
-			{
-			
-			
-			
-			
-			}
-
-
-
-			_UpdateNavigateButton();
+		case MainUiForm::PAGE_SCENESELECT:
+		case MainUiForm::PAGE_SETTINGS:
+		case MainUiForm::PAGE_CLASSIC_CHARACTER_SELECT:
+		case MainUiForm::PAGE_CLASSIC_DESK_SELECT:
+		case MainUiForm::PAGE_CLASSIC_HANDHELDITEM_SELECT:
+		case MainUiForm::PAGE_BONGOCAT_SELECT:
+		case MainUiForm::PAGE_DECORATIONITEM_SELECT:
+			GetPage(pageType)->OnEnterThisPage(UIPageBase::PageEnter_New);
+			return;
+		default:
+			assert(false);
+			break;
 		}
-		
-	}
-
-	if (hasTarget)return;
 
 
-	//没有找到目标
-	auto page = BuildPage(pageName);
-	if (page)
-	{
-		pageContainer->AddItem(page);
+	};
 
-		pageVisitList.resize(nextVisitIndex);
-		pageVisitList.push_back(pageName);
-		nextVisitIndex++;
+	//if(nextVisitIndex - 1>=0)
+	//	GetPage( pageVisitList[nextVisitIndex - 1])->SetVisible(false);
 
-
-
-		_UpdateNavigateButton();
-	}
+	pageVisitList.resize(nextVisitIndex);
+	pageVisitList.push_back(pageType);
+	nextVisitIndex++;
+	GetPage(pageType)->InitContents(userData1, userData2);
+	pageContainer->SelectItem(GetPage(pageType));
+	GetPage(pageType)->OnEnterThisPage(UIPageBase::PageEnter_New);
+	//GetPage(pageType)->SetVisible(true);
 
 
+	_UpdateNavigateButton();
 
 }
 
-ui::Box* MainUiForm::BuildPage(const std::wstring& pageName)
+//ui::Box* MainUiForm::BuildPage(const std::wstring& pageName)
+UIPageBase* MainUiForm::GetPage(PageEnum pageName)
 {
-	if (pageName == L"SCENESELECT_PAGE")
+	if (pageArray[pageName])
+		return pageArray[pageName];
+
+
+	switch (pageName)
 	{
-		auto page = new SceneSelectPage(this);
-		page->InitContents();
-		return page;
-	}
-	else if (pageName == L"SETTINGS_PAGE")
-	{
-		auto page = new SettingsPage(this);
-		page->InitContents();
-		return page;
-	}
-
-
-
-
-
-
-
-
-	else if (pageName == L"CLASSIC_CHARACTER_SELECT_PAGE")
-	{
-		auto page = new UIModelItemSelect_Page(this, UIModelItemType_ClassicCharacter);
-		page->InitContents();
-		return page;
-	}
-	else if (pageName == L"CLASSIC_DESK_SELECT_PAGE")
-	{
-		auto page = new UIModelItemSelect_Page(this, UIModelItemType_ClassicDesk);
-		page->InitContents();
-		return page;
-	}
-	else if (pageName == L"CLASSIC_HANDHELDITEM_SELECT_PAGE")
-	{
-		auto page = new UIModelItemSelect_Page(this, UIModelItemType_ClassicHandheldItem);
-		page->InitContents();
-		return page;
-	}
-	else if (pageName == L"BONGOCAT_SELECT_PAGE")
-	{
-		auto page = new UIModelItemSelect_Page(this, UIModelItemType_BongoCat);
-		page->InitContents();
-		return page;
+	case MainUiForm::PAGE_SCENESELECT:
+		pageArray[pageName]= new SceneSelectPage(this);
+		break;
+	case MainUiForm::PAGE_SETTINGS:
+		pageArray[pageName] = new SettingsPage(this);
+		break;
+	case MainUiForm::PAGE_CLASSIC_CHARACTER_SELECT:
+		pageArray[pageName]  = new UIModelItemSelect_Page(this, UIModelItemType_ClassicCharacter);
+		break;
+	case MainUiForm::PAGE_CLASSIC_DESK_SELECT:
+		pageArray[pageName] = new UIModelItemSelect_Page(this, UIModelItemType_ClassicDesk);
+		break;
+	case MainUiForm::PAGE_CLASSIC_HANDHELDITEM_SELECT:
+		pageArray[pageName] = new UIModelItemSelect_Page(this, UIModelItemType_ClassicHandheldItem);
+		break;
+	case MainUiForm::PAGE_BONGOCAT_SELECT:
+		pageArray[pageName] = new UIModelItemSelect_Page(this, UIModelItemType_BongoCat);
+		break;
+	case MainUiForm::PAGE_DECORATIONITEM_SELECT:
+		pageArray[pageName] = new UIModelItemSelect_Page(this, UIModelItemType_DecorationItem);
+		break;
+	default:
+		assert(false);
+		break;
 	}
 
-
-
-
-
-
-
-
-	return nullptr;
+	pageContainer->AddItem(pageArray[pageName]);
+	return pageArray[pageName];
 }
 
 void MainUiForm::_UpdateNavigateButton()

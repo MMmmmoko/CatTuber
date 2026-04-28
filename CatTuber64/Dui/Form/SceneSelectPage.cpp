@@ -641,19 +641,6 @@ bool SceneItemProvider::RemoveItem(size_t index)
     return true;
 }
 
-bool UIModelItemProvider::SetSelect(size_t index)
-{
-    //this->SetSelect(index);
-    ASSERT(false);
-    return true;
-}
-
-bool UIModelItemProvider::SetFavorite(size_t index, bool bFavorite)
-{
-    itemList[index].favorite = bFavorite;
-    EmitCountChanged();
-    return true;
-}
 
 
 void SceneItemProvider::OnCoverSetted(size_t index, const char* imageFileInSceneFolder)
@@ -735,7 +722,13 @@ void SceneItemProvider::LoadSceneList()
 
 
 
-void SceneSelectPage::InitContents()
+SceneSelectPage::~SceneSelectPage()
+{
+	if (provider) delete provider;
+    provider = nullptr;
+}
+
+void SceneSelectPage::InitContents(uintptr_t userdata1, uintptr_t userdata2)
 {
 
     //auto Box = ui::GlobalManager::Instance().CreateBox(ui::FilePath(L"CatTuber_default/SettingsPage.xml"));
@@ -752,6 +745,7 @@ void SceneSelectPage::InitContents()
 
 
 
+    if (provider) delete provider;
     provider = new SceneItemProvider;
     container->SetDataProvider(provider);
     provider->LoadSceneList();

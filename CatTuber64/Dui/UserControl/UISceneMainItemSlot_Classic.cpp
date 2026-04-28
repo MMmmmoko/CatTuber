@@ -28,15 +28,15 @@ bool UISceneMainItemSlot_Classic::OnSlotOptionClicked(const ui::EventArgs& pEven
 {
 	if (pEventArgs.GetSender() == slot_Character)
 	{
-		mainForm->GoToPage(L"CLASSIC_CHARACTER_SELECT_PAGE");
+		mainForm->GoToPage(MainUiForm::PAGE_CLASSIC_CHARACTER_SELECT);
 	}
 	else if (pEventArgs.GetSender() == slot_Desk)
 	{
-		mainForm->GoToPage(L"CLASSIC_DESK_SELECT_PAGE");
+		mainForm->GoToPage(MainUiForm::PAGE_CLASSIC_DESK_SELECT);
 	}
 	else if (pEventArgs.GetSender() == slot_HandheldItem)
 	{
-		mainForm->GoToPage(L"CLASSIC_HANDHELDITEM_SELECT_PAGE");
+		mainForm->GoToPage(MainUiForm::PAGE_CLASSIC_HANDHELDITEM_SELECT);
 	}
 
 

@@ -193,6 +193,22 @@ HandheldItemObject* HandheldItemObject::CreateFromAttributes(const Json::Value& 
 	return resultObj;
 }
 
+HandheldItemObject* HandheldItemObject::CreateFromPath(const char* packPath)
+{
+
+	auto resultObj = new HandheldItemObject;
+
+	std::string pathStr = AppContext::ResolvePathToAbsolute(packPath);
+	if (!resultObj->LoadFromPath(pathStr.c_str()))
+	{
+		SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Can not create HandheldItem at path: %s.", pathStr.c_str());
+		delete resultObj;
+		return nullptr;
+	}
+
+	return resultObj;
+}
+
 void HandheldItemObject::ReleaseObj(HandheldItemObject* obj)
 {
 	//上面怎么创建，这里就怎么释放
@@ -259,6 +275,7 @@ void HandheldItemObject::ClearBinding()
 		for (auto& y : x.binding)
 			y.UnRegisterBinding();
 	}
+	UnregisterAllActionFunc();
 }
 
 void HandheldItemObject::SetPosition(float x, float y)

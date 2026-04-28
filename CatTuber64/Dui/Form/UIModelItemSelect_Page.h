@@ -4,7 +4,7 @@
 
 
 //这是UI用于选择的已保存的场景，不是场景中的某个物件
-
+#include"UIPageBase.h"
 
 enum UIModelItemType
 {
@@ -13,7 +13,9 @@ enum UIModelItemType
 	UIModelItemType_ClassicDesk,
 	UIModelItemType_ClassicHandheldItem,
 
+
 	UIModelItemType_BongoCat,//BongoCatMver
+	UIModelItemType_DecorationItem,
 
 
 
@@ -41,8 +43,8 @@ private:
 	//bool OnLeftClick(const ui::EventArgs& args);
 
 	//菜单选项
-	bool OnSelectItem(const ui::EventArgs& args);
-	bool OnDeselectItem(const ui::EventArgs& args);
+	bool OnMenuSelectItem(const ui::EventArgs& args);
+	bool OnMenuDeselectItem(const ui::EventArgs& args);
 	bool OnFavoriteClick(const ui::EventArgs& args);
 	bool OnUnfavoriteClick(const ui::EventArgs& args);
 
@@ -55,6 +57,7 @@ private:
 	ui::Control* imgFavoriteIcon =nullptr;
 	ui::Label* labelItenName=nullptr;
 	size_t index=MAXSIZE_T;
+	UIModelItemType itemType;
 	bool isSelected = false;
 	bool isFavorite = false;
 	bool isEmptyItem = false;//是否是一个用于卸下物体的空物体
@@ -70,7 +73,7 @@ class UIModelItemProvider :public ui::VirtualListBoxElement
 {
 	friend class UIModelItem;
 public:
-	UIModelItemProvider(UIModelItemType itemType);
+	UIModelItemProvider(UIModelItemType itemType,class UIModelItemSelect_Page* parentPage);
 	~UIModelItemProvider() = default;
 
 
@@ -89,7 +92,7 @@ public:
 	virtual bool IsMultiSelect() const override { return false; }
 	virtual void SetMultiSelect(bool bMultiSelect) override { /* do nothing */ }
 
-
+	
 
 	enum RESULT_STATUS
 	{
@@ -107,11 +110,11 @@ public:
 
 
 	//0表示deselect
-	bool SetSelect(size_t index);
+	bool OnSetSelect(size_t index);
+	void OnSetDeselect(size_t index);
 	bool SetFavorite(size_t index,bool bFavorite=true);
 	
 	
-
 
 
 
@@ -123,6 +126,8 @@ public:
 		std::string imgPath;//能UI识别的imgpath
 		std::string description;
 		std::string filePath;
+		SDL_Time itemOrderTime;//本地文件为创建时间，workshop文件为订阅时间
+		SDL_Time addFavoriteTime;
 		bool selected = false;
 		bool favorite = false;
 		bool emptyItem = false;
@@ -133,37 +138,61 @@ public:
 
 
 private:
-	UIModelItemType itemType;
+	void Resort();
 
+
+	UIModelItemType itemType;
+	bool enableEmptyItem = false;
 
 
 
 
 
 	std::vector<ItemInfo> itemList;
+	std::vector<uint16_t> itemView;
 	//std::vector<std::shared_ptr<ui::ImageInfo>> imageCache;
 
+	std::string curSelectItemPath;
 
-
+	UIModelItemSelect_Page* _parentPage = nullptr;
 };
 
 
 
-class UIModelItemSelect_Page :public ui::VBox
+class UIModelItemSelect_Page :public UIPageBase
 {
-
+	friend class UIModelItemProvider;
 public:
 
 	UIModelItemSelect_Page(ui::Window* pWindow, UIModelItemType itemType);
-	void InitContents();
+	~UIModelItemSelect_Page();
+	virtual void InitContents(uintptr_t userdata1, uintptr_t userdata2)override;
+	virtual MainUiForm::PageEnum GetPageType()override;
+
+	//virtual void OnSetVisible(bool bChanged)override;
+	
 
 private:
-	bool OnBtnClicked(const ui::EventArgs& args);
+	struct DecorationPageStates
+	{
+		//ui::Control* targetItemUIListItem;
+		class DecorationItem* targetItem;
+	};
 
+	union PageStates
+	{
+		DecorationPageStates decorationPageStates;
+	}pageStates;
 
+	//bool OnBtnClicked(const ui::EventArgs& args);
+	
+	//virtual void OnSetVisible(bool bChanged)override;
+	virtual void OnEnterThisPage(PageEnterFlag enterFlag) override;
 
 	UIModelItemType itemType;
 	class UIModelItemProvider* provider=nullptr;
+
+
 };
 
 

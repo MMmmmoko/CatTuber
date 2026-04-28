@@ -211,7 +211,7 @@ CharacterObject* CharacterObject::CreateFromAttributes(const Json::Value& applyJ
 {
 	if (!(applyJson.isMember("PackPath") && applyJson["PackPath"].isString()))
 	{
-		SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Create Desk with invalid json! No path info exist.");
+		SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Create Character with invalid json! No path info exist.");
 		return nullptr;
 	}
 	auto resultObj = new CharacterObject;
@@ -219,7 +219,7 @@ CharacterObject* CharacterObject::CreateFromAttributes(const Json::Value& applyJ
 	std::string pathStr = AppContext::ResolvePathToAbsolute(applyJson["PackPath"].asString());
 	if (!resultObj->LoadFromPath(pathStr.c_str(), applyJson["Bindings"]))
 	{
-		SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Can not create Desk at path: %s.", pathStr.c_str());
+		SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Can not create Character at path: %s.", pathStr.c_str());
 		delete resultObj;
 		return nullptr;
 	}
@@ -229,6 +229,27 @@ CharacterObject* CharacterObject::CreateFromAttributes(const Json::Value& applyJ
 
 	return resultObj;
 }
+
+CharacterObject* CharacterObject::CreateFromPath(const char* packPath)
+{
+
+	auto resultObj = new CharacterObject;
+
+	std::string pathStr = AppContext::ResolvePathToAbsolute(packPath);
+	if (!resultObj->LoadFromPath(pathStr.c_str()))
+	{
+		SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Can not create Character at path: %s.", pathStr.c_str());
+		delete resultObj;
+		return nullptr;
+	}
+
+
+
+
+	return resultObj;
+}
+
+
 
 void CharacterObject::ReleaseObj(CharacterObject* obj)
 {
@@ -279,6 +300,8 @@ void CharacterObject::ClearBinding()
 		for (auto& y : x.binding)
 			y.UnRegisterBinding();
 	}
+
+	UnregisterAllActionFunc();
 }
 
 void CharacterObject::SetHandPosition(int handIndex, bool bPress, float x, float y)

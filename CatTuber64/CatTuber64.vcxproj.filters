@@ -305,6 +305,9 @@
     <ClInclude Include="src\Steam\WorkshopItemManager.h">
       <Filter>源文件\Steam</Filter>
     </ClInclude>
+    <ClInclude Include="Dui\Form\UIPageBase.h">
+      <Filter>Dui\Form</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -615,6 +618,9 @@
       <Filter>Dui\UserControl</Filter>
     </Xml>
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\UISceneContentListItem.xml">
+      <Filter>Dui\UserControl</Filter>
+    </Xml>
+    <Xml Include="..\DuiResource\themes\default\CatTuber_default\UISceneListItemMenu.xml">
       <Filter>Dui\UserControl</Filter>
     </Xml>
   </ItemGroup>

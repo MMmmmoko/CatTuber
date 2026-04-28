@@ -25,6 +25,7 @@ public:
 	virtual void ApplyAttributes(const Json::Value& applyJson)override;
 
 
+	void ResetObj(DecorationObject* obj);
 	void SetTransform(float posX, float posY, float posZ);
 	void SetScale(float scale);
 

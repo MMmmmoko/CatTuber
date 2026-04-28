@@ -94,6 +94,15 @@ void BongoCatItem::_GenerateTransformMat()
 	transform=glm::scale(transform,glm::vec3(scale, scale, scale));
 }
 
+void BongoCatItem::ResetObj(BongoCatObject* obj)
+{
+	if (_itemObj)
+	{
+		BongoCatObject::ReleaseObj(_itemObj);
+	}
+	_itemObj = obj;
+}
+
 void BongoCatItem::SetTransform(float posX, float posY, float posZ)
 {
 	if (offsetX != posX || offsetY != posY || offsetZ != posZ)
@@ -126,6 +135,7 @@ void BongoCatItem::Reset()
 	offsetY = 0.f;
 	offsetZ = 0.f;
 	scale = 1.f;
-
+	if (_itemObj)BongoCatObject::ReleaseObj(_itemObj);
+	_itemObj = nullptr;
 
 }
