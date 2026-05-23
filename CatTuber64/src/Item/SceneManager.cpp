@@ -244,15 +244,15 @@ void SceneManager::SaveCurrentScene()
 
 }
 
-MainSceneItem* SceneManager::GetCurrentMainSceneItem()
-{
-    auto window=RenderWindowManager::GetIns().GetWindowController(0);
-    if (!window)return nullptr;
-    return window->GetScene().GetMainItem();
-}
-
-const std::vector<class ISceneItem*>& SceneManager::GetCurrentSceneItemList()
-{
-    auto window = RenderWindowManager::GetIns().GetWindowController(0);
-    return window->GetScene().GetItemList();
-}
+//MainSceneItem* SceneManager::GetCurrentMainSceneItem()
+//{
+//    auto window=RenderWindowManager::GetIns().GetWindowController(0);
+//    if (!window)return nullptr;
+//    return window->GetScene().GetMainItem();
+//}
+//
+//const std::vector<class ISceneItem*>& SceneManager::GetCurrentSceneItemList()
+//{
+//    auto window = RenderWindowManager::GetIns().GetWindowController(0);
+//    return window->GetScene().GetItemList();
+//}

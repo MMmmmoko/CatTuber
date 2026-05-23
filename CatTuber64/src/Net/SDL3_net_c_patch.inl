@@ -48,3 +48,24 @@ bool NET_GetLocalLANAddressStr(char* buf, int buflen)
     return true;
 
 }
+
+
+
+
+bool NET_GetLocalComputerName(char* buf, int buflen)
+{
+    
+#ifdef SDL_PLATFORM_WINDOWS
+    //Windows API 获取计算机名
+	DWORD size = (DWORD)buflen;
+    return GetComputerNameA(buf, &size);
+#endif
+
+#ifdef SDL_PLATFORM_MACOS
+    return gethostname(buf, buflen) == 0
+#endif
+
+
+    return true;
+
+}

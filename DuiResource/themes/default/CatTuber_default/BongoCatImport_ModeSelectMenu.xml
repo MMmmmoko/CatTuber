@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Window shadow_type="menu_round" shadow_attached="true" layered_window="true"
+		xmlns:xs="http://www.w3.org/2001/XMLSchema"
+		xmlns="http://tempuri.org/NIMDUISchema.xsd"
+		>
+	
+	<Class name="sceneItemMenuElement" height="26" padding="20,0,20,0" margin="1,1,1,1"
+		   hot_color="itemHoverColor"  fade_hot="false"/>
+	
+	<Class name="helperMenuText" normal_text_color="textNormalColor" font="system_12" valign="center"/>
+	
+	
+	<MenuListBox class="menu" bkcolor="panelBkColor">
+		<!--仅在主页常驻控件中显示选择其他场景-->
+		<HBox height="auto" width="auto">
+			<VBox height="auto" width="auto">
+				<MenuItem class="sceneItemMenuElement" name="menu_standard_l2d" width="auto">
+					<Label class="helperMenuText"  text_id="STRID_MODELITEM_BONGOCAT_IMPORT_DLG_MODE_STANDARD_L2D"  mouse_enabled="false" keyboard_enabled="false"/>
+				</MenuItem>
+				<MenuItem class="sceneItemMenuElement" name="menu_standard" width="auto">
+					<Label class="helperMenuText"  text_id="STRID_MODELITEM_BONGOCAT_IMPORT_DLG_MODE_STANDARD"  mouse_enabled="false" keyboard_enabled="false"/>
+				</MenuItem>
+				<MenuItem class="sceneItemMenuElement" name="menu_standard_l2d_pen" width="auto">
+					<Label class="helperMenuText"  text_id="STRID_MODELITEM_BONGOCAT_IMPORT_DLG_MODE_STANDARD_L2D_PEN" mouse_enabled="false" keyboard_enabled="false"/>
+				</MenuItem>
+				<MenuItem class="sceneItemMenuElement" name="menu_standard_pen" width="auto">
+					<Label class="helperMenuText"  text_id="STRID_MODELITEM_BONGOCAT_IMPORT_DLG_MODE_STANDARD_PEN" mouse_enabled="false" keyboard_enabled="false"/>
+				</MenuItem>
+			</VBox>
+			<VBox height="auto" width="auto">
+				<MenuItem class="sceneItemMenuElement" name="menu_keyboard_l2d" width="auto">
+					<Label class="helperMenuText"  text_id="STRID_MODELITEM_BONGOCAT_IMPORT_DLG_MODE_KEYBOARD_L2D"  mouse_enabled="false" keyboard_enabled="false"/>
+				</MenuItem>
+				<MenuItem class="sceneItemMenuElement" name="menu_keyboard" width="auto">
+					<Label class="helperMenuText"  text_id="STRID_MODELITEM_BONGOCAT_IMPORT_DLG_MODE_KEYBOARD"  mouse_enabled="false" keyboard_enabled="false"/>
+				</MenuItem>
+			</VBox>
+			<VBox height="auto" width="auto">
+				<MenuItem class="sceneItemMenuElement" name="menu_gamepad_l2d" width="auto">
+					<Label class="helperMenuText"  text_id="STRID_MODELITEM_BONGOCAT_IMPORT_DLG_MODE_GAMEPAD_L2D"  mouse_enabled="false" keyboard_enabled="false"/>
+				</MenuItem>
+				<MenuItem class="sceneItemMenuElement" name="menu_gamepad" width="auto">
+					<Label class="helperMenuText"  text_id="STRID_MODELITEM_BONGOCAT_IMPORT_DLG_MODE_GAMEPAD"  mouse_enabled="false" keyboard_enabled="false"/>
+				</MenuItem>
+			</VBox>
+		</HBox>
+	</MenuListBox>
+</Window>

@@ -14,7 +14,8 @@ class Pack
 		PackType_Unknown = 0,
 		PackType_Folder,
 		PackType_Pack_ver0,//旧CatTuber所使用的Pack，除文件外不再读取其他数据
-		PackType_Pack_ver1
+		PackType_Pack_ver1,
+		PackType_CatZPack,//现在CatTuber直接使用基于zip的数据包
 
 	};
 
@@ -97,8 +98,17 @@ public:
 
 
 
-
-
+//基于zip的包
+class PackReader_CatZPack
+{
+public:
+	static bool CheckPack(const char* packFilePath);
+	static std::vector<uint8_t> LoadFile(const char* packPath, const char* path);
+	static uint8_t* LoadFile(const char* packPath, const char* path, size_t* size);
+	static bool IsFileExist(const char* packPath, const char* path);
+	static std::vector<std::string> GetFileList(const char* packPath, const char* folerPath, bool fullPath = true);
+	static void ReleaseMem(uint8_t* mem);
+};
 
 
 

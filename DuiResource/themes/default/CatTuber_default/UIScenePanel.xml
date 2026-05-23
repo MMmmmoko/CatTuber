@@ -36,7 +36,13 @@
 		</VBox>-->
 		<VBox  width="260" halign="center">
 			<Label text_id="STRID_SCENEPANEL_CONTENTS" height="30" text_padding="20,0,0,0" />
-			<VirtualVListBox name="sceneItemList" bkcolor="gray" select_none_when_click_blank="true"/>
+			<TabBox name="sceneItemListTabBox">
+				<!--窗口上限4-->
+				<VirtualVListBox  bkcolor="gray" select_none_when_click_blank="true"/>
+				<VirtualVListBox  bkcolor="gray" select_none_when_click_blank="true"/>
+				<VirtualVListBox  bkcolor="gray" select_none_when_click_blank="true"/>
+				<VirtualVListBox  bkcolor="gray" select_none_when_click_blank="true"/>
+			</TabBox>
 		<HBox height="auto">
 			<!--场景物品的功能按钮-->
 			<Button class="itemListButton" name="scenePanel_btnItemAdd" bkimage="file='list_add.svg'"  />

@@ -350,6 +350,7 @@
 	<xs:element name="BoxDragable" type="BoxDragableAttr"/>
 	<xs:element name="HBoxDragable" type="HBoxDragableAttr"/>
 	<xs:element name="VBoxDragable" type="VBoxDragableAttr"/>
+	<xs:element name="GridBox" type="GridBoxAttr"/>
 	
 	<xs:element name="Window" type="WindowAttr"/>
 	<xs:element name="Menu" type="MenuAttr"/>
@@ -1765,6 +1766,32 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+
+
+	<xs:complexType name="GridBoxAttr">
+		<xs:complexContent>
+			<xs:extension base="BoxAttr">
+				<xs:attribute name="rows" default="0" type="INT" ><xs:annotation><xs:documentation>如果设置为"auto"，表示自动计算行数，如果为数值，表示设置为固定行数</xs:documentation></xs:annotation></xs:attribute>
+				<xs:attribute name="columns" default="0" type="INT" >
+					<xs:annotation>
+						<xs:documentation>如果设置为"auto"，表示自动计算列数，如果为数值，表示设置为固定列数</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="grid_width" default="0" type="INT" ><xs:annotation><xs:documentation>网格单元格宽度(0表示自动计算)</xs:documentation></xs:annotation></xs:attribute>
+				<xs:attribute name="grid_height" default="0" type="INT" ><xs:annotation><xs:documentation>网格单元格高度(0表示自动计算)</xs:documentation></xs:annotation></xs:attribute>
+				<xs:attribute name="scale_down" default="false" type="BOOL" ><xs:annotation><xs:documentation>
+					当控件内容超出边界时，是否按比例缩小
+					true 使用子控件的大小，若超出网格大小，按比例缩小，以使控件内容完全显示在网格内
+					false 忽略子控件自身的大小，子控件的大小与网格大小一致
+				</xs:documentation></xs:annotation></xs:attribute>
+
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	
+	
+	
 	
 	
 	<!--nim_duilib文档中没有说明-->

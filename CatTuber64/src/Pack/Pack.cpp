@@ -6,7 +6,8 @@
 #define PACKREADER_LIST(F) \
     F(Folder)        \
     F(Pack_ver0)         \
-    F(Pack_ver1)
+    F(Pack_ver1) \
+    F(CatZPack) 
 
 
 

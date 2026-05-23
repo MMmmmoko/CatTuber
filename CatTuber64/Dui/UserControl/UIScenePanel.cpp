@@ -257,12 +257,18 @@ void UISceneContentListItem::OnItemOrdersChanged(size_t nOldItemIndex, size_t nN
 
 
 
-void UISceneItemListProvider::LoadItemList()
+void UISceneItemListProvider::LoadItemList(int windowIndex)
 {
 
 	itemList.clear();
 
-	auto& sceneItemList=SceneManager::GetInstance().GetCurrentSceneItemList();
+	RenderWindowController* curWindow = RenderWindowManager::GetIns().GetWindowController(windowIndex);
+	if (!curWindow)return;
+	targetWindow = curWindow;
+
+
+
+	auto& sceneItemList= curWindow->GetScene().GetItemList();
 	for (auto it = sceneItemList.rbegin(); it != sceneItemList.rend(); ++it)
 	{
 		auto& item = *it;
@@ -623,16 +629,16 @@ void UISceneItemListProvider::ItemOrderChange(size_t nOldItemIndex, size_t nNewI
 
 	RenderThread::GetIns().PostTask([](void* userdata, uint64_t userdata2) {
 		
-		int windowIndex = (int)(uintptr_t)userdata;
+		RenderWindowController* targetWindow = (RenderWindowController*)userdata;
 		uint32_t nOldItemIndex = ((uint32_t*)&userdata2)[0];
 		uint32_t nNewItemIndex = ((uint32_t*)&userdata2)[1];
 
-		auto& targetScene = RenderWindowManager::GetIns().GetWindowController(windowIndex)->GetScene();
+		auto& targetScene = targetWindow->GetScene();
 		targetScene.ItemOrderChange_TopToBottom(nOldItemIndex, nNewItemIndex);
 
 
 
-		}, (void*)0/*window index*/, nOldItemIndex + (nNewItemIndex << 32));
+		}, targetWindow/*window*/, nOldItemIndex + (nNewItemIndex << 32));
 
 
 
@@ -677,16 +683,16 @@ void UISceneItemListProvider::RemoveItem(size_t nItemIndex)
 	itemList.erase(itemList.begin() + nItemIndex);
 
 	
-	uint64_t userdata2=(0llu<<32)+ nItemIndex;
+	uint64_t userdata2= nItemIndex;
 	RenderThread::GetIns().PostTask(
 		[](void* userdata,uint64_t userdata2) {
 		
-			uint32_t windowIndex = ((uint32_t*)&userdata2)[1];
-			uint32_t itemIndex = ((uint32_t*)&userdata2)[0];
+			RenderWindowController* window = (RenderWindowController*)userdata;
+			uint64_t itemIndex = userdata2;
 
-			auto& targetScene = RenderWindowManager::GetIns().GetWindowController(windowIndex)->GetScene();
-			targetScene.RemoveItem(targetScene.GetItemAt_TopToBottom(itemIndex));
-		},nullptr, userdata2
+			auto& targetScene = window->GetScene();
+			targetScene.RemoveItem(targetScene.GetItemAt_TopToBottom((int)itemIndex));
+		},targetWindow, userdata2
 	
 	);
 
@@ -1039,8 +1045,12 @@ UIScenePanel::UIScenePanel(MainUiForm* pParent)
 	scenePanel_btnItemMoveUp->AttachClick(ui::UiBind(&UIScenePanel::OnSceneContentListControlButtonClicked, this, std::placeholders::_1));
 	scenePanel_btnItemMoveDown->AttachClick(ui::UiBind(&UIScenePanel::OnSceneContentListControlButtonClicked, this, std::placeholders::_1));
 	
-	container = (ui::VirtualVListBox*)FindSubControl(L"sceneItemList");
-
+	auto sceneItemListTabBox = (ui::TabBox*)FindSubControl(L"sceneItemListTabBox");
+	//窗口上限为4
+	for (int i = 0; i < 4; i++)
+	{
+		containers[i]=(ui::VirtualVListBox*)sceneItemListTabBox->GetItemAt(i);
+	}
 
 
 
@@ -1054,14 +1064,43 @@ UIScenePanel::UIScenePanel(MainUiForm* pParent)
 
 UIScenePanel::~UIScenePanel()
 {
-	if (provider)delete provider;
-	provider = nullptr;
+	//for (auto x : providers)
+	//{
+	//	if (x)delete x;
+	//}
+	providers.clear();
+	//if (provider)delete provider;
+	//provider = nullptr;
 }
 
 
 
 void UIScenePanel::InitContents()
 {
+
+	//创建与窗口数量相等的provider
+
+	{
+		size_t windowCount = RenderWindowManager::GetIns().GetWindowControllerCount();
+		providers.resize(windowCount);
+		for (size_t i = 0; i < windowCount; i++)
+		{
+			if (!providers[i])
+				providers[i].reset(new UISceneItemListProvider(this));
+
+			auto vlayout = dynamic_cast<ui::VirtualVLayout*>(containers[i]->GetLayout());
+			ui::UiSize itemSize;
+			itemSize.cx = 260;
+			itemSize.cy = 40;
+			//vlayout->SetAutoCalcItemWidth(true);
+			vlayout->SetItemSize(itemSize, true);
+			containers[i]->SetDataProvider(providers[i].get());
+			providers[i]->LoadItemList(0);
+		}
+		currentWindowIndex = 0;
+	}
+
+
 	std::string sceneName=  SceneManager::GetInstance().GetCurrentScene().name  ;
 	if (sceneName.empty())
 	{
@@ -1073,7 +1112,7 @@ void UIScenePanel::InitContents()
 	}
 
 
-	auto mainItem= SceneManager::GetInstance().GetCurrentMainSceneItem();
+	auto mainItem= RenderWindowManager::GetIns().GetWindowController(currentWindowIndex)->GetScene().GetMainItem();
 
 
 	scenePanel_classic->SetVisible(false);
@@ -1197,17 +1236,6 @@ classicPanel_slot##ItemType->SetBoxShadow(L"blurradius='0'");\
 
 
 
-	if (!provider)
-		provider = new UISceneItemListProvider(this);
-
-	auto vlayout = dynamic_cast<ui::VirtualVLayout*>(container->GetLayout());
-	ui::UiSize itemSize;
-	itemSize.cx = 260;
-	itemSize.cy = 40;
-	//vlayout->SetAutoCalcItemWidth(true);
-	vlayout->SetItemSize(itemSize, true);
-	container->SetDataProvider(provider);
-	provider->LoadItemList();
 }
 
 //void UIScenePanel::UpdatePanelButtonEnable(ui::Control* pChild)
@@ -1218,7 +1246,8 @@ classicPanel_slot##ItemType->SetBoxShadow(L"blurradius='0'");\
 void UIScenePanel::UpdatePanelButtonEnable(/*UISceneContentListItem* pChild*/)
 {
 	//panelFocusedButton = pChild;
-
+	auto& provider = providers[currentWindowIndex];
+	auto& container = containers[currentWindowIndex];
 
 	std::vector<size_t> selectElement;
 	provider->GetSelectedElements(selectElement);
@@ -1269,6 +1298,10 @@ bool UIScenePanel::OnMainItemSlotClicked(const ui::EventArgs& msg)
 
 bool UIScenePanel::OnSceneContentListControlButtonClicked(const ui::EventArgs& msg)
 {
+	auto& provider = providers[currentWindowIndex];
+	auto& container = containers[currentWindowIndex];
+
+
 	if (scenePanel_btnItemAdd == msg.GetSender())
 	{
 		//创建一个添加物品的菜单
@@ -1300,7 +1333,7 @@ bool UIScenePanel::OnSceneContentListControlButtonClicked(const ui::EventArgs& m
 		itemAddMenu_DecorationItem->GetItemAt(0)->SetFixedWidth(ui::UiFixedInt(menuItemWidth),false,true);
 		
 		//计算控件可用性
-		auto mainItem = SceneManager::GetInstance().GetCurrentMainSceneItem();
+		auto mainItem = RenderWindowManager::GetIns().GetWindowController(currentWindowIndex)->GetScene().GetMainItem();
 		if (mainItem)
 		{
 			switch (mainItem->GetMainItemType())
@@ -1367,7 +1400,7 @@ bool UIScenePanel::OnSceneItemAddMenuClicked(const ui::EventArgs& msg)
 	if (senderName == L"itemAddMenu_ClassicItem")
 	{
 		//检查是否已经有主物品
-		auto mainItem = SceneManager::GetInstance().GetCurrentMainSceneItem();
+		auto mainItem = RenderWindowManager::GetIns().GetWindowController(currentWindowIndex)->GetScene().GetMainItem();
 		bool showPage = true;
 		if (mainItem)
 		{
@@ -1403,7 +1436,7 @@ bool UIScenePanel::OnSceneItemAddMenuClicked(const ui::EventArgs& msg)
 	else if (senderName == L"itemAddMenu_BongoCatItem")
 	{
 		//检查是否已经有主物品
-		auto mainItem = SceneManager::GetInstance().GetCurrentMainSceneItem();
+		auto mainItem = RenderWindowManager::GetIns().GetWindowController(currentWindowIndex)->GetScene().GetMainItem();
 		bool showPage = true;
 		if (mainItem)
 		{

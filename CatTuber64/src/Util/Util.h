@@ -17,6 +17,7 @@ namespace util {
 	unsigned char* SDL_LoadFileToMem(const char* path,size_t* size);
 	std::vector<uint8_t> SDL_LoadFileToMem(const char* path);
 	void SDL_FreeMem(unsigned char* mem);
+	void SDL_CopyFolder(const char* oldFolder, const char* newFolder);
 	
 	//从内存读json
 	Json::Value BuildJsonFromMem(const char* mem, size_t memSize);

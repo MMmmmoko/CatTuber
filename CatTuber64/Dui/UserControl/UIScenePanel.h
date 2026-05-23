@@ -77,7 +77,7 @@ public:
 
 
 
-	void LoadItemList();
+	void LoadItemList(int windowIndex);
 
 
 
@@ -127,7 +127,7 @@ private:
 	std::vector<ItemInfo> itemList;
 
 	class UIScenePanel* pParent;
-
+	class RenderWindowController* targetWindow = nullptr;
 
 
 };
@@ -159,7 +159,7 @@ public:
 
 
 	void UpdatePanelButtonEnable(/*UISceneContentListItem* pChild*/);
-	ui::VirtualVListBox* GetSceneItemListBox() { return container; };
+	ui::VirtualVListBox* GetSceneItemListBox() { return containers[currentWindowIndex]; };
 private:
 
 	bool OnSceneTitleClicked(const ui::EventArgs& msg);
@@ -171,14 +171,18 @@ private:
 
 
 	class MainUiForm* pParent;
-	ui::VirtualVListBox* container;
+	ui::VirtualVListBox* containers[4] = {};
 	//UISceneContentListItem* panelFocusedButton;
 
 
 
 
 
-	class UISceneItemListProvider* provider=nullptr;
+	//class UISceneItemListProvider* provider=nullptr;
+	 //provider=nullptr;
+	 std::vector<std::unique_ptr<UISceneItemListProvider>> providers;
+	 int currentWindowIndex = 0;
+
 
 
 	//控件

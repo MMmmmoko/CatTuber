@@ -4,6 +4,7 @@
 #include"RenderWindowManager.h"
 #include"Input/InputManager.h"
 #include"Util/SDL_LockGuard.h"
+#include"Input/RemoteInputLink.h"
 void RenderThread::Start()
 {
 	//这个函数会在主线程调用
@@ -129,6 +130,7 @@ void RenderThread::ThreadLoop()
 	//SDL_WaitAndAcquireGPUSwapchainTexture();
 	auto& wm = RenderWindowManager::GetIns();
 	auto& im = InputManager::GetIns();
+	auto& remoteInputLink = RemoteInputLink::GetIns();
 
 	uint64_t startTick = SDL_GetTicksNS();
 	uint64_t savedTick = startTick;
@@ -155,11 +157,16 @@ void RenderThread::ThreadLoop()
 		savedTick = currentTick;
 
 		
-
+		//使用的SDL_NET网络接口是不阻塞的，这里选择不添加独立的网络线程而是像处理时间一样在渲染线程中处理网络数据
+		remoteInputLink.UpdateIfNecessary();
 		im.PumpDeviceOrNetworkInputEvents();
-		wm.UpdateAll(deltaTick);
-		wm.RenderAll();
-		wm.PresentAll();
+		if (renderWindowRendering)
+		{
+			wm.UpdateAll(deltaTick);
+			wm.RenderAll();
+			wm.PresentAll();
+		}
+
 
 		//计算睡眠
 		uint64_t _CurFrameTick = SDL_GetTicksNS() - currentTick;

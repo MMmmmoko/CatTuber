@@ -308,6 +308,15 @@
     <ClInclude Include="Dui\Form\UIPageBase.h">
       <Filter>Dui\Form</Filter>
     </ClInclude>
+    <ClInclude Include="Dui\Dialog\BongoCatImport_Dlg.h">
+      <Filter>Dui\Dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="Dui\Form\RemoteLinkPage.h">
+      <Filter>Dui\Form</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Input\RemoteInputLink.h">
+      <Filter>源文件\Input</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -538,6 +547,18 @@
     <ClCompile Include="src\Item\BongoCatObject_Gamepad.cpp">
       <Filter>源文件\Item</Filter>
     </ClCompile>
+    <ClCompile Include="Dui\Dialog\BongoCatImport_Dlg.cpp">
+      <Filter>Dui\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pack\PackReader_CatZPack.cpp">
+      <Filter>源文件\Pack</Filter>
+    </ClCompile>
+    <ClCompile Include="Dui\Form\RemoteLinkPage.cpp">
+      <Filter>Dui\Form</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Input\RemoteInputLink.cpp">
+      <Filter>源文件\Input</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CatTuber64.rc">
@@ -549,6 +570,9 @@
       <Filter>源文件\Util\json</Filter>
     </None>
     <None Include="..\README.md" />
+    <None Include="src\Net\SDL3_net_h_patch.inl">
+      <Filter>源文件\Net</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="Dui\Lang\schinese.ini">
@@ -622,6 +646,15 @@
     </Xml>
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\UISceneListItemMenu.xml">
       <Filter>Dui\UserControl</Filter>
+    </Xml>
+    <Xml Include="..\DuiResource\themes\default\CatTuber_default\BongoCatImport_Dlg.xml">
+      <Filter>Dui\Dialog</Filter>
+    </Xml>
+    <Xml Include="..\DuiResource\themes\default\CatTuber_default\BongoCatImport_ModeSelectMenu.xml">
+      <Filter>Dui\Dialog</Filter>
+    </Xml>
+    <Xml Include="..\DuiResource\themes\default\CatTuber_default\RemoteLinkPage.xml">
+      <Filter>Dui\Form</Filter>
     </Xml>
   </ItemGroup>
   <ItemGroup>

@@ -39,9 +39,11 @@ public:
 
 
 	//bool GetCurrentSceneInfo(SceneInfo* infoOut);
+
+
 	const SceneInfo& GetCurrentScene() { return pCurrentScene; };
-	class MainSceneItem* GetCurrentMainSceneItem();
-	const std::vector<class ISceneItem*>& GetCurrentSceneItemList();
+	//class MainSceneItem* GetCurrentMainSceneItem();
+	//const std::vector<class ISceneItem*>& GetCurrentSceneItemList();
 
 
 

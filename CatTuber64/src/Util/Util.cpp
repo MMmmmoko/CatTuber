@@ -56,6 +56,45 @@ void util::SDL_FreeMem(unsigned char* mem)
     SDL_free(mem);
 }
 
+void util::SDL_CopyFolder(const char* oldFolder, const char* newFolder)
+{
+
+    SDL_CreateDirectory(newFolder);
+    //先判断oldFoloer是否存在
+    SDL_EnumerateDirectoryCallback fileCallback = [](void* userdata, const char* dirname, const char* fname) -> SDL_EnumerationResult
+        {
+            char pathBuf[1024];
+            SDL_snprintf(pathBuf, 1024, "%s%s", dirname, fname);
+
+            char newPathBuf[1024];
+            SDL_snprintf(newPathBuf, 1024, "%s/%s", (const char*)userdata, fname);
+
+            SDL_PathInfo pathInfo;
+            if (SDL_GetPathInfo(pathBuf,&pathInfo))
+            {
+
+                if (pathInfo.type == SDL_PATHTYPE_DIRECTORY)
+                {
+ 
+                    //SDL_CreateDirectory(newPathBuf);
+                    util::SDL_CopyFolder(pathBuf, newPathBuf);
+                }
+                else if (pathInfo.type == SDL_PATHTYPE_FILE)
+                {
+                    SDL_CopyFile(pathBuf, newPathBuf);
+                }
+            }
+
+
+
+            return SDL_EnumerationResult::SDL_ENUM_CONTINUE;
+        };
+
+
+
+    SDL_EnumerateDirectory(oldFolder, fileCallback, (void*)newFolder);
+}
+
 Json::Value util::BuildJsonFromMem(const char* mem, size_t memSize)
 {
     Json::CharReaderBuilder builder;

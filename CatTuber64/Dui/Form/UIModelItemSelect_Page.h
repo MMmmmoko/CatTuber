@@ -72,6 +72,7 @@ private:
 class UIModelItemProvider :public ui::VirtualListBoxElement
 {
 	friend class UIModelItem;
+	friend class UIModelItemSelect_Page;
 public:
 	UIModelItemProvider(UIModelItemType itemType,class UIModelItemSelect_Page* parentPage);
 	~UIModelItemProvider() = default;

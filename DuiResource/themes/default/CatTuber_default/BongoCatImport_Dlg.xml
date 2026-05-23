@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Window
+        caption="0,0,0,28" use_system_caption="false" snap_layout_menu="true" sys_menu="true" sys_menu_rect="0,0,36,36"
+        shadow_type="default" shadow_attached="true" shadow_snap="true" layered_window="true"
+        alpha="255" icon="public/caption/logo.ico"
+		
+		xmlns:xs="http://www.w3.org/2001/XMLSchema"
+		xmlns="http://tempuri.org/NIMDUISchema.xsd"
+		>
+	<VBox bkcolor="panelBkColor" visible="true" height="auto" width="auto">
+		<!-- 标题栏区域 -->
+		<HBox name="window_caption_bar" width="stretch" height="28">
+			<Label name="text_Title" text_id="STRID_MODELITEM_BONGOCAT_IMPORT"  text_align="vcenter"  margin="8,0,8,0" valign="center" font="system_14"/>
+			<Control />
+
+			<Button class="btn_wnd_close_11" height="stretch" width="40" name="btn_Close" margin="0,0,0,2"/>
+		</HBox>
+		<Control height="1" bkcolor="itemSeparatorColor"/>
+		<!-- 工作区域，除了标题栏外的内容都放在这个大的Box区域 -->
+		<VBox height="auto" width="auto" min_width="700">
+			<HBox height="auto">
+				<Label text_id="STRID_MODELITEM_BONGOCAT_IMPORT_DLG_SELECTMODE"  margin="8,0,8,0"/>
+				<Button class="ctb_btn_dlg_normal" name="btn_modeselect" text_id="STRID_MODELITEM_BONGOCAT_IMPORT_DLG_MODE_STANDARD" width="auto" />
+			</HBox>
+			<!--<GridBox height="auto" rows="4" columns="3" grid_height="32">
+				<Option class="ctb_option_default" name="op_mode_standard_l2d" margin="0,4,0,4" group="modeSelectOp" text_id="STRID_MODELITEM_BONGOCAT_IMPORT_DLG_MODE_STANDARD_L2D"/>
+				<Option class="ctb_option_default" name="op_mode_keyboard_l2d" margin="0,4,0,4" group="modeSelectOp" text_id="STRID_MODELITEM_BONGOCAT_IMPORT_DLG_MODE_KEYBOARD_L2D"/>
+				<Option class="ctb_option_default" name="op_mode_gamepad_l2d" margin="0,4,0,4" group="modeSelectOp" text_id="STRID_MODELITEM_BONGOCAT_IMPORT_DLG_MODE_GAMEPAD_L2D"/>
+
+				<Option class="ctb_option_default" name="op_mode_standard" margin="0,4,0,4" group="modeSelectOp" text_id="STRID_MODELITEM_BONGOCAT_IMPORT_DLG_MODE_STANDARD"/>
+				<Option class="ctb_option_default" name="op_mode_keyboard" margin="0,4,0,4" group="modeSelectOp" text_id="STRID_MODELITEM_BONGOCAT_IMPORT_DLG_MODE_KEYBOARD"/>
+				<Option class="ctb_option_default" name="op_mode_gamepad" margin="0,4,0,4" group="modeSelectOp" text_id="STRID_MODELITEM_BONGOCAT_IMPORT_DLG_MODE_GAMEPAD"/>
+
+				<Option class="ctb_option_default" name="op_mode_standard_l2d_pen" margin="0,4,0,4" group="modeSelectOp" text_id="STRID_MODELITEM_BONGOCAT_IMPORT_DLG_MODE_STANDARD_L2D_PEN"/>
+				<Control height="1" width="1"/>
+				<Control height="1" width="1"/>
+
+				<Option class="ctb_option_default" name="op_mode_standard_pen" margin="0,4,0,4" group="modeSelectOp" text_id="STRID_MODELITEM_BONGOCAT_IMPORT_DLG_MODE_STANDARD_PEN"/>
+			</GridBox>-->
+			<Label name="selectWarningText" text_id="STRID_MODELITEM_BONGOCAT_IMPORT_DLG_MODESELECTWARNING"  margin="8,0,8,0" font="system_12"  multi_line="true"/>
+
+			<!--按钮区-->
+			<HBox margin="8,8,8,8"  halign="center" height="auto">
+				<Control height="1"/>
+				<Button class="ctb_btn_dlg_normal" name="btn_Cancel" text_id="STRING_CANCEL"/>
+				<Button class="ctb_btn_dlg_highlight" name="btn_OK" text_id="STRING_OK"/>
+			</HBox>
+
+		</VBox>
+
+
+
+	</VBox>
+</Window>

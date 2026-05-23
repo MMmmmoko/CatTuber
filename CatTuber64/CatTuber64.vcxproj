@@ -151,12 +151,14 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Dui\Dialog\BongoCatImport_Dlg.h" />
     <ClInclude Include="Dui\Dialog\DuiMessageBox.h" />
     <ClInclude Include="Dui\Dialog\UISceneCoverCropper_Dlg.h" />
     <ClInclude Include="Dui\Dialog\UISceneCreateNew_Dlg.h" />
     <ClInclude Include="Dui\Dialog\UISceneItemRename_Dlg.h" />
     <ClInclude Include="Dui\Dui.h" />
     <ClInclude Include="Dui\DuiCommon.h" />
+    <ClInclude Include="Dui\Form\RemoteLinkPage.h" />
     <ClInclude Include="Dui\Form\UIModelItemSelect_Page.h" />
     <ClInclude Include="Dui\Form\ItemSelectPage.h" />
     <ClInclude Include="Dui\Form\MainUiForm.h" />
@@ -184,6 +186,7 @@
     <ClInclude Include="src\Input\InputParser.h" />
     <ClInclude Include="src\Input\KeyboardInput.h" />
     <ClInclude Include="src\Input\MouseInput.h" />
+    <ClInclude Include="src\Input\RemoteInputLink.h" />
     <ClInclude Include="src\Item\BongoCatHand.h" />
     <ClInclude Include="src\Item\BongoCatItem.h" />
     <ClInclude Include="src\Item\BongoCatObject.h" />
@@ -232,11 +235,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\duilib_CodePatch\Image_cpp_patch.cpp" />
+    <ClCompile Include="Dui\Dialog\BongoCatImport_Dlg.cpp" />
     <ClCompile Include="Dui\Dialog\DuiMessageBox.cpp" />
     <ClCompile Include="Dui\Dialog\UISceneCoverCropper_Dlg.cpp" />
     <ClCompile Include="Dui\Dialog\UISceneCreateNew_Dlg.cpp" />
     <ClCompile Include="Dui\Dialog\UISceneItemRename_Dlg.cpp" />
     <ClCompile Include="Dui\Dui.cpp" />
+    <ClCompile Include="Dui\Form\RemoteLinkPage.cpp" />
     <ClCompile Include="Dui\Form\UIModelItemSelect_Page.cpp" />
     <ClCompile Include="Dui\Form\MainUiForm.cpp" />
     <ClCompile Include="Dui\Form\SceneSelectPage.cpp" />
@@ -263,6 +268,7 @@
     <ClCompile Include="src\Input\InputCommon.cpp" />
     <ClCompile Include="src\Input\InputManager.cpp" />
     <ClCompile Include="src\Input\InputParser.cpp" />
+    <ClCompile Include="src\Input\RemoteInputLink.cpp" />
     <ClCompile Include="src\Item\BongoCatHand.cpp" />
     <ClCompile Include="src\Item\BongoCatItem.cpp" />
     <ClCompile Include="src\Item\BongoCatModel_Standard.cpp" />
@@ -290,6 +296,7 @@
     <ClCompile Include="src\Model\ModelManager.cpp" />
     <ClCompile Include="src\Net\SDL3_net.c" />
     <ClCompile Include="src\Pack\Pack.cpp" />
+    <ClCompile Include="src\Pack\PackReader_CatZPack.cpp" />
     <ClCompile Include="src\Renderer\Bindable\IndexBuffer.cpp" />
     <ClCompile Include="src\Renderer\Bindable\VertexBuffer.cpp" />
     <ClCompile Include="src\Renderer\GlobalGraphicResourceManager.cpp" />
@@ -330,6 +337,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\README.md" />
+    <None Include="src\Net\SDL3_net_h_patch.inl" />
     <None Include="src\Util\json\json_valueiterator.inl" />
   </ItemGroup>
   <ItemGroup>
@@ -349,10 +357,13 @@
     </Xsd>
   </ItemGroup>
   <ItemGroup>
+    <Xml Include="..\DuiResource\themes\default\CatTuber_default\BongoCatImport_Dlg.xml" />
+    <Xml Include="..\DuiResource\themes\default\CatTuber_default\BongoCatImport_ModeSelectMenu.xml" />
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\DuiSimpleMessageBox.xml" />
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\ItemSelectPage.xml" />
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\MainUiForm.xml" />
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\MainWindowMenu.xml" />
+    <Xml Include="..\DuiResource\themes\default\CatTuber_default\RemoteLinkPage.xml" />
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\UISceneContentListItem.xml" />
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\UISceneListItemMenu.xml" />
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\UIScenePanelItemAddMenu.xml" />

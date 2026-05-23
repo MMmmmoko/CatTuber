@@ -21,8 +21,8 @@ static LPDIRECTINPUTDEVICE8 lpdikey = NULL;//键盘
 static bool inited = false;
 
 //Dinput索引，并不是都是有效位
-static ButtonProxy buttnList[256] = {NULL};
-
+//static ButtonProxy buttnList[256] = {NULL};
+//定义移动到了头文件中
 
 bool KeyboardInput::Init()
 {

@@ -3,6 +3,7 @@
 #include"MainUiForm.h"
 #include"UIPageBase.h"
 #include"SettingsPage.h"
+#include"RemoteLinkPage.h"
 #include"SceneSelectPage.h"
 #include"UIModelItemSelect_Page.h"
 #include"UserControl/UIScenePanel.h"
@@ -28,6 +29,8 @@ void MainUiForm::OnInitWindow()
 	auto baseControl_btn = dynamic_cast<ui::ButtonBox*>( FindControl(L"baseControl_btn_settings"));
 	baseControl_btn->AttachClick(ui::UiBind(&MainUiForm::OnBaseControlBtnClicked, this, std::placeholders::_1));
 	baseControl_btn = dynamic_cast<ui::ButtonBox*>( FindControl(L"baseControl_btn_help"));
+	baseControl_btn->AttachClick(ui::UiBind(&MainUiForm::OnBaseControlBtnClicked, this, std::placeholders::_1));
+	baseControl_btn = dynamic_cast<ui::ButtonBox*>( FindControl(L"baseControl_btn_remoteLink"));
 	baseControl_btn->AttachClick(ui::UiBind(&MainUiForm::OnBaseControlBtnClicked, this, std::placeholders::_1));
 
 
@@ -161,6 +164,11 @@ bool MainUiForm::OnBaseControlBtnClicked(const ui::EventArgs& msg)
 	{
 		GoToPage(PAGE_SETTINGS);
 	}
+
+	else if (senderName==L"baseControl_btn_remoteLink")
+	{
+		GoToPage(PAGE_REMOTELINK);
+	}
 	else if (senderName == L"baseControl_btn_help")
 	{
 		//todo 完善语言系统，当前获取的语言是unspecified
@@ -200,6 +208,7 @@ void MainUiForm::GoToPage(PageEnum pageType, uintptr_t userData1, uintptr_t user
 		{
 		case MainUiForm::PAGE_SCENESELECT:
 		case MainUiForm::PAGE_SETTINGS:
+		case MainUiForm::PAGE_REMOTELINK:
 		case MainUiForm::PAGE_CLASSIC_CHARACTER_SELECT:
 		case MainUiForm::PAGE_CLASSIC_DESK_SELECT:
 		case MainUiForm::PAGE_CLASSIC_HANDHELDITEM_SELECT:
@@ -245,6 +254,9 @@ UIPageBase* MainUiForm::GetPage(PageEnum pageName)
 		break;
 	case MainUiForm::PAGE_SETTINGS:
 		pageArray[pageName] = new SettingsPage(this);
+		break;
+	case MainUiForm::PAGE_REMOTELINK:
+		pageArray[pageName] = new RemoteLinkPage(this);
 		break;
 	case MainUiForm::PAGE_CLASSIC_CHARACTER_SELECT:
 		pageArray[pageName]  = new UIModelItemSelect_Page(this, UIModelItemType_ClassicCharacter);

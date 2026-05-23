@@ -5,6 +5,7 @@
 #include"Dialog/UISceneItemRename_Dlg.h"
 #include"Dialog/UISceneCreateNew_Dlg.h"
 #include"Dialog/UISceneCoverCropper_Dlg.h"
+#include"Dialog/BongoCatImport_Dlg.h"
 
 #include"AppContext.h"
 #include"Util.h"
@@ -416,6 +417,7 @@ void UIModelItemProvider::LoadItemList()
     //封面文件：Scene_20250920133012333.png/jpg/gif
     //创建时也不能使用重复的名字
     itemList.clear();
+    itemView.clear();
 
 	//bool enableEmptyItem = false;
     enableEmptyItem = false;
@@ -453,6 +455,7 @@ void UIModelItemProvider::LoadItemList()
         auto& emptyEmpty = itemList.emplace_back();
         emptyEmpty.emptyItem = true;
         emptyEmpty.imgPath = "ModelItem_Empty.svg";
+        itemView.push_back((uint16_t)itemView.size());
     }
 
     //std::string curSelectItemPath;
@@ -462,7 +465,9 @@ void UIModelItemProvider::LoadItemList()
         {
         case UIModelItemType_ClassicCharacter:
         {
-            auto mainItem = SceneManager::GetInstance().GetCurrentMainSceneItem();
+            UIScenePanel* scenePanel = ((MainUiForm*)_parentPage->GetWindow())->GetScenePanel();
+           
+            auto mainItem = RenderWindowManager::GetIns().GetWindowController(scenePanel->currentWindowIndex)->GetScene().GetMainItem();
             ClassicItem* pClassicItem = dynamic_cast<ClassicItem*>(mainItem);
             if (!pClassicItem)break;
             if(!pClassicItem->GetCharacter())break;
@@ -471,7 +476,8 @@ void UIModelItemProvider::LoadItemList()
         }
         case UIModelItemType_ClassicDesk:
         {
-            auto mainItem = SceneManager::GetInstance().GetCurrentMainSceneItem();
+            UIScenePanel* scenePanel = ((MainUiForm*)_parentPage->GetWindow())->GetScenePanel();
+            auto mainItem = RenderWindowManager::GetIns().GetWindowController(scenePanel->currentWindowIndex)->GetScene().GetMainItem();
             ClassicItem* pClassicItem = dynamic_cast<ClassicItem*>(mainItem);
             if (!pClassicItem)break;
             if (!pClassicItem->GetDesk())break;
@@ -480,7 +486,8 @@ void UIModelItemProvider::LoadItemList()
         }
         case UIModelItemType_ClassicHandheldItem:
         {
-            auto mainItem = SceneManager::GetInstance().GetCurrentMainSceneItem();
+            UIScenePanel* scenePanel = ((MainUiForm*)_parentPage->GetWindow())->GetScenePanel();
+            auto mainItem = RenderWindowManager::GetIns().GetWindowController(scenePanel->currentWindowIndex)->GetScene().GetMainItem();
             ClassicItem* pClassicItem = dynamic_cast<ClassicItem*>(mainItem);
             if (!pClassicItem)break;
             if (!pClassicItem->GetHandheldItem())break;
@@ -489,7 +496,8 @@ void UIModelItemProvider::LoadItemList()
         }
         case UIModelItemType_BongoCat:
         {
-            auto mainItem = SceneManager::GetInstance().GetCurrentMainSceneItem();
+            UIScenePanel* scenePanel = ((MainUiForm*)_parentPage->GetWindow())->GetScenePanel();
+            auto mainItem = RenderWindowManager::GetIns().GetWindowController(scenePanel->currentWindowIndex)->GetScene().GetMainItem();
             BongoCatItem* pBongoCatItem = dynamic_cast<BongoCatItem*>(mainItem);
             if (!pBongoCatItem||!pBongoCatItem->GetObj())break;
             curSelectItemPath = pBongoCatItem->GetObj()->GetPackPath();
@@ -612,7 +620,8 @@ bool UIModelItemProvider::OnSetSelect(size_t index)
     //if (itemList[itemView[index]].emptyItem)return true;
 
     UIScenePanel* scenePanel = ((MainUiForm*)_parentPage->GetWindow())->GetScenePanel();
-    auto& targetScene = RenderWindowManager::GetIns().GetWindowController(0)->GetScene();
+    
+    auto& targetScene = RenderWindowManager::GetIns().GetWindowController(scenePanel->currentWindowIndex)->GetScene();
 
     //ASSERT(false);
     //UI中选择了指定的物品
@@ -632,8 +641,8 @@ bool UIModelItemProvider::OnSetSelect(size_t index)
             uint32_t itemIndex = ((uint32_t*)(&userdata2))[0];
             UIModelItemType objType = (UIModelItemType)((uint32_t*)(&userdata2))[1];
 
-
-            auto& targetScene = RenderWindowManager::GetIns().GetWindowController(0)->GetScene();
+            UIScenePanel* scenePanel= ((MainUiForm*)(pthis->_parentPage)->GetWindow())->GetScenePanel();
+            auto& targetScene = RenderWindowManager::GetIns().GetWindowController(scenePanel->currentWindowIndex)->GetScene();
 
             auto mainItem = targetScene.GetMainItem();
             auto pClassicItem = dynamic_cast<ClassicItem*>(mainItem);
@@ -702,7 +711,7 @@ bool UIModelItemProvider::OnSetSelect(size_t index)
                 else if (bongoCatPack.IsFileExist("List.gif"))imgFile = L"List.gif";
                 if (!imgFile.empty())
                 {
-                    scenePanel->provider->SetListItemImg(originalIndex,BongoCatItem::_GetType(), bongoCatPack.GetPath());
+                    scenePanel->providers[scenePanel->currentWindowIndex]->SetListItemImg(originalIndex, BongoCatItem::_GetType(), bongoCatPack.GetPath());
                     
                 }
             }
@@ -721,7 +730,8 @@ bool UIModelItemProvider::OnSetSelect(size_t index)
 			UIModelItemProvider* pthis = (UIModelItemProvider*)userdata;
 			uint64_t itemIndex = userdata2;
 
-        auto& targetScene = RenderWindowManager::GetIns().GetWindowController(0)->GetScene();
+            UIScenePanel* scenePanel = ((MainUiForm*)(pthis->_parentPage)->GetWindow())->GetScenePanel();
+        auto& targetScene = RenderWindowManager::GetIns().GetWindowController(scenePanel->currentWindowIndex)->GetScene();
 
         auto mainItem = targetScene.GetMainItem();
         auto pBongoCatItem = dynamic_cast<BongoCatItem*>(mainItem);
@@ -738,7 +748,7 @@ bool UIModelItemProvider::OnSetSelect(size_t index)
         if (!mainItem)
         {
             targetScene.CreateNewItem("BongoCatItem", originalIndex);
-            mainItem = SceneManager::GetInstance().GetCurrentMainSceneItem();
+            mainItem = targetScene.GetMainItem();
         }
         pBongoCatItem = dynamic_cast<BongoCatItem*>(mainItem);
         if (pBongoCatItem)
@@ -775,7 +785,7 @@ bool UIModelItemProvider::OnSetSelect(size_t index)
                 //else if (decorationPack.IsFileExist("List.gif"))imgFile = L"List.gif";
                 //if (!imgFile.empty())
                 {
-                    scenePanel->provider->SetListItemImg(originalIndex, DecorationItem::_GetType(), decorationPack.GetPath());
+                    scenePanel->providers[scenePanel->currentWindowIndex]->SetListItemImg(originalIndex, DecorationItem::_GetType(), decorationPack.GetPath());
 
                 }
             }
@@ -787,7 +797,8 @@ bool UIModelItemProvider::OnSetSelect(size_t index)
                 UIModelItemProvider* pthis = (UIModelItemProvider*)userdata;
                 uint64_t itemIndex = userdata2;
 
-                auto& targetScene = RenderWindowManager::GetIns().GetWindowController(0)->GetScene();
+                UIScenePanel* scenePanel = ((MainUiForm*)(pthis->_parentPage)->GetWindow())->GetScenePanel();
+                auto& targetScene = RenderWindowManager::GetIns().GetWindowController(scenePanel->currentWindowIndex)->GetScene();
 
 
 
@@ -898,8 +909,9 @@ void UIModelItemProvider::OnSetDeselect(size_t index)
             uint32_t itemIndex = ((uint32_t*)(&userdata2))[0];
             UIModelItemType objType = (UIModelItemType)((uint32_t*)(&userdata2))[1];
 
+            UIScenePanel* scenePanel = ((MainUiForm*)(pthis->_parentPage)->GetWindow())->GetScenePanel();
 
-            auto& targetScene = RenderWindowManager::GetIns().GetWindowController(0)->GetScene();
+            auto& targetScene = RenderWindowManager::GetIns().GetWindowController(scenePanel->currentWindowIndex)->GetScene();
 
             auto mainItem = targetScene.GetMainItem();
             auto pClassicItem = dynamic_cast<ClassicItem*>(mainItem);
@@ -934,7 +946,8 @@ void UIModelItemProvider::OnSetDeselect(size_t index)
             UIModelItemProvider* pthis = (UIModelItemProvider*)userdata;
             uint64_t itemIndex = userdata2;
 
-            auto& targetScene = RenderWindowManager::GetIns().GetWindowController(0)->GetScene();
+            UIScenePanel* scenePanel = ((MainUiForm*)(pthis->_parentPage)->GetWindow())->GetScenePanel();
+            auto& targetScene = RenderWindowManager::GetIns().GetWindowController(scenePanel->currentWindowIndex)->GetScene();
 
             auto mainItem = targetScene.GetMainItem();
             auto pBongoCatItem = dynamic_cast<BongoCatItem*>(mainItem);
@@ -980,6 +993,7 @@ UIModelItemSelect_Page::UIModelItemSelect_Page(ui::Window* pWindow, UIModelItemT
 {
     ui::GlobalManager::Instance().FillBoxWithCache(this, ui::FilePath(L"CatTuber_default/ItemSelectPage.xml"));
     ui::Label* title = (ui::Label*)FindSubControl(L"itemSelectPageTitle");
+    ui::HBox* titleContainer = (ui::HBox*)FindSubControl(L"itemSelectPageTitleHBox");
 
     switch (itemType)
     {
@@ -996,8 +1010,36 @@ UIModelItemSelect_Page::UIModelItemSelect_Page(ui::Window* pWindow, UIModelItemT
         title->SetTextId(L"STRID_MODELITEM_TITLE_CLASSIC_HANDHELDITEM");
         break;
     case UIModelItemType_BongoCat:
+    {
         this->SetName(L"BONGOCAT_SELECT_PAGE");
         title->SetTextId(L"STRID_MODELITEM_TITLE_BONGOCAT");
+
+
+
+        //Bongo Cat选择页内部添加选择按钮
+		ui::Button* importBongoCatBtn = new ui::Button(pWindow);
+        importBongoCatBtn->SetFixedHeight(ui::UiFixedInt(32),true,true);
+		importBongoCatBtn->SetVerAlignType(ui::VerAlignType::kAlignCenter);
+        importBongoCatBtn->SetBkImage(L"file='itemImport.svg' dest='8,8,24,24'");
+        importBongoCatBtn->SetTextId(L"STRID_MODELITEM_BONGOCAT_IMPORT");
+        importBongoCatBtn->SetTextPadding({32,0,8,0},true);
+        //importBongoCatBtn->SetTextStyle
+        importBongoCatBtn->SetStateColor(ui::ControlStateType::kControlStateHot,L"itemHoverColor");
+        importBongoCatBtn->AttachClick([this](const ui::EventArgs& msg)->bool {
+            if (BongoCatImport_Dlg::ShowModalDlg(msg.GetSender()->GetWindow()))
+            {
+                //如果导入成功则刷新页面
+                provider->LoadItemList();
+                provider->EmitCountChanged();
+
+            }
+            return true;
+            });
+        
+
+        titleContainer->AddItem(importBongoCatBtn);
+    }
+        break;
     case UIModelItemType_DecorationItem:
     {
         this->SetName(L"DECORATIONITEM_SELECT_PAGE");

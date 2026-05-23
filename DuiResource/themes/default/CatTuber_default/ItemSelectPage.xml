@@ -5,10 +5,10 @@
 
 
 	<VBox margin="20,0,0,0">
-		<HBox height="auto" margin="0,10,0,20">
+		<HBox height="40" margin="0,10,0,20" name="itemSelectPageTitleHBox">
 	<Label name="itemSelectPageTitle" font="system_bold_22" margin="10,0,20,0" valign="center"/>
-			<Button name="btn_createScene" width="40" height="40" border_round="4,4" bkimage="file='icon_add_24px.png' dest='8,8,32,32'" hot_color="itemHoverColor"
-					 valign="center" tooltip_text_id="STRID_SCENESELECT_BUTTON_TOOLTIP_CREATENEW"/>
+			<!--<Button name="btn_createScene" width="40" height="40" border_round="4,4" bkimage="file='icon_add_24px.png' dest='8,8,32,32'" hot_color="itemHoverColor"
+					 valign="center" tooltip_text_id="STRID_SCENESELECT_BUTTON_TOOLTIP_CREATENEW"/>-->
 			</HBox>
 		<VirtualVTileListBox name="itemContainer" width="stretch" height="stretch" child_margin="2" 
 							 item_size="180,200" vscrollbar="true" select_none_when_click_blank="false">

@@ -192,7 +192,8 @@ public:
 
     //获取信息
     RenderWindowController* GetWindowController(int index);
-
+    size_t GetWindowControllerCount() { return controllers.size(); };
+    //int GetWindowControllerIndex(int index);
 
     //设置项
     //均在主线程中调用..

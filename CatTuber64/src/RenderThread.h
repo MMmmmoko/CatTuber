@@ -19,7 +19,7 @@ public:
     void PostTask(void(* task)(void* userdata, uint64_t userdata2), void* userdata=NULL,uint64_t userdata2=0); // 投递任务到渲染线程
     void SendTask(void(*task)(void* userdata, uint64_t userdata2), void* userdata = NULL, uint64_t userdata2 = 0);//等待执行完成。不可在渲染线程调用
     //void LockThread();//锁定渲染线程以执行其他工作
-    
+	void SetRenderWindowRendering(bool enable) { renderWindowRendering = enable; }
 private:
     
 
@@ -42,6 +42,8 @@ private:
     SDL_Thread* renderThread=NULL;
     SDL_Mutex* taskQueueMutex = NULL;
     bool stopFlag = false;
+
+    bool renderWindowRendering = true;
 
 };
 

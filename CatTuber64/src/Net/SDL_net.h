@@ -1475,7 +1475,7 @@ extern "C" {
 
 
     //作为补充
-    extern bool NET_GetLocalLANAddressStr(char* buf,int buflen);
+#include"SDL3_net_h_patch.inl"
 
 
 
