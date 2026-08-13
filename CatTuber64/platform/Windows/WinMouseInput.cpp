@@ -181,10 +181,14 @@ void MouseInput::UpdateAndPumpEvents()
 		{
 			mouseButtonList[i]->ButtonDown();
 			MouseButtonStates_LastFrame[i] = mouse_state_d7.rgbButtons[i];
+
+
+			RemoteInputLink::GetIns().SendRemoteIfNecessary(RemoteInputLink::RemoteDataType_MouseButton, i, 1.f);
 		}
 		else if (MouseButtonStates_LastFrame[i] & 0x80 && mouse_state_d7.rgbButtons[i] == 0)
 		{
 			mouseButtonList[i]->ButtonUp();
+			RemoteInputLink::GetIns().SendRemoteIfNecessary(RemoteInputLink::RemoteDataType_MouseButton, i, 0.f);
 			MouseButtonStates_LastFrame[i] = 0;
 		}
 	}
@@ -221,6 +225,8 @@ void MouseInput::UpdateAndPumpEvents()
 		mouseMoveX->SetValue(relatePosX);
 		mouseMoveY->SetValue(relatePosY);
 
+		RemoteInputLink::GetIns().SendRemoteIfNecessary(RemoteInputLink::RemoteDataType_MouseAxis, 2, relatePosX);
+		RemoteInputLink::GetIns().SendRemoteIfNecessary(RemoteInputLink::RemoteDataType_MouseAxis, 3, relatePosY);
 	}
 	else
 	{
@@ -262,6 +268,8 @@ void MouseInput::UpdateAndPumpEvents()
 
 			mouseCoordinateX->SetValue(newCoordinateValueX);
 			mouseCoordinateY->SetValue(newCoordinateValueY);
+			RemoteInputLink::GetIns().SendRemoteIfNecessary(RemoteInputLink::RemoteDataType_MouseAxis, 0, newCoordinateValueX);
+			RemoteInputLink::GetIns().SendRemoteIfNecessary(RemoteInputLink::RemoteDataType_MouseAxis,1, newCoordinateValueY);
 		}
 	}
 
@@ -275,6 +283,7 @@ void MouseInput::UpdateAndPumpEvents()
 		{
 			MouseWheel_LastFrame[0] = true;
 			mouseWheelUp->ButtonDown();
+			RemoteInputLink::GetIns().SendRemoteIfNecessary(RemoteInputLink::RemoteDataType_MouseButton, 5, 1.f);
 		}
 	}
 	else
@@ -283,6 +292,7 @@ void MouseInput::UpdateAndPumpEvents()
 		{
 			MouseWheel_LastFrame[0] = false;
 			mouseWheelUp->ButtonUp();
+			RemoteInputLink::GetIns().SendRemoteIfNecessary(RemoteInputLink::RemoteDataType_MouseButton, 5, 0.f);
 		}
 	}
 	if (mouse_state_d7.lZ < 0)
@@ -291,6 +301,7 @@ void MouseInput::UpdateAndPumpEvents()
 		{
 			MouseWheel_LastFrame[1] = true;
 			mouseWheelDown->ButtonDown();
+			RemoteInputLink::GetIns().SendRemoteIfNecessary(RemoteInputLink::RemoteDataType_MouseButton, 6, 1.f);
 		}
 	}
 	else
@@ -299,6 +310,7 @@ void MouseInput::UpdateAndPumpEvents()
 		{
 			MouseWheel_LastFrame[1] = false;
 			mouseWheelDown->ButtonUp();
+			RemoteInputLink::GetIns().SendRemoteIfNecessary(RemoteInputLink::RemoteDataType_MouseButton, 6, 0.f);
 		}
 	}
 

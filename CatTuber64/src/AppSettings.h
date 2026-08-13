@@ -40,7 +40,18 @@ typedef std::string _CatString;
 \
     F(UIScene,CreateEmpty,bool,true) \
 \
-    F(Scene,LastExit,_CatString,"")
+    F(Scene,LastExit,_CatString,"") \
+\
+    F(RemoteLink,RemoteAddr,_CatString,"")  \
+    F(RemoteLink,RemotePort,int64_t,50002) \
+    F(RemoteLink,StopUpdateWhenOutput,bool,false) \
+    F(RemoteLink,AutoReconnect,bool,true) \
+    F(RemoteLink,OutputWhenStart,bool,false) \
+\
+    F(RemoteLink,LocalPort,int64_t,50002) \
+    F(RemoteLink,BlockInputWhenReceive,bool,true) \
+    F(RemoteLink,ReceiveWhenStart,bool,false) 
+
 
 //MouseInputArea使用字符串，需要处理显示器名相同的情况
 //有非默认加载写入行为的

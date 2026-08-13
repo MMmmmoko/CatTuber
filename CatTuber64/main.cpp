@@ -58,7 +58,7 @@
 
 #else
 #pragma comment(lib, "cximage_s.lib")
-#pragma comment(lib, "duilib_s.lib")
+//#pragma comment(lib, "duilib_s.lib")
 #pragma comment(lib, "libpng_s.lib")
 #pragma comment(lib, "libwebp_s.lib")
 #pragma comment(lib, "zlib_s.lib")

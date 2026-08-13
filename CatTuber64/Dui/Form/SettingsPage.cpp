@@ -22,14 +22,17 @@ void SettingsPage::InitContents(uintptr_t userdata1, uintptr_t userdata2)
     //}
     //ASSERT(Box&&"Can not be nullptr.");
 
+    //防止反复fillBox
+    if(!slider_volume)
+    {
     ui::GlobalManager::Instance().FillBoxWithCache(this, ui::FilePath(L"CatTuber_default/SettingsPage.xml"));
 
 
-	//this->AddItem(Box);
+    //this->AddItem(Box);
 
-	this->SetName(L"SETTINGS_PAGE");
+    this->SetName(L"SETTINGS_PAGE");
 
-    
+
 
 
 #define TABOP_TO_TABOPSTR(x) L#x
@@ -42,18 +45,18 @@ header_##op = static_cast<ui::Box*>(FindSubControl(TABOP_TO_TABOPSTR(header_##op
 settingsPage_##op.InitContents(this);
     UISETTINGSPAGE_TABOP_LIST(UISETTINGSPAGE_TABOP_InitControl);
 #undef UISETTINGSPAGE_TABOP_InitControl
-    
+
 
     //header_input->getsc
     //tabop_window = static_cast<ui::Option*>(FindSubControl(L"tabop_window"));
     //tabop_window->AttachSelect(ui::UiBind(&SettingsPage::OnTabOptionClicked, this, std::placeholders::_1));
-    
-    vbox_container= static_cast<ui::VListBox*>(FindSubControl(L"box_Container"));
+
+    vbox_container = static_cast<ui::VListBox*>(FindSubControl(L"box_Container"));
     vbox_container->AttachScrollPosChanged(ui::UiBind(&SettingsPage::OnScrollChange, this, std::placeholders::_1));
 
 
 
-    tabop_window->Selected(true,true);
+    tabop_window->Selected(true, true);
 
 
 
@@ -61,12 +64,12 @@ settingsPage_##op.InitContents(this);
 
     //音频
     {
-        double volumevalue=AppSettings::GetIns().GetVolumeValue();
-        slider_volume= static_cast<ui::Slider*>(FindSubControl(L"slider_volume"));
-        slider_volume->SetValue(volumevalue*100.);
+        double volumevalue = AppSettings::GetIns().GetVolumeValue();
+        slider_volume = static_cast<ui::Slider*>(FindSubControl(L"slider_volume"));
+        slider_volume->SetValue(volumevalue * 100.);
         slider_volume->AttachValueChanged(ui::UiBind(&SettingsPage::OnSoundSliderValueChanged, this, std::placeholders::_1));
     }
-
+}
 
 
 

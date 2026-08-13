@@ -3,7 +3,22 @@
 		xmlns:xs="http://www.w3.org/2001/XMLSchema"
 		xmlns="http://tempuri.org/NIMDUISchema.xsd">
 
+	<Class name="cb30px"  height="30" font="system_14" normal_text_color="textNormalColor" width="400"
+		   normal_image="file='CheckBox_16px.png' dest='4,7,20,23' source='0,0,16,16'"
+		   hot_image="file='CheckBox_16px.png' dest='4,7,20,23' source='16,0,32,16'"
+		selected_normal_image="file='CheckBox_16px.png' dest='4,7,20,23' source='32,0,48,16'"
+		   text_padding="28,0,0,0" text_align="left,vcenter"/>
 
+
+
+	<!--duilib对want_ctrl_return和want_return的处理疑似反了-->
+	<Class name="edit30px"  width="200" height="30"  font="system_14"
+		  padding="0,3,0,0"
+					 normal_color="richedit_border_color" normal_color_margin="0,27,0,2"
+	  multi_line="false" auto_hscroll="true" rich_text="false"
+			 want_return="false" want_ctrl_return="true" want_tab="false"
+			 disabled_text_color="disabled_font_color" select_all_on_focus="true"
+						  text_align="hcenter,vcenter"/>
 
 	<VBox margin="20,0,0,0">
 
@@ -11,9 +26,11 @@
 	<Label text_id="STRID_REMOTELINK" font="system_bold_22" margin="10,10,30,20" height="40" valign="center"/>
 	</HBox>
 		<Label text_id="STRID_REMOTELINK_DESCRIPTION"/>
-		<Control bkcolor="itemSeparatorColor" height="1"/>
+		<Control bkcolor="itemSeparatorColor" height="1"  margin="0,8,0,8"/>
 		
-		<ButtonBox name="toggle_linkType" height="auto" mouse_child="false" border_size="1" border_color="panelBorderColor">
+		<ButtonBox name="toggle_linkType" height="auto" mouse_child="false" border_size="1" border_color="panelBorderColor" margin="0,6,0,6"
+				     
+				   >
 			<HBox height="auto" width="auto" margin="0,6,0,6">
 				<Label text_id="STRID_REMOTELINK_AS_INPUT_SOURCE" normal_text_color="subjectColor_content" font="system_16" text_align="center"/>
 				<Label text_id="STRID_REMOTELINK_AS_OUTPUT_TARGET" normal_text_color="textNormalColor" font="system_16" text_align="center"/>
@@ -23,11 +40,11 @@
 		<TabBox name="linkSettingsConatiner">
 			<!--作为输出端-->
 			<VBox>
-				<Label text_id="STRID_REMOTELINK_AS_INPUT_SOURCE_TIP"/>
+				<Label text_id="STRID_REMOTELINK_AS_INPUT_SOURCE_TIP" normal_text_color="textLightColor"/>
 
-				<HBox height="auto">
-					<Label text_id="STRID_REMOTELINK_AS_INPUT_SOURCE_REMOTEADDR"/>
-					<RichEdit name="edit_remoteAddr" width="stretch" height="30" margin="20,3,20,0" font="system_14"
+				<!--<HBox height="auto">
+					<Label text_id="STRID_REMOTELINK_AS_INPUT_SOURCE_REMOTEADDR" valign="center"/>
+					<RichEdit name="edit_remoteAddr" width="240" height="30" margin="20,3,20,0" font="system_14"
 		  border_size="0,0,0,1" border_color="richedit_border_color" padding="0,6,0,0"
 	  multi_line="false" auto_hscroll="true" rich_text="false"
 			 want_return="true" want_ctrl_return="false" want_tab="false"
@@ -36,47 +53,72 @@
 
 				<HBox height="auto">
 					<Label text_id="STRID_REMOTELINK_AS_INPUT_SOURCE_REMOTEPORT"/>
-					<RichEdit name="edit_remotePort" width="stretch" height="30" margin="20,3,20,0" font="system_14"
+					<RichEdit name="edit_remotePort" width="240" height="30" margin="20,3,20,0" font="system_14"
 		  border_size="0,0,0,1" border_color="richedit_border_color" padding="0,6,0,0"
 	  multi_line="false" auto_hscroll="true" rich_text="false"
 			 want_return="true" want_ctrl_return="false" want_tab="false"
 			 disabled_text_color="disabled_font_color" select_all_on_focus="true"/>
+				</HBox>-->
+
+				<HBox height="auto">
+					<VBox width="auto" height="auto" margin="0,0,6,0">
+
+						<Label text_id="STRID_REMOTELINK_AS_INPUT_SOURCE_REMOTEADDR" height="30" valign="center" halign="right"/>
+						<Label text_id="STRID_REMOTELINK_AS_INPUT_SOURCE_REMOTEPORT" height="30" valign="center" halign="right"/>
+					</VBox>
+
+					<VBox width="auto" height="auto">
+						
+					<RichEdit class="edit30px" name="edit_remoteAddr" />
+					<RichEdit class="edit30px" name="edit_remotePort" 
+						  number_only="true" max_number="65535" min_number="0" 
+							  />
+					</VBox>
 				</HBox>
 				
-				<CheckBox text_id="STRID_REMOTELINK_AS_INPUT_SOURCE_DISABLERENDERING"/>
+				
+				
+				<CheckBox class="cb30px" name="cb_StopUpdate" text_id="STRID_REMOTELINK_AS_INPUT_SOURCE_DISABLERENDERING"/>
+				<CheckBox class="cb30px" name="cb_AutoReconnect" text_id="STRID_REMOTELINK_AS_INPUT_SOURCE_AUTORECONNECT"/>
+				<CheckBox class="cb30px" name="cb_OutputWhenStart" text_id="STRID_REMOTELINK_AS_INPUT_SOURCE_CONNECTWHENSTART"/>
 
-				<Button text_id="STRID_REMOTELINK_AS_INPUT_SOURCE_RUN"/>
+				<Button height="30" padding="8,0,8,0" text_id="STRID_REMOTELINK_AS_INPUT_SOURCE_RUN" border_round="4,4" normal_text_color="white" bkcolor="#00c598" hot_color="#5ED1AC" pushed_color="#42B793"/>
+				<Button height="30" padding="8,0,8,0" text_id="STRID_REMOTELINK_AS_INPUT_SOURCE_STOP" border_round="4,4" normal_text_color="white" bkcolor="#df3664" hot_color="#EB6781" pushed_color="#CF4E69"
+						visible="false"/>
 			</VBox>
 			
 			
 			<!--作为接收端-->
 			<VBox>
-				<HBox height="60">
-					<VBox width="auto">
-						<Label text_id="STRID_REMOTELINK_AS_OUTPUT_TARGET_LOCALIP"/>
-						<Label text_id="STRID_REMOTELINK_AS_OUTPUT_TARGET_LOCALNAME"/>
+				<HBox height="auto">
+					<VBox width="auto" height="auto" margin="0,0,6,0">
+						<Label text_id="STRID_REMOTELINK_AS_OUTPUT_TARGET_LOCALIP" height="30" valign="center" halign="right"/>
+						<Label text_id="STRID_REMOTELINK_AS_OUTPUT_TARGET_LOCALNAME" height="30" valign="center" halign="right"/>
+						<Label text_id="STRID_REMOTELINK_AS_OUTPUT_TARGET_LOCALPORT" height="30" valign="center" halign="right"/>
 					</VBox>
-					<VBox width="auto">
-						<Label name="text_loaclIP"/>
-						<Label name="text_loaclName"/>
+					<VBox width="auto" height="auto">
+						<Label name="text_loaclIP" height="30" valign="center" halign="center"/>
+						<Label name="text_loaclName" height="30" valign="center" halign="center"/>
+						<RichEdit class="edit30px" name="edit_localPort" width="stretch" min_width="70"   number_only="true" max_number="65535" min_number="0" />
 					</VBox>
-					<VBox>
-						<Button width="24" height="24" name="btn_copyIP" bkcolor="darkcolor"/>
-						<Button width="24" height="24" name="btn_copyName"  bkcolor="darkcolor"/>
+					<VBox width="auto" height="auto">
+						<Button width="24" height="24" margin="3,3,3,3" name="btn_copyIP" tooltip_text_id="STRID_REMOTELINK_AS_OUTPUT_TARGET_COPYBUTTONTIPS" bkimage="icon_copy.svg" hot_color="itemHoverColor" pushed_color="itemPushColor"/>
+						<Button width="24" height="24" margin="3,3,3,3" name="btn_copyName" tooltip_text_id="STRID_REMOTELINK_AS_OUTPUT_TARGET_COPYBUTTONTIPS" bkimage="icon_copy.svg" hot_color="itemHoverColor" pushed_color="itemPushColor"/>
+						<!--端口占用提示-->
+						<Button width="24" height="24" margin="3,3,3,3" name="btn_randomPort" tooltip_text_id="STRID_REMOTELINK_AS_OUTPUT_TARGET_RANDOMBUTTONTIPS"
+								bkimage="icon_random.svg" hot_color="itemHoverColor" pushed_color="itemPushColor"/>
 					</VBox>
 				</HBox>
 				<HBox height="auto">
-					<Label text_id="STRID_REMOTELINK_AS_OUTPUT_TARGET_LOCALPORT"/>
-					<RichEdit name="edit_remotePort" width="stretch" height="30" margin="20,3,20,0" font="system_14"
-		  border_size="0,0,0,1" border_color="richedit_border_color" padding="0,6,0,0"
-	  multi_line="false" auto_hscroll="true" rich_text="false"
-			 want_return="true" want_ctrl_return="false" want_tab="false"
-			 disabled_text_color="disabled_font_color" select_all_on_focus="true"/>
-				</HBox>
+						</HBox>
 
-				<CheckBox text_id="STRID_REMOTELINK_AS_OUTPUT_TARGET_DISABLEDEVICEINPUT"/>
-
-				<Button text_id="STRID_REMOTELINK_AS_OUTPUT_TARGET_RUN"/>
+				<CheckBox class="cb30px" name="cb_BlockLocalInput" text_id="STRID_REMOTELINK_AS_OUTPUT_TARGET_DISABLEDEVICEINPUT"/>
+				<CheckBox class="cb30px" name="cb_ReceiveWhenStart" text_id="STRID_REMOTELINK_AS_OUTPUT_TARGET_CONNECTWHENSTART"/>
+				
+				
+				<Button height="30" padding="8,0,8,0" text_id="STRID_REMOTELINK_AS_OUTPUT_TARGET_RUN" border_round="4,4" normal_text_color="white" bkcolor="#00c598" hot_color="#5ED1AC" pushed_color="#42B793"/>
+				<Button height="30" padding="8,0,8,0" text_id="STRID_REMOTELINK_AS_OUTPUT_TARGET_STOP" border_round="4,4" normal_text_color="white" bkcolor="#df3664"
+						visible="false"/>
 			</VBox>
 		</TabBox>
 		

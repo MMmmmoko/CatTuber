@@ -318,13 +318,20 @@ void KeyboardInput::UpdateAndPumpEvents()
 		if (curData & 0x80)
 		{
 			//按下
-			if(buttnList[curKey])
+			if (buttnList[curKey])
+			{
 				buttnList[curKey]->ButtonDown();
+
+				RemoteInputLink::GetIns().SendRemoteIfNecessary(RemoteInputLink::RemoteDataType_KeyboardButton, (unsigned short)curKey, 1.f);
+			}
 		}
 		else
 		{
 			if (buttnList[curKey])
+			{
 				buttnList[curKey]->ButtonUp();
+				RemoteInputLink::GetIns().SendRemoteIfNecessary(RemoteInputLink::RemoteDataType_KeyboardButton, (unsigned short)curKey, 0.f);
+			}
 		}
 
 

@@ -513,6 +513,52 @@ void AppSettings::_OnSceneLastExitChange(const std::string& value)
 
 
 
+void AppSettings::_OnRemoteLinkRemoteAddrChange(const std::string& value)
+{
+}
+
+void AppSettings::_OnRemoteLinkRemotePortChange(const int64_t& value)
+{
+}
+
+void AppSettings::_OnRemoteLinkStopUpdateWhenOutputChange(const bool& value)
+{
+}
+
+void AppSettings::_OnRemoteLinkAutoReconnectChange(const bool& value)
+{
+}
+
+void AppSettings::_OnRemoteLinkOutputWhenStartChange(const bool& value)
+{
+}
+
+
+
+
+void AppSettings::_OnRemoteLinkLocalPortChange(const int64_t& value)
+{
+}
+void AppSettings::_OnRemoteLinkBlockInputWhenReceiveChange(const bool& value)
+{
+}
+void AppSettings::_OnRemoteLinkReceiveWhenStartChange(const bool& value)
+{
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

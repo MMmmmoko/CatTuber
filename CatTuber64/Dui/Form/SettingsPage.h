@@ -52,7 +52,7 @@ private:
 	
 	//音频
 	bool OnSoundSliderValueChanged(const ui::EventArgs& msg);
-	ui::Slider* slider_volume;
+	ui::Slider* slider_volume=nullptr;
 
 
 };

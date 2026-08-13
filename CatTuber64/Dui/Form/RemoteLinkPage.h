@@ -23,6 +23,16 @@ private:
 		LinkType_OutputTarget=1,
 	};
 	bool OnLinkTypeToggleClicked(const ui::EventArgs& args);
+	bool OnReceivePageButtonClicked(const ui::EventArgs& args);
+
+
+	//Edit空间失去焦点的时候填充信息
+	bool OnEditLoseFocus(const ui::EventArgs& args);
+	bool OnEditReturn(const ui::EventArgs& args);//回车时失去交点，触发保存
+	bool OnCheckBoxClick(const ui::EventArgs& args);
+
+
+
 	void _SetTogleStyle(LinkType link);
 
 	void _StartSend();
@@ -35,6 +45,28 @@ private:
 	//发送端
 	ui::RichEdit* edit_remoteAddr = nullptr;
 	ui::RichEdit* edit_remotePort = nullptr;
+	ui::CheckBox* cb_StopUpdate = nullptr;
+	ui::CheckBox* cb_AutoReconnect = nullptr;
+	ui::CheckBox* cb_OutputWhenStart = nullptr;
+
+	ui::Button* btn_StartOutput = nullptr;
+	ui::Button* btn_StopOutput = nullptr;
+
+
+
+
+	//接收端
+	ui::Button* btn_copyIP = nullptr;
+	ui::Button* btn_copyName = nullptr;
+	ui::Button* btn_randomPort = nullptr;
+	ui::RichEdit* edit_localPort = nullptr;
+	ui::CheckBox* cb_BlockLocalInput = nullptr;
+	ui::CheckBox* cb_ReceiveWhenStart = nullptr;
+
+	ui::Button* btn_StartReceive = nullptr;
+	ui::Button* btn_StopReceive = nullptr;
+
+
 };
 
 

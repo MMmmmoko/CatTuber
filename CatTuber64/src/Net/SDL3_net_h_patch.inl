@@ -5,3 +5,4 @@
 
 extern bool NET_GetLocalLANAddressStr(char* buf, int buflen);
 extern bool NET_GetLocalComputerName(char* buf, int buflen);
+extern unsigned short NET_GetAvailablePort();
