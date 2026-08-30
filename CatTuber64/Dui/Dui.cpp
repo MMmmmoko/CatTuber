@@ -45,6 +45,8 @@ void Dui::Init()
 
 	colorManager.AddColor(L"shadowColor", ui::UiColor(0x38000000));//阴影色
 
+	colorManager.AddColor(L"warningColor", ui::UiColor(0xffdf3664));//警告文本或图标的颜色
+
 	colorManager.AddColor(L"subjectColor", ui::UiColor(0xFFff7bb8));//主题色
 	colorManager.AddColor(L"subjectColor_hot", ui::UiColor(0xFFFF95D0));//主题色
 	colorManager.AddColor(L"subjectColor_push", ui::UiColor(0xFFF159AE));//主题色

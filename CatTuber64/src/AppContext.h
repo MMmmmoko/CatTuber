@@ -120,9 +120,37 @@ DISABLE_WARNING_GCC("-Wshift-negative-value")
 //}
 
 
+
+typedef std::string _CatString;
+typedef void* _CatPtr;
+#define CATTUBER_APPCONTEXT_LIST(F) \
+    F(RemoteLink,UIPagePointer,_CatPtr,nullptr) 
+
+
 class AppContext
 {
     friend class CatTuberApp;
+public:
+    //通过AppContext存取的属性
+
+
+#define APPCONTEXT_Declarations(settingGroup,setting,type,defaultValue) \
+public: \
+static const type& Get##settingGroup##setting(){return _ref()._##settingGroup##setting;} \
+static void Set##settingGroup##setting(const type##& value){ \
+    if(_ref()._##settingGroup##setting!=value){_ref()._##settingGroup##setting=value;}} \
+private: \
+type _##settingGroup##setting=defaultValue; 
+
+    CATTUBER_APPCONTEXT_LIST(APPCONTEXT_Declarations)
+#undef APPCONTEXT_Declarations
+
+
+
+
+
+
+
 public:
     ~AppContext();
 
@@ -136,8 +164,8 @@ public:
 	static uint32_t GetAppVersion() { return CATTUBER_VER; };
 
 
-
-
+	//通过SDL_PropertiesID来管理一些属性，简化代码
+    static SDL_PropertiesID GetCommonProperties() { return _ref()._commonProperties; };
 
 
     //统一的日志、文件接口（方便结合其他库使用） sadsa
@@ -173,6 +201,7 @@ public:
     static void DeallocFunc_Aligned(void* alignedMemory);
 private:
     static AppContext& _ref() { static AppContext ref; return ref; };
+    AppContext();
 
     
     char* _prefPath = NULL;
@@ -188,7 +217,7 @@ private:
     SDL_GPUTextureFormat _swapchanFormat= SDL_GPUTextureFormat::SDL_GPU_TEXTUREFORMAT_B8G8R8A8_UNORM;
     Live2D::Cubism::Framework::Rendering::CubismRenderContext_SDL3* _SDL3RenderContext = NULL;
      //
-
+	SDL_PropertiesID _commonProperties = 0;
 
 };
 

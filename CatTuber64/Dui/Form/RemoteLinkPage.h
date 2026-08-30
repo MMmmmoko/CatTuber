@@ -15,6 +15,11 @@ public:
 	virtual MainUiForm::PageEnum GetPageType()override { return MainUiForm::PageEnum::PAGE_REMOTELINK; };
 
 
+	//从RemoteInputLink获取信息并显示
+	void UpdateLinkStates();
+	void UpdateLinkEndStates();//连接出现问题时..
+	void UpdateLoaclPort();
+
 
 private:
 	enum LinkType
@@ -24,6 +29,7 @@ private:
 	};
 	bool OnLinkTypeToggleClicked(const ui::EventArgs& args);
 	bool OnReceivePageButtonClicked(const ui::EventArgs& args);
+	bool OnSendReceiveButtonClicked(const ui::EventArgs& args);
 
 
 	//Edit空间失去焦点的时候填充信息
@@ -34,9 +40,9 @@ private:
 
 
 	void _SetTogleStyle(LinkType link);
+	void _SetControlsEnableState(bool enable);
+	void _SetLinkPage(LinkType link);
 
-	void _StartSend();
-	void _StopSend();
 	LinkType _currenType = LinkType_InputSource;
 
 	ui::TabBox* tabBox_SettingContainer = nullptr;
@@ -52,6 +58,8 @@ private:
 	ui::Button* btn_StartOutput = nullptr;
 	ui::Button* btn_StopOutput = nullptr;
 
+	ui::Label* text_Output = nullptr;
+
 
 
 
@@ -66,7 +74,7 @@ private:
 	ui::Button* btn_StartReceive = nullptr;
 	ui::Button* btn_StopReceive = nullptr;
 
-
+	ui::Label* text_Receive = nullptr;
 };
 
 

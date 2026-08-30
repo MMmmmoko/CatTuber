@@ -42,6 +42,8 @@ typedef std::string _CatString;
 \
     F(Scene,LastExit,_CatString,"") \
 \
+    F(RemoteLink,SelectedPage,int64_t,0)  \
+\
     F(RemoteLink,RemoteAddr,_CatString,"")  \
     F(RemoteLink,RemotePort,int64_t,50002) \
     F(RemoteLink,StopUpdateWhenOutput,bool,false) \

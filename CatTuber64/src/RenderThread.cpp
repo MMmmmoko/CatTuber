@@ -157,7 +157,7 @@ void RenderThread::ThreadLoop()
 		savedTick = currentTick;
 
 		
-		//使用的SDL_NET网络接口是不阻塞的，这里选择不添加独立的网络线程而是像处理时间一样在渲染线程中处理网络数据
+		//使用的SDL_NET网络接口是不阻塞的，这里选择不添加独立的网络线程而是像处理事件一样在渲染线程中处理网络数据
 		remoteInputLink.UpdateIfNecessary();
 		im.PumpDeviceOrNetworkInputEvents();
 		if (renderWindowRendering)

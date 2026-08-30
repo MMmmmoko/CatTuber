@@ -125,6 +125,7 @@
 			</VBox>
 		</TabBox>
 		
+		<CheckBox text_id="STRID_REMOTELINK_RUN_WHEN_APP_START"/>
 		
 </VBox>
 </Window>

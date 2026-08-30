@@ -513,6 +513,11 @@ void AppSettings::_OnSceneLastExitChange(const std::string& value)
 
 
 
+void AppSettings::_OnRemoteLinkSelectedPageChange(const std::int64_t& value)
+{
+}
+
+
 void AppSettings::_OnRemoteLinkRemoteAddrChange(const std::string& value)
 {
 }

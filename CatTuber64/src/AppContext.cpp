@@ -2,6 +2,18 @@
 #include"AppSettings.h"
 #include "AppContext.h"
 
+AppContext::AppContext()
+{
+	//_commonProperties = SDL_CreateProperties();
+	//if (0 == _commonProperties)
+	//{
+	//	SDL_Log("SDL_CreateProperties failed: %s", SDL_GetError());
+	//	SDL_assert(false&& "SDL_CreateProperties failed");
+	//}
+
+
+}
+
 AppContext::~AppContext()
 {
 	if (_prefPath)
