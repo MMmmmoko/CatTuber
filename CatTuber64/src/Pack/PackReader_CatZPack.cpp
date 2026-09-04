@@ -123,7 +123,7 @@ uint8_t* PackReader_CatZPack::LoadFile(const char* packPath, const char* path, s
 		// 预分配刚好够用的内存空间
 		//result.resize(fileInfo.uncompressed_size);
 		resultBuffer = new uint8_t[fileInfo.uncompressed_size];
-
+		*size = fileInfo.uncompressed_size;
 
 		// 一次性读取所有数据
 		int bytesRead = unzReadCurrentFile(uf, resultBuffer, static_cast<unsigned int>(fileInfo.uncompressed_size));

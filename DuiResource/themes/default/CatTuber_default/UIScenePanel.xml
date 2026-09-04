@@ -13,7 +13,11 @@
 
 	<!-- 场景设置区域VBOX -->
 	<VBox margin="5,0,5,5" >
-		<Button name="scenePanel_btnSceneTitle" fade_hot="true" hot_color="itemHoverColor" height="30" width="stretch" text_padding="20,0,0,0" text_align="left,vcenter"/>
+		<Box height="30">
+			<Button name="scenePanel_btnSceneTitle" fade_hot="true" hot_color="itemHoverColor" height="30" width="stretch" text_padding="20,0,0,0" text_align="left,vcenter"
+		 />
+			<Control bkimage="arrowRightDouble_24px.svg" height="24" width="24" valign="center" halign="right" mouse_enabled="false"/>
+		</Box>
 
 		
 		
@@ -38,10 +42,10 @@
 			<Label text_id="STRID_SCENEPANEL_CONTENTS" height="30" text_padding="20,0,0,0" />
 			<TabBox name="sceneItemListTabBox">
 				<!--窗口上限4-->
-				<VirtualVListBox  bkcolor="gray" select_none_when_click_blank="true"/>
-				<VirtualVListBox  bkcolor="gray" select_none_when_click_blank="true"/>
-				<VirtualVListBox  bkcolor="gray" select_none_when_click_blank="true"/>
-				<VirtualVListBox  bkcolor="gray" select_none_when_click_blank="true"/>
+				<VirtualVListBox  bkcolor="#2F888888" select_none_when_click_blank="true"/>
+				<VirtualVListBox  bkcolor="#2F888888" select_none_when_click_blank="true"/>
+				<VirtualVListBox  bkcolor="#2F888888" select_none_when_click_blank="true"/>
+				<VirtualVListBox  bkcolor="#2F888888" select_none_when_click_blank="true"/>
 			</TabBox>
 		<HBox height="auto">
 			<!--场景物品的功能按钮-->

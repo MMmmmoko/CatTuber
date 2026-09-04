@@ -134,6 +134,7 @@ public:
 private:
 	bool OnBtnClicked(const ui::EventArgs& args);
 	class SceneItemProvider* provider=nullptr;
+	bool inited = false;
 };
 
 

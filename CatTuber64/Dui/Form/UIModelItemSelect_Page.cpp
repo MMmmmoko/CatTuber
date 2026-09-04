@@ -7,6 +7,7 @@
 #include"Dialog/UISceneCoverCropper_Dlg.h"
 #include"Dialog/BongoCatImport_Dlg.h"
 
+#include"AppSettings.h"
 #include"AppContext.h"
 #include"Util.h"
 #include"Pack/Pack.h"
@@ -94,11 +95,11 @@ void UIModelItem::InitSubControls(const std::string& name, const std::string& im
 
     if (selected)
     {
-        labelItenName->SetStateTextColor(ui::kControlStateNormal, L"subjectColor_content");
+        //labelItenName->SetStateTextColor(ui::kControlStateNormal, L"subjectColor_content");
     }
     else
     {
-        labelItenName->SetStateTextColor(ui::kControlStateNormal, L"textNormalColor");
+        //labelItenName->SetStateTextColor(ui::kControlStateNormal, L"textNormalColor");
     }
     auto testPtr = dynamic_cast<ui::VBox*> (this);
 
@@ -347,7 +348,13 @@ void UIModelItemProvider::SetElementSelected(size_t nElementIndex, bool bSelecte
 
 		OnSetSelect(nElementIndex);
     }
+    if (itemList[itemView[nElementIndex]].emptyItem)
+        itemList[itemView[nElementIndex]].selected = false;
     EmitDataChanged(nElementIndex,nElementIndex);
+    if (bSelected)
+    {
+        _parentPage->UpdateItemInfoBox();
+    }
 }
 
 bool UIModelItemProvider::IsElementSelected(size_t nElementIndex) const
@@ -517,8 +524,8 @@ void UIModelItemProvider::LoadItemList()
 
     SDL_EnumerateDirectoryCallback fileCallback = [](void* userdata, const char* dirname, const char* fname) -> SDL_EnumerationResult
     {
-            char pathBuf[1024];
-            SDL_snprintf(pathBuf, 1024,"%s%s", dirname, fname);
+            char pathBuf[4096];
+            int pathBuflen=SDL_snprintf(pathBuf, sizeof(pathBuf), "%s%s", dirname, fname);
             Pack pack;
             if (pack.Open(pathBuf))
             {
@@ -578,17 +585,34 @@ void UIModelItemProvider::LoadItemList()
                 info.filePath = pathBuf;
 
 
-				auto& itemList = static_cast<UIModelItemProvider*>(userdata)->itemList;
-				itemList.push_back(std::move(info));
-                auto& itemView =static_cast<UIModelItemProvider*>(userdata)->itemView;
-                itemView.push_back((uint16_t)itemView.size());
 
 
                 auto& itemFilePath = static_cast<UIModelItemProvider*>(userdata)->curSelectItemPath;
-                if (!itemFilePath.empty() && itemFilePath== info.filePath)
+                
+
+                if (!itemFilePath.empty()&& itemFilePath.size()== pathBuflen)
                 {
-                    info.selected = true;
+                    //对比路径
+                    bool success = true;
+                    for (int i = 0; i < pathBuflen; i++)
+                    {
+                        if (itemFilePath[i] == pathBuf[i])
+                            continue;
+                        if ((itemFilePath[i] == '/' || itemFilePath[i] == '\\')
+                            && (pathBuf[i] == '/' || pathBuf[i] == '\\'))
+                            continue;
+                        success = false;
+                        break;
+                    }
+                    info.selected = success;
                 }
+
+
+
+                auto& itemList = static_cast<UIModelItemProvider*>(userdata)->itemList;
+                itemList.push_back(std::move(info));
+                auto& itemView = static_cast<UIModelItemProvider*>(userdata)->itemView;
+                itemView.push_back((uint16_t)itemView.size());
             }
 
 
@@ -994,7 +1018,7 @@ UIModelItemSelect_Page::UIModelItemSelect_Page(ui::Window* pWindow, UIModelItemT
     ui::GlobalManager::Instance().FillBoxWithCache(this, ui::FilePath(L"CatTuber_default/ItemSelectPage.xml"));
     ui::Label* title = (ui::Label*)FindSubControl(L"itemSelectPageTitle");
     ui::HBox* titleContainer = (ui::HBox*)FindSubControl(L"itemSelectPageTitleHBox");
-
+   
     switch (itemType)
     {
     case UIModelItemType_ClassicCharacter:
@@ -1037,7 +1061,7 @@ UIModelItemSelect_Page::UIModelItemSelect_Page(ui::Window* pWindow, UIModelItemT
             });
         
 
-        titleContainer->AddItem(importBongoCatBtn);
+        titleContainer->AddItemAt(importBongoCatBtn,1);
     }
         break;
     case UIModelItemType_DecorationItem:
@@ -1050,6 +1074,17 @@ UIModelItemSelect_Page::UIModelItemSelect_Page(ui::Window* pWindow, UIModelItemT
         break;
     }
 
+
+
+    //挂接详细信息按钮
+    cb_showDetailedInfo = (ui::CheckBoxBox*)FindSubControl(L"cb_showDetailedInfo");
+    cb_showDetailedInfo->AttachSelect(ui::UiBind(&UIModelItemSelect_Page::OnCheckBoxSelected, this, std::placeholders::_1));
+    cb_showDetailedInfo->AttachUnSelect(ui::UiBind(&UIModelItemSelect_Page::OnCheckBoxSelected, this, std::placeholders::_1));
+
+    itemInfoBox = (ui::VScrollBox*)FindSubControl(L"itemInfoBox");
+    itemInfo_cover = (ui::Control*)FindSubControl(L"itemInfo_cover");
+    itemInfo_name = (ui::Label*)FindSubControl(L"itemInfo_name");
+    itemInfo_desc = (ui::RichText*)FindSubControl(L"itemInfo_desc");
 }
 
 UIModelItemSelect_Page::~UIModelItemSelect_Page()
@@ -1103,12 +1138,78 @@ void UIModelItemSelect_Page::InitContents(uintptr_t userdata1,uintptr_t userdata
     provider->LoadItemList();
 
 
+
+    switch (itemType)
+    {
+    case UIModelItemType_Empty:
+        break;
+    case UIModelItemType_ClassicCharacter:
+        cb_showDetailedInfo->Selected(AppSettings::GetIns().GetUIItemShowDetailedInfo_ClassicCharacter(), true);
+        break;
+    case UIModelItemType_ClassicDesk:
+        cb_showDetailedInfo->Selected(AppSettings::GetIns().GetUIItemShowDetailedInfo_ClassicDesk(), true);
+        break;
+    case UIModelItemType_ClassicHandheldItem:
+        cb_showDetailedInfo->Selected(AppSettings::GetIns().GetUIItemShowDetailedInfo_ClassicHandheldItem(), true);
+        break;
+    case UIModelItemType_BongoCat:
+        cb_showDetailedInfo->Selected(AppSettings::GetIns().GetUIItemShowDetailedInfo_BongoCat(), true);
+        break;
+    case UIModelItemType_DecorationItem:
+        cb_showDetailedInfo->Selected(AppSettings::GetIns().GetUIItemShowDetailedInfo_DecorationItem(), true);
+        break;
+    case UIModelItemType_Count:
+        break;
+    default:
+        break;
+    }
+
     
 
-
+    
 }
 
 
+
+bool UIModelItemSelect_Page::OnCheckBoxSelected(const ui::EventArgs& args)
+{
+    if (args.GetSender() == cb_showDetailedInfo)
+    {
+        switch (itemType)
+        {
+        case UIModelItemType_Empty:
+            break;
+        case UIModelItemType_ClassicCharacter:
+            AppSettings::GetIns().SetUIItemShowDetailedInfo_ClassicCharacter(cb_showDetailedInfo->IsSelected());
+            break;
+        case UIModelItemType_ClassicDesk:
+            AppSettings::GetIns().SetUIItemShowDetailedInfo_ClassicDesk(cb_showDetailedInfo->IsSelected());
+
+            break;
+        case UIModelItemType_ClassicHandheldItem:
+            AppSettings::GetIns().SetUIItemShowDetailedInfo_ClassicHandheldItem(cb_showDetailedInfo->IsSelected());
+            break;
+        case UIModelItemType_BongoCat:
+            AppSettings::GetIns().SetUIItemShowDetailedInfo_BongoCat(cb_showDetailedInfo->IsSelected());
+            break;
+        case UIModelItemType_DecorationItem:
+            AppSettings::GetIns().SetUIItemShowDetailedInfo_DecorationItem(cb_showDetailedInfo->IsSelected());
+            break;
+        case UIModelItemType_Count:
+            break;
+        default:
+            break;
+        }
+
+        itemInfoBox->SetVisible(cb_showDetailedInfo->IsSelected());
+        if (cb_showDetailedInfo->IsSelected())
+            UpdateItemInfoBox();
+
+    }
+
+
+    return true;
+}
 
 void UIModelItemSelect_Page::OnEnterThisPage(PageEnterFlag enterFlag)
 {
@@ -1155,6 +1256,31 @@ void UIModelItemSelect_Page::OnEnterThisPage(PageEnterFlag enterFlag)
 
 
 
+}
+
+void UIModelItemSelect_Page::UpdateItemInfoBox()
+{
+    if (cb_showDetailedInfo->IsSelected() == false)return;
+    
+    std::vector<size_t> selectedIndexs;
+    provider->GetSelectedElements(selectedIndexs);
+    if (selectedIndexs.empty())
+    {
+        itemInfo_cover->SetBkImage(L"ModelItem_DefaultCover.png");
+        itemInfo_name->SetText(L"");
+        itemInfo_name->SetTextId(L"STRID_MODELITEM_DETAILEDINFOBOX_NOITEMSELECTED");
+        itemInfo_desc->SetText(L"");
+    }
+    else
+    {
+        itemInfo_cover->SetUTF8BkImage(provider->GetItemInfo(selectedIndexs[0]).imgPath);
+        itemInfo_name->SetTextId(L"");
+        itemInfo_name->SetUTF8Text(provider->GetItemInfo(selectedIndexs[0]).name);
+        //itemInfo_desc->SetUTF8Text(provider->GetItemInfo(selectedIndexs[0]).description);
+        itemInfo_desc->SetText(ui::StringConvert::UTF8ToWString((provider->GetItemInfo(selectedIndexs[0]).description)));
+    
+        //itemInfo_desc->SetText(L" <b>ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ....ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ....ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ....ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ....ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ....ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ....ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ....ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ....ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ....ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ....ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ....ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ....ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ....ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ....ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ....ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ....ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ....ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ....ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ....ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ....ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ....ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ....ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ....ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS ABSADAS .... </b>");
+    }
 }
 
 

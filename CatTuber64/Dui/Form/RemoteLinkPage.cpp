@@ -363,7 +363,7 @@ void RemoteLinkPage::UpdateLinkEndStates()
 		text_Output->SetTextId(L"STRID_REMOTELINK_AS_INPUT_SOURCE_TEXT_CONNECTFAILED");
 		text_Output->SetStateTextColor(ui::ControlStateType::kControlStateNormal, L"warningColor");
 		break;
-	case RemoteInputLink::_UI_EndStates_ConnectionInterruption:
+	case RemoteInputLink::_UI_EndStates_ConnectionInterruption_AsInputSource:
 		text_Output->SetText(L"");
 		text_Output->SetTextId(L"STRID_REMOTELINK_AS_INPUT_SOURCE_TEXT_CONNECTIONINTERRUPTION");
 		text_Output->SetStateTextColor(ui::ControlStateType::kControlStateNormal, L"warningColor");
@@ -384,6 +384,16 @@ void RemoteLinkPage::UpdateLinkEndStates()
 	case RemoteInputLink::_UI_EndStates_ErrorOccurredWhileWaiting:
 		text_Receive->SetText(L"");
 		text_Receive->SetTextId(L"STRID_REMOTELINK_AS_OUTPUT_TARGET_TEXT_ERROROCCURREDWHILEWAITING");
+		text_Receive->SetStateTextColor(ui::ControlStateType::kControlStateNormal, L"warningColor");
+		break;
+	case RemoteInputLink::_UI_EndStates_ConnectionInterruption_AsOutputTarget:
+		text_Receive->SetText(L"");
+		text_Receive->SetTextId(L"STRID_REMOTELINK_AS_OUTPUT_TARGET_TEXT_CONNECTIONINTERRUPTION");
+		text_Receive->SetStateTextColor(ui::ControlStateType::kControlStateNormal, L"warningColor");
+		break;
+	case RemoteInputLink::_UI_EndStates_IncorrectDataReceived:
+		text_Receive->SetText(L"");
+		text_Receive->SetTextId(L"STRID_REMOTELINK_AS_OUTPUT_TARGET_TEXT_INCORRECTDATARECEIVED");
 		text_Receive->SetStateTextColor(ui::ControlStateType::kControlStateNormal, L"warningColor");
 		break;
 	case RemoteInputLink::_UI_EndStates_ManuallyStopReceive:
@@ -558,7 +568,7 @@ void RemoteLinkPage::_SetControlsEnableState(bool enable)
 	//btn_copyName;
 	btn_randomPort->SetEnabled(enable);
 	edit_localPort->SetEnabled(enable);
-	cb_BlockLocalInput->SetEnabled(enable);
+	//cb_BlockLocalInput->SetEnabled(enable);
 	//cb_ReceiveWhenStart->SetEnabled(enable);
 
 

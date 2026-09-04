@@ -186,14 +186,24 @@ private:
 	}pageStates;
 
 	//bool OnBtnClicked(const ui::EventArgs& args);
+	bool OnCheckBoxSelected(const ui::EventArgs& args);
 	
 	//virtual void OnSetVisible(bool bChanged)override;
 	virtual void OnEnterThisPage(PageEnterFlag enterFlag) override;
+
+	void UpdateItemInfoBox();
+
 
 	UIModelItemType itemType;
 	class UIModelItemProvider* provider=nullptr;
 
 
+	//控件
+	ui::CheckBoxBox* cb_showDetailedInfo=nullptr;
+	ui::VScrollBox* itemInfoBox =nullptr;
+	ui::Control* itemInfo_cover =nullptr;
+	ui::Label* itemInfo_name =nullptr;
+	ui::RichText* itemInfo_desc =nullptr;
 };
 
 

@@ -733,28 +733,33 @@ void SceneSelectPage::InitContents(uintptr_t userdata1, uintptr_t userdata2)
 
     //auto Box = ui::GlobalManager::Instance().CreateBox(ui::FilePath(L"CatTuber_default/SettingsPage.xml"));
     
+    if (!inited)
+    {
+        ui::GlobalManager::Instance().FillBoxWithCache(this, ui::FilePath(L"CatTuber_default/SceneSelectPage.xml"));
+        this->SetName(L"SCENESELECT_PAGE");
+
+
+
+
+        ui::VirtualVTileListBox* container = (ui::VirtualVTileListBox*)FindSubControl(L"sceneItemContainer");
+        container->GetLayout()->SetChildHAlignType(ui::HorAlignType::kAlignLeft);
+
+
+
+        if (provider) delete provider;
+        provider = new SceneItemProvider;
+        container->SetDataProvider(provider);
+        provider->LoadSceneList();
+
+
+
+        auto btn_createScene = static_cast<ui::Button*>(FindSubControl(L"btn_createScene"));
+
+        btn_createScene->AttachClick(ui::UiBind(&SceneSelectPage::OnBtnClicked, this, std::placeholders::_1));
     
-    ui::GlobalManager::Instance().FillBoxWithCache(this, ui::FilePath(L"CatTuber_default/SceneSelectPage.xml"));
-    this->SetName(L"SCENESELECT_PAGE");
 
-
-
-
-    ui::VirtualVTileListBox* container= (ui::VirtualVTileListBox*)FindSubControl(L"sceneItemContainer");
-    container->GetLayout()->SetChildHAlignType(ui::HorAlignType::kAlignLeft);
-
-
-
-    if (provider) delete provider;
-    provider = new SceneItemProvider;
-    container->SetDataProvider(provider);
-    provider->LoadSceneList();
-
-
-
-    auto btn_createScene = static_cast<ui::Button*>(FindSubControl(L"btn_createScene"));
-
-    btn_createScene->AttachClick(ui::UiBind(&SceneSelectPage::OnBtnClicked, this, std::placeholders::_1));
+        inited = true;
+    }
 }
 
 bool SceneSelectPage::OnBtnClicked(const ui::EventArgs& args)

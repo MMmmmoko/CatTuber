@@ -496,6 +496,26 @@ void AppSettings::_OnUISceneCreateEmptyChange(const bool& value)
 {
 	//不需要做任何事情
 }
+void AppSettings::_OnUIItemShowDetailedInfo_ClassicCharacterChange(const bool& value)
+{
+	//不需要做任何事情
+}
+void AppSettings::_OnUIItemShowDetailedInfo_ClassicDeskChange(const bool& value)
+{
+	//不需要做任何事情
+}
+void AppSettings::_OnUIItemShowDetailedInfo_ClassicHandheldItemChange(const bool& value)
+{
+	//不需要做任何事情
+}
+void AppSettings::_OnUIItemShowDetailedInfo_BongoCatChange(const bool& value)
+{
+	//不需要做任何事情
+}
+void AppSettings::_OnUIItemShowDetailedInfo_DecorationItemChange(const bool& value)
+{
+	//不需要做任何事情
+}
 
 
 

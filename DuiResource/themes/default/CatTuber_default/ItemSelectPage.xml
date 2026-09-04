@@ -9,12 +9,28 @@
 	<Label name="itemSelectPageTitle" font="system_bold_22" margin="10,0,20,0" valign="center"/>
 			<!--<Button name="btn_createScene" width="40" height="40" border_round="4,4" bkimage="file='icon_add_24px.png' dest='8,8,32,32'" hot_color="itemHoverColor"
 					 valign="center" tooltip_text_id="STRID_SCENESELECT_BUTTON_TOOLTIP_CREATENEW"/>-->
+			<Control />
+			<CheckBoxBox name="cb_showDetailedInfo" width="auto" height="auto" padding="10,0,10,0" margin="10,0,20,0" valign="bottom" mouse_child="false"
+						  border_color="itemPushColor" hot_color="itemHoverColor" selected_normal_color="itemSelectColor"
+						  border_size="1" border_round="4,4" fade_hot="false"
+						 >
+				<HBox width="auto" height="auto" >
+					<Label text_id="STRID_MODELITEM_SHOWDETAILEDINFO" valign="center" margin="0,0,4,0"/>
+					<Control bkimage="detaileLayout_24px.svg" width="24" height="24" valign="center"/>
+				</HBox>
+			</CheckBoxBox>
 			</HBox>
-		<VirtualVTileListBox name="itemContainer" width="stretch" height="stretch" child_margin="2" 
-							 item_size="180,200" vscrollbar="true" select_none_when_click_blank="false">
-			
-		</VirtualVTileListBox>
-		
+		<HBox>
+			<VirtualVTileListBox name="itemContainer" width="stretch" height="stretch" child_margin="2"
+								 item_size="180,200" vscrollbar="true" select_none_when_click_blank="false">
+
+			</VirtualVTileListBox>
+			<VScrollBox width="250" height="stretch" name="itemInfoBox" visible="false" border_size="1,0,0,0" border_color="itemSelectColor" vscrollbar="true">
+				<Control name="itemInfo_cover" height="200" width="200" halign="center"/>
+				<Label name="itemInfo_name" width="stretch" margin="10,20,10,10"/>
+				<RichText name="itemInfo_desc" height="auto" width="stretch"  margin="10,0,10,20"/>
+			</VScrollBox>
+		</HBox>
 </VBox>
 </Window>
 	

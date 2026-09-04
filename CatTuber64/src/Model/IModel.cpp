@@ -27,6 +27,10 @@
 //    SDL_CloseIO(modelFileStream); // 关闭文件流
 //	return result;
 //}
+
+
+
+
 IModel* IModel::CreateFromFolder(const char* packPath, const char* folderInpack)
 {
 	IModel* pModel = NULL;

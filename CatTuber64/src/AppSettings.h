@@ -39,6 +39,11 @@ typedef std::string _CatString;
     F(Other,Windows_RunAsAdmin,bool,false) \
 \
     F(UIScene,CreateEmpty,bool,true) \
+    F(UIItem,ShowDetailedInfo_ClassicCharacter,bool,false) \
+    F(UIItem,ShowDetailedInfo_ClassicDesk,bool,false) \
+    F(UIItem,ShowDetailedInfo_ClassicHandheldItem,bool,false) \
+    F(UIItem,ShowDetailedInfo_BongoCat,bool,false) \
+    F(UIItem,ShowDetailedInfo_DecorationItem,bool,false) \
 \
     F(Scene,LastExit,_CatString,"") \
 \

@@ -3,8 +3,8 @@
    		xmlns:xs="http://www.w3.org/2001/XMLSchema"
 		xmlns="http://tempuri.org/NIMDUISchema.xsd"
 		>
-	<ListBoxItemV width="180" height="200" mouse_child="false" hot_color="itemHoverColor" pushed_color="itemPushColor" selected_normal_color="subjectColor"
-				   selected_normal_text_color="subjectColor_content" border_round="6,6">
+	<ListBoxItemV width="180" height="200" mouse_child="false" hot_color="itemHoverColor" pushed_color="itemPushColor" 
+				   selected_normal_text_color="subjectColor_content" border_round="2,2" selected_normal_color="itemSelectColor">
 			<Control name="item_cover" width="140" margin="0,15,0,0" halign="center" height="140" border_round="6,6"  box_shadow="color='shadowColor' blurradius='4' offset='0,1' spreadradius='0'"/>
 			<Control height="40%"/>
 			<Label name="item_name" width="stretch" text_align="center" multi_line="true"/>

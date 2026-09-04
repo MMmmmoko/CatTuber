@@ -37,6 +37,7 @@
 			<xs:enumeration value="textLightColor"/>
 			<xs:enumeration value="textActiveColor"/>
 			<xs:enumeration value="itemHoverColor"/>
+			<xs:enumeration value="itemSelectColor"/>
 			<xs:enumeration value="itemPushColor"/>
 			<xs:enumeration value="itemSeparatorColor"/>
 			<xs:enumeration value="subjectColor"/>

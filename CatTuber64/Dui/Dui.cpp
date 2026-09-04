@@ -32,9 +32,19 @@ void Dui::Init()
 	colorManager.AddColor(L"textNormalColor", ui::UiColor(0xFF414A5E));
 	colorManager.AddColor(L"textLightColor", ui::UiColor(0xFF7C8291));
 	colorManager.AddColor(L"textActiveColor", ui::UiColor(0xFF283248));
-	colorManager.AddColor(L"itemHoverColor", ui::UiColor(0xFFE5E6E7));
-	colorManager.AddColor(L"itemPushColor", ui::UiColor(0xFFCACDCF));
+	colorManager.AddColor(L"itemHoverColor", ui::UiColor(0xFFEFF0F1));
+	colorManager.AddColor(L"itemPushColor", ui::UiColor(0xFFEBEBEB));
+	colorManager.AddColor(L"itemSelectColor", ui::UiColor(0xFFEBEBEF));
 	colorManager.AddColor(L"itemSeparatorColor", ui::UiColor(0xFFEBEDF1));
+
+	//colorManager.AddColor(L"itemHoverColor_Subject", ui::UiColor(0xFFfaecf8));
+	//colorManager.AddColor(L"itemPushColor_Subject", ui::UiColor(0xFFf6e0f2));
+	//colorManager.AddColor(L"itemSelectColor_Subject", ui::UiColor(0xFFf6e0f2));
+	//colorManager.AddColor(L"itemSeparatorColor_Subject", ui::UiColor(0xFFf6e6f5));
+
+
+
+
 
 	colorManager.AddColor(L"iconNormalColor", ui::UiColor(0xFFabb1b6));
 	colorManager.AddColor(L"iconNormalColor_high", ui::UiColor(0xFF8E99A6));

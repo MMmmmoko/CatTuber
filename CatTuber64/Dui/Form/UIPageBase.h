@@ -20,6 +20,7 @@ public:
 
 	};
 	virtual void OnEnterThisPage(PageEnterFlag enterFlag) {};
+	virtual void OnLeaveThisPage() {};
 
 	virtual bool IsValid() { return true; };
 };
