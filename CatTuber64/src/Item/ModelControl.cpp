@@ -863,9 +863,9 @@ void ModelControl::SetUpDefaultControl(const Json::Value& descItemInfo, IModel* 
 		auto& modelAxisVec = *pmodelAxisVec;
 		if (descItemInfo.isMember("AxisGroup") && descItemInfo["AxisGroup"].isArray())
 		{
-			for (unsigned int i = 0; i < descItemInfo["Axes"].size(); i++)
+			for (unsigned int i = 0; i < descItemInfo["AxisGroup"].size(); i++)
 			{
-				const Json::Value& curAxisJson = descItemInfo["Axes"][i];
+				const Json::Value& curAxisJson = descItemInfo["AxisGroup"][i];
 				auto& axis = modelAxisVec.emplace_back();
 				//按钮的显示名
 				if (curAxisJson.isMember("UiName"))
@@ -912,7 +912,7 @@ void ModelControl::SetUpDefaultControl(const Json::Value& descItemInfo, IModel* 
 						if (curSubAxisJson.isMember("ParamID") && curSubAxisJson["ParamID"].isString())
 						{
 							curSubAxis.paramID = curSubAxisJson["ParamID"].asString();
-
+							curSubAxis.paramHandle = _model->GetParamHandle(curSubAxis.paramID);
 							if (axis.uiName.empty())
 							{
 								axis.uiName = curSubAxis.paramID;

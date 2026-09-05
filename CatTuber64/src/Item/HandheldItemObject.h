@@ -81,10 +81,15 @@ private:
 	std::vector<ModelAnimationControl> modelAnimationVec;
 
 
+	HandPosHandle handPosHandle = INVALID_HANDHANDLE;
+	HandPosHandle penNibHandle = INVALID_HANDHANDLE;
+	//用于控制的属性
+	ParamHandle paramPosX;
+	ParamHandle paramPosY;
 
-
-
-
+	MeshMapping posMapping;
+	float paramX=0.f;
+	float paramY=0.f;
 
 };
 

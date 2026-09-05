@@ -47,6 +47,20 @@ bool HandheldItemObject::LoadFromPath(const char* u8PackPath, const Json::Value&
 
 
 
+	handPosHandle = _model->GetHandHandle("HandPos");
+	//penNibHandle = _model->GetHandHandle(CATTUBER_MODEL_PARAM_HANDPOS);
+
+	paramPosX = _model->GetParamHandle("CAT_PositionX");
+	paramPosY = _model->GetParamHandle("CAT_PositionY");
+
+	//这里最后一个paramPosX仅作为参数Z的填充，MeshMapping会先设置Z的值为0，然后设置XZ值，因此填充X不影响结果
+	posMapping.BuildMeshMapping(_model, handPosHandle,paramPosX,paramPosY, paramPosX);
+
+
+
+
+
+
 	//使用json统一存储描述文件，不再采用直接写入包体的形式
 	//Name
 	//SubDescription
@@ -86,6 +100,11 @@ void HandheldItemObject::Update(uint64_t deltaTicksNS)
 	if (working)
 	{
 		auto curTickMs = SDL_GetTicks();
+
+
+
+		_model->SetParamValue(paramPosX, paramX, true);
+		_model->SetParamValue(paramPosY, paramY, true);
 
 
 		//pushedButtnVec是desk那边的代码用的，用于给当前帧处于按下状态的按钮打表来减少遍历长度
@@ -280,7 +299,17 @@ void HandheldItemObject::ClearBinding()
 
 void HandheldItemObject::SetPosition(float x, float y)
 {
-	//todo
+	//这个函数是桌子调用的，桌子传输过来的xy是模型空间的坐标数据，需要转换到手持物模型的模型空间，然后通过映射计算参数值
+	float realX = (x - offsetX) / scale;
+	float realY = (y - offsetY) / scale;
+
+
+	if (posMapping.Valid())
+	{
+		posMapping.GetParamValueAtPos(realX, realY, &paramX, &paramY);
+	}
+
+
 
 
 }

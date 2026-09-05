@@ -238,6 +238,16 @@ else {sumRHandX+=X*weight; sumRHandY+=Y*weight;sumRWeights+=weight;}
 			{
 				_model->AddParamValue(curAxis.paramHandle, curAxis.value);
 			}
+
+
+			//测试代码，发现右手的paramHandle没有被正确填入
+			//if (axis.handControl.handIndex == HandControl::RIGHT)
+			//{
+			//	for (auto& curAxis : axis.axisVec)
+			//	{
+			//		SDL_Log("rh:,%llu,%f", curAxis.paramHandle, curAxis.value);
+			//	}
+			//}
 		}
 
 		_model->Update(deltaTicksNS);
@@ -727,7 +737,7 @@ void DeskObject::RegisterAllActionFunc(bool falseToUnregister)
 			{
 				UTIL_SETHIGH32VALUE(axisActionCallBack.userData2, j);
 
-				std::string axisActionName = "Desk.Axis." + std::to_string(i) + "."+ std::to_string(j) +"Change";
+				std::string axisActionName = "Desk.Axis." + std::to_string(i) + "."+ std::to_string(j) +".Change";
 				if (falseToUnregister)
 					im.RegisterActionCallback(axisActionName.c_str(), axisActionCallBack);
 				else
