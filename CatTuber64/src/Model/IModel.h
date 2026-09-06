@@ -1,7 +1,7 @@
 #ifndef _IModel_h
 #define _IModel_h
 
-
+#include<glm/glm.hpp>
 #include<SDL3/SDL.h>
 #include<vector>
 #include<iostream>
@@ -44,6 +44,7 @@ public:
 
 	virtual void Update(uint64_t deltaTicksNS) = 0;
 	virtual void Draw()=0;
+	virtual void DrawVP(glm::mat4x4& view_proj) {};
 	virtual void DrawMix(MixDrawList* pMix) {};//不一定所有模型都支持混合绘制，所以这里不纯虚
 
 	//xy暂时定位模型空间中的坐标
@@ -76,7 +77,6 @@ public:
 	virtual std::vector<std::string> GetParamList() { return std::vector<std::string>(); };
 	//获取的是CatTuber可控的动画
 	virtual std::vector<std::string> GetAnimationList() { return std::vector<std::string>(); };
-
 
 
 	//其他接口

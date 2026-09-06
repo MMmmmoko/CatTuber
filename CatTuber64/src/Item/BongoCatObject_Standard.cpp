@@ -227,49 +227,47 @@ bool BongoCatObject::_LoadResource_Standard(Json::Value& config)
 	_ReadKeysFromJsonArray(stdjson["l2d_motion_lockhand"], l2dMotionKeyVec_LockHand);
 
 	{
-		if (stdjson["mouse_left"].isArray())
+		const char* mouseButtonJsonNode[] =
 		{
-			for (auto& key : stdjson["mouse_left"])
+			"mouse_left",
+			"mouse_right",
+			"mouse_mid",
+			"mouse_side"
+		};
+		uint8_t mouseButtonDefaultKeyCode[] =
+		{
+			0x01,//VK_LBUTTON
+			0x02,//VK_RBUTTON
+			0x04,//VK_MBUTTON
+			0x05,//VK_XBUTTON1
+			//0x06,//VK_XBUTTON2
+		};
+		for (int i = 0; i < MouseButtonIndex_Count; i++)
+		{
+			if (stdjson[mouseButtonJsonNode[i]].isArray())
 			{
-				if (key.isUInt())
+				for (auto& key : stdjson[mouseButtonJsonNode[i]])
 				{
-					mouseLeft_KeyVec.push_back(key.asUInt());
+					if (key.isUInt())
+					{
+						mouseButtonKeyVec[i].push_back(key.asUInt());
+					}
+				}
+			}
+			else
+			{
+				if (i < MouseButtonIndex_Side)
+				{
+					mouseButtonKeyVec[i].push_back(mouseButtonDefaultKeyCode[i]);
+				}
+				else
+				{
+					mouseButtonKeyVec[i].push_back(0x05);//VK_XBUTTON1
+					mouseButtonKeyVec[i].push_back(0x06);//VK_XBUTTON2
 				}
 			}
 		}
-		else
-		{
-			mouseLeft_KeyVec.push_back(1);
-		}
-		if (stdjson["mouse_right"].isArray())
-		{
-			for (auto& key : stdjson["mouse_right"])
-			{
-				if (key.isUInt())
-				{
-					mouseRight_KeyVec.push_back(key.asUInt());
-				}
-			}
-		}
-		else
-		{
-			mouseRight_KeyVec.push_back(2);
-		}
-		if (stdjson["mouse_side"].isArray())
-		{
-			for (auto& key : stdjson["mouse_side"])
-			{
-				if (key.isUInt())
-				{
-					mouseSide_KeyVec.push_back(key.asUInt());
-				}
-			}
-		}
-		else
-		{
-			mouseSide_KeyVec.push_back(5);
-			mouseSide_KeyVec.push_back(6);
-		}
+
 	}
 	_ReadKeysFromJsonArray(stdjson["sounds"], soundsKeyVec);
 
@@ -290,6 +288,17 @@ bool BongoCatObject::_LoadResource_Standard(Json::Value& config)
 				return false;
 			}
 		}
+
+		//使用Live2D模型时，获取模型参数句柄
+
+		rightHandPosParamX = _model->GetParamHandle("ParamMouseX");
+		rightHandPosParamY = _model->GetParamHandle("ParamMouseY");
+		leftHandDown = _model->GetParamHandle("CatParamLeftHandDown");
+		//rightHandDown = _model->GetParamHandle("CatParamRightHandDown");//键鼠模式没有右手
+		mouseButtonParam[MouseButtonIndex_Left]= _model->GetParamHandle("ParamMouseLeftDown");
+		mouseButtonParam[MouseButtonIndex_Right]= _model->GetParamHandle("ParamMouseRightDown");
+		mouseButtonParam[MouseButtonIndex_Mid]= _model->GetParamHandle("ParamMouseMidDown");
+		mouseButtonParam[MouseButtonIndex_Side]= _model->GetParamHandle("ParamMouseSideDown");
 	}
 	else
 	{
@@ -322,16 +331,18 @@ bool BongoCatObject::_LoadResource_Standard(Json::Value& config)
 		if (isUsingPen)
 		{
 			_LoadSprite("img/standard/tablet.png", pngResource.mouse);
-			_LoadSprite("img/standard/tablet_left.png", pngResource.mouse_left);
-			_LoadSprite("img/standard/tablet_right.png", pngResource.mouse_right);
-			_LoadSprite("img/standard/tablet_side.png", pngResource.mouse_side);
+			_LoadSprite("img/standard/tablet_left.png", pngResource.mouseButton[MouseButtonIndex::MouseButtonIndex_Left]);
+			_LoadSprite("img/standard/tablet_right.png", pngResource.mouseButton[MouseButtonIndex::MouseButtonIndex_Right]);
+			_LoadSprite("img/standard/tablet_mid.png", pngResource.mouseButton[MouseButtonIndex::MouseButtonIndex_Mid]);
+			_LoadSprite("img/standard/tablet_side.png", pngResource.mouseButton[MouseButtonIndex::MouseButtonIndex_Side]);
 		}
 		else
 		{
 			_LoadSprite("img/standard/mouse.png", pngResource.mouse);
-			_LoadSprite("img/standard/mouse_left.png", pngResource.mouse_left);
-			_LoadSprite("img/standard/mouse_right.png", pngResource.mouse_right);
-			_LoadSprite("img/standard/mouse_side.png", pngResource.mouse_side);
+			_LoadSprite("img/standard/mouse_left.png", pngResource.mouseButton[MouseButtonIndex::MouseButtonIndex_Left]);
+			_LoadSprite("img/standard/mouse_right.png", pngResource.mouseButton[MouseButtonIndex::MouseButtonIndex_Right]);
+			_LoadSprite("img/standard/mouse_mid.png", pngResource.mouseButton[MouseButtonIndex::MouseButtonIndex_Mid]);
+			_LoadSprite("img/standard/mouse_side.png", pngResource.mouseButton[MouseButtonIndex::MouseButtonIndex_Side]);
 		}
 
 
@@ -487,6 +498,60 @@ void BongoCatObject::_Update_Standard(uint64_t dtNS)
 {
 	if (isUsingLive2D)
 	{
+		//设置鼠标位置
+		_model->SetParamValue(rightHandPosParamX, currentStates.rightHandPos[0],true,true);
+		_model->SetParamValue(rightHandPosParamY, currentStates.rightHandPos[1],true,true);
+
+		if (currentStates.leftHandStateStack.empty())
+		{
+			if (_model)
+			{
+				if (isUsingLive2DHandForKeyPress)
+				{
+					//未实现的功能
+					assert(false);
+				}
+				else
+				{
+					_model->SetParamValue(leftHandDown, 0.F, true, true);
+
+				}
+			}
+		}
+		else
+		{
+			if (_model)
+			{
+				if (isUsingLive2DHandForKeyPress)
+				{
+					//未实现的功能
+					assert(false);
+				}
+				else
+				{
+					_model->SetParamValue(leftHandDown, 1.F, true, true);
+
+				}
+			}
+		}
+
+		//鼠标模式右手鼠标按键
+		for (int i = 0; i < MouseButtonIndex_Count; i++)
+		{
+			if (currentStates.mouseButtonStates[i])
+			{
+				_model->SetParamValue(mouseButtonParam[i], 1.F, true, true);
+			}
+			else
+			{
+				_model->SetParamValue(mouseButtonParam[i], 0.F, true, true);
+			}
+		}
+
+
+
+
+
 		_model->Update(dtNS);
 	}
 
@@ -535,12 +600,18 @@ void BongoCatObject::_Draw_Standard()
 		//Live2D模型在左手之下
 		//CubismMatrix44 _projection = decoration.projection;
 		//pmodel->DrawDirect(_projection);
+		_Draw2DModel();
+
+		
+		//原模型的绘制方式是Y轴顶满，X轴拓展
+		//BongoCat需要模型总能完整显示，因此需要修改一下投影矩阵使模型正确缩放
+		
+
+		//_model->DrawVP(vproj);
+		//_model->Draw();
 
 
-		_model->Draw();
-
-
-		if (!isUsingLive2DHand)
+		if (!isUsingLive2DHandForKeyPress)
 		{
 			if (!currentStates.isLockingHand && !currentStates.leftHandStateStack.empty())
 			{
@@ -598,27 +669,16 @@ void BongoCatObject::_Draw_Standard()
 
 				pngResource.mouse.SetPosition(posx, posy);
 				_DRAW(pngResource.mouse);
-			if (currentStates.mouseButtonStates[0])
-			{
+				for (int i = 0; i < MouseButtonIndex_Count; i++)
 				{
-					pngResource.mouse_left.SetPosition(posx, posy);
-					_DRAW(pngResource.mouse_left);
+					if (currentStates.mouseButtonStates[i])
+					{
+						{
+							pngResource.mouseButton[i].SetPosition(posx, posy);
+							_DRAW(pngResource.mouseButton[i]);
+						}
+					}
 				}
-			}
-			if (currentStates.mouseButtonStates[1])
-			{
-				{
-					pngResource.mouse_right.SetPosition(posx, posy);
-					pngResource.mouse_right.Draw();
-				}
-			}
-			if (currentStates.mouseButtonStates[2])
-			{
-				{
-					pngResource.mouse_side.SetPosition(posx, posy);
-					pngResource.mouse_side.Draw();
-				}
-			}
 		}
 
 		righthand.Draw();
@@ -635,34 +695,17 @@ void BongoCatObject::_Draw_Standard()
 			//	pngResource.pen->SetPosition(posx, posy);
 			//	_DRAW(pngResource.pen);
 			//}
-			if (currentStates.mouseButtonStates[2])
+
+			for (int i = 0; i < MouseButtonIndex_Count; i++)
 			{
-				if (pngResource.mouse_side.Avaliable())
+				if (pngResource.mouseButton[i].Avaliable())
 				{
-					pngResource.mouse_side.SetPosition(posx, posy);
-					pngResource.mouse_side.Draw();
+					pngResource.mouseButton[i].SetPosition(posx, posy);
+					pngResource.mouseButton[i].Draw();
 					hasDrawPen = true;
 				}
 			}
-			else
-				if (currentStates.mouseButtonStates[1])
-				{
-					if (pngResource.mouse_right.Avaliable())
-					{
-						pngResource.mouse_right.SetPosition(posx, posy);
-						pngResource.mouse_right.Draw();
-						hasDrawPen = true;
-					}
-				}
-				else if (currentStates.mouseButtonStates[0])
-				{
-					if (pngResource.mouse_left.Avaliable())
-					{
-						pngResource.mouse_left.SetPosition(posx, posy);
-						pngResource.mouse_left.Draw();
-						hasDrawPen = true;
-					}
-				}
+
 
 			if (!hasDrawPen)
 			{

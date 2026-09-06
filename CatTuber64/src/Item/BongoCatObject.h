@@ -229,6 +229,7 @@ private:
 	void _Draw_Standard();
 	void _Draw_Keyboard() ;
 	void _Draw_Gamepad();
+	void _Draw2DModel();
 	inline void _DRAW(BongoCatSprite& s) { s.Draw(); };
 
 
@@ -254,12 +255,14 @@ private:
 	void SetLeftHandState(int index, bool bdown);
 	void SetLeftHandPos(float x,float y);
 	void SetRightHandState(int index, bool bdown);
+	void SetRightHandPos(float x, float y);
 	void KeyboardActive(int index, bool bactive);
 
 
 
 
 	void _ReadKeysFromJsonArray(const Json::Value& arr, std::vector<std::vector<unsigned char>>& vec);
+	void _ReadKeysFromJsonNode(const Json::Value& arr, std::vector<unsigned char>& vec);
 
 
 
@@ -280,7 +283,14 @@ private:
 
 
 
-
+	enum MouseButtonIndex
+	{
+		MouseButtonIndex_Left = 0,
+		MouseButtonIndex_Right,
+		MouseButtonIndex_Mid ,
+		MouseButtonIndex_Side,
+		MouseButtonIndex_Count
+	};
 
 	struct
 	{
@@ -289,7 +299,7 @@ private:
 		std::vector<int> leftHandStateStack;//绘制时使用这个栈的栈顶
 		std::vector<int> rightHandStateStack;//绘制时使用这个栈的栈顶
 		std::vector<bool> keyboardStates;
-		bool mouseButtonStates[3] = { 0 };
+		bool mouseButtonStates[MouseButtonIndex_Count] = { 0 };//左右中侧
 		//float mousePos[2] = { 0 };
 
 		float leftHandPos[2] = { 0 };
@@ -321,9 +331,7 @@ private:
 		BongoCatSprite leftUp;
 		BongoCatSprite rightUp;
 		BongoCatSprite mouse;
-		BongoCatSprite mouse_left;
-		BongoCatSprite mouse_right;
-		BongoCatSprite mouse_side;
+		BongoCatSprite mouseButton[MouseButtonIndex_Count];
 		BongoCatSprite mousebg;
 
 		BongoCatSprite leftStickNormal;
@@ -346,8 +354,17 @@ private:
 
 	BongoCatHand lefthand;
 	BongoCatHand righthand;
-
-
+	ParamHandle mouseButtonParam[MouseButtonIndex_Count];
+	ParamHandle leftHandPosParamX;
+	ParamHandle leftHandPosParamY;
+	ParamHandle rightHandPosParamX;
+	ParamHandle rightHandPosParamY;
+	ParamHandle leftHandDown;
+	ParamHandle rightHandDown;
+	ParamHandle leftStickDown;
+	ParamHandle rightStickDown;
+	ParamHandle showStickHandLeft;
+	ParamHandle showStickHandRight;
 
 	struct
 	{
@@ -382,9 +399,9 @@ private:
 	std::vector<std::vector<unsigned char>> l2dMotionKeyVec;
 	std::vector<std::vector<unsigned char>> l2dMotionKeyVec_LockHand;
 
-	std::vector<unsigned char> mouseLeft_KeyVec;
-	std::vector<unsigned char> mouseRight_KeyVec;
-	std::vector<unsigned char> mouseSide_KeyVec;
+	std::vector<unsigned char> mouseButtonKeyVec[MouseButtonIndex_Count];
+	std::vector<unsigned char> leftStickKeyVec;
+	std::vector<unsigned char> rightStickKeyVec;
 
 
 	std::vector<unsigned char> stopSound_KeyVec;
@@ -400,7 +417,7 @@ private:
 		BongoCatMverMode_MaxCount,
 	}mode = BongoCatMverMode_Standard;
 	bool isUsingLive2D = false;
-	bool isUsingLive2DHand = false;
+	bool isUsingLive2DHandForKeyPress = false;//指的是按键的手是否不采用PNG形式
 	bool isUsingLive2DDesk = false;
 	bool isUsingPen = false;
 	//手柄模式下是否 不在手和键盘的键码中 使用BongoCat手柄键码
@@ -431,6 +448,11 @@ private:
 	std::vector<ModelButtonControl> emotionButtonVec;//角色表情
 	//std::vector<ModelAxisControl> modelAxisVec;
 	//鼠标轴
+	ModelButtonControl mouseButtonVec[MouseButtonIndex_Count];
+	ModelButtonControl leftStickButton;
+	ModelButtonControl rightStickButton;
+	//ModelButtonControl mouseMidButton;//鼠标按钮
+	
 	ModelAxisControl leftHandAxis;
 	ModelAxisControl rightHandAxis;
 

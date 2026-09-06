@@ -465,6 +465,21 @@ void AppSettings::_OnMouseInvertXChange(const bool& value)
 
 
 
+
+
+void AppSettings::_OnDeadZoneGamepadStickChange(const double& value)
+{
+}
+
+void AppSettings::_OnDeadZoneGamepadTriggerChange(const double& value)
+{
+}
+
+void AppSettings::_OnDeadZoneJoystickChange(const double& value)
+{
+}
+
+
 void AppSettings::_OnMiscLanguageChange(const std::string& value)
 {
 	//语言采用SteamAPI的形式

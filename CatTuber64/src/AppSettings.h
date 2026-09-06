@@ -28,6 +28,10 @@ typedef std::string _CatString;
     F(Mouse,Speed,double,1) \
     F(Mouse,InputArea,_CatString,"AllDisplays") \
     F(Mouse,InvertX,bool,false) \
+\
+    F(DeadZone,GamepadStick,double,0.12) \
+    F(DeadZone,GamepadTrigger,double,0.05) \
+    F(DeadZone,Joystick,double,0.05) \
  \
  \
  \

@@ -1019,6 +1019,11 @@ void Live2DModelBase::Draw()
 	l2dmodel.Draw(GetScene()->Get2DProj());
 }
 
+void Live2DModelBase::DrawVP(glm::mat4x4& view_proj)
+{
+	l2dmodel.Draw(view_proj);
+}
+
 void Live2DModelBase::DrawMix(MixDrawList* pMix)
 {
 

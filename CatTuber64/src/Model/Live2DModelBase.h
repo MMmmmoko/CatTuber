@@ -2,6 +2,7 @@
 #define _Live2DModelBase_h
 
 #include<glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include<unordered_map>
 #include <CubismFramework.hpp>
 #include"IModel.h"
@@ -152,6 +153,7 @@ public:
 
 	virtual void Update(uint64_t deltaTicksNS)override;
 	virtual void Draw()override;
+	virtual void DrawVP(glm::mat4x4& view_proj)override;
 	virtual void DrawMix(MixDrawList* pMix)override;
 	
 

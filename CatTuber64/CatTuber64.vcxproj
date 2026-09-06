@@ -121,6 +121,9 @@
       <EntryPointName>%(Filename)</EntryPointName>
       <ShaderModel>6.0</ShaderModel>
     </FxCompile>
+    <Manifest>
+      <AdditionalManifestFiles>$(SolutionDir)\..\ThirdPart\nim_duilib-main\msvc\manifest\duilib.x64.manifest</AdditionalManifestFiles>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -149,6 +152,9 @@
       <EntryPointName>%(Filename)</EntryPointName>
       <ShaderModel>6.0</ShaderModel>
     </FxCompile>
+    <Manifest>
+      <AdditionalManifestFiles>$(SolutionDir)\..\ThirdPart\nim_duilib-main\msvc\manifest\duilib.x64.manifest</AdditionalManifestFiles>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Dui\Dialog\BongoCatImport_Dlg.h" />

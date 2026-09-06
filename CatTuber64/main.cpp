@@ -10,9 +10,10 @@
 #include"AppContext.h"
 #include"CatTuberApp.h"
 
-
 //库
 #ifdef _WINDOWS
+
+
 
 
 
@@ -126,6 +127,12 @@ int main(int argc, char** argv)
 
 
 	try {
+#ifdef _WINDOWS
+		//INITCOMMONCONTROLSEX icex = { 0 };
+		//icex.dwSize = sizeof(INITCOMMONCONTROLSEX);
+		//icex.dwICC = ICC_TAB_CLASSES | ICC_WIN95_CLASSES; // 按需添加
+		//InitCommonControlsEx(&icex);
+#endif // _WINDOWS
 
 
 		CatTuberApp& app = CatTuberApp::GetInstance();

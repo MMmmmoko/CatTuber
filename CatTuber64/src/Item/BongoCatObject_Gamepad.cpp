@@ -21,13 +21,35 @@ bool BongoCatObject::_LoadResource_Gamepad(Json::Value& config)
 	auto& stdjson = config["gamepad"];
 
 	_ReadKeysFromJsonArray(stdjson["face"], faceKeyVec);
-	_ReadKeysFromJsonArray(stdjson["hand"], leftHandKeyVec);
+	_ReadKeysFromJsonArray(stdjson["lefthand"], leftHandKeyVec);
+	_ReadKeysFromJsonArray(stdjson["righthand"], rightHandKeyVec);
 	_ReadKeysFromJsonArray(stdjson["keyboard"], keyboardKeyVec);
 	_ReadKeysFromJsonArray(stdjson["l2d_expression"], l2dExpressionKeyVec);
 	_ReadKeysFromJsonArray(stdjson["l2d_motion"], l2dMotionKeyVec);
 	_ReadKeysFromJsonArray(stdjson["l2d_motion_lockhand"], l2dMotionKeyVec_LockHand);
 	_ReadKeysFromJsonArray(stdjson["sounds"], soundsKeyVec);
 
+	if (stdjson["L3"].isArray())
+	{
+		for (auto& key : stdjson["L3"])
+		{
+			if (key.isUInt())
+			{
+				leftStickKeyVec.push_back(key.asUInt());
+			}
+		}
+	}
+
+	if (stdjson["R3"].isArray())
+	{
+		for (auto& key : stdjson["R3"])
+		{
+			if (key.isUInt())
+			{
+				rightStickKeyVec.push_back(key.asUInt());
+			}
+		}
+	}
 
 
 
@@ -45,6 +67,23 @@ bool BongoCatObject::_LoadResource_Gamepad(Json::Value& config)
 				return false;
 			}
 		}
+
+
+		//使用Live2D模型时，获取模型参数句柄
+		leftHandPosParamX = _model->GetParamHandle("CatParamStickLX");
+		leftHandPosParamY = _model->GetParamHandle("CatParamStickLY");
+		rightHandPosParamX = _model->GetParamHandle("CatParamStickRX");
+		rightHandPosParamY = _model->GetParamHandle("CatParamStickRY");
+		leftHandDown = _model->GetParamHandle("CatParamLeftHandDown");
+		rightHandDown = _model->GetParamHandle("CatParamRightHandDown");
+		leftStickDown = _model->GetParamHandle("CatParamStickLeftDown");
+		rightStickDown = _model->GetParamHandle("CatParamStickRightDown");
+		showStickHandLeft = _model->GetParamHandle("CatParamStickShowLeftHand");
+		showStickHandRight = _model->GetParamHandle("CatParamStickShowRightHand");
+
+
+
+
 	}
 	else
 	{
@@ -163,6 +202,18 @@ bool BongoCatObject::_LoadResource_Gamepad(Json::Value& config)
 			auto& psprite = pngResource.keyboardvec.emplace_back();
 			_LoadSprite( ("img/gamepad/keyboard/" + std::to_string(i) + ".png").c_str(), psprite);
 		}
+
+
+
+		//手柄遥感&光效
+		_LoadSprite("img/gamepad/left_stick.png", pngResource.leftStickNormal);
+		_LoadSprite("img/gamepad/left_stick_down.png", pngResource.leftStickDown);
+		_LoadSprite("img/gamepad/right_stick.png", pngResource.rightStickNormal);
+		_LoadSprite("img/gamepad/right_stick_down.png", pngResource.rightStickDown);
+
+		
+
+
 	}
 
 
@@ -187,21 +238,21 @@ bool BongoCatObject::_LoadResource_Gamepad(Json::Value& config)
 		auto& ptrack = audioTrackResource.emplace_back();
 		auto& psound = audioSoundResource.emplace_back();
 		//加载
-		soundPath = "img/standard/sounds/" + std::to_string(i) + ".wav";
+		soundPath = "img/gamepad/sounds/" + std::to_string(i) + ".wav";
 		bool fileExist = pack.IsFileExist(soundPath.c_str());
 		if (!fileExist)
 		{
-			soundPath = "img/standard/sounds/" + std::to_string(i) + ".ogg";
+			soundPath = "img/gamepad/sounds/" + std::to_string(i) + ".ogg";
 			fileExist = pack.IsFileExist(soundPath.c_str());
 		}
 		if (!fileExist)
 		{
-			soundPath = "img/standard/sounds/" + std::to_string(i) + ".mp3";
+			soundPath = "img/gamepad/sounds/" + std::to_string(i) + ".mp3";
 			fileExist = pack.IsFileExist(soundPath.c_str());
 		}
 		if (!fileExist)
 		{
-			soundPath = "img/standard/sounds/" + std::to_string(i) + ".flac";
+			soundPath = "img/gamepad/sounds/" + std::to_string(i) + ".flac";
 			fileExist = pack.IsFileExist(soundPath.c_str());
 		}
 		if (fileExist)
@@ -245,7 +296,64 @@ void BongoCatObject::_Update_Gamepad(uint64_t dtNS)
 {
 	if (isUsingLive2D)
 	{
+
+
+
+
+
+
+
+			//右侧摇杆按下的意思
+			_model->SetParamValue(rightStickDown, currentStates.useRightHandPos);
+			//左侧摇杆按下的意思
+			_model->SetParamValue(leftStickDown, currentStates.useRightHandPos);
+
+
+			_model->SetParamValue(leftHandPosParamX, currentStates.leftHandPos[0]);
+			_model->SetParamValue(leftHandPosParamY, currentStates.leftHandPos[1]);
+
+			_model->SetParamValue(rightHandPosParamX, currentStates.rightHandPos[0]);
+			_model->SetParamValue(rightHandPosParamY, currentStates.rightHandPos[1]);
+
+
+
+			if (!currentStates.leftHandStateStack.empty())
+			{
+				_model->SetParamValue(leftHandDown, 1.f);
+			}
+			else if (currentStates.leftHandPos[0] != 0 || currentStates.leftHandPos[1] != 0 || currentStates.useLeftHandPos)
+			{
+				//摇杆不为0，绘制摇杆手
+				_model->SetParamValue(leftHandDown, 1.f);
+				_model->SetParamValue(showStickHandLeft, 1.f);
+			}
+			else
+			{
+			}
+
+
+			if (!currentStates.rightHandStateStack.empty())
+			{
+				_model->SetParamValue(rightHandDown, 1.f);
+			}
+			else if (currentStates.rightHandPos[0] != 0 || currentStates.rightHandPos[1] != 0 || currentStates.useRightHandPos)
+			{
+				//摇杆不为0，绘制摇杆手
+				_model->SetParamValue(rightHandDown, 1.f);
+				_model->SetParamValue(showStickHandRight, 1.f);
+			}
+			else
+			{
+			}
+
+
+
+
+
+
+
 		_model->Update(dtNS);
+
 	}
 
 
@@ -287,10 +395,10 @@ void BongoCatObject::_Draw_Gamepad()
 		//pmodel->DrawDirect(_projection);
 
 
-		_model->Draw();
+		_Draw2DModel();
 
 
-		if (!isUsingLive2DHand)
+		if (!isUsingLive2DHandForKeyPress)
 		{
 			if (!currentStates.isLockingHand && !currentStates.leftHandStateStack.empty())
 			{
@@ -357,11 +465,8 @@ void BongoCatObject::_Draw_Gamepad()
 		}
 		else
 		{
-			if (pngResource.rightStickNormal.Avaliable())
-			{
-				pngResource.rightStickNormal.SetPosition(rposX, rposY);
-				pngResource.rightStickNormal.Draw();
-			}
+			pngResource.rightStickNormal.SetPosition(rposX, rposY);
+			pngResource.rightStickNormal.Draw();
 		}
 		if (currentStates.useLeftHandPos)
 		{
@@ -370,11 +475,8 @@ void BongoCatObject::_Draw_Gamepad()
 		}
 		else
 		{
-			if (pngResource.leftStickNormal.Avaliable())
-			{
-				pngResource.leftStickNormal.SetPosition(lposX, lposY);
-				pngResource.leftStickNormal.Draw();
-			}
+			pngResource.leftStickNormal.SetPosition(lposX, lposY);
+			pngResource.leftStickNormal.Draw();
 		}
 
 

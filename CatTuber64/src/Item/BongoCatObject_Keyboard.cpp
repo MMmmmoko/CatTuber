@@ -43,6 +43,13 @@ bool BongoCatObject::_LoadResource_Keyboard(Json::Value& config)
 				return false;
 			}
 		}
+
+
+
+		//获取模型参数句柄
+		leftHandDown = _model->GetParamHandle("CatParamLeftHandDown");
+		rightHandDown = _model->GetParamHandle("CatParamRightHandDown");
+
 	}
 	else
 	{
@@ -67,7 +74,7 @@ bool BongoCatObject::_LoadResource_Keyboard(Json::Value& config)
 
 	//左手
 
-	if (isUsingLive2D && isUsingLive2DHand)
+	if (isUsingLive2D && isUsingLive2DHandForKeyPress)
 	{
 
 
@@ -111,7 +118,7 @@ bool BongoCatObject::_LoadResource_Keyboard(Json::Value& config)
 	else
 	{
 
-		_LoadSprite("img/standard/bg.png", pngResource.mousebg);
+		_LoadSprite("img/keyboard/bg.png", pngResource.mousebg);
 
 
 
@@ -120,7 +127,7 @@ bool BongoCatObject::_LoadResource_Keyboard(Json::Value& config)
 		for (int i = 0; i < keyboardKeyVec.size(); i++)
 		{
 			auto& psprite = pngResource.keyboardvec.emplace_back();
-			_LoadSprite( ("img/standard/keyboard/" + std::to_string(i) + ".png").c_str(), psprite);
+			_LoadSprite( ("img/keyboard/keyboard/" + std::to_string(i) + ".png").c_str(), psprite);
 		}
 	}
 
@@ -146,21 +153,21 @@ bool BongoCatObject::_LoadResource_Keyboard(Json::Value& config)
 		auto& ptrack = audioTrackResource.emplace_back();
 		auto& psound = audioSoundResource.emplace_back();
 		//加载
-		soundPath = "img/standard/sounds/" + std::to_string(i) + ".wav";
+		soundPath = "img/keyboard/sounds/" + std::to_string(i) + ".wav";
 		bool fileExist = pack.IsFileExist(soundPath.c_str());
 		if (!fileExist)
 		{
-			soundPath = "img/standard/sounds/" + std::to_string(i) + ".ogg";
+			soundPath = "img/keyboard/sounds/" + std::to_string(i) + ".ogg";
 			fileExist = pack.IsFileExist(soundPath.c_str());
 		}
 		if (!fileExist)
 		{
-			soundPath = "img/standard/sounds/" + std::to_string(i) + ".mp3";
+			soundPath = "img/keyboard/sounds/" + std::to_string(i) + ".mp3";
 			fileExist = pack.IsFileExist(soundPath.c_str());
 		}
 		if (!fileExist)
 		{
-			soundPath = "img/standard/sounds/" + std::to_string(i) + ".flac";
+			soundPath = "img/keyboard/sounds/" + std::to_string(i) + ".flac";
 			fileExist = pack.IsFileExist(soundPath.c_str());
 		}
 		if (fileExist)
@@ -202,8 +209,60 @@ bool BongoCatObject::_LoadResource_Keyboard(Json::Value& config)
 
 void BongoCatObject::_Update_Keyboard(uint64_t dtNS)
 {
-	if (isUsingLive2D)
+	if (isUsingLive2D&& _model)
 	{
+		if (currentStates.leftHandStateStack.empty())
+		{
+				if (isUsingLive2DHandForKeyPress)
+				{
+					//未实现的功能
+					assert(false);
+				}
+				else
+				{
+					_model->SetParamValue(leftHandDown, 0.F, true, true);
+				}
+		}
+		else
+		{
+				if (isUsingLive2DHandForKeyPress)
+				{
+					//未实现的功能
+					assert(false);
+				}
+				else
+				{
+					_model->SetParamValue(leftHandDown, 1.F, true, true);
+				}
+		}
+
+		if (currentStates.rightHandStateStack.empty())
+		{
+				if (isUsingLive2DHandForKeyPress)
+				{
+					//未实现的功能
+					assert(false);
+				}
+				else
+				{
+					_model->SetParamValue(rightHandDown, 0.F, true, true);
+				}
+		}
+		else
+		{
+				if (isUsingLive2DHandForKeyPress)
+				{
+					//未实现的功能
+					assert(false);
+				}
+				else
+				{
+					_model->SetParamValue(rightHandDown, 1.F, true, true);
+				}
+		}
+
+
+
 		_model->Update(dtNS);
 	}
 }
@@ -243,16 +302,21 @@ void BongoCatObject::_Draw_Keyboard()
 		//pmodel->DrawDirect(_projection);
 
 
-		_model->Draw();
+		_Draw2DModel();
 
 
-		if (!isUsingLive2DHand)
+		if (!isUsingLive2DHandForKeyPress)
 		{
 			if (!currentStates.isLockingHand && !currentStates.leftHandStateStack.empty())
 			{
 				_DRAW(pngResource.LHandvec[currentStates.leftHandStateStack.back()]);
 			}
+			if (!currentStates.isLockingHand && !currentStates.rightHandStateStack.empty())
+			{
+				_DRAW(pngResource.RHandvec[currentStates.rightHandStateStack.back()]);
+			}
 		}
+
 
 
 
