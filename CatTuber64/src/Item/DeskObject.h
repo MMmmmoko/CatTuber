@@ -38,6 +38,7 @@ public:
 	//有时希望不显示模型让模型不工作，但暂时不希望删除模型（如预览其他模式时），
 	// 所以使用这个方法设置停止工作的标识
 	void SetWorkingFlag(bool bWorking) { working = bWorking; };
+	bool NeedDisableHandheldItem() { return disableHandheldItem; };
 
 
 
@@ -104,6 +105,7 @@ private:
 
 	//模型自身参数
 	bool working = false;
+	bool disableHandheldItem = false;
 	IModel* _model=NULL;
 	ClassicItem* _pParentItem = NULL;
 	std::string resourcePath;

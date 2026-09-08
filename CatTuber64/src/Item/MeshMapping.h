@@ -14,6 +14,10 @@ public:
 
 	//点落在的矩形中执行单应变换
 	void GetParamValueAtPos(float posX,float posY,float* ParamValueX,float* ParamValueY);
+
+	void PrintBakeCode();
+	void SetUpAsOldHandLeft();
+	void SetUpAsOldHandRight();
 private:
 	bool valid = false;
 	

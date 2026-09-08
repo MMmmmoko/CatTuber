@@ -998,7 +998,7 @@ void UIModelItemProvider::OnSetDeselect(size_t index)
         break;
     default:
         //错误类型
-        assert(false);
+        SDL_assert(false);
         break;
 
 
@@ -1201,6 +1201,7 @@ bool UIModelItemSelect_Page::OnCheckBoxSelected(const ui::EventArgs& args)
             break;
         }
 
+        //itemInfoBox->SetFadeVisible(cb_showDetailedInfo->IsSelected());
         itemInfoBox->SetVisible(cb_showDetailedInfo->IsSelected());
         if (cb_showDetailedInfo->IsSelected())
             UpdateItemInfoBox();

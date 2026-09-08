@@ -87,7 +87,7 @@ bool HandheldItemObject::LoadFromPath(const char* u8PackPath, const Json::Value&
 	else
 		LoadBinding();
 	//此时当前应该使用的绑定已经写入各vec中了，向InputManager里注册各个绑定
-	ModelControl::ApplyControlBindings(&modelButtonVec, &modelAxisVec, &modelAnimationVec);
+	ModelControl::ApplyControlBindings(&modelButtonVec, &modelAxisVec, &modelAnimationVec,"HandheldItem");
 	//为绑定的Action设置具体的执行函数
 	RegisterAllActionFunc();
 	resourcePath = u8PackPath;
@@ -110,13 +110,23 @@ void HandheldItemObject::Update(uint64_t deltaTicksNS)
 		//pushedButtnVec是desk那边的代码用的，用于给当前帧处于按下状态的按钮打表来减少遍历长度
 		// 按下的键是用于计算手部位置的，所以handheldItem不需要
 		//std::vector<ModelButtonControl*> pushedButtnVec;
+
+		//todo
+		//HandheldItem也应该参与计算手部位置
+		//因为有鼠标未移动但是触发了鼠标按键的情况
+		//修改架构的话应该是
+		// 1*桌子先更新并设置手持物品位置
+		// 2*桌子向角色的手push控制数据
+		// 3*鼠标更新并向手push控制数据
+		// 4*手根据收到的数据与权重进行加权计算得到手的位置
+		bool needSetHandPos = false;
 		for (auto& button : modelButtonVec)
 		{
 			float value;
 			if (button.isDown)
 			{
 				value = 1.f;
-
+				needSetHandPos = true;
 				//pushedButtnVec.push_back(&button);
 			}
 			else
@@ -314,12 +324,12 @@ void HandheldItemObject::SetPosition(float x, float y)
 
 }
 
-bool HandheldItemObject::IsAntButtonPushed()
+bool HandheldItemObject::IsAnyButtonPushed()
 {
 
 	for (auto& x : modelButtonVec)
 	{
-		if (x.isDown = true)
+		if (x.isDown == true)
 		{
 			return true;
 		}

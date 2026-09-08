@@ -6,7 +6,7 @@
 #include"RenderWindowManager.h"
 bool SceneManager::CreateNewSceneJson(const char* sceneName, bool fillWithDefaultResource, bool createNewFile, Json::Value& outJson, std::string* outFileName)
 {
-    if (sceneName == nullptr || *sceneName == 0)
+    if (sceneName == nullptr /*|| *sceneName == 0*/)//允许使用空场景名，
     {
         return false;
     }
@@ -36,12 +36,13 @@ bool SceneManager::CreateNewSceneJson(const char* sceneName, bool fillWithDefaul
 
     if (fillWithDefaultResource)
     {
-
+        root["Windows"][0] = RenderWindowManager::GenerateDefaultWindowJson();
         //向json中添加默认场景
         //abort();
     }
     else
     {
+        assert(false);
         root["Windows"]["Size"][0] = 400;
         root["Windows"]["Size"][1] = 300;
     }
@@ -75,7 +76,8 @@ bool SceneManager::CreateNewSceneJson(const char* sceneName, bool fillWithDefaul
     std::string targetFilePath = AppContext::GetSceneFolderPath();
     targetFilePath+=fileNameBuffer;
 
-    if (util::SaveJsonToFile(root, targetFilePath.c_str()))
+	//没有创建父目录会导致文件创建失败
+    if (SDL_CreateDirectory(AppContext::GetSceneFolderPath()) && util::SaveJsonToFile(root, targetFilePath.c_str()))
     {
         if(outFileName) *outFileName=fileNameBuffer;
         outJson = root;
@@ -173,7 +175,7 @@ bool SceneManager::LoadScene(const char* sceneFileName)
 
 		Json::Value sceneJson;
 		std::string fileName;
-        if (CreateNewSceneJson(nullptr, true, true, sceneJson, &fileName))
+        if (CreateNewSceneJson("", true, true, sceneJson, &fileName))
         {
             RenderWindowManager::GetIns()._BuildFromJson(sceneJson);
 

@@ -82,6 +82,7 @@ void StraightMovingPoint::Update(float dt_second)
 
 void StraightMovingPoint::SetStartPointAndStartMove(float x, float y, float z)
 {
+	timer = 0.f;
 	startX = x;
 	startY = y;
 	startZ = z;

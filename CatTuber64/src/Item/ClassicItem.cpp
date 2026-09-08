@@ -25,8 +25,15 @@ void ClassicItem::Update(uint64_t deltaTicksNS)
 	}
 	if (_handHeldItem)
 	{
-		_handHeldItem->_pParentItem = this;
-		_handHeldItem->Update(deltaTicksNS);
+		if (_desk && _desk->NeedDisableHandheldItem())
+		{
+
+		}
+		else
+		{
+			_handHeldItem->_pParentItem = this;
+			_handHeldItem->Update(deltaTicksNS);
+		}
 	}
 }
 
@@ -64,8 +71,15 @@ void ClassicItem::Draw(SDL_GPURenderPass* mainRenderPass, int width, int height,
 	}
 	if (_handHeldItem)
 	{
-		_handHeldItem->GetModel()->SetScene(scene);
-		_handHeldItem->Draw(&mixDraw);
+		if (_desk && _desk->NeedDisableHandheldItem())
+		{
+
+		}
+		else
+		{
+			_handHeldItem->GetModel()->SetScene(scene);
+			_handHeldItem->Draw(&mixDraw);
+		}
 	}
 
 
@@ -100,7 +114,14 @@ void ClassicItem::OnLoopEnd()
 	//}
 	if (_handHeldItem)
 	{
-		_handHeldItem->OnLoopEnd();
+		if (_desk && _desk->NeedDisableHandheldItem())
+		{
+
+		}
+		else
+		{
+			_handHeldItem->OnLoopEnd();
+		}
 	}
 }
 

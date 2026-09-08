@@ -9,6 +9,11 @@
 #include"Item/Scene.h"
 #include"Item/CharacterObject.h"
 
+
+
+#define NEED_SET_OLD_MAPPING_LEFT ((void*)1)
+#define NEED_SET_OLD_MAPPING_RIGHT ((void*)2)
+
 bool CharacterObject::LoadFromPath(const char* u8PackPath, const Json::Value& bindingJson)
 {
 	//如果重新加载
@@ -40,21 +45,6 @@ bool CharacterObject::LoadFromPath(const char* u8PackPath, const Json::Value& bi
 		}
 	}
 
-	
-	hands[0].handHandle = _model->GetHandHandle("LHandPos");
-	hands[1].handHandle=_model->GetHandHandle("RHandPos");
-	
-	//TODO 允许用户手动设置模型参数
-	hands[0].handParamPosX = _model->GetParamHandle("LeftHandX");
-	hands[0].handParamPosY = _model->GetParamHandle("LeftHandY");
-	hands[0].handParamPosZ = _model->GetParamHandle("LeftHandUp");
-
-	hands[1].handParamPosX = _model->GetParamHandle("RightHandX");
-	hands[1].handParamPosY = _model->GetParamHandle("RightHandY");
-	hands[1].handParamPosZ = _model->GetParamHandle("RightHandUp");
-
-	hands[0].handPosMapping.BuildMeshMapping(_model, hands[0].handHandle, hands[0].handParamPosX, hands[0].handParamPosY, hands[0].handParamPosZ);
-	hands[1].handPosMapping.BuildMeshMapping(_model, hands[1].handHandle, hands[1].handParamPosX, hands[1].handParamPosY, hands[1].handParamPosZ);
 
 
 	//使用json统一存储描述文件，不再采用直接写入包体的形式
@@ -69,6 +59,227 @@ bool CharacterObject::LoadFromPath(const char* u8PackPath, const Json::Value& bi
 		desc = util::BuildJsonFromMem((const char*)jsonMem, memSize);
 	}
 
+
+	//读入其他hand参数
+	if (desc["Config"]["Hand"].isArray())
+	{
+		int handIndex = 0;
+		for (auto& curHandJson : desc["Config"]["Hand"])
+		{
+			handIndex++;
+			std::string paramX;
+			std::string paramY;
+			std::string paramZ;
+			std::string posTest;
+			float defaultPos[3] = {0.f,0.f,0.f};
+			float activeHeight = 1.f;
+
+			if (curHandJson["PosTest"].isString())
+			{
+				posTest = curHandJson["PosTest"].asString();
+			}
+			else
+			{
+				if (handIndex == 1&&_model->GetHandHandle("LHandPos")!= INVALID_HANDHANDLE)
+				{
+					posTest = "LHandPos";
+				}
+				else if (handIndex == 2 && _model->GetHandHandle("RHandPos") != INVALID_HANDHANDLE)
+				{
+					posTest = "RHandPos";
+				}
+				else
+				{
+					posTest= "Hand"+std::to_string(handIndex)+"Pos";
+				}
+			}
+
+			if (curHandJson["ParamX"].isString())
+				paramX=curHandJson["ParamX"].asString();
+			else
+			{
+				if (handIndex == 1)
+				{
+					paramX = "LeftHandX";
+				}
+				else if (handIndex == 2)
+				{
+					paramX = "RightHandX";
+				}
+				else
+				{
+					paramX= "Hand"+std::to_string(handIndex)+"X";
+				}
+			}
+			if (curHandJson["ParamY"].isString())
+				paramY=curHandJson["ParamY"].asString();
+			else
+			{
+				if (handIndex == 1)
+				{
+					paramY = "LeftHandY";
+				}
+				else if (handIndex == 2)
+				{
+					paramY = "RightHandY";
+				}
+				else
+				{
+					paramY= "Hand"+std::to_string(handIndex)+"Y";
+				}
+			}
+			if (curHandJson["ParamZ"].isString() || curHandJson["ParamUp"].isString())
+			{
+				if(curHandJson["ParamZ"].isString())
+					paramZ = curHandJson["ParamZ"].asString();
+				else
+					paramZ = curHandJson["ParamUp"].asString();
+			}
+			else
+			{
+				if (handIndex == 1)
+				{
+					paramZ = "LeftHandUp";
+				}
+				else if (handIndex == 2)
+				{
+					paramZ = "RightHandUp";
+				}
+				else
+				{
+					paramZ= "Hand"+std::to_string(handIndex)+"Up";
+				}
+			}
+
+
+
+			if (curHandJson["DefaultPos"].isArray())
+			{
+				for (uint32_t i = 0; i < curHandJson["DefaultPos"].size() && i < 3; i++)
+				{
+					if (curHandJson["DefaultPos"][i].isDouble())
+						defaultPos[i] = static_cast<float>( curHandJson["DefaultPos"][i].asDouble());
+				}
+			}
+
+			if (curHandJson["ActiveHeight"].isDouble())
+			{
+				activeHeight = static_cast<float>(curHandJson["ActiveHeight"].asFloat());
+			}
+
+	
+
+			auto& curHand = hands.emplace_back();
+			_SetUpHand(curHand, posTest.c_str(),paramX.c_str(),paramY.c_str(),paramZ.c_str(),
+				defaultPos[0],defaultPos[1],defaultPos[2],activeHeight);
+		}
+	}
+	else
+	{
+		//未设置手数据，使用默认值
+		//作为兼容，寻找模型中是否有旧版手参数？
+		auto paramVec=_model->GetParamList();
+		const char* LeftHandX = nullptr;
+		const char* LeftHandY = nullptr;
+		const char* LeftHandUp = nullptr;
+		const char* RightHandX = nullptr;
+		const char* RightHandY = nullptr;
+		const char* RightHandUp = nullptr;
+
+		for (auto& x : paramVec)
+		{
+			if (x == "LeftHandX")
+			{
+				LeftHandX = x.c_str();
+				continue;
+			}
+			if (x == "CAT_LeftHandX"&& LeftHandX==nullptr)
+			{
+				LeftHandX = x.c_str();
+				continue;
+			}
+			if (x == "LeftHandY")
+			{
+				LeftHandY = x.c_str();
+				continue;
+			}
+			if (x == "CAT_LeftHandY"&& LeftHandY==nullptr)
+			{
+				LeftHandY =  x.c_str();
+				continue;
+			}
+			if (x == "LeftHandUp")
+			{
+				LeftHandUp = x.c_str();
+				continue;
+			}
+			if (x == "CAT_LeftHandUp"&& LeftHandUp ==nullptr)
+			{
+				LeftHandUp =  x.c_str();
+				continue;
+			}
+
+			if (x == "RightHandX")
+			{
+				RightHandX = x.c_str();
+				continue;
+			}
+			if (x == "CAT_RightHandX"&& RightHandX==nullptr)
+			{
+				RightHandX = x.c_str();
+				continue;
+			}
+			if (x == "RightHandY")
+			{
+				RightHandY = x.c_str();
+				continue;
+			}
+			if (x == "CAT_RightHandY"&& RightHandY==nullptr)
+			{
+				RightHandY =  x.c_str();
+				continue;
+			}
+			if (x == "RightHandUp")
+			{
+				RightHandUp = x.c_str();
+				continue;
+			}
+			if (x == "CAT_RightHandUp"&& RightHandUp ==nullptr)
+			{
+				RightHandUp =  x.c_str();
+				continue;
+			}
+		}
+
+
+		//if (!LeftHandX)LeftHandX = "LeftHandX";
+#define __SETUPHANDSTR(X) if(!X)X=#X
+		__SETUPHANDSTR(LeftHandX);
+		__SETUPHANDSTR(LeftHandY);
+		__SETUPHANDSTR(LeftHandUp);
+		__SETUPHANDSTR(RightHandX);
+		__SETUPHANDSTR(RightHandY);
+		__SETUPHANDSTR(RightHandUp);
+#undef __SETUPHANDSTR
+
+
+
+
+		auto& leftHand=hands.emplace_back();			
+		_SetUpHand(leftHand, "LHandPos", LeftHandX, LeftHandY, LeftHandUp,
+			-21.1f/30.f, -22.9f/30.f, 0.f, 0.8f);
+		auto& rightHand = hands.emplace_back();
+		_SetUpHand(rightHand, "RHandPos", RightHandX, RightHandY, RightHandUp,
+			19.3f/30.f, -30.f/30.f, 0.f, 0.8f);
+	}
+
+
+
+
+
+
+
+
 	bool buttonHandled = false;
 	bool axisHandled = false;
 
@@ -81,6 +292,23 @@ bool CharacterObject::LoadFromPath(const char* u8PackPath, const Json::Value& bi
 	//此时当前应该使用的绑定已经写入各vec中了，向InputManager里注册各个绑定
 	ModelControl::ApplyControlBindings(NULL, NULL, &modelAnimationVec);
 	resourcePath = u8PackPath;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	working = true;
 	return true;
 }
@@ -310,7 +538,7 @@ void CharacterObject::SetHandPosition(int handIndex, bool bPress, float x, float
 	//如果是抬起转按下，则触发handdown ，按下转抬起触发up
 
 	//这个函数是桌子调用的，桌子传输过来的xy是模型空间的坐标数据，需要转换到角色模型的模型空间，然后通过映射计算参数值
-
+	if (handIndex >= hands.size())return;
 
 	float realX = (x - offsetX)/scale;
 	float realY= (y - offsetY) /scale;
@@ -403,6 +631,7 @@ void CharacterObject::OnAnimationPlay(int animationIndex)
 
 void CharacterObject::_OnHandDown(int handIndex, float paramX, float paramY)
 {
+	if (handIndex >= hands.size())return;
 	auto& currentHand=hands[handIndex];
 	currentHand.x = paramX;
 	currentHand.y = paramY;
@@ -416,6 +645,7 @@ void CharacterObject::_OnHandDown(int handIndex, float paramX, float paramY)
 
 void CharacterObject::_OnHandUp(int handIndex)
 {
+	if (handIndex >= hands.size())return;
 	auto& currentHand=hands[handIndex];
 	currentHand.isDown = false;
 
@@ -458,9 +688,54 @@ void CharacterObject::_OnHandUp(int handIndex)
 
 void CharacterObject::_SetHandPos(int handIndex, float paramX, float paramY)
 {
+	if (handIndex >= hands.size())return;
 	auto& currenthand = hands[handIndex];
 	currenthand.x = paramX;
 	currenthand.y = paramY;
+}
+
+void CharacterObject::_SetUpHand(HandData& curHand, const char* posTestMesh, const char* paramX, const char* paramY, const char* paramZ, float defaultX, float defaultY, float defaultHeight, float activeHeight)
+{
+	curHand.handHandle = _model->GetHandHandle(posTestMesh);
+
+
+
+	curHand.handParamPosX = _model->GetParamHandle(paramX);
+	curHand.handParamPosY = _model->GetParamHandle(paramY);
+	curHand.handParamPosZ = _model->GetParamHandle(paramZ);
+
+	if (INVALID_HANDHANDLE == curHand.handHandle)
+	{
+		//没有目标mesh时使用烘焙的旧版映射
+		if (SDL_strcmp(posTestMesh, "LHandPos") == 0)
+		{
+			curHand.handPosMapping.SetUpAsOldHandLeft();
+		}
+		else if (SDL_strcmp(posTestMesh, "RHandPos") == 0)
+		{
+			curHand.handPosMapping.SetUpAsOldHandRight();
+		}
+		else
+			curHand.handPosMapping.BuildMeshMapping(_model, curHand.handHandle, curHand.handParamPosX, curHand.handParamPosY, curHand.handParamPosZ);
+
+	}
+	else
+		curHand.handPosMapping.BuildMeshMapping(_model, curHand.handHandle, curHand.handParamPosX, curHand.handParamPosY, curHand.handParamPosZ);
+
+
+	curHand.activeHeight = activeHeight;
+
+
+
+	curHand.point_default_up.SetTarget(defaultX , defaultY , defaultHeight);
+	curHand.point_active_to_default.SetTarget(defaultX , defaultY , defaultHeight);
+	curHand.point_active_up.SetTarget(defaultX , defaultY , activeHeight);
+	curHand.point_default_up.SetFixSpeed(6.5f);
+	curHand.point_active_to_default.SetFixDuration(0.5, StraightMovingPoint::MoveTypeWithFixTime::AccelerateThenDecelerates);
+	curHand.point_active_up.SetFixDuration(0.09f, StraightMovingPoint::MoveTypeWithFixTime::Decelerates);
+	curHand.point_default_up.SetStartPointAndStartMove(defaultX, defaultY, defaultHeight);
+	curHand.point_active_to_default.SetStartPointAndStartMove(defaultX, defaultY, defaultHeight);
+	curHand.point_active_up.SetStartPointAndStartMove(defaultX, defaultY, activeHeight);
 }
 
 

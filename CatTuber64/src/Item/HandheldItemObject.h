@@ -50,7 +50,7 @@ public:
 
 	//与角色模型需要设置手的位置对应、手持物模型也需要来自桌子的数据
 	void SetPosition(float x, float y);
-	bool IsAntButtonPushed();
+	bool IsAnyButtonPushed();
 private:
 
 

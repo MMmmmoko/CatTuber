@@ -25,7 +25,12 @@
 								 item_size="180,200" vscrollbar="true" select_none_when_click_blank="false">
 
 			</VirtualVTileListBox>
-			<VScrollBox width="250" height="stretch" name="itemInfoBox" visible="false" border_size="1,0,0,0" border_color="itemSelectColor" vscrollbar="true">
+			<!--详情页-->
+			<!--<VScrollBox width="250" height="stretch" name="itemInfoBox" visible="false" border_size="1,0,0,0" border_color="itemSelectColor" vscrollbar="true"
+						fade_in_out_x_from_right="true" fade_visible="true"
+						>-->
+			<VScrollBox width="250" height="stretch" name="itemInfoBox" visible="false" border_size="1,0,0,0" border_color="itemSelectColor" vscrollbar="true"
+						>
 				<Control name="itemInfo_cover" height="200" width="200" halign="center"/>
 				<Label name="itemInfo_name" width="stretch" margin="10,20,10,10"/>
 				<RichText name="itemInfo_desc" height="auto" width="stretch"  margin="10,0,10,20"/>

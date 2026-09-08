@@ -38,26 +38,26 @@ void UISceneItem::InitSubControls(const std::string& name, const std::string& im
         AttachRClick(ui::UiBind(&UISceneItem::OnRightClick,this,std::placeholders::_1));
 
         //字体需要设置颜色
-        auto textColorFunc=[this](const ui::EventArgs&)->bool {
-            if (IsSelected())
-            {
-                labelSceneName->SetStateTextColor(ui::kControlStateNormal, L"subjectColor_content");
-                //this->SetStateColor(ui::kControlStateNormal,L"subjectColor");
-                //this->SetSelectedStateColor(ui::);
-            }
-            else
-            {
-                labelSceneName->SetStateTextColor(ui::kControlStateNormal, L"textNormalColor");
-                //this->SetStateColor(ui::kControlStateNormal, L"");
-            }
-            return true;
-            };
-        AttachSelect(textColorFunc);
-        AttachUnSelect(textColorFunc);
-        if (selected)
-        {
-            labelSceneName->SetStateTextColor(ui::kControlStateNormal, L"subjectColor_content");
-        }
+        //auto textColorFunc=[this](const ui::EventArgs&)->bool {
+        //    if (IsSelected())
+        //    {
+        //        labelSceneName->SetStateTextColor(ui::kControlStateNormal, L"subjectColor_content");
+        //        //this->SetStateColor(ui::kControlStateNormal,L"subjectColor");
+        //        //this->SetSelectedStateColor(ui::);
+        //    }
+        //    else
+        //    {
+        //        labelSceneName->SetStateTextColor(ui::kControlStateNormal, L"textNormalColor");
+        //        //this->SetStateColor(ui::kControlStateNormal, L"");
+        //    }
+        //    return true;
+        //    };
+        //AttachSelect(textColorFunc);
+        //AttachUnSelect(textColorFunc);
+        //if (selected)
+        //{
+        //    labelSceneName->SetStateTextColor(ui::kControlStateNormal, L"subjectColor_content");
+        //}
 
     }
     auto testPtr = dynamic_cast<ui::VBox*> (this);
@@ -268,7 +268,7 @@ bool UISceneItem::OnUploadCoverClick(const ui::EventArgs& args)
 
 bool UISceneItem::OnCaptureCoverClick(const ui::EventArgs& args)
 {
-    ASSERT(false);
+    SDL_assert(false);
     return true;
 }
 

@@ -66,6 +66,11 @@ bool DeskObject::LoadFromPath(const char* u8PackPath, const Json::Value& binding
 		desc = util::BuildJsonFromMem((const char*)jsonMem, memSize);
 	}
 
+	//设置模型的一些属性
+	if(desc["Attribute"]["DisableHandheldItem"].isBool())
+		disableHandheldItem = desc["Attribute"]["DisableHandheldItem"].asBool();
+
+
 	bool buttonHandled=false;
 	bool axisHandled=false;
 
@@ -197,7 +202,8 @@ void DeskObject::Update(uint64_t deltaTicksNS)
 		float sumRHandY=0.f;
 		float sumRWeights = 0.f;
 
-
+		auto pHandheldItem = _pParentItem->GetHandheldItem();
+		//if(pHandheldItem)
 	
 #define _PUSH_HAND_DATA(hand,X,Y,weight) \
 if(hand==HandControl::LEFT){sumLHandX+=X*weight; sumLHandY+=Y*weight;sumLWeights+=weight;}\
@@ -263,7 +269,7 @@ else {sumRHandX+=X*weight; sumRHandY+=Y*weight;sumRWeights+=weight;}
 		if (_pParentItem->GetHandheldItem())
 		{
 			auto pHandheldItem = _pParentItem->GetHandheldItem();
-			isAnyHandheldItemButtonPushed=pHandheldItem->IsAntButtonPushed();
+			isAnyHandheldItemButtonPushed=pHandheldItem->IsAnyButtonPushed();
 		}
 
 
@@ -285,6 +291,9 @@ else {sumRHandX+=X*weight; sumRHandY+=Y*weight;sumRWeights+=weight;}
 
 		for (auto button : _pushedButtnVec)
 		{
+			if (button->handControl.RequiredHandheldItem && !_pParentItem->GetHandheldItem())
+				continue;
+
 				float x, y;
 				_model->GetHandPosFromHandle(button->handControl.handPosHandle, &x, &y);
 				//上面获取的是点在模型中的坐标（模型空间），没有经过变换
@@ -296,13 +305,39 @@ else {sumRHandX+=X*weight; sumRHandY+=Y*weight;sumRWeights+=weight;}
 
 		for (auto& axis : modelAxisVec)
 		{
+			if(axis.handControl.RequiredHandheldItem&& !_pParentItem->GetHandheldItem())
+				continue;
+
 			//轴的模式是用来控制轴当前的手位置数据是否参与加权计算的
 
 			switch (axis.handControl.moveType)
 			{
-			case HandControl::FIXPOS:
+			case HandControl::FIXEDPOS:
 			{
-				assert(false && "Undeveloped Function: FIXPOS");
+				//同STICK但不设置死区表现优化
+								//判断是否在零点
+				bool bZero = true;
+				for (auto& subAxis : axis.axisVec)
+				{
+					if (subAxis.value != 0.f)
+					{
+						bZero = false; break;
+					}
+				}
+
+				//如果在零点（中心点），则计算时长，超长0.15秒则无效
+				if (bZero)
+				{
+					//无效
+				}
+				else
+				{
+					//有效
+
+					float x, y;
+					_model->GetHandPosFromHandle(axis.handControl.handPosHandle, &x, &y);
+					_PUSH_HAND_DATA(axis.handControl.handIndex, x, y, axis.handControl.handWeight);
+				}
 				break;
 			}
 			case HandControl::MOUSE:

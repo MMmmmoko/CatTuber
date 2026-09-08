@@ -6,7 +6,7 @@
 
 
 //物理按键到具体action
-void BindingInfo::RegisterBinding(int index, int index2)
+void BindingInfo::RegisterBinding(int index, int index2, const std::string& header )
 {
 	UnRegisterBinding();
 	auto& im = InputManager::GetIns();
@@ -22,8 +22,8 @@ void BindingInfo::RegisterBinding(int index, int index2)
 		//向InputManager注册关于物理按键的绑定
 
 		//构造actionname  Desk.Button.0.Down
-		std::string downActionName = "Desk.Button." + std::to_string(index) + ".Down";
-		std::string upActionName = "Desk.Button." + std::to_string(index) + ".Up";
+		std::string downActionName = header+".Button." + std::to_string(index) + ".Down";
+		std::string upActionName = header+".Button." + std::to_string(index) + ".Up";
 		_bindingHandleList.push_back(
 			im.RegisterButtonActionBinding(downActionName.c_str(), upActionName.c_str(), controllList.data(), static_cast<int>(controllList.size()))
 		);
@@ -33,8 +33,8 @@ void BindingInfo::RegisterBinding(int index, int index2)
 	case BindingInfo::Button_ActualAxisToButton:
 	{
 		//构造actionname  Desk.Button.0.Down
-		std::string downActionName = "Desk.Button." + std::to_string(index) + ".Down";
-		std::string upActionName = "Desk.Button." + std::to_string(index) + ".Up";
+		std::string downActionName = header+".Button." + std::to_string(index) + ".Down";
+		std::string upActionName = header+".Button." + std::to_string(index) + ".Up";
 
 		if (controlValue > 0)
 		{
@@ -56,7 +56,7 @@ void BindingInfo::RegisterBinding(int index, int index2)
 	case BindingInfo::Axis_ActualAxis:
 	{
 		//构造actionname  Desk.Axis.0.0.Change
-		std::string axisActionName = "Desk.Axis." + std::to_string(index) + "." + std::to_string(index2) +".Change";
+		std::string axisActionName = header+".Axis." + std::to_string(index) + "." + std::to_string(index2) +".Change";
 		_bindingHandleList.push_back(
 			im.RegisterAxisChangeActionBinding(axisActionName.c_str(), controllList[0].c_str()));
 		break;
@@ -64,7 +64,7 @@ void BindingInfo::RegisterBinding(int index, int index2)
 	case BindingInfo::Axis_ActualButtonToAxis:
 	{
 		//构造actionname  Desk.Axis.0.1.Change
-		std::string axisActionName = "Desk.Axis." + std::to_string(index) + "." + std::to_string(index2) + ".Change";
+		std::string axisActionName = header+".Axis." + std::to_string(index) + "." + std::to_string(index2) + ".Change";
 
 		_bindingHandleList.push_back(
 			im.RegisterButtonToAxisActionBinding(axisActionName.c_str(), controllList[0].c_str(), controlValue));
@@ -73,7 +73,7 @@ void BindingInfo::RegisterBinding(int index, int index2)
 	case BindingInfo::Animation_ActualButton:
 	{
 		//用物理按键触发动画 Desk.Animation.animationName.Start
-		std::string animationActionName = "Desk.Animation." + std::to_string(index) + ".Start";
+		std::string animationActionName = header+".Animation." + std::to_string(index) + ".Start";
 		_bindingHandleList.push_back(
 			im.RegisterButtonActionBinding(animationActionName.c_str(), NULL, controllList.data(), static_cast<int>(controllList.size()))
 		);
@@ -81,7 +81,7 @@ void BindingInfo::RegisterBinding(int index, int index2)
 	}
 	case BindingInfo::Animation_ActualAxisActive:
 	{
-		std::string animationActionName = "Desk.Animation." + std::to_string(index) + ".Start";
+		std::string animationActionName = header+".Animation." + std::to_string(index) + ".Start";
 
 		if (controlValue > 0)
 		{
@@ -99,7 +99,7 @@ void BindingInfo::RegisterBinding(int index, int index2)
 	}
 	case BindingInfo::Animation_ActualAxisInactive:
 	{
-		std::string animationActionName = "Desk.Animation." + std::to_string(index) + ".Start";
+		std::string animationActionName = header+".Animation." + std::to_string(index) + ".Start";
 
 		if (controlValue < 0)
 		{
@@ -115,7 +115,7 @@ void BindingInfo::RegisterBinding(int index, int index2)
 	}
 	case BindingInfo::Animation_Action:
 	{
-		std::string animationActionName = "Desk.Animation." + std::to_string(index) + ".Start";
+		std::string animationActionName = header+".Animation." + std::to_string(index) + ".Start";
 		_bindingHandleList.push_back(
 			im.RegisterActionByActionBinding(animationActionName.c_str(), controllList[0].c_str(), controlValue));
 		break;
@@ -748,6 +748,10 @@ void ModelControl::SetUpDefaultControl(const Json::Value& descItemInfo, IModel* 
 						{
 							button.handControl.moveType = HandControl::MOVING;
 						}
+						else if (handMoveTypeStr == "FixedPos")
+						{
+							button.handControl.moveType = HandControl::FIXEDPOS;
+						}
 					}
 					if (curButtonJson.isMember("HandWeight") && curButtonJson["HandWeight"].isDouble())
 					{
@@ -999,11 +1003,19 @@ void ModelControl::SetUpDefaultControl(const Json::Value& descItemInfo, IModel* 
 						{
 							axis.handControl.moveType = HandControl::MOVING;
 						}
+						else if (handMoveTypeStr == "FixedPos")
+						{
+							axis.handControl.moveType = HandControl::FIXEDPOS;
+						}
 					}
 					if (curAxisJson.isMember("HandWeight") && curAxisJson["HandWeight"].isDouble())
 					{
 						const auto handMoveTypeStr = curAxisJson["HandWeight"].asDouble();
 						axis.handControl.handWeight = static_cast<float>(handMoveTypeStr);
+					}
+					if (curAxisJson.isMember("RequiredHandheldItem") && curAxisJson["RequiredHandheldItem"].isBool())
+					{
+						axis.handControl.RequiredHandheldItem = curAxisJson["RequiredHandheldItem"].asBool();
 					}
 				}
 
@@ -1192,27 +1204,27 @@ void ModelControl::SetUpDefaultControl(const Json::Value& descItemInfo, IModel* 
 
 }
 
-void ModelControl::ApplyControlBindings(std::vector<ModelButtonControl>* modelButtonVec, std::vector<ModelAxisControl>* modelAxisVec, std::vector<ModelAnimationControl>* modelAnimationVec)
+void ModelControl::ApplyControlBindings(std::vector<ModelButtonControl>* modelButtonVec, std::vector<ModelAxisControl>* modelAxisVec, std::vector<ModelAnimationControl>* modelAnimationVec,const std::string& header)
 {
 
 	if(modelButtonVec)
 	for (int i = 0; i < modelButtonVec->size(); i++)
 	{
-		(*modelButtonVec)[i].binding.RegisterBinding(i);
+		(*modelButtonVec)[i].binding.RegisterBinding(i,0, header);
 	}
 	if (modelAxisVec)
 	for (int i = 0; i < modelAxisVec->size(); i++)
 	{
 		for (int j = 0; j < (*modelAxisVec)[i].axisVec.size(); j++)
 		{
-			(*modelAxisVec)[i].axisVec[j].binding.RegisterBinding(i,j);
+			(*modelAxisVec)[i].axisVec[j].binding.RegisterBinding(i,j, header);
 		}
 	}
 	if (modelAnimationVec)
 	for (int i = 0; i < modelAnimationVec->size(); i++)
 	{
 		for (auto& animationBinding : (*modelAnimationVec)[i].binding)
-			animationBinding.RegisterBinding(i);
+			animationBinding.RegisterBinding(i,0, header);
 	}
 }
 

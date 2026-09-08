@@ -59,7 +59,6 @@ private:
 	void OnAnimationPlay(int animationIndex);
 
 
-
 	void _OnHandDown(int handIndex,float paramX,float paramY);//按下
 	void _OnHandUp(int handIndex);
 	void _SetHandPos(int handIndex, float paramX, float paramY);//按下时改变位置
@@ -104,13 +103,13 @@ private:
 		
 		MeshMapping handPosMapping;
 
-		float x;
-		float y;
-		float activeHeight;//建模的时候做到1;但可以设置这个参数让手最高只抬到activeHeight的数字
+		float x=0.f;
+		float y=0.f;
+		float activeHeight=0.8F;//建模的时候做到1;但可以设置这个参数让手最高只抬到activeHeight的数字
 
-		float defaultX;//待机的目标参数值
-		float defaultY;//待机的目标参数值
-		float defaultHeight=0.f;//待机的目标参数值
+		//float defaultX;//待机的目标参数值
+		//float defaultY;//待机的目标参数值
+		//float defaultHeight=0.f;//待机的目标参数值
 
 		StraightMovingPoint point_default_up;
 		StraightMovingPoint point_active_to_default;
@@ -119,12 +118,16 @@ private:
 
 		//触发计时计数器，手短时间内多次按下才的计算器
 		//暂定1秒3次进入激活状态，不暴露给用户设置，如需设置任意次数 参考原版CatTuber的这里的计时计数类
-		uint64_t triggerTicks[3];
+		uint64_t triggerTicks[3] = {};
 		int triggerTicksIndex = 0;
 
-	}hands[2];//暂时只使用2只手
+	};//hands[2]0左1右
+	std::vector<HandData> hands;
+	void _SetUpHand(HandData& curHand,const char* posTestMesh,const char* paramX,const char* paramY,const char* paramZ,
+		float defaultX,float defaultY,float defaultHeight,float activeHeight);
 
-
+	//todo 
+	// _SetUpHand设置更详细参数
 	//todo 
 	//CharacterHead
 

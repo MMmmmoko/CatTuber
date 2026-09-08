@@ -285,7 +285,7 @@ void UISceneItemListProvider::LoadItemList(int windowIndex)
 				auto pCharacterObj = classicItem->GetCharacter();
 				auto pDeskObj = classicItem->GetDesk();
 				auto pHandheldObj = classicItem->GetHandheldItem();
-
+				if (pDeskObj && pDeskObj->NeedDisableHandheldItem())pHandheldObj = nullptr;
 				
 				//img1->SetVisible(pDeskObj);
 				//img2->SetVisible(pCharacterObj);
@@ -1175,13 +1175,21 @@ classicPanel_slot##ItemType->SetBoxShadow(L"blurradius='0'");\
 			SET_SLOT_IMAGE(Desk);
 			SET_SLOT_IMAGE(HandheldItem);
 #undef SET_SLOT_IMAGE
+			if (Desk && Desk->NeedDisableHandheldItem())
+			{
+				classicPanel_slotHandheldItem->SetForeStateImage(ui::kControlStateNormal,L"ModelItemSlotDisable.svg");
+			}
+			else
+			{
+				classicPanel_slotHandheldItem->SetForeStateImage(ui::kControlStateNormal, L"");
 
+			}
 
 		}
 
 				break;
 			case MainSceneItem::MainSceneItemType_IntegralModel:
-				//显示角色桌子面板
+				//显示独立模型面板
 				break;
 			case MainSceneItem::MainSceneItemType_BongoCat:
 				//显示BongoCat面板

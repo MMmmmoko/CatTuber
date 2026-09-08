@@ -212,6 +212,8 @@ public:
 
     bool _BuildFromJson(const Json::Value& json);
 	Json::Value _SaveToJson(const char* sceneName);
+    static Json::Value GenerateDefaultWindowJson();
+    
 private:
     int _frameLimit=60;//永远大于0，UI中显示
     //uint64_t _frameTickNs = ;//一帧需要的纳秒数

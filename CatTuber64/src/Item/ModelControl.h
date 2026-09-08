@@ -34,7 +34,7 @@ struct BindingInfo
 
 	float controlValue = 0.38268343236508f;//某些特殊类型的绑定需要用到一些参数//可能得使用union//数值为sin22.5
 
-	void RegisterBinding(int index,int index2=0);//参数为按钮、轴、动画的索引？//轴可用到index2
+	void RegisterBinding(int index,int index2=0,const std::string& header= std::string("Desk"));//参数为按钮、轴、动画的索引？//轴可用到index2
 	//注册的字符串类似"Desk.Button.i.Down"
 	//head提供上述的"Desk.Button."部分
 	void RegisterBindingEx(const char* head,int index,int index2=0);//参数为按钮、轴、动画的索引？//轴可用到index2
@@ -57,7 +57,7 @@ struct HandControl
 	//Axis用的
 	enum MOVETYPE
 	{
-		FIXPOS,
+		FIXEDPOS,
 		MOUSE,
 		STICK,
 		MOVING,
@@ -81,6 +81,8 @@ struct HandControl
 	}moveCalcData = {};
 	//仅提供给MOUSE运动的运动标识
 	//bool mouseDataActive=false;
+	//必须存在handheld item才生效
+	bool RequiredHandheldItem = false;
 };
 
 
@@ -196,7 +198,7 @@ public:
 	//从模型的desc文件中加载默认控件信息，如无则从模型参数加载
 	static void SetUpDefaultControl(const Json::Value& descItemInfo, IModel* model,std::vector<ModelButtonControl>* modelButtonVec, std::vector<ModelAxisControl>* modelAxisVec, std::vector<ModelAnimationControl>* modelAnimationVec);
 
-	static void ApplyControlBindings(std::vector<ModelButtonControl>* modelButtonVec, std::vector<ModelAxisControl>* modelAxisVec, std::vector<ModelAnimationControl>* modelAnimationVec);
+	static void ApplyControlBindings(std::vector<ModelButtonControl>* modelButtonVec, std::vector<ModelAxisControl>* modelAxisVec, std::vector<ModelAnimationControl>* modelAnimationVec,const std::string& header="Desk");
 };
 
 

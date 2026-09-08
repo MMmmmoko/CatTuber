@@ -1705,6 +1705,48 @@ bool RenderWindowManager::LoadScene(const char* sceneName, bool isQuitSave)
     return  _BuildFromJson(sceneJson);
 }
 
+
+
+Json::Value RenderWindowManager::GenerateDefaultWindowJson()
+{
+    Json::Value defaultWindowJson;
+    defaultWindowJson["Size"][0] = 400;
+    defaultWindowJson["Size"][1] = 300;
+
+    //默认构造一个CatTuber经典场景
+#define LLLLL1
+#ifdef LLLLL1
+    auto& item0 = defaultWindowJson["Scene"]["Items"][0];
+    item0["Type"] = "ClassicItem";
+    //item0["Detail"]["Desk"]; //DeskObject::CreateFromAttributes
+    item0["Detail"]["Desk"]["PackPath"] = "[AppBasePath]/Resources/Desk/28kGameKeyboard";
+    item0["Detail"]["Character"]["PackPath"] = "[AppBasePath]/Resources/Character/Mimi";
+    item0["Detail"]["HandheldItem"]["PackPath"] = "[AppBasePath]/Resources/HandheldItem/blackRGBmouse_0_4_0";
+#endif
+
+#ifdef LLLLL2
+    //测试bongo cat
+    auto& item0 = defaultWindowJson["Scene"]["Items"][0];
+    item0["Type"] = "BongoCatItem";
+    item0["Detail"]["Object"]["PackPath"] = "[AppBasePath]/Resources/BongoCatMver/DefaultBongoCat";
+#endif
+
+#ifdef LLLLL3
+    auto& item0 = defaultWindowJson["Scene"]["Items"][0];
+    item0["Type"] = "ClassicItem";
+    //item0["Detail"]["Desk"]; //DeskObject::CreateFromAttributes
+    item0["Detail"]["Desk"]["PackPath"] = "[AppBasePath]/Resources/Desk/28kGameKeyboard";
+    item0["Detail"]["Character"]["PackPath"] = "[AppBasePath]/Resources/Character/Mimi";
+    auto& item1 = defaultWindowJson["Scene"]["Items"][1];
+    item1["Type"] = "DecorationItem";
+    item1["Detail"]["Object"]["PackPath"] = "[AppBasePath]/Resources/Decoration/KPS_OSU";
+#endif
+
+    return defaultWindowJson;
+}
+
+
+
 bool RenderWindowManager::_BuildFromJson(const Json::Value& json)
 {
     //如果有保存窗口
@@ -1725,46 +1767,13 @@ bool RenderWindowManager::_BuildFromJson(const Json::Value& json)
 
         auto& window=controllers.emplace_back(std::unique_ptr<RenderWindowController>(new RenderWindowController));
         
-        //默认的json
-        Json::Value defaultWindowJson;
-        defaultWindowJson["Size"][0] = 400;
-        defaultWindowJson["Size"][1] = 300;
-
-        //默认构造一个CatTuber经典场景
-#define LLLLL1
-#ifdef LLLLL1
-        auto& item0 = defaultWindowJson["Scene"]["Items"][0];
-        item0["Type"] = "ClassicItem";
-        //item0["Detail"]["Desk"]; //DeskObject::CreateFromAttributes
-        item0["Detail"]["Desk"]["PackPath"] = "[AppBasePath]/Resources/Desk/28kGameKeyboard";
-        item0["Detail"]["Character"]["PackPath"] = "[AppBasePath]/Resources/Character/Mimi";
-        item0["Detail"]["HandheldItem"]["PackPath"] = "[AppBasePath]/Resources/HandheldItem/blackRGBmouse_0_4_0";
-#endif
-
-#ifdef LLLLL2
-        //测试bongo cat
-        auto& item0 = defaultWindowJson["Scene"]["Items"][0];
-        item0["Type"] = "BongoCatItem";
-        item0["Detail"]["Object"]["PackPath"] = "[AppBasePath]/Resources/BongoCatMver/DefaultBongoCat";
-#endif
-
-#ifdef LLLLL3
-        auto& item0 = defaultWindowJson["Scene"]["Items"][0];
-        item0["Type"] = "ClassicItem";
-        //item0["Detail"]["Desk"]; //DeskObject::CreateFromAttributes
-        item0["Detail"]["Desk"]["PackPath"] = "[AppBasePath]/Resources/Desk/28kGameKeyboard";
-        item0["Detail"]["Character"]["PackPath"] = "[AppBasePath]/Resources/Character/Mimi";
-        auto& item1 = defaultWindowJson["Scene"]["Items"][1];
-        item1["Type"] = "DecorationItem";
-        item1["Detail"]["Object"]["PackPath"] = "[AppBasePath]/Resources/Decoration/KPS_OSU";
-#endif
 
 
 
         //TODO/FIXME
         //item0["Detail"]["Character"];
         //item0["Detail"]["HandheldItem"];
-        window->Load(defaultWindowJson);
+        window->Load(GenerateDefaultWindowJson());
     }
 
 
@@ -1809,4 +1818,5 @@ Json::Value RenderWindowManager::_SaveToJson(const char* sceneName)
 
 	return saveJson;
 }
+
 
