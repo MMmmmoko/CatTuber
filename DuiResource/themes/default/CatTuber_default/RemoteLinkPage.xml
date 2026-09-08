@@ -11,6 +11,7 @@
 
 
 
+	<!--TODO 与设置页的36像素每行同步-->
 	<!--duilib对want_ctrl_return和want_return的处理疑似反了-->
 	<Class name="edit30px"  width="200" height="30"  font="system_14"
 		  padding="0,3,0,0"
@@ -25,7 +26,7 @@
 	<HBox height="auto">
 	<Label text_id="STRID_REMOTELINK" font="system_bold_22" margin="10,10,30,20" height="40" valign="center"/>
 	</HBox>
-		<Label text_id="STRID_REMOTELINK_DESCRIPTION"/>
+		<RichText text_id="STRID_REMOTELINK_DESCRIPTION" width="640" height="auto"/>
 		<Control bkcolor="itemSeparatorColor" height="1"  margin="0,8,0,8"/>
 		
 		<ButtonBox name="toggle_linkType" height="auto" mouse_child="false" border_size="1" border_color="panelBorderColor" margin="0,6,0,6"
@@ -75,8 +76,8 @@
 							  />
 					</VBox>
 				</HBox>
-				
-				
+
+				<Control height="10"/>
 				
 				<CheckBox class="cb30px" name="cb_StopUpdate" text_id="STRID_REMOTELINK_AS_INPUT_SOURCE_DISABLERENDERING"/>
 				<CheckBox class="cb30px" name="cb_AutoReconnect" text_id="STRID_REMOTELINK_AS_INPUT_SOURCE_AUTORECONNECT"/>

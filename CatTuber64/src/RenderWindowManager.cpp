@@ -3,7 +3,7 @@
 
 
 #include <SDL3/SDL_log.h>
-
+#include<SDL3_image/SDL_image.h>
 #include<../../Live2DFramework/SDL3Renderer/CubismRenderer_SDL3.hpp>
 #include"Model/Live2DModelBase.h"
 #include"AppSettings.h"
@@ -694,7 +694,362 @@ void RenderWindowController::Render() {
     return;
 }
 
+bool RenderWindowController::ScreenCaptureEx(/*std::vector<uint8_t>& pixArr, */int targetW, int targetH, ScreenCaptureFillMode fillmode,const char* filepath)
+{
+    //pixArr.clear();
+    //不要在渲染线程中调用这个函数
+    SDL_assert(targetW>0&& targetH>0);
+    bool success = false;
+    //根据targetW、targetH、fillmode计算新的离屏纹理大小
+    int captureW, captureH;
+	uint32_t srcX, srcY;
+	uint32_t dstX, dstY, dstW, dstH;
+	bool targetWider = (targetW * renderH > targetH * renderW);
+    if (fillmode == ScreenCaptureFillMode_FillALL)
+    {
+        if (targetWider)
+        {
+            fillmode = RenderWindowController::ScreenCaptureFillMode_FillWidth;
+        }
+        else
+        {
+            fillmode = RenderWindowController::ScreenCaptureFillMode_FillHeight;
+        }
+    }
+    else if (fillmode == ScreenCaptureFillMode_CONTAINALL)
+    {
+        if (targetWider)
+        {
+            fillmode = RenderWindowController::ScreenCaptureFillMode_FillHeight;
+        }
+        else
+        {
+            fillmode = RenderWindowController::ScreenCaptureFillMode_FillWidth;
+        }
+    }
+    switch (fillmode)
+    {  
+    case RenderWindowController::ScreenCaptureFillMode_FillHeight:
+        captureH = targetH;
+        captureW = static_cast<int>(SDL_roundf(targetH * aspectRatioW / (float)aspectRatioH));
+        if (targetWider)
+        {
+            srcX = 0;
+            srcY = 0;
+            dstX = (targetW- captureH)/2;
+            dstY = 0;
+            dstW = captureW;
+            dstH = captureH;
+        }
+        else
+        {
+            srcX = (captureW- targetW)/2;
+            srcY = 0;
 
+            dstX = 0;
+            dstY = 0;
+
+            dstW = targetW;
+            dstH = targetH;
+        }
+        break;
+    case RenderWindowController::ScreenCaptureFillMode_FillWidth:
+        captureW = targetW;
+        captureH = static_cast<int>(SDL_roundf(targetW * aspectRatioH / (float)aspectRatioW));
+
+        if (targetWider)
+        {
+            srcX = 0;
+            srcY = (captureH- targetH)/2;
+            dstX = 0;
+            dstY = 0;
+            dstW = targetW;
+            dstH = targetH;
+        }
+        else
+        {
+            srcX = 0;
+            srcY = 0;
+
+            dstX = 0;
+            dstY = (targetH- captureH)/2;
+
+            dstW = captureW;
+            dstH = captureH;
+        }
+
+        break;
+    default:
+        SDL_assert(false);
+        return false;
+        break;
+    }
+
+	//根据新的离屏纹理大小创建一个新的离屏纹理
+    SDL_GPUTextureCreateInfo textureDesc = {};
+    textureDesc.type = SDL_GPU_TEXTURETYPE_2D;
+    //textureDesc.format = SDL_GPU_TEXTUREFORMAT_R8G8B8A8_UNORM;
+    textureDesc.format = SDL_GPU_TEXTUREFORMAT_B8G8R8A8_UNORM;
+    textureDesc.usage = SDL_GPU_TEXTUREUSAGE_COLOR_TARGET;
+    textureDesc.width = captureW;
+    textureDesc.height = captureH;
+    textureDesc.layer_count_or_depth = 1;
+    textureDesc.num_levels = 1;
+#ifdef SDL_PLATFORM_WINDOWS
+
+    {
+        auto props = SDL_CreateProperties();
+        SDL_SetFloatProperty(props, SDL_PROP_GPU_TEXTURE_CREATE_D3D12_CLEAR_R_FLOAT, clearColor.r);
+        SDL_SetFloatProperty(props, SDL_PROP_GPU_TEXTURE_CREATE_D3D12_CLEAR_G_FLOAT, clearColor.g);
+        SDL_SetFloatProperty(props, SDL_PROP_GPU_TEXTURE_CREATE_D3D12_CLEAR_B_FLOAT, clearColor.b);
+        SDL_SetFloatProperty(props, SDL_PROP_GPU_TEXTURE_CREATE_D3D12_CLEAR_A_FLOAT, clearColor.a);
+        textureDesc.props = props;
+    }
+#endif
+
+    SDL_GPUTexture* screenCaptureOffscreenTex = SDL_CreateGPUTexture(AppContext::GetGraphicDevice(), &textureDesc);
+    if (!screenCaptureOffscreenTex)
+    {
+        SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Call CreateGPUTexture() failed! %s", SDL_GetError());
+        throw(std::runtime_error("Call CreateGPUTexture() failed!"));
+    }
+	textureDesc.width = targetW;
+	textureDesc.height =targetH;
+    SDL_GPUTexture* resultOutputTex = SDL_CreateGPUTexture(AppContext::GetGraphicDevice(), &textureDesc);
+    if (!resultOutputTex)
+    {
+        SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Call CreateGPUTexture() failed! %s", SDL_GetError());
+        throw(std::runtime_error("Call CreateGPUTexture() failed!"));
+    }
+
+	SDL_GPUTransferBufferCreateInfo tbinfo = {};
+	tbinfo.size = targetW * targetH * 4;
+	tbinfo.usage = SDL_GPU_TRANSFERBUFFERUSAGE_DOWNLOAD;
+	SDL_GPUTransferBuffer* resultTb = SDL_CreateGPUTransferBuffer(AppContext::GetGraphicDevice(), &tbinfo);
+	if (!resultTb)
+	{
+		SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Call CreateGPUTransferBuffer() failed! %s", SDL_GetError());
+        throw(std::runtime_error("Call CreateGPUTransferBuffer() failed!"));;
+	}
+    //复制render函数
+    {
+
+        do
+        {
+
+
+
+            Csm::Rendering::CubismRenderContext_SDL3* pContext = AppContext::GetLive2DRenderContext();
+
+            //窗口的渲染
+
+            //好像这个cmd还是放外面好点
+            //创建当前帧的命令缓存
+            //cmdCurframe = SDL_AcquireGPUCommandBuffer(AppContext::GetGraphicDevice());
+            //cmdCurframeCopy = SDL_AcquireGPUCommandBuffer(AppContext::GetGraphicDevice());
+            //if (!cmdCurframe || !cmdCurframeCopy)
+            //{
+            //    break;
+            //}
+            auto cmd = pContext->GetCommandBuffer();
+            auto cmdCurframeCopy = pContext->GetCopyCommandBuffer();
+
+
+
+            unsigned int curRenderSizeW, curRenderSizeH;
+            SDL_GPUTexture* curTargetTex = NULL;
+            
+            {
+                curTargetTex = screenCaptureOffscreenTex;
+                curRenderSizeW = captureW;
+                curRenderSizeH = captureH;
+
+            }
+
+
+
+
+            //创建ClearRenderPass清理
+            SDL_GPURenderPass* _clearPass;
+            {
+                SDL_GPUColorTargetInfo colorTargetInfo = {};
+                colorTargetInfo.texture = curTargetTex;
+                colorTargetInfo.load_op = SDL_GPU_LOADOP_CLEAR;
+                //if (isTransparent)
+                //    colorTargetInfo.clear_color = { 0.f,0.f,0.f ,0.F };
+                //else
+                    colorTargetInfo.clear_color = clearColor;//没有透明的时候设置特定背景色
+                //colorTargetInfo.clear_color = { clearValue,clearValue,clearValue ,0.F };//没有透明的时候设置特定背景色
+                colorTargetInfo.store_op = SDL_GPU_STOREOP_STORE;
+
+
+
+                //帧开始时的清理
+                //SDL_GPURenderPass* _clearPass;
+                if (!depthStencil)
+                {
+
+                    //pContext->StartFrame(cmd, & colorTargetInfo,NULL);
+                    _clearPass = SDL_BeginGPURenderPass(cmd, &colorTargetInfo, 1, NULL);
+                }
+                else
+                {
+                    SDL_GPUDepthStencilTargetInfo depthStencilTargetInfo = {};
+                    depthStencilTargetInfo.texture = depthStencil;
+                    depthStencilTargetInfo.load_op = SDL_GPU_LOADOP_CLEAR;
+                    depthStencilTargetInfo.store_op = SDL_GPU_STOREOP_STORE;
+                    depthStencilTargetInfo.clear_depth = 1.f;
+                    depthStencilTargetInfo.stencil_load_op = SDL_GPU_LOADOP_CLEAR;
+                    depthStencilTargetInfo.stencil_store_op = SDL_GPU_STOREOP_STORE;
+                    depthStencilTargetInfo.clear_stencil = 0;
+
+
+                    //pContext->StartFrame(cmd, &colorTargetInfo, &depthStencilTargetInfo);
+                    _clearPass = SDL_BeginGPURenderPass(cmd, &colorTargetInfo, 1, &depthStencilTargetInfo);
+                }
+
+
+                //pContext->StartFrame(cmdCurframe,_clearPass,cmdCurframeCopy);
+                pContext->StartFrame(_clearPass);
+                //SDL_EndGPURenderPass(_clearPass);
+            }
+
+
+
+
+            //int renderW, renderH;
+            //GetRenderSize(&renderW,&renderH);
+
+            Csm::Rendering::CubismRenderer_SDL3::StartFrame(
+                AppContext::GetGraphicDevice(),
+                pContext, curRenderSizeW, curRenderSizeH
+            );
+
+
+            //Rendering
+            //Rendering
+            //Rendering
+            //Rendering
+            //Rendering
+            //Rendering
+            //Rendering
+            //Rendering
+            //scene.Draw(curTargetTex, depthStencil, renderW, renderH, cmd, cmdCurframeCopy);
+            scene.Draw(_clearPass, curRenderSizeW, curRenderSizeH, cmd, cmdCurframeCopy);
+            //Rendering
+            //Rendering
+            //Rendering
+            //Rendering
+            //Rendering
+
+
+
+
+            Csm::Rendering::CubismRenderer_SDL3::EndFrame(AppContext::GetGraphicDevice());
+            //SDL_EndGPURenderPass(_clearPass);FIXME目前在下面的函数中调用，这应该是不合理的，应该修改
+            pContext->EndFrame();
+
+
+
+
+            //将结果渲染到resultOutputTex上
+            {
+
+				SDL_GPUCopyPass* cp=SDL_BeginGPUCopyPass(cmd);
+				SDL_GPUTextureLocation srcLoc = {};
+                srcLoc.texture = screenCaptureOffscreenTex;
+                srcLoc.x = srcX;
+                srcLoc.y = srcY;
+				SDL_GPUTextureLocation dstLoc = {};
+                dstLoc.texture = resultOutputTex;
+                dstLoc.x = dstX;
+                dstLoc.y = dstY;
+                SDL_CopyGPUTextureToTexture(cp,&srcLoc,&dstLoc,dstW,dstH,1,false);
+
+
+				SDL_GPUTextureRegion srcRegion = {};
+				srcRegion.texture = resultOutputTex;
+				srcRegion.w = targetW;
+                srcRegion.h = targetH;
+                srcRegion.d = 1;
+				SDL_GPUTextureTransferInfo transferInfo = {};
+				transferInfo.transfer_buffer = resultTb;
+				transferInfo.pixels_per_row = targetW;
+				transferInfo.rows_per_layer = targetH;
+                SDL_DownloadFromGPUTexture(cp, &srcRegion,&transferInfo);
+
+                SDL_EndGPUCopyPass(cp);
+
+			}
+
+
+
+
+            break;
+
+
+        } while (false);
+    
+    
+    }
+    //present
+    {
+        auto pContext = AppContext::GetSDL3RenderContext();
+        pContext->SubmitCopyCommandBuffer();
+        SDL_GPUFence* fence=pContext->SubmitCommandBufferAndAcquireFence();
+        SDL_WaitForGPUFences(AppContext::GetGraphicDevice(), true, &fence, 1);
+        SDL_ReleaseGPUFence(AppContext::GetGraphicDevice(), fence);
+
+
+
+        void* mappedData = SDL_MapGPUTransferBuffer(AppContext::GetGraphicDevice(), resultTb, false);
+        if (mappedData)
+        {
+            //pixArr.resize(targetW*targetH*4);
+            
+			void* pixArr = SDL_malloc(targetW * targetH * 4);
+            if (pixArr)
+            {
+                SDL_memcpy(pixArr, mappedData, targetW * targetH * 4);
+
+
+
+
+
+                //测试代码:向桌面存储截图
+                {
+                    // 6. 用 SDL_image 保存为 PNG
+                    SDL_Surface* surface = SDL_CreateSurfaceFrom(
+                        targetW, targetH,
+                        SDL_PIXELFORMAT_ARGB8888,
+                        pixArr,
+                        targetW * 4
+                    );
+
+                    if (surface) {
+                        IMG_SavePNG(surface,filepath);
+                        SDL_DestroySurface(surface);
+                        success = true;
+                    }
+                }
+                SDL_free(pixArr);
+            }
+        }
+        SDL_UnmapGPUTransferBuffer(AppContext::GetGraphicDevice(), resultTb);
+
+
+
+
+
+        SDL_ReleaseGPUTexture(AppContext::GetGraphicDevice(),screenCaptureOffscreenTex);
+        SDL_ReleaseGPUTexture(AppContext::GetGraphicDevice(),resultOutputTex);
+        SDL_ReleaseGPUTransferBuffer(AppContext::GetGraphicDevice(), resultTb);
+    }
+
+
+
+    return success;
+}
 
 void RenderWindowController::Present()
 {
@@ -1744,6 +2099,8 @@ Json::Value RenderWindowManager::GenerateDefaultWindowJson()
 
     return defaultWindowJson;
 }
+
+
 
 
 

@@ -23,8 +23,11 @@ void SettingsPage::InitContents(uintptr_t userdata1, uintptr_t userdata2)
     //ASSERT(Box&&"Can not be nullptr.");
 
     //防止反复fillBox
-    if(!slider_volume)
+    if(!baseControl_btn_settings)
     {
+        baseControl_btn_settings = GetWindow()->FindControl(L"baseControl_btn_settings");
+
+
     ui::GlobalManager::Instance().FillBoxWithCache(this, ui::FilePath(L"CatTuber_default/SettingsPage.xml"));
 
 
@@ -62,18 +65,35 @@ settingsPage_##op.InitContents(this);
 
 
 
-    //音频
-    {
-        double volumevalue = AppSettings::GetIns().GetVolumeValue();
-        slider_volume = static_cast<ui::Slider*>(FindSubControl(L"slider_volume"));
-        slider_volume->SetValue(volumevalue * 100.);
-        slider_volume->AttachValueChanged(ui::UiBind(&SettingsPage::OnSoundSliderValueChanged, this, std::placeholders::_1));
+
+
+    page_window.InitContents(this);
+    page_sound.InitContents(this);
+    page_input.InitContents(this);
+    page_other.InitContents(this);
+    page_aboutCatTuber.InitContents(this);
+
+
+
     }
-}
 
 
 
 }
+
+
+void SettingsPage::OnEnterThisPage(PageEnterFlag enterFlag)
+{
+
+    if (baseControl_btn_settings)baseControl_btn_settings->SetBkColor(L"itemHoverColor");
+}
+
+void SettingsPage::OnLeaveThisPage()
+{
+    if (baseControl_btn_settings)baseControl_btn_settings->SetBkColor(L"");
+}
+
+
 
 
 
@@ -161,12 +181,6 @@ void SettingsPage::_ClearTabOpStates()
 #undef UISETTINGSPAGE_ScroolChange
 }
 
-bool SettingsPage::OnSoundSliderValueChanged(const ui::EventArgs& msg)
-{
-    //音频只有一个滑块
-    
-    double value=slider_volume->GetValue();
-    //100
-    AppSettings::GetIns().SetVolumeValue(value/100.);
-    return true;
-}
+
+
+

@@ -71,6 +71,18 @@ public:
     Scene& GetScene() { return scene; };
 
 
+
+
+    enum ScreenCaptureFillMode
+    {
+        ScreenCaptureFillMode_FillHeight,//调整以使高度填满
+        ScreenCaptureFillMode_FillWidth,//调整以使宽度填满
+        ScreenCaptureFillMode_FillALL,//调整以使图像不留白
+        ScreenCaptureFillMode_CONTAINALL//调整以使图像完整显示
+    };
+    bool ScreenCaptureEx(/*std::vector<uint8_t>& pixArr,*/ int targetW, int targetH,
+        ScreenCaptureFillMode fillmode, const char* filepath);
+
     //仅供内部使用
     // 窗口尺寸变化回调,参数是渲染区域而不是整个窗口大小
     void _OnResize(int newW, int newH);
@@ -208,7 +220,7 @@ public:
     bool SaveScene(const char* sceneName,bool isQuitSave=false);
     bool LoadScene(const char* sceneName, bool isQuitSave = false);
     
-
+    
 
     bool _BuildFromJson(const Json::Value& json);
 	Json::Value _SaveToJson(const char* sceneName);

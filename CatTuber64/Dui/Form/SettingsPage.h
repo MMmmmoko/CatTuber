@@ -3,6 +3,7 @@
 
 
 #include"UIPageBase.h"
+#include"AppSettings.h"
 #include"SettingsPage_window.h"
 #include"SettingsPage_sound.h"
 #include"SettingsPage_input.h"
@@ -25,14 +26,20 @@ public:
 	virtual void InitContents(uintptr_t userdata1=0, uintptr_t userdata2=0)override;
 	virtual MainUiForm::PageEnum GetPageType()override { return MainUiForm::PageEnum::PAGE_SETTINGS; };
 
-
+private:
+	//进出设置页时设置设置按钮的效果
+	virtual void OnEnterThisPage(PageEnterFlag enterFlag);
+	virtual void OnLeaveThisPage();
 
 private:
+
+
+
 	bool OnTabOptionClicked(const ui::EventArgs& msg);
 	bool OnScrollChange(const ui::EventArgs& msg);
 	void _ClearTabOpStates();
 
-
+	ui::Control* baseControl_btn_settings = nullptr;
 	//Tab
 	//ui::Option* tabop_window;
 	//ui::Option* tabop_sound;
@@ -49,10 +56,14 @@ private:
 
 
 		
-	
-	//音频
-	bool OnSoundSliderValueChanged(const ui::EventArgs& msg);
-	ui::Slider* slider_volume=nullptr;
+
+
+
+	SettingsPage_window page_window;
+	SettingsPage_sound page_sound;
+	SettingsPage_input page_input;
+	SettingsPage_other page_other;
+	SettingsPage_aboutCatTuber page_aboutCatTuber;
 
 
 };

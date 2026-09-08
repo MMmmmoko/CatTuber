@@ -4,7 +4,7 @@
 #include "UiThread.h"
 #include"AppContext.h"
 #include"AppSettings.h"
-
+#include"CatTuberApp.h"
 
 //自定义控件
 //#include"UserControl/ImageCropperControl.h"
@@ -61,66 +61,15 @@ void UIMainThread::OnInit()
         };
 
 
+    
 
-
-
-#ifdef _DEBUG
-
-    //统一使用APPCONTEXT（由SDL提供的文件路径）
-    //ui::FilePath resourcePath = ui::FilePathUtil::GetCurrentModuleDirectory();
-    ui::FilePath resourcePath = ui::FilePath(AppContext::GetAppBasePath());
-    resourcePath += L"Dui/";
-
-
-    //使用本地文件的资源管理方式
-    ui::LocalFilesResParam resParam(resourcePath);
-    //auto curLang=AppSettings::GetIns().GetMiscLanguage()+".ini";
-
-
-    resParam.languageFileName = L"schinese.ini";
-
-    //ui::GlobalManager::Instance().Startup(resParam,ui::DpiInitParam(),null);
-    ui::GlobalManager::Instance().Startup(resParam);
-
-
-
-#else
-
-    //统一使用APPCONTEXT（由SDL提供的文件路径）
-//ui::FilePath resourcePath = ui::FilePathUtil::GetCurrentModuleDirectory();
-    ui::FilePath resourcePath = ui::FilePath(AppContext::GetAppBasePath());
-    //resourcePath += L"Dui/";
-    resourcePath = L"G:/Projects/CatTuber64/project/CatTuber64/x64/Debug/Dui/";
-
-
-    //使用本地文件的资源管理方式
-    ui::LocalFilesResParam resParam(resourcePath);
-    //auto curLang=AppSettings::GetIns().GetMiscLanguage()+".ini";
-
-
-    resParam.languageFileName = L"schinese.ini";
-
-    //ui::GlobalManager::Instance().Startup(resParam,ui::DpiInitParam(),null);
-    ui::GlobalManager::Instance().Startup(resParam);
-
-
-#endif // _DEBUG
+	CatTuberApp::StartDuiManager();
 
 
 
 
 
 
-
-
-
-
-    //创建窗口
-    //BasicForm* window = new BasicForm();
-    //window->CreateWnd(nullptr,ui::WindowCreateParam(L"CSP Helper", true));
-    ////正常应用主窗口被关闭时会退出，但我们是寄生在CSP主线程的，不能让CSP退出
-    ////window->PostQuitMsgWhenClosed(true);
-    //window->ShowWindow(ui::kSW_SHOW_NORMAL);
 
 
 

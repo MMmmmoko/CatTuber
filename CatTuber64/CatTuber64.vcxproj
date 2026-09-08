@@ -240,7 +240,6 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\duilib_CodePatch\Image_cpp_patch.cpp" />
     <ClCompile Include="Dui\Dialog\BongoCatImport_Dlg.cpp" />
     <ClCompile Include="Dui\Dialog\DuiMessageBox.cpp" />
     <ClCompile Include="Dui\Dialog\UISceneCoverCropper_Dlg.cpp" />
@@ -319,7 +318,6 @@
     <ClCompile Include="src\Util\json\json_writer.cpp" />
     <ClCompile Include="src\Util\Util.cpp" />
     <ClCompile Include="src\Util\WeakSupport.cpp" />
-    <ClCompile Include="_CodePatch\nanosvg_patch.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CatTuber64.rc" />

@@ -164,12 +164,17 @@ public:
 	static uint32_t GetAppVersion() { return CATTUBER_VER; };
 
 
+    static const char* GetCatTueberVersionStr();
+    static std::string GetLive2DVersionStr();
+
 	//通过SDL_PropertiesID来管理一些属性，简化代码
     static SDL_PropertiesID GetCommonProperties() { return _ref()._commonProperties; };
 
 
     //统一的日志、文件接口（方便结合其他库使用） sadsa
 public:
+
+
     //获取一个可写的路径,结尾有"/"符号
     static const char* GetPrefPath();//可以读写的路径
     static const char* GetAppBasePath();//windows：exe所在文件夹路径 （结尾有"/"符号）

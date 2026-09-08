@@ -12,8 +12,8 @@
 	
 	<MenuListBox class="menu" bkcolor="panelBkColor">
 		<!--仅在主页常驻控件中显示选择其他场景-->
-		<MenuItem class="sceneItemMenuElement" name="SceneItemMenu_SelectOther" width="auto">
-			<Label class="helperMenuText"  text_id="STRID_SCENEITEM_MENU_SELECTOTHER"  mouse_enabled="false" keyboard_enabled="false" visible="false"/>
+		<MenuItem class="sceneItemMenuElement" name="SceneItemMenu_SelectOther" width="auto" visible="false">
+			<Label class="helperMenuText"  text_id="STRID_SCENEITEM_MENU_SELECTOTHER"  mouse_enabled="false" keyboard_enabled="false"/>
 		</MenuItem>
 		<MenuItem class="sceneItemMenuElement" name="SceneItemMenu_Load" width="auto">
 			<Label class="helperMenuText"  text_id="STRID_SCENEITEM_MENU_LOAD"  mouse_enabled="false" keyboard_enabled="false"/>

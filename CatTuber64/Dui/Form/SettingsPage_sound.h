@@ -9,13 +9,21 @@ class SettingsPage_sound
 {
 
 public:
-	void InitContents(class SettingsPage* parent) {};
+	void InitContents(class SettingsPage* parent) ;
 
 
 
 
 private:
 	SettingsPage* parent=nullptr;
+
+
+
+	//音频
+	bool OnSoundSliderValueChanged(const ui::EventArgs& msg);
+	ui::Slider* slider_volume = nullptr;
+	ui::Label* text_volume = nullptr;
+
 };
 
 

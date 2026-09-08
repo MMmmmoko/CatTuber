@@ -451,12 +451,6 @@
     <ClCompile Include="Dui\Dialog\UISceneCreateNew_Dlg.cpp">
       <Filter>Dui\Dialog</Filter>
     </ClCompile>
-    <ClCompile Include="_CodePatch\nanosvg_patch.cpp">
-      <Filter>_CodePatch</Filter>
-    </ClCompile>
-    <ClCompile Include="..\duilib_CodePatch\Image_cpp_patch.cpp">
-      <Filter>_CodePatch</Filter>
-    </ClCompile>
     <ClCompile Include="Dui\Form\SettingsPage_window.cpp">
       <Filter>Dui\Form</Filter>
     </ClCompile>

@@ -12,5 +12,6 @@
 
 
 #define GETDUISTRING(strid) ui::GlobalManager::Instance().Lang().GetStringViaID(strid)
+#define GETDUISTRING_UTF8(strid) (ui::StringConvert::WStringToUTF8(ui::GlobalManager::Instance().Lang().GetStringViaID(strid)))
 
 #endif

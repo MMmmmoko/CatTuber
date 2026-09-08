@@ -9,13 +9,11 @@ class SettingsPage_aboutCatTuber
 {
 
 public:
-	void InitContents(class SettingsPage* parent) {};
+	void InitContents(class SettingsPage* parent) ;
 
 
 
 
-private:
-	SettingsPage* parent=nullptr;
 };
 
 

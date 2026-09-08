@@ -23,6 +23,24 @@ AppContext::~AppContext()
 	}
 }
 
+const char* AppContext::GetCatTueberVersionStr()
+{
+	return CATTUBER_VER_STR;
+}
+
+std::string AppContext::GetLive2DVersionStr()
+{
+	const Live2D::Cubism::Core::csmVersion version = Live2D::Cubism::Core::csmGetVersion();
+	const uint32_t major = static_cast<uint32_t>((version & 0xFF000000) >> 24);
+	const uint32_t minor = static_cast<uint32_t>((version & 0x00FF0000) >> 16);
+	const uint32_t patch = static_cast<uint32_t>((version & 0x0000FFFF));
+	const uint32_t versionNumber = version;
+	
+	char buf[32];
+	snprintf(buf,sizeof(buf),"%d.%d.%d (%d)", major, minor, patch, versionNumber);
+	return buf;
+}
+
 const char* AppContext::GetPrefPath()
 {
 	if (!_ref()._prefPath)

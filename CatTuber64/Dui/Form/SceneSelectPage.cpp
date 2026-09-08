@@ -9,7 +9,8 @@
 
 #include"Item/SceneManager.h"
 #include "UIModelItemSelect_Page.h"
-
+#include"RenderThread.h"
+#include"RenderWindowManager.h"
 //////////
 //******预设所有场景文件后缀为.json!!!!
 //////////
@@ -166,6 +167,7 @@ bool UISceneItem::OnRightClick(const ui::EventArgs& args)
         }
 
     }
+    maxW = SDL_max(maxW,120);
     SceneItemMenu_Load->SetFixedWidth(ui::UiFixedInt(maxW), true, false);
     SceneItemMenu_Duplicate->SetFixedWidth(ui::UiFixedInt(maxW), true, false);
     SceneItemMenu_Rename->SetFixedWidth(ui::UiFixedInt(maxW), true, false);
@@ -268,7 +270,27 @@ bool UISceneItem::OnUploadCoverClick(const ui::EventArgs& args)
 
 bool UISceneItem::OnCaptureCoverClick(const ui::EventArgs& args)
 {
-    SDL_assert(false);
+    //SDL_assert(false);
+RenderThread::GetIns().PostTask([](void* userdata, uint64_t userdata2) {
+    //构建存储路径
+    UISceneItem* _this = (UISceneItem*)userdata;
+    std::string sceneFileNameStr= _this->GetSceneFileName();  
+    std::string outputFileName = AppContext::GetSceneFolderPath() + sceneFileNameStr.substr(0, sceneFileNameStr.size() - 5)+".png";
+    //主窗口
+        RenderWindowController* targetWindow= RenderWindowManager::GetIns().GetWindowController(0);
+        if (targetWindow&&targetWindow->ScreenCaptureEx(400, 300, RenderWindowController::ScreenCaptureFillMode_FillALL, outputFileName.c_str()))
+        {
+            ui::GlobalManager::Instance().Thread().PostTask(ui::ThreadIdentifier::kThreadUI, [_this] {
+                std::string sceneFileNameStr = _this->GetSceneFileName();
+                std::string outputFileName = AppContext::GetSceneFolderPath() + sceneFileNameStr.substr(0, sceneFileNameStr.size() - 5) + ".png";
+                _this->GetProvider()->OnCoverSetted(_this->GetSceneIndex(), outputFileName.c_str());
+                });
+
+        }
+
+
+
+	}, this);
     return true;
 }
 

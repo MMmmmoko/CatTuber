@@ -227,6 +227,9 @@ void MainUiForm::GoToPage(PageEnum pageType, uintptr_t userData1, uintptr_t user
 	//if(nextVisitIndex - 1>=0)
 	//	GetPage( pageVisitList[nextVisitIndex - 1])->SetVisible(false);
 
+
+	if (_lastpage)_lastpage->OnLeaveThisPage();
+
 	pageVisitList.resize(nextVisitIndex);
 	pageVisitList.push_back(pageType);
 	nextVisitIndex++;
@@ -234,7 +237,7 @@ void MainUiForm::GoToPage(PageEnum pageType, uintptr_t userData1, uintptr_t user
 	pageContainer->SelectItem(GetPage(pageType));
 	GetPage(pageType)->OnEnterThisPage(UIPageBase::PageEnter_New);
 	//GetPage(pageType)->SetVisible(true);
-
+	_lastpage = GetPage(pageType);
 
 	_UpdateNavigateButton();
 

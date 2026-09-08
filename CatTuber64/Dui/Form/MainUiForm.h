@@ -64,7 +64,7 @@ private:
 
 
 	class UIPageBase* pageArray[PAGE_MAXCOUNT] = {0};
-
+	UIPageBase* _lastpage = nullptr;
 };
 
 
