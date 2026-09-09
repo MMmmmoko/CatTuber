@@ -15,6 +15,9 @@
 #include"../Tray.h"
 //#include"DuiCommon.h"
 #include"Dui.h"
+
+
+#include"ThreadUtil.h"
 SDL_FColor RenderWindowController::clearColor = { 0.f,0.f, 0.f, 0.f };
 
 
@@ -46,6 +49,9 @@ bool RenderWindowController::_CreateWindow()
     SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_Y_NUMBER, targetY);
     SDL_SetBooleanProperty(props, SDL_PROP_WINDOW_CREATE_RESIZABLE_BOOLEAN, true);
 
+    //不加更好看
+    //SDL_SetStringProperty(props, SDL_PROP_WINDOW_CREATE_TITLE_STRING, CATTUBER_APPNAME);
+
 
     //高像素密度
     SDL_SetBooleanProperty(props, SDL_PROP_WINDOW_CREATE_HIGH_PIXEL_DENSITY_BOOLEAN, true);
@@ -76,6 +82,7 @@ bool RenderWindowController::_CreateWindow()
 
 
     window = SDL_CreateWindowWithProperties(props);
+    SDL_DestroyProperties(props);
     if (!window)
     {
         SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Unable to create window: %s", SDL_GetError());
@@ -97,17 +104,77 @@ bool RenderWindowController::_CreateWindow()
     SetAspectSize(targetW, targetH);
 
     //让整个窗口可拖动 
+    //限制在内部一定像素范围内
     SDL_HitTest hittestFunc = [](SDL_Window* window, const SDL_Point* point, void* userData)->SDL_HitTestResult
         {
             if (((RenderWindowController*)userData)->window == window)
+            {
+                int w, h;
+                SDL_GetWindowSize(window, &w, &h);
+                constexpr int border = 8;
+                // 窗口边缘区域交给 Windows 处理，用于调整窗口大小
+
+                //if (point->x <= border && point->y <= border)
+                //{
+                //    return SDL_HITTEST_RESIZE_TOPLEFT;
+                //}
+                //if (point->x <= border && point->y > border&& point->y< h - border)
+                //{
+                //    return SDL_HITTEST_RESIZE_LEFT;
+                //}
+                //if (point->x <= border && point->y >= h - border)
+                //{
+                //    return SDL_HITTEST_RESIZE_BOTTOMLEFT;
+                //}
+                //if (point->x > border&& point->x <w-border&& point->y >= h - border)
+                //{
+                //    return SDL_HITTEST_RESIZE_BOTTOM;
+                //}
+                //if (point->x >= w - border && point->y >= h - border)
+                //{
+                //    return SDL_HITTEST_RESIZE_BOTTOMRIGHT;
+                //}
+                //if (point->x >= w - border && point->y > border && point->y < h - border)
+                //{
+                //    return SDL_HITTEST_RESIZE_RIGHT;
+                //}
+                //if (point->x >= w - border && point->y <= border)
+                //{
+                //    return SDL_HITTEST_RESIZE_TOPRIGHT;
+                //}
+
+                if (point->x < border ||
+                    point->x >= w - border ||
+                    point->y < border ||
+                    point->y >= h - border)
+                {
+                    //return SDL_HITTEST_NORMAL;
+                    //return (SDL_HitTestResult) - 1;//浏览代码发现SDL_HitTestResult之外的值不会进入switch范围，会执行默认动作
+                }
                 return SDL_HitTestResult::SDL_HITTEST_DRAGGABLE;
+            }
             else
                 return SDL_HitTestResult::SDL_HITTEST_NORMAL;
         };
-    //SDL_SetWindowHitTest(window, hittestFunc,this);
+    SDL_SetWindowHitTest(window, hittestFunc,this);
 
 
     windowID = SDL_GetWindowID(window);
+
+
+
+#ifdef SDL_PLATFORM_WINDOWS
+    SDL_PropertiesID __props = SDL_GetWindowProperties(window);
+    hwnd = (HWND)SDL_GetPointerProperty(__props, SDL_PROP_WINDOW_WIN32_HWND_POINTER, NULL);
+#endif 
+
+
+
+    SetTransparent(isTransparent);
+    SetLock(AppSettings::GetIns().GetWindowLock());
+    SetTop(AppSettings::GetIns().GetWindowTop());
+    SetTaskbarIconVisibility(AppSettings::GetIns().GetOtherShowTaskBarIcon());
+
     return true;
 }
 
@@ -151,10 +218,11 @@ void RenderWindowController::_ResetOffscreenTex()
     if (!offscreenTex)
     {
         SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Call CreateGPUTexture() failed! %s", SDL_GetError());
+        SDL_DestroyProperties(textureDesc.props);
         throw(std::runtime_error("Call CreateGPUTexture() failed!"));
     }
 
-
+    SDL_DestroyProperties(textureDesc.props);
 }
 
 void RenderWindowController::ShowPopMenu(int x,int y)
@@ -165,6 +233,15 @@ void RenderWindowController::ShowPopMenu(int x,int y)
     DString xml(L"MainWindowMenu.xml");
 
     menu->ShowMenu(xml, { x,y });
+
+
+    //还是得父窗口，因为不设置父窗口那么主窗口置顶时会导致菜单被盖在后方
+#ifdef SDL_PLATFORM_WINDOWS
+    HWND child = menu->NativeWnd()->GetHWND();
+    ::SetWindowLongPtr(child, GWLP_HWNDPARENT, (LONG_PTR)(hwnd));
+    ::UpdateWindow(child);
+#endif
+
 
     ui::MenuItem* windowMenu_openSettingWindow = dynamic_cast<ui::MenuItem*>( menu->FindControl(L"windowMenu_openSettingWindow"));
     ui::MenuItem* windowMenu_lockWindow = dynamic_cast<ui::MenuItem*>( menu->FindControl(L"windowMenu_lockWindow"));
@@ -186,6 +263,8 @@ void RenderWindowController::ShowPopMenu(int x,int y)
     //{
     //    if (windowMenu_showWindowBorder)windowMenu_showWindowBorder->SetVisible(false);
     //}
+
+
 
 
     //添加按钮功能
@@ -452,6 +531,9 @@ void RenderWindowController::SetTitle(const char* title)
 
 void RenderWindowController::SetTransparent(bool t)
 {
+
+
+
     //TODO/FIXME
     //assert(false);
 
@@ -469,6 +551,20 @@ void RenderWindowController::SetTop(bool b)
         SDL_SetWindowAlwaysOnTop(window,b);
 }
 
+void RenderWindowController::SetWindowVisibility(bool b)
+{
+    if (window)
+    {
+        if (b)
+        {
+            SDL_ShowWindow(window);
+        }
+        else
+        {
+            SDL_HideWindow(window);
+        }
+    }
+}
 
 void RenderWindowController::SetClearColor(SDL_Color color)
 {
@@ -811,6 +907,7 @@ bool RenderWindowController::ScreenCaptureEx(/*std::vector<uint8_t>& pixArr, */i
     if (!screenCaptureOffscreenTex)
     {
         SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Call CreateGPUTexture() failed! %s", SDL_GetError());
+        SDL_DestroyProperties(textureDesc.props);
         throw(std::runtime_error("Call CreateGPUTexture() failed!"));
     }
 	textureDesc.width = targetW;
@@ -819,6 +916,7 @@ bool RenderWindowController::ScreenCaptureEx(/*std::vector<uint8_t>& pixArr, */i
     if (!resultOutputTex)
     {
         SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Call CreateGPUTexture() failed! %s", SDL_GetError());
+        SDL_DestroyProperties(textureDesc.props);
         throw(std::runtime_error("Call CreateGPUTexture() failed!"));
     }
 
@@ -829,6 +927,7 @@ bool RenderWindowController::ScreenCaptureEx(/*std::vector<uint8_t>& pixArr, */i
 	if (!resultTb)
 	{
 		SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Call CreateGPUTransferBuffer() failed! %s", SDL_GetError());
+        SDL_DestroyProperties(textureDesc.props);
         throw(std::runtime_error("Call CreateGPUTransferBuffer() failed!"));;
 	}
     //复制render函数
@@ -1047,7 +1146,7 @@ bool RenderWindowController::ScreenCaptureEx(/*std::vector<uint8_t>& pixArr, */i
     }
 
 
-
+    SDL_DestroyProperties(textureDesc.props);
     return success;
 }
 
@@ -1677,9 +1776,7 @@ void RenderWindowController::Load(const Json::Value& json)
 
 
 
-   SetTransparent(isTransparent);
-   SetLock(AppSettings::GetIns().GetWindowLock());
-   SetTop(AppSettings::GetIns().GetWindowTop());
+
 
    //创建Scene
    //QUESTION:涉及到模型文件加载，需要移动到其他线程防止ui卡顿吗？

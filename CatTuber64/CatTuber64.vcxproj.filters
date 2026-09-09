@@ -317,6 +317,9 @@
     <ClInclude Include="src\Input\RemoteInputLink.h">
       <Filter>源文件\Input</Filter>
     </ClInclude>
+    <ClInclude Include="src\Util\ThreadUtil.h">
+      <Filter>源文件\Util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -553,6 +556,9 @@
     <ClCompile Include="src\Input\RemoteInputLink.cpp">
       <Filter>源文件\Input</Filter>
     </ClCompile>
+    <ClCompile Include="src\Util\ThreadUtil.cpp">
+      <Filter>源文件\Util</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CatTuber64.rc">
@@ -648,6 +654,9 @@
       <Filter>Dui\Dialog</Filter>
     </Xml>
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\RemoteLinkPage.xml">
+      <Filter>Dui\Form</Filter>
+    </Xml>
+    <Xml Include="..\DuiResource\themes\default\CatTuber_default\UIEmptyMenu.xml">
       <Filter>Dui\Form</Filter>
     </Xml>
   </ItemGroup>

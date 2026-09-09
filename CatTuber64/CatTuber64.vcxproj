@@ -234,6 +234,7 @@
     <ClInclude Include="src\UserEvent.h" />
     <ClInclude Include="src\Util\ObjectPool.h" />
     <ClInclude Include="src\Util\SDL_LockGuard.h" />
+    <ClInclude Include="src\Util\ThreadUtil.h" />
     <ClInclude Include="src\Util\Util.h" />
     <ClInclude Include="src\Util\WeakCallbackList.h" />
     <ClInclude Include="src\Util\WeakSupport.h" />
@@ -316,6 +317,7 @@
     <ClCompile Include="src\Util\json\json_reader.cpp" />
     <ClCompile Include="src\Util\json\json_value.cpp" />
     <ClCompile Include="src\Util\json\json_writer.cpp" />
+    <ClCompile Include="src\Util\ThreadUtil.cpp" />
     <ClCompile Include="src\Util\Util.cpp" />
     <ClCompile Include="src\Util\WeakSupport.cpp" />
   </ItemGroup>
@@ -368,6 +370,7 @@
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\MainUiForm.xml" />
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\MainWindowMenu.xml" />
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\RemoteLinkPage.xml" />
+    <Xml Include="..\DuiResource\themes\default\CatTuber_default\UIEmptyMenu.xml" />
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\UISceneContentListItem.xml" />
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\UISceneListItemMenu.xml" />
     <Xml Include="..\DuiResource\themes\default\CatTuber_default\UIScenePanelItemAddMenu.xml" />

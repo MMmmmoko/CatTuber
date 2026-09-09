@@ -95,6 +95,7 @@ void RenderThread::PostTask(void(*task)(void* userdata, uint64_t userdata2), voi
 	if (SDL_GetCurrentThreadID() == SDL_GetThreadID(renderThread))
 	{
 		task(userdata, userdata2);
+		return;
 	}
 	{
 		SDL_LockGuard guard(taskQueueMutex);

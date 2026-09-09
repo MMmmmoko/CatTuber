@@ -9,13 +9,21 @@ class SettingsPage_window
 {
 
 public:
-	void InitContents(class SettingsPage* parent) {};
+	void InitContents(class SettingsPage* parent);
 
 
 
+	bool OnCheckBoxSelected(const ui::EventArgs& msg);
 
 private:
 	SettingsPage* parent=nullptr;
+
+	ui::CheckBox* cb_windowTop;
+	ui::CheckBox* cb_windowTransparent;
+	ui::CheckBox* cb_windowLock;
+	ui::CheckBox* cb_windowLockVisibleSave;
+	ui::CheckBox* cb_windowVisible;
+
 };
 
 

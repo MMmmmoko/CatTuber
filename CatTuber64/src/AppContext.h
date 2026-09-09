@@ -58,6 +58,20 @@
 
 #define CATTUBER_ORGNAME "CatSoft"
 #define CATTUBER_APPNAME "CatTuber"
+#define CATTUBER_APPFILENAME_NOEXE "CatTuber64"
+#define CATTUBER_APPFILENAME_NOEXE_W L"CatTuber64"
+#define CATTUBER_APPFILENAME "CatTuber64.exe"
+#define CATTUBER_IDENTIFIER_STRING "com.CatSoft.CatTuber"
+#define CATTUBER_CREATOR_STRING "MMmmmoko"
+#define CATTUBER_COPYRIGHT_STRING u8"Copyright © 2026 MMmmmoko"
+#define CATTUBER_METADATA_URL_STRING "https://space.bilibili.com/5808772"
+
+#define CATTUBER_METADATA_TYPE_STRING "application"
+//"game" for a video game, "mediaplayer" for a media player,
+// or generically "application" if nothing else applies. 
+// Future versions of SDL might add new types. This defaults to "application".
+
+
 
 
 //文件
@@ -162,6 +176,7 @@ public:
 
 	static const char* GetAppVersionStr() { return CATTUBER_VER_STR; };
 	static uint32_t GetAppVersion() { return CATTUBER_VER; };
+	static std::string  GetSystemVersion();
 
 
     static const char* GetCatTueberVersionStr();

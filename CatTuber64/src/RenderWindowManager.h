@@ -58,6 +58,9 @@ public:
     void SetTransparent(bool t);
     void SetTop(bool b);
     void SetLock(bool b);
+    void SetWindowVisibility(bool b);
+    void SetTaskbarIconVisibility(bool b);
+
     void SetClearColor(SDL_Color color);
 
     void SetWindowSize(int W,int H);
@@ -114,6 +117,7 @@ private:
     //可设置项
     static SDL_FColor clearColor;
     bool isTransparent=false;
+    bool hasSettedTaskbarIcon=false;
     bool deviceClaimed = false;
 
     //状态
@@ -121,7 +125,11 @@ private:
 
 
     SDL_Window* window = nullptr;
-    //SDL_Renderer* renderer = nullptr;
+    //SDL_Window* window_transparent = nullptr;
+
+
+
+
     Uint32            windowID = 0;
 
     Scene scene;
@@ -139,6 +147,9 @@ private:
     SDL_Texture* offscreenTex_2D = NULL;
 
 #ifdef SDL_PLATFORM_WINDOWS
+    HWND hwnd;
+
+
     //D3D12 API
     SDL_GPUTexture* d3d12ShareTex=NULL;
     //用于拷贝到D3D11的D3D12纹理
@@ -205,6 +216,8 @@ public:
     //获取信息
     RenderWindowController* GetWindowController(int index);
     size_t GetWindowControllerCount() { return controllers.size(); };
+
+    const std::vector<std::unique_ptr<RenderWindowController>>& GetWindowControllers() { return controllers; };
     //int GetWindowControllerIndex(int index);
 
     //设置项

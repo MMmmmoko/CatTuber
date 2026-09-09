@@ -9,13 +9,16 @@ class SettingsPage_other
 {
 
 public:
-	void InitContents(class SettingsPage* parent) {};
+	void InitContents(class SettingsPage* parent) ;
 
-
+	bool OnCheckBoxClicked(const ui::EventArgs& msg);
 
 
 private:
 	SettingsPage* parent=nullptr;
+	ui::CheckBox* cb_taskBarIcon;
+	ui::CheckBox* cb_startOnBoot;
+	ui::CheckBox* cb_startAsAdmin;
 };
 
 

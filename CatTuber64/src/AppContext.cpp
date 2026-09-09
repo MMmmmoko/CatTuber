@@ -2,6 +2,10 @@
 #include"AppSettings.h"
 #include "AppContext.h"
 
+#ifdef SDL_PLATFORM_WINDOWS
+#include <windows.h>
+#endif
+
 AppContext::AppContext()
 {
 	//_commonProperties = SDL_CreateProperties();
@@ -21,6 +25,54 @@ AppContext::~AppContext()
 		SDL_free(_prefPath);
 		_prefPath = NULL;
 	}
+}
+
+std::string AppContext::GetSystemVersion()
+{
+#ifdef SDL_PLATFORM_WINDOWS
+	{
+		typedef struct {
+			DWORD dwOSVersionInfoSize;
+			DWORD dwMajorVersion;
+			DWORD dwMinorVersion;
+			DWORD dwBuildNumber;
+			DWORD dwPlatformId;
+			WCHAR szCSDVersion[128];
+		} NT_OSVERSIONINFOW;
+		typedef LONG(WINAPI* RtlGetVersion_t)(NT_OSVERSIONINFOW*);
+
+
+		// 动态加载 ntdll.dll
+		HMODULE ntdll = LoadLibraryW(L"ntdll.dll");
+		if (!ntdll) return "Unknown";
+
+		// 获取 RtlGetVersion 函数地址
+		RtlGetVersion_t RtlGetVersionFunc = (RtlGetVersion_t)GetProcAddress(ntdll, "RtlGetVersion");
+		if (!RtlGetVersionFunc) {
+			FreeLibrary(ntdll);
+			return "Unknown";
+		}
+
+		NT_OSVERSIONINFOW os_info = { 0 };
+		os_info.dwOSVersionInfoSize = sizeof(os_info);
+
+		// 调用函数获取真实版本
+		if (RtlGetVersionFunc(&os_info) == 0) { // 0 表示成功
+			DWORD  major = os_info.dwMajorVersion;
+			DWORD minor = os_info.dwMinorVersion;
+			DWORD build = os_info.dwBuildNumber;
+			FreeLibrary(ntdll);
+			char buf[128];
+			SDL_snprintf(buf,sizeof(buf),"%d.%d.%d", major, minor,build);
+			return buf;
+		}
+
+		FreeLibrary(ntdll);
+		return "Unknown";
+	}
+#endif
+
+
 }
 
 const char* AppContext::GetCatTueberVersionStr()

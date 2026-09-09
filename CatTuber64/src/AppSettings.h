@@ -19,14 +19,14 @@ typedef std::string _CatString;
     F(Window,Top,bool,false)        \
     F(Window,Transparent,bool,false)         \
     F(Window,Lock,bool,false) \
-    F(Window,LockSave,bool,false) \
     F(Window,Visible,bool,true) \
+    F(Window,LockVisibleSave,bool,false) \
     F(Window,FrameLimit,int64_t,60) \
     F(Window,BackgroundColor,SDL_Color,_defaultBackgroundColor) \
     F(Volume,Value,double,50) \
     F(Mouse,RelativeMove,bool,true) \
     F(Mouse,Speed,double,1) \
-    F(Mouse,InputArea,_CatString,"AllDisplays") \
+    F(Mouse,InputArea,_CatString,"[AllDisplays]") \
     F(Mouse,InvertX,bool,false) \
 \
     F(DeadZone,GamepadStick,double,0.12) \
@@ -41,6 +41,7 @@ typedef std::string _CatString;
  \
     F(Other,ShowTaskBarIcon,bool,true)  \
     F(Other,Windows_RunAsAdmin,bool,false) \
+    F(Other,StartOnBoot,bool,false) \
 \
     F(UIScene,CreateEmpty,bool,true) \
     F(UIItem,ShowDetailedInfo_ClassicCharacter,bool,false) \

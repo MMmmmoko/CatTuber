@@ -9,4 +9,7 @@ void SettingsPage_aboutCatTuber::InitContents(class SettingsPage* parent)
 	ui::Label* text_live2DSDKVersion =(ui::Label*)parent->FindSubControl(L"text_live2DSDKVersion");
 	text_live2DSDKVersion->SetUTF8Text(AppContext::GetLive2DVersionStr());
 
+	ui::Label* text_copyRight =(ui::Label*)parent->FindSubControl(L"text_copyRight");
+	text_live2DSDKVersion->SetUTF8Text(CATTUBER_COPYRIGHT_STRING);
+
 }

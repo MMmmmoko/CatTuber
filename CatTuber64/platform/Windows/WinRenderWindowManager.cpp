@@ -6,6 +6,7 @@
 #include <windowsx.h>
 #include"RenderWindowManager.h"
 #include"UserEvent.h"
+#include <ShObjIdl_core.h>
 
 static std::unordered_map<HWND, RenderWindowController*> hwnd2SDL_Window;
 
@@ -14,11 +15,26 @@ static std::unordered_map<HWND, RenderWindowController*> hwnd2SDL_Window;
 void RenderWindowController::SetLock(bool b)
 {
 
-    //先尝试SDL_SetWindowShape是否可行，不可行再直接调用平台API
 
-
-
-
+    //LONG_PTR exStyle = GetWindowLongPtr(hwnd, GWL_EXSTYLE);
+    if (b)
+    {
+        // 开启穿透
+        SetWindowLongPtr(
+            hwnd,
+            GWL_EXSTYLE,
+            GetWindowLongPtr(hwnd, GWL_EXSTYLE)|WS_EX_LAYERED | WS_EX_TRANSPARENT
+        );
+    }
+    else
+    {
+        // 关闭穿透
+        SetWindowLongPtr(
+            hwnd,
+            GWL_EXSTYLE,
+            GetWindowLongPtr(hwnd, GWL_EXSTYLE) & ~(WS_EX_TRANSPARENT| WS_EX_LAYERED)
+        );
+    }
 
     //
     //for (auto& wc : controllers)
@@ -36,6 +52,61 @@ void RenderWindowController::SetLock(bool b)
     //}
 }
 
+
+void RenderWindowController::SetTaskbarIconVisibility(bool b)
+{
+    if (b)
+    {
+        if (hasSettedTaskbarIcon)
+        {
+            //isTaskbarIconVisible = b_show;
+            HRESULT hr;
+            ITaskbarList* pTaskbarList;
+            hr = CoCreateInstance(CLSID_TaskbarList,
+                NULL, CLSCTX_INPROC_SERVER,
+                IID_ITaskbarList, (void**)&pTaskbarList);
+
+            if (FAILED(hr))
+            {
+                return;
+            }
+            if (pTaskbarList)
+            {
+                pTaskbarList->HrInit();
+                pTaskbarList->AddTab(hwnd);
+                pTaskbarList->Release();
+            }
+
+        }
+
+    }
+    else
+    {
+        hasSettedTaskbarIcon = true;
+        HRESULT hr;
+        ITaskbarList* pTaskbarList;
+        hr = CoCreateInstance(CLSID_TaskbarList,
+            NULL, CLSCTX_INPROC_SERVER,
+            IID_ITaskbarList, (void**)&pTaskbarList);
+        if (FAILED(hr))
+        {
+            return;
+        }
+        if (pTaskbarList)
+        {
+            pTaskbarList->HrInit();
+            pTaskbarList->DeleteTab(hwnd);
+            pTaskbarList->Release();
+        }
+    }
+
+}
+
+
+
+
+
+
 //CatTuber需要拦截处理WM_Sizing事件
 
 typedef  LRESULT(CALLBACK* __WINDOWSPROC)(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -46,6 +117,13 @@ static __WINDOWSPROC SDL_WindowProc=NULL;
 LRESULT CALLBACK RenderWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     
+    //这个方式好像不能实现鼠标透明
+    //if (uMsg == WM_NCHITTEST)
+    //{
+    //    return HTTRANSPARENT;
+    //}
+
+
     //if (uMsg == WM_ENTERSIZEMOVE) {
     //    RenderWindowController* _this = hwnd2SDL_Window[hwnd];
     //    SetTimer(hwnd, (uintptr_t)_this, 8, NULL);

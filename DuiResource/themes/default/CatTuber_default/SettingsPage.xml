@@ -44,10 +44,14 @@
 			<HBox class="HBox_SetingsGroup" name="header_window">
 				<Label class="SettingsTitle" text_id="STRID_SETTINGS_TITLE_WINDOW" />
 				<VBox height="auto">
-					<CheckBox class="CheckBox_Default" text_id="STRID_SETTINGS_WINDOW_TOP"/>
-					<CheckBox class="CheckBox_Default" text_id="STRID_SETTINGS_WINDOW_BORDER"/>
-					<CheckBox class="CheckBox_Default" text_id="STRID_SETTINGS_WINDOW_LOCK"/>
-					<CheckBox class="CheckBox_Default" text_id="STRID_SETTINGS_WINDOW_VISIBLE"/>
+					<CheckBox class="CheckBox_Default" name="cb_windowTop" text_id="STRID_SETTINGS_WINDOW_TOP"/>
+					<CheckBox class="CheckBox_Default" name="cb_windowTransparent" text_id="STRID_SETTINGS_WINDOW_TRANSPARENT"/>
+					<HBox height="auto">
+						<CheckBox class="CheckBox_Default" name="cb_windowLock" text_id="STRID_SETTINGS_WINDOW_LOCK" valign="top"/>
+						<RichText text_id="STRID_SETTINGS_WINDOW_LOCK_HINT" text_color="textLightColor" margin="20,0,0,0" height="auto" width="380"/>
+					</HBox>
+					<CheckBox class="CheckBox_Default" name="cb_windowVisible" text_id="STRID_SETTINGS_WINDOW_VISIBLE"/>
+					<CheckBox class="CheckBox_Default" name="cb_windowLockVisibleSave" text_id="STRID_SETTINGS_WINDOW_LOCKVISIBLESAVE"/>
 				</VBox>
 			</HBox>
 
@@ -71,21 +75,22 @@
 				<VBox height="auto">
 					<HBox height="36">
 						<Label class="Label_Head" text_id="STRID_SETTINGS_INPUT_MOUSE_INPUTMODE"/>
-						<Option class="ctb_option_default" group="inputmode" text_id="STRID_SETTINGS_INPUT_MOUSE_INPUTMODE_MOVE"/>
-						<Option class="ctb_option_default" group="inputmode" text_id="STRID_SETTINGS_INPUT_MOUSE_INPUTMODE_COORDINATE"/>
+						<Option class="ctb_option_default" name="op_inputmode_move" group="inputmode" text_id="STRID_SETTINGS_INPUT_MOUSE_INPUTMODE_MOVE"/>
+						<Option class="ctb_option_default" name="op_inputmode_coordinate" group="inputmode" text_id="STRID_SETTINGS_INPUT_MOUSE_INPUTMODE_COORDINATE"/>
 					</HBox>
-					<!--滑块属性均为min="0" max="65535" step="255"-->
-					<HBox height="36" width="400">
+					<HBox name="box_inputmode_move" height="36" width="400">
 						<Label class="Label_Head" text_id="STRID_SETTINGS_INPUT_MOUSE_SPEED"/>
-						<Slider class="ctb_slider_default_36px" width="stretch"/>
-						<Label class="Label_Head" text="x1.0" width="60"/>
+						<Slider class="ctb_slider_default_36px" name="slider_mouseSpeed" width="stretch" min="0" max="10000" step="100"/>
+						<Label class="Label_Head" name="text_mouseSpeed" text="x1.0" width="60"/>
 					</HBox>
-					<HBox height="36" width="400">
+					<HBox name="box_inputmode_coordinate" height="36" width="400">
 						<Label class="Label_Head" text_id="STRID_SETTINGS_INPUT_MOUSE_AREA"/>
-						<Slider class="ctb_slider_default_36px" width="stretch"/>
-						<Label class="Label_Head" text="x1.0" width="60"/>
+						<Control width="20"/>
+						<Button name="btn_mouseArea" min_width="150" width="auto" valign="center" height="30"  text_padding="20,0,20,0"
+						  border_color="itemPushColor" hot_color="itemHoverColor"
+						  border_size="1" border_round="4,4" fade_hot="false"/>
 					</HBox>
-					<CheckBox class="CheckBox_Default" text_id="STRID_SETTINGS_INPUT_MOUSE_INVERT_X"/>
+					<CheckBox class="CheckBox_Default" name="cb_mouseInvertX" text_id="STRID_SETTINGS_INPUT_MOUSE_INVERT_X"/>
 					<!--手柄死区-->
 					<Label class="SettingsSubTitle" text_id="STRID_SETTINGS_INPUT_GAMEPAD_DEADZONE"/>
 
@@ -97,14 +102,14 @@
 							<Label class="Label_Head" text_id="STRID_SETTINGS_INPUT_GAMEPAD_DEADZONE_JOYSTICK"/>
 						</VBox>
 						<VBox height="auto" >
-							<Slider class="ctb_slider_default_36px" width="stretch"/>
-							<Slider class="ctb_slider_default_36px" width="stretch"/>
-							<Slider class="ctb_slider_default_36px" width="stretch"/>
+							<Slider class="ctb_slider_default_36px" name="slider_deadzone_stick" width="stretch" min="0" max="10000" step="100"/>
+							<Slider class="ctb_slider_default_36px" name="slider_deadzone_trigger" width="stretch" min="0" max="10000" step="100"/>
+							<Slider class="ctb_slider_default_36px" name="slider_deadzone_joystick" width="stretch" min="0" max="10000" step="100"/>
 						</VBox>
 						<VBox height="auto" width="60">
-							<Label class="Label_Head" text="12%"/>
-							<Label class="Label_Head" text="5%"/>
-							<Label class="Label_Head" text="5%"/>
+							<Label class="Label_Head" name="text_deadzone_stick" text="12%"/>
+							<Label class="Label_Head" name="text_deadzone_trigger" text="5%"/>
+							<Label class="Label_Head" name="text_deadzone_joystick" text="5%"/>
 						</VBox>
 					</HBox>
 					
@@ -117,10 +122,10 @@
 			<HBox class="HBox_SetingsGroup" name="header_other">
 				<Label class="SettingsTitle" text_id="STRID_SETTINGS_TITLE_OTHER"/>
 				<VBox height="auto">
-					<CheckBox class="CheckBox_Default" text_id="STRID_SETTINGS_OTHER_TASKBARICON"/>
-					<CheckBox class="CheckBox_Default" text_id="STRID_SETTINGS_OTHER_STARTONBOOT"/>
+					<CheckBox class="CheckBox_Default" name="cb_taskBarIcon" text_id="STRID_SETTINGS_OTHER_TASKBARICON"/>
+					<CheckBox class="CheckBox_Default" name="cb_startOnBoot" text_id="STRID_SETTINGS_OTHER_STARTONBOOT"/>
 					<HBox height="auto">
-						<CheckBox class="CheckBox_Default" text_id="STRID_SETTINGS_OTHER_ADMIN"  valign="top"/>
+						<CheckBox class="CheckBox_Default" name="cb_startAsAdmin" text_id="STRID_SETTINGS_OTHER_ADMIN"  valign="top"/>
 						<RichText text_id="STRID_SETTINGS_OTHER_ADMIN_HINT" text_color="textLightColor" margin="20,0,0,0" height="auto" width="380"/>
 					</HBox>
 				</VBox>
@@ -149,7 +154,7 @@
 					</HBox>
 					<!--版权-->
 					<Control height="30"/>
-					<Label class="Label_Head" text="Copyright © 2026 MMmmmoko"/>
+					<Label class="Label_Head" name="text_copyRight"/>
 				</VBox>
 			</VBox>
 			<Control height="25"/>

@@ -1,13 +1,14 @@
 
 #include"AppContext.h"
 #include"AppSettings.h"
-
+#include"CatTuberApp.h"
 #include"Util/Util.h"
 
 
 #include"RenderThread.h"
 #include"RenderWindowManager.h"
 #include"Input/InputManager.h"
+#include"Input/InputParser.h"
 
 AppSettings AppSettings::ins;
 SDL_Color AppSettings::_defaultBackgroundColor = {255,255,255,0};//低到高 rgba
@@ -69,7 +70,8 @@ else \
 
 #undef APPSETTINGS_Load
 
-
+	//特殊处理
+	_OtherStartOnBoot = CatTuberApp::IsAutoStartEnabled();
 
 }
 
@@ -88,9 +90,10 @@ bool AppSettings::Save()
 
 
 	//特殊处理，如果不保存Lock状态的情况下，保存为false
-	if (!root["Window"]["LockSave"].asBool())
+	if (!root["Window"]["LockVisibleSave"].asBool())
 	{
 		root["Window"]["Lock"] = false;
+		root["Window"]["Visible"] = true;
 	}
 
 	//将json写入文件
@@ -232,6 +235,8 @@ const std::vector<std::string>& AppSettings::GetLocalLanguageFullbackVec()
 void AppSettings::_OnWindowTopChange(const bool& value)
 {
 	RenderWindowManager::GetIns().SetWindowTop(value);
+
+	//TODO:后续有托盘或者快捷键进行设定的话，需要在UI中回显
 }
 
 void AppSettings::_OnWindowTransparentChange(const bool& value)
@@ -244,7 +249,7 @@ void AppSettings::_OnWindowLockChange(const bool& value)
 	RenderWindowManager::GetIns().SetWindowLock(value);
 }
 
-void AppSettings::_OnWindowLockSaveChange(const bool& value)
+void AppSettings::_OnWindowLockVisibleSaveChange(const bool& value)
 {
 	//应该不用进行任何动作..
 }
@@ -303,154 +308,31 @@ void AppSettings::_OnMouseInputAreaChange(const std::string& value)
 	//"AllDisplays" 或者显示器名+部分其他标识
 	//同名显示器后缀##0\##1
 	SDL_Rect rect = {};
-	//先判断"AllDisplays"
-	if (value == "AllDisplays")
-	{
-		//计算屏幕总范围
-		int displayCount=0;
-		SDL_DisplayID* displays=SDL_GetDisplays(&displayCount);
-		if(!displays|| displayCount==0)
-		{
-			SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION,"MouseInputArea: Can not get display list! %s",SDL_GetError());
-			SDL_free(displays);
-			return;
-		}
-		for (int i = 1; i < displayCount; i++)
-		{
-			SDL_Rect temRect;
-			if (SDL_GetDisplayBounds(displays[i], &temRect))
-			{
-				if (i == 0)
-				{
-					rect = temRect;
-				}
-				else
-				{
-					//left
-					int left = SDL_min(rect.x, temRect.x);
-					//right
-					int right = SDL_max(rect.x+ rect.w, temRect.x+ temRect.w);
-					//top
-					int top = SDL_min(rect.y, temRect.y);
-					//bottom
-					int bottom = SDL_max(rect.y+rect.h, temRect.y+ temRect.h);
-
-					rect.x = left;
-					rect.w = right- left;
-					rect.y = top;
-					rect.h = bottom-top;
-				}
-			}
-			else
-			{
-				SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "MouseInputArea: Can not get display bounds! %s", SDL_GetError());
-				SDL_free(displays);
-				return;
-			}
-		}
-
-		SDL_free(displays);
-	}
-	else
-	{
-		//这段代码后续会用在UI中
-		//先构建一个显示器display和显示器名后缀的对照表.
-		//然后查字符串
-		int displayCount = 0;
-		SDL_DisplayID* displays = SDL_GetDisplays(&displayCount);
-		if (!displays || displayCount == 0)
-		{
-			SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "MouseInputArea: Can not get display list! %s", SDL_GetError());
-			SDL_free(displays);
-			return;
-		}
-		std::vector<std::string> nameVec;
-		for (int i = 1; i < displayCount; i++)
-		{
-			const char* displayName=SDL_GetDisplayName(displays[i]);
-			if (NULL == displayName)
-			{
-				nameVec.push_back("Display "+std::to_string(i+1));
-			}
-			else
-			{
-				nameVec.push_back(displayName);
-			}
-		}
-		for (int i = 0; i < displayCount; i++)
-		{
-			const std::string& curDisplayName = nameVec[i];
-			std::vector<int> sameNameIndexVec;//同名显示器索引
-			for (int j = i + 1; j < displayCount; j++)
-			{
-				if (curDisplayName == nameVec[j])
-				{
-					sameNameIndexVec.push_back(j);
-				}
-			}
-			if (!sameNameIndexVec.empty())
-			{
-				//检测到同名显示器,重构命名
-				nameVec[i] = nameVec[i]+"##1";
-
-				for (int k = 0; k < sameNameIndexVec.size(); k++)
-				{
-					nameVec[sameNameIndexVec[k]] = nameVec[sameNameIndexVec[k]] + "##"+std::to_string(k+2);//##2开始
-				}
-			}
-		}
-		//对比字符串
-		bool success = false;
-		for (int i = 0; i < displayCount; i++)
-		{
-			if (value == nameVec[i])
-			{
-				success = true;
-				if (!SDL_GetDisplayBounds(displays[i],&rect))
-				{
-					SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "MouseInputArea: Can not get display bounds! %s", SDL_GetError());
-					SDL_free(displays);
-					return;
-				}
-				break;
-			}
-		}
-		//未成功匹配显示器，移除##再进行匹配
-		{
-			std::string curDisplay = value;
-			curDisplay=curDisplay.substr(0,curDisplay.find("##"));
-			for (int i = 0; i < displayCount; i++)
-			{
-				nameVec[i] = nameVec[i].substr(0,nameVec[i].find("##"));
-				if (curDisplay == nameVec[i])
-				{
-					if (!SDL_GetDisplayBounds(displays[i], &rect))
-					{
-						SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "MouseInputArea: Can not get display bounds! %s", SDL_GetError());
-						SDL_free(displays);
-						return;
-					}
-					break;
-				}
-			}
-		}
-
-		SDL_free(displays);
-	}
-
-	if (rect.w == 0 || rect.h == 0)
-	{
-		SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "MouseInputArea: Rect Area is 0!");
-		return;
-	}
+	InputParser::DisplayToBounds(InputParser::StrToDisplay(value),&rect);
 
 	//构造好了rect
-	SDL_Rect* rectData = new SDL_Rect(rect);
-	RenderThread::GetIns().PostTask([](void* data, uint64_t taskParam) {
-		SDL_Rect* pRect = (SDL_Rect*)data;
-		InputManager::GetIns().SetMouseInputArea(pRect);
-		delete pRect;
-		}, rectData);
+	//SDL_Rect* rectData = new SDL_Rect(rect);
+	//以四个数字构建参数
+	SDL_assert(sizeof(void*) == 8);
+	uint64_t rXYdata;
+	((int32_t*)(&rXYdata))[0] = rect.x;
+	((int32_t*)(&rXYdata))[1] = rect.y;
+	uint64_t rWHdata;
+	((int32_t*)(&rWHdata))[0] = rect.w;
+	((int32_t*)(&rWHdata))[1] = rect.h;
+	RenderThread::GetIns().PostTask([](void* data, uint64_t rWHdata) {
+		SDL_Rect rect;
+
+		uint64_t rXYdata=(uint64_t)data;
+		rect.x = ((int32_t*)(&rXYdata))[0];
+		rect.y = ((int32_t*)(&rXYdata))[1];
+
+
+		rect.w=((int32_t*)(&rWHdata))[0];
+		rect.h=((int32_t*)(&rWHdata))[1];
+		InputManager::GetIns().SetMouseInputArea(&rect);
+
+		}, (void*)rXYdata, rWHdata);
 
 
 
@@ -489,14 +371,22 @@ void AppSettings::_OnMiscLanguageChange(const std::string& value)
 
 void AppSettings::_OnOtherShowTaskBarIconChange(const bool& value)
 {
-	//TODO
-	SDL_assert(false);
+	auto& window = RenderWindowManager::GetIns().GetWindowControllers();
+	for (auto& wc : window)
+	{
+		wc->SetTaskbarIconVisibility(value);
+	}
 }
 
 void AppSettings::_OnOtherWindows_RunAsAdminChange(const bool& value)
 {
+	//不需要做任何事情
+}
+
+void AppSettings::_OnOtherStartOnBootChange(const bool& value)
+{
 	//TODO
-	SDL_assert(false);
+	CatTuberApp::SetRunAtStartup(value);
 }
 
 
