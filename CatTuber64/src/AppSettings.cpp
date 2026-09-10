@@ -8,7 +8,6 @@
 #include"RenderThread.h"
 #include"RenderWindowManager.h"
 #include"Input/InputManager.h"
-#include"Input/InputParser.h"
 
 AppSettings AppSettings::ins;
 SDL_Color AppSettings::_defaultBackgroundColor = {255,255,255,0};//低到高 rgba
@@ -304,35 +303,9 @@ void AppSettings::_OnMouseSpeedChange(const double& value)
 
 void AppSettings::_OnMouseInputAreaChange(const std::string& value)
 {
-	//value是基于显示器的字符串
-	//"AllDisplays" 或者显示器名+部分其他标识
-	//同名显示器后缀##0\##1
-	SDL_Rect rect = {};
-	InputParser::DisplayToBounds(InputParser::StrToDisplay(value),&rect);
 
-	//构造好了rect
-	//SDL_Rect* rectData = new SDL_Rect(rect);
-	//以四个数字构建参数
-	SDL_assert(sizeof(void*) == 8);
-	uint64_t rXYdata;
-	((int32_t*)(&rXYdata))[0] = rect.x;
-	((int32_t*)(&rXYdata))[1] = rect.y;
-	uint64_t rWHdata;
-	((int32_t*)(&rWHdata))[0] = rect.w;
-	((int32_t*)(&rWHdata))[1] = rect.h;
-	RenderThread::GetIns().PostTask([](void* data, uint64_t rWHdata) {
-		SDL_Rect rect;
+	InputManager::GetIns().SetMouseInputArea(value);
 
-		uint64_t rXYdata=(uint64_t)data;
-		rect.x = ((int32_t*)(&rXYdata))[0];
-		rect.y = ((int32_t*)(&rXYdata))[1];
-
-
-		rect.w=((int32_t*)(&rWHdata))[0];
-		rect.h=((int32_t*)(&rWHdata))[1];
-		InputManager::GetIns().SetMouseInputArea(&rect);
-
-		}, (void*)rXYdata, rWHdata);
 
 
 

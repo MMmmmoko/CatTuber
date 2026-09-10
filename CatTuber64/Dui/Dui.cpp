@@ -140,6 +140,7 @@ void Dui::OpenMainUiWindow()
 	if (uiMainForm)
 	{
 		uiMainForm->ShowWindow(ui::ShowWindowCommands::kSW_SHOW);
+		uiMainForm->SetWindowForeground();
 	}
 	else
 	{
@@ -150,6 +151,7 @@ void Dui::OpenMainUiWindow()
 			return true;
 			});
 		uiMainForm->ShowWindow(ui::kSW_SHOW_NORMAL);
+		uiMainForm->SetWindowForeground();
 	}
 
 

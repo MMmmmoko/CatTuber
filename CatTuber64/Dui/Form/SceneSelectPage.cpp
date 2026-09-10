@@ -90,6 +90,7 @@ std::string UISceneItem::GetSceneFileName()
 
 bool UISceneItem::OnRightClick(const ui::EventArgs& args)
 {
+
     //创建菜单
 
 
@@ -283,7 +284,26 @@ RenderThread::GetIns().PostTask([](void* userdata, uint64_t userdata2) {
             ui::GlobalManager::Instance().Thread().PostTask(ui::ThreadIdentifier::kThreadUI, [_this] {
                 std::string sceneFileNameStr = _this->GetSceneFileName();
                 std::string outputFileName = AppContext::GetSceneFolderPath() + sceneFileNameStr.substr(0, sceneFileNameStr.size() - 5) + ".png";
+                
+                
+                //移除当前场景封面缓存
+                //if (outputFileName == _this->imgCover->GetUTF8BkImage())
+                //{
+                //    auto pImage= _this->imgCover->GetBkImagePtr();
+                //    if (pImage)
+                //    {
+                //        pImage->ClearImageCache();
+                //    }
+                //}
+
+
+                //auto pImage = _this->imgCover->GetBkImagePtr();
+                //pImage->ClearImageCache();
+                ui::GlobalManager::Instance().Image().ReleaseImageIM(ui::StringConvert::UTF8ToWString(outputFileName));
+
                 _this->GetProvider()->OnCoverSetted(_this->GetSceneIndex(), outputFileName.c_str());
+                _this->imgCover->GetBkImagePtr()->SetImageString(ui::StringConvert::UTF8ToWString(outputFileName), _this->imgCover->Dpi());
+                _this->imgCover->Invalidate();
                 });
 
         }
@@ -670,6 +690,9 @@ void SceneItemProvider::OnCoverSetted(size_t index, const char* imageFileInScene
     std::string basePath = imageFileInSceneFolder;
     std::string extension = basePath.substr(basePath.find_first_of('.'));
     basePath = basePath.substr(basePath.size()- extension.size());
+
+
+
 
     if (extension == ".png")
     {

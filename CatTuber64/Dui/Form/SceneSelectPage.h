@@ -30,7 +30,6 @@ private:
 	bool OnCaptureCoverClick(const ui::EventArgs& args);
 	bool OnRemoveClick(const ui::EventArgs& args);
 
-
 	
 
 

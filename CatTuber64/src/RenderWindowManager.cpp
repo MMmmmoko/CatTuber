@@ -174,6 +174,7 @@ bool RenderWindowController::_CreateWindow()
     SetLock(AppSettings::GetIns().GetWindowLock());
     SetTop(AppSettings::GetIns().GetWindowTop());
     SetTaskbarIconVisibility(AppSettings::GetIns().GetOtherShowTaskBarIcon());
+    SetWindowVisibility(AppSettings::GetIns().GetWindowVisible());
 
     return true;
 }
@@ -895,10 +896,10 @@ bool RenderWindowController::ScreenCaptureEx(/*std::vector<uint8_t>& pixArr, */i
 
     {
         auto props = SDL_CreateProperties();
-        SDL_SetFloatProperty(props, SDL_PROP_GPU_TEXTURE_CREATE_D3D12_CLEAR_R_FLOAT, clearColor.r);
-        SDL_SetFloatProperty(props, SDL_PROP_GPU_TEXTURE_CREATE_D3D12_CLEAR_G_FLOAT, clearColor.g);
-        SDL_SetFloatProperty(props, SDL_PROP_GPU_TEXTURE_CREATE_D3D12_CLEAR_B_FLOAT, clearColor.b);
-        SDL_SetFloatProperty(props, SDL_PROP_GPU_TEXTURE_CREATE_D3D12_CLEAR_A_FLOAT, clearColor.a);
+        //SDL_SetFloatProperty(props, SDL_PROP_GPU_TEXTURE_CREATE_D3D12_CLEAR_R_FLOAT, clearColor.r);
+        //SDL_SetFloatProperty(props, SDL_PROP_GPU_TEXTURE_CREATE_D3D12_CLEAR_G_FLOAT, clearColor.g);
+        //SDL_SetFloatProperty(props, SDL_PROP_GPU_TEXTURE_CREATE_D3D12_CLEAR_B_FLOAT, clearColor.b);
+        //SDL_SetFloatProperty(props, SDL_PROP_GPU_TEXTURE_CREATE_D3D12_CLEAR_A_FLOAT, clearColor.a);
         textureDesc.props = props;
     }
 #endif
@@ -975,9 +976,9 @@ bool RenderWindowController::ScreenCaptureEx(/*std::vector<uint8_t>& pixArr, */i
                 colorTargetInfo.texture = curTargetTex;
                 colorTargetInfo.load_op = SDL_GPU_LOADOP_CLEAR;
                 //if (isTransparent)
-                //    colorTargetInfo.clear_color = { 0.f,0.f,0.f ,0.F };
+                    colorTargetInfo.clear_color = { 0.f,0.f,0.f ,0.F };
                 //else
-                    colorTargetInfo.clear_color = clearColor;//没有透明的时候设置特定背景色
+                    //colorTargetInfo.clear_color = clearColor;//没有透明的时候设置特定背景色
                 //colorTargetInfo.clear_color = { clearValue,clearValue,clearValue ,0.F };//没有透明的时候设置特定背景色
                 colorTargetInfo.store_op = SDL_GPU_STOREOP_STORE;
 

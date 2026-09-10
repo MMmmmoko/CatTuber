@@ -13,9 +13,11 @@
 
 	<!-- 场景设置区域VBOX -->
 	<VBox margin="5,0,5,5" >
+		<!--<Label  text_id="STRID_SCENEPANEL_CURRENTSCENE"  margin="20,2,0,4"/>-->
 		<Box height="30">
-			<Button name="scenePanel_btnSceneTitle" fade_hot="true" hot_color="itemHoverColor" height="30" width="stretch" text_padding="20,0,0,0" text_align="left,vcenter"
+			<Button name="scenePanel_btnSceneTitle" font="system_14" fade_hot="true" hot_color="itemHoverColor" height="30" width="stretch" text_padding="44,0,0,0" text_align="left,vcenter"
 		 />
+			<Control bkimage="icon_scene.svg" height="24" width="24" valign="center" halign="left" mouse_enabled="false" margin="16,0,0,0"/>
 			<Control bkimage="arrowRightDouble_24px.svg" height="24" width="24" valign="center" halign="right" mouse_enabled="false"/>
 		</Box>
 
@@ -38,14 +40,14 @@
 		<!--<VBox name="integralItemPanel" visible="false">
 			<Button name="bongoCatSlot_Character" bkimage="ClassicSlotNoItemBG_Character.png" normal_image=""/>
 		</VBox>-->
-		<VBox  width="260" halign="center">
-			<Label text_id="STRID_SCENEPANEL_CONTENTS" height="30" text_padding="20,0,0,0" />
+		<VBox  width="260" halign="center" margin="0,8,0,0" border_round="8,8" border_size="1" border_color="panelBorderColor" padding="4,4,4,4" >
+			<Label bkimage="file='icon_window_small.svg' dest='5,5,25,25'" height="30" text_id="STRID_SCENEPANEL_MAINWINDOW" font="system_14"  text_padding="30,0,0,3" />
 			<TabBox name="sceneItemListTabBox">
 				<!--窗口上限4-->
-				<VirtualVListBox  bkcolor="#2F888888" select_none_when_click_blank="true"/>
-				<VirtualVListBox  bkcolor="#2F888888" select_none_when_click_blank="true"/>
-				<VirtualVListBox  bkcolor="#2F888888" select_none_when_click_blank="true"/>
-				<VirtualVListBox  bkcolor="#2F888888" select_none_when_click_blank="true"/>
+				<VirtualVListBox  bkcolor="#107F8081" select_none_when_click_blank="true"/>
+				<VirtualVListBox  bkcolor="#107F8081" select_none_when_click_blank="true"/>
+				<VirtualVListBox  bkcolor="#107F8081" select_none_when_click_blank="true"/>
+				<VirtualVListBox  bkcolor="#107F8081" select_none_when_click_blank="true"/>
 			</TabBox>
 		<HBox height="auto">
 			<!--场景物品的功能按钮-->
