@@ -139,6 +139,10 @@ void Dui::OpenMainUiWindow()
 {
 	if (uiMainForm)
 	{
+		if (uiMainForm->IsWindowMinimized())
+		{
+			uiMainForm->ShowWindow(ui::ShowWindowCommands::kSW_RESTORE);
+		}
 		uiMainForm->ShowWindow(ui::ShowWindowCommands::kSW_SHOW);
 		uiMainForm->SetWindowForeground();
 	}

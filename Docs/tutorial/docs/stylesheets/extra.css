@@ -1,0 +1,257 @@
+
+
+/* 防止滚动滑块影响画面布局造成背景跳动 */
+html {
+     scrollbar-gutter: stable; 
+     overflow-y: overlay;
+}
+
+
+/* 主题色 */
+:root  > *{
+  --ctb-primary-color: #D392C5;   /* 自定义主色 */
+  --ctb-accent-color: #fc7cc950;    /* 自定义强调色 */
+}
+
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-thumb {
+    background: rgba(120, 120, 120, 0.45);
+    border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(120, 120, 120, 0.7);
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+[data-md-color-scheme="default"] .md-main {
+    background-color: transparent;
+    background-image: url("../assets/wikibg.jpg");
+    background-repeat: no-repeat;
+    background-position: center top;
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+
+[data-md-color-scheme="slate"] .md-main {
+    background-color: transparent;
+    background-image: url("../assets/wikibg_dark.jpg");
+    background-repeat: no-repeat;
+    background-position: center top;
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+
+
+/* 文章正文底部留出空间 */
+[data-md-color-scheme="default"]  .md-content {
+    padding-bottom: 150px !important;
+
+    /* background-color: rgba(255, 255, 255, 0.7) !important; */
+}
+[data-md-color-scheme="slate"]  .md-content {
+    padding-bottom: 150px !important;
+
+/* background-color: rgba(30, 33, 41, 0.7) !important; */
+}
+
+.md-content {
+    z-index: 1;
+}
+
+.md-main::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    left: 15%;
+    right: 15%;
+    top: 0;
+    bottom: 0;
+
+
+    z-index: 0;
+    pointer-events: none;
+}
+
+
+
+
+[data-md-color-scheme="default"] .md-main::before {
+    background: linear-gradient(
+        to right,
+        transparent 0%,
+        rgba(255, 255, 255, 0.88) 12%,
+        rgba(255, 255, 255, 0.88) 88%,
+        transparent 100%
+    );
+}
+
+
+[data-md-color-scheme="slate"]  .md-main::before {
+    background: linear-gradient(
+        to right,
+        transparent 0%,
+        rgba(23, 27, 41, 0.88) 12%,
+        rgba(23, 27, 41, 0.88) 88%,
+        transparent 100%
+    );
+}
+
+.md-footer {
+  background-color: transparent;
+    z-index: 1;
+}
+
+
+
+/* 右侧目录移除背景色 */
+.md-sidebar--secondary .md-nav__title {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+/* .md-footer-meta {
+  background-color: transparent;
+} */
+
+
+/* .wiki-button {
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 8px;
+    background: #6750A4;
+    color: white !important;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.wiki-button:hover {
+    opacity: 0.85;
+} */
+
+
+
+
+.md-tabs__link {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+
+    height: 40px;
+    padding: 0 14px;
+
+    border-radius: 8px;
+margin: 0 6px; /* 左右间距增加 6px */
+    color: var(--md-typeset-color);
+    font-size: 0.9rem;
+    font-weight: 500;
+    
+}
+
+
+.md-tabs__link:hover {
+    color: var(--ctb-primary-color);
+}
+/* 渐变下划线 */
+/* class="md-tabs__item md-tabs__item--active" */
+
+.md-tabs__item--active {
+    position: relative;
+    height: 100%;
+    color: var(--ctb-primary-color);
+}
+.md-tabs__item--active::after {
+
+
+
+content: "";
+    position: absolute;
+
+    left: 50%;
+    bottom: 0px;
+    width: 70%;
+    height: 4px;
+
+
+    transform: translateX(-50%); 
+    background: linear-gradient(
+        90deg,
+        #BE79EA,
+        #7CB0FD
+    ); 
+    border-radius: 999px;
+
+
+   transition:
+        width 0.25s ease; 
+    
+}
+
+
+
+.md-header .md-icon {
+  color: #808080;
+}
+
+.md-header .md-icon:hover {
+    color: var(--ctb-primary-color);
+}
+
+
+.md-header {
+  background: var(--md-default-bg-color); /* 使用主题色 */
+  box-shadow: 0 0px 4px rgba(0,0,0,0.1); /* 移除阴影 */
+}
+
+.md-tabs {
+  background: var(--md-default-bg-color); /* 使用主题色 */
+}
+
+
+
+.md-select__item.ctb-subjectColorHover :hover {
+    color: var(--ctb-primary-color);
+}
+
+/* .md-select__link .ctb-subjectColorHover:hover {
+    color: var(--ctb-primary-color);
+} */
+
+
+
+/* 搜索框 */
+.md-search__input {
+  background-color:var(--md-default-bg-color);   /* 背景色 */
+}
+/* 搜索框 */
+.md-search__input:hover{
+  background-color:#80808038;   /* 背景色 */
+}
+/* 搜索框 */
+.md-search__form {
+  background-color:var(--md-default-bg-color);   /* 背景色 */
+}
+
+.ctb-header__button:hover {
+    opacity: .7
+}
+
+/* 默认显示 logo 超链 */
+a[data-md-component="logo"] {
+  display: inline-block;
+}
+
+/* 隐藏LOGO */
+@media screen and (max-width: 76.234375em) {
+    .ctb-header__button.md-logo {
+        display:none
+    }
+}
+

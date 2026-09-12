@@ -24,6 +24,8 @@ public:
             cv.notify_all();  // 通知逻辑线程：我已暂停
             cv.wait(lock, [this] { return !suspended; });  // 阻塞等待恢复
             isSuspended = false;
+            
+            cv.notify_all();  // 通知逻辑线程：我已恢复
         }
     }
 
@@ -37,11 +39,13 @@ public:
 
     // 逻辑线程调用：恢复渲染线程
     void Resume() {
-        {
-            std::lock_guard lock(mtx);
-            suspended = false;
-        }
-        cv.notify_all();  // 唤醒渲染线程
+        
+        std::unique_lock lock(mtx);
+        suspended = false;
+        
+        cv.notify_all();  // 唤醒渲染线程       
+        // 等待渲染线程确认已恢复
+        cv.wait(lock, [this] { return !isSuspended; });
     }
 };
 

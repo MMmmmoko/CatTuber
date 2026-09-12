@@ -1,23 +1,28 @@
-site_name: My Docs
-
+site_name: CatTuber
+# 以本地文件的形式提供信息时用下面这行，网页部署时注释掉
+use_directory_urls: false
 
 theme:
   name: material
+  custom_dir: docs/overrides
+  logo: assets/CatTuberLogo.png
+
   language: zh             # 设置界面语言为中文
   palette:                 # 配色方案（允许用户切换）
     - scheme: default      # 浅色模式
       toggle:
-        icon: material/brightness-7
+        icon: octicons/moon-24
         name: 切换到深色模式
     - scheme: slate        # 深色模式
       toggle:
-        icon: material/brightness-4
+        icon: octicons/sun-24
         name: 切换到浅色模式
   font:
     text: Roboto           # 正文字体
     code: Roboto Mono      # 代码字体
   features:                # 启用高级功能
     - navigation.tabs      # 顶部导航栏标签页
+    - navigation.tabs.sticky      # 顶部导航栏标签页不消失
     - navigation.sections  # 侧边栏分组
     - navigation.top       # 回到顶部按钮
     - search.highlight     # 搜索高亮
@@ -25,10 +30,53 @@ theme:
 
 
 extra:
-  alternate:
-   - name: English
-     link: /english/
-     lang: en
-   - name: 简体中文
-     link: /schinese/
-     lang: zh
+  generator: false #关闭结果网页中下方的生成器信息
+
+extra_css:
+  - stylesheets/extra.css
+
+copyright: >
+  <a href="https://beian.miit.gov.cn/" target="_blank">京ICP备XXXXXXXX号</a> |
+  <a href="http://www.beian.gov.cn/" target="_blank">京公网安备 XXXXXXXXXXX号</a>
+
+plugins:
+  - offline
+  - search
+  - i18n:
+      # default_language: zh
+      default_language_only: false
+      reconfigure_material: true
+      docs_structure: folder
+      languages:
+        - locale: zh
+          name: 简体中文
+          build: true
+          default: true
+          nav_translations:
+            Tutorial: 教程
+            Broadcast: 使用CatTuber进行直播或录制的方法&常见问题
+            Home: 首页
+            ChangeLog: 更新日志
+        - locale: en
+          name: English
+          build: true
+          nav_translations:
+            Wiki: Wiki
+            Broadcast: How to Use CatTuber for Live Streaming or Recording & Frequently Asked Questions
+            ChangeLog: Change Log
+
+nav:
+  - Home: index.md
+  - Wiki: wiki/Tutorial/Broadcast.md
+  - ChangeLog: ChangeLog/ChangeLog.md
+
+
+    # - Tutorial:
+    #   - Broadcast: wiki/Tutorial/Broadcast.md
+
+
+
+
+
+
+

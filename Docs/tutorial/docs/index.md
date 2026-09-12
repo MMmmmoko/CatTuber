@@ -1,12 +1,18 @@
+---
+hide:
+  - navigation
+  - toc
+---
+
 # CatTuber使用手册（施工中）
 
 
 
-## 目录
+## 目录test
 
 
-### [使用指南](Tutorial/Tutorial/index.html)
-  * [使用CatTuber进行直播](Tutorial/Tutorial_Broadcast.md)
+### [使用指南](wiki/Tutorial/Tutorial.md)
+  * [使用CatTuber进行直播](wiki/Tutorial/Broadcast.md)
 ### [常见问题](FAQ/FAQ.md)
   *  [回退到旧版本CatTuber](FAQ/VersionRollback.md)
 ### [建模指南](Modeling/Modeling.md)

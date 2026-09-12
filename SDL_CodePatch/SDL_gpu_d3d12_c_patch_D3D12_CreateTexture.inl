@@ -4,7 +4,56 @@
 //此文件修改static D3D12Texture *D3D12_INTERNAL_CreateTexture函数 有两个修改部分
 
 
+//EG:
+#if 0
+#define D3D12_INTERNAL_CreateTexture_PATCH_1
+#include"../../../CatTuber64/SDL_CodePatch/SDL_gpu_d3d12_c_patch_D3D12_CreateTexture.inl"
+#undef D3D12_INTERNAL_CreateTexture_PATCH_1
+#endif
 
+
+#ifdef D3D12_INTERNAL_CreateTexture_PATCH_1
+    //修改部分1
+    //修改部分1
+    //修改部分1
+    //修改部分1
+    //修改部分1:根据需要，为heapFlags添加新的内容
+bool isShare = SDL_GetBooleanProperty(createinfo->props, SDL_PROP_GPU_TEXTURE_CREATE_D3D12_SHARE_BOOL, false);
+if (isShare)
+{
+    heapFlags = heapFlags | D3D12_HEAP_FLAG_SHARED;
+}
+
+//修改部分1
+//修改部分1
+//修改部分1
+//修改部分1
+#endif
+
+#ifdef D3D12_INTERNAL_CreateTexture_PATCH_2
+    //修改部分2
+    //修改部分2
+    //修改部分2
+    //修改部分2
+    //修改部分2
+    //修改部分2:传回share handle
+if (isShare)
+{
+    HANDLE* pShareHandle = SDL_GetPointerProperty(createinfo->props, SDL_PROP_GPU_TEXTURE_CREATE_D3D12_SHARE_HANDLE_POINTER, 0);
+    if (pShareHandle)
+    {
+        ID3D12Device_CreateSharedHandle(renderer->device, texture->resource, NULL, GENERIC_ALL, NULL, pShareHandle);
+    }
+}
+
+//修改部分2
+//修改部分2
+//修改部分2
+//修改部分2
+//修改部分2
+#endif
+
+#if 0
 static D3D12Texture* D3D12_INTERNAL_CreateTexture(
     D3D12Renderer* renderer,
     const SDL_GPUTextureCreateInfo* createinfo,
@@ -356,3 +405,4 @@ static D3D12Texture* D3D12_INTERNAL_CreateTexture(
 
     return texture;
 }
+#endif

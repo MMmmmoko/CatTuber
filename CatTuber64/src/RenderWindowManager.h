@@ -144,7 +144,7 @@ private:
 
     //SDL3 2D Renderer API
     SDL_Renderer* renderer = NULL;
-    SDL_Texture* offscreenTex_2D = NULL;
+    SDL_Texture* offscreenTex_2D = NULL;//好像没有使用这个纹理，当时应该是考虑的跨平台的情况
 
 #ifdef SDL_PLATFORM_WINDOWS
     HWND hwnd;
@@ -158,7 +158,7 @@ private:
     //HANDLE shareHandle=0;
     Microsoft::WRL::ComPtr<ID3D11Device1> rendererD3d11Device;
     //Microsoft::WRL::ComPtr<ID3D11Texture2D> texToD3D12Copy;
-    SDL_Texture* texToD3D12Copy;
+    SDL_Texture* texToD3D12Copy=nullptr;
 #endif 
 
 };

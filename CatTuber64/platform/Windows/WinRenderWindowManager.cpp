@@ -147,6 +147,14 @@ LRESULT CALLBACK RenderWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPara
     //    RenderWindowController* _this = hwnd2SDL_Window[hwnd];
     //    _this->_OnResize(width, height);
     //}
+    if (uMsg == WM_SIZE) {
+        //发现窗口最小化恢复的时候，最大化按钮重新生效，这里强制检查
+        // 每次窗口大小改变（包括还原）时，强制移除最大化样式
+        SetWindowLong(hwnd, GWL_STYLE, GetWindowLong(hwnd, GWL_STYLE) & ~WS_MAXIMIZEBOX);
+        // 强制重绘标题栏，让按钮状态立即更新
+        SetWindowPos(hwnd, NULL, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
+
+    }
     if (uMsg == WM_SIZING) {
         do
         {

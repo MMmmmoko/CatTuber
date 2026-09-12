@@ -89,13 +89,12 @@ bool RenderWindowController::_CreateWindow()
         return false;
     }
 
-#ifdef _DEBUG
+    if(!isTransparent)
     if (!SDL_ClaimWindowForGPUDevice(AppContext::GetGraphicDevice(), window))
     {
 
         SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "Unable to SDL_ClaimWindowForGPUDevice window: %s", SDL_GetError());
     }
-#endif // _DEBUG
 
 
 
@@ -156,7 +155,8 @@ bool RenderWindowController::_CreateWindow()
             else
                 return SDL_HitTestResult::SDL_HITTEST_NORMAL;
         };
-    SDL_SetWindowHitTest(window, hittestFunc,this);
+    //if(isTransparent)
+    //    SDL_SetWindowHitTest(window, hittestFunc,this);
 
 
     windowID = SDL_GetWindowID(window);
@@ -170,7 +170,8 @@ bool RenderWindowController::_CreateWindow()
 
 
 
-    SetTransparent(isTransparent);
+    //SetTransparent(isTransparent);
+    needResetOffscreenTex = true;
     SetLock(AppSettings::GetIns().GetWindowLock());
     SetTop(AppSettings::GetIns().GetWindowTop());
     SetTaskbarIconVisibility(AppSettings::GetIns().GetOtherShowTaskBarIcon());
@@ -328,7 +329,12 @@ bool RenderWindowController::ResetGraphic(int W, int H) {
         offscreenTexTb = nullptr;
     }
 
-
+    {
+        SDL_DestroyTexture(texToD3D12Copy);
+        SDL_ReleaseGPUTexture(AppContext::GetGraphicDevice(), d3d12ShareTex);
+        texToD3D12Copy = nullptr;
+        d3d12ShareTex = nullptr;
+    }
 
 
     do
@@ -413,7 +419,7 @@ bool RenderWindowController::ResetGraphic(int W, int H) {
             //SDL_Log("Renderer: %d,%d", w, h);
 #endif
 
-
+            SDL_DestroyTexture(offscreenTex_2D); offscreenTex_2D = nullptr;
             offscreenTex_2D = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_BGRA32, SDL_TEXTUREACCESS_STREAMING, W, H);
             if (!offscreenTex_2D)
             {
@@ -533,11 +539,46 @@ void RenderWindowController::SetTitle(const char* title)
 void RenderWindowController::SetTransparent(bool t)
 {
 
-
+    //重建窗口
 
     //TODO/FIXME
     //assert(false);
+    if (t == isTransparent)return;
 
+    //重新创建窗口
+    SyncLock syncLock;
+    RenderThread::GetIns().PostTask([](void* userdata1, uint64_t userdata2) {
+        ((SyncLock*)userdata1)->DoSuspend();
+
+        RenderWindowController* _pthis = (RenderWindowController*)userdata2;
+        _pthis->ResetGraphic(_pthis->targetX, _pthis->targetY);
+
+        }, &syncLock,(uint64_t)(this)
+    );
+
+    syncLock.WaitRemoteSuspend();
+
+
+    //获取窗口当前位置
+    SDL_GetWindowPosition(window, &targetX, &targetY);
+
+    //重建窗口,先清理之前和窗口绑定的资源
+
+    SDL_ReleaseWindowFromGPUDevice(AppContext::GetGraphicDevice(), window);
+    deviceClaimed = false;
+
+    rendererD3d11Device.Reset();
+    SDL_DestroyRenderer(renderer);
+    renderer = nullptr;
+
+    SDL_DestroyWindow(window);
+    window = nullptr;
+    _CreateWindow();
+
+
+
+
+    syncLock.Resume();
 
 
     //如果是windows，则重置一下纹理
@@ -1159,6 +1200,9 @@ void RenderWindowController::Present()
 
     if (isTransparent)
     {
+
+        //这里的代码是为其他能直接从GPU TEXTURE转2D TEXTURE的平台提供的，WINDOWS暂时用不了
+#if 0
         {
             if (!texToD3D12Copy)
             {
@@ -1194,34 +1238,45 @@ void RenderWindowController::Present()
             SDL_ReleaseGPUFence(AppContext::GetGraphicDevice(), fence);
             return;
         }
+        SDL_ReleaseGPUFence(AppContext::GetGraphicDevice(), fence);
 
-        {
-            SDL_DestroyTexture(texToD3D12Copy);
-            auto props = SDL_CreateProperties();
-            SDL_SetNumberProperty(props, SDL_PROP_TEXTURE_CREATE_WIDTH_NUMBER, renderW);
-            SDL_SetNumberProperty(props, SDL_PROP_TEXTURE_CREATE_HEIGHT_NUMBER, renderH);
-            SDL_SetNumberProperty(props, SDL_PROP_TEXTURE_CREATE_FORMAT_NUMBER, SDL_PIXELFORMAT_ARGB8888);
-            SDL_SetPointerProperty(props, SDL_PROP_TEXTURE_CREATE_GPU_TEXTURE_POINTER, offscreenTex);
-            texToD3D12Copy = SDL_CreateTextureWithProperties(renderer, props);
-            if (!texToD3D12Copy)
-                SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "SDL_CreateTextureWithProperties Failed. %s", SDL_GetError());
-            SDL_DestroyProperties(props);
-        }
+        //{
+        //    SDL_DestroyTexture(texToD3D12Copy);
+        //    auto props = SDL_CreateProperties();
+        //    SDL_SetNumberProperty(props, SDL_PROP_TEXTURE_CREATE_WIDTH_NUMBER, renderW);
+        //    SDL_SetNumberProperty(props, SDL_PROP_TEXTURE_CREATE_HEIGHT_NUMBER, renderH);
+        //    SDL_SetNumberProperty(props, SDL_PROP_TEXTURE_CREATE_FORMAT_NUMBER, SDL_PIXELFORMAT_ARGB8888);
+        //    SDL_SetPointerProperty(props, SDL_PROP_TEXTURE_CREATE_GPU_TEXTURE_POINTER, offscreenTex);
+        //    texToD3D12Copy = SDL_CreateTextureWithProperties(renderer, props);
+        //    if (!texToD3D12Copy)
+        //        SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "SDL_CreateTextureWithProperties Failed. %s", SDL_GetError());
+        //    SDL_DestroyProperties(props);
+        //}
 
 
 
         //渲染完成将D3D11纹理copy到交换链上
+        //这里检查出renderer是没问题的
+        //SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+        //SDL_RenderFillRect(renderer, NULL);
+        
+
+        //这里检查出texToD3D12Copy是可用的，但是没有像素内容
+        //SDL_SetRenderTarget(renderer, texToD3D12Copy);
+        //SDL_RenderClear(renderer);
+        //SDL_RenderTexture(renderer, texToD3D12Copy, NULL, NULL);
+        //SDL_SetRenderTarget(renderer, nullptr);
+
+
         SDL_RenderTexture(renderer, texToD3D12Copy, NULL, NULL);
+
         SDL_RenderPresent(renderer);
-        //按理来说应该需要个手段防止下一帧渲染到共享纹理的时候共享纹理没有使用完成。（D3D11\D3D12并行）
-        //但这里因为太麻烦而不进行任何作为吗？哈基妮，你这家伙
 
         //optimize
         //PRESENT里等待的情况比较多,且每个窗口相对较为独立
         //有必要给每个窗口单独开个渲染线程吗？
 
-
-#if 0
+#else
         //windows中sdl renderder使用direct3D11 ，GPU API使用direct3D12
         //虽然SDL本身不提供这个两个图形API的互通，但它们实际上是能互通而不需要通过内存互通
         //所以为了性能考虑，这里需要特殊处理
@@ -1243,8 +1298,8 @@ void RenderWindowController::Present()
                 textureDesc.num_levels = 1;
 
                 auto props = SDL_CreateProperties();
-                //SDL_SetBooleanProperty(props, SDL_PROP_GPU_TEXTURE_CREATE_D3D12_SHARE_BOOL, true);
-                //SDL_SetPointerProperty(props, SDL_PROP_GPU_TEXTURE_CREATE_D3D12_SHARE_HANDLE_POINTER, &shareHandle);
+                SDL_SetBooleanProperty(props, SDL_PROP_GPU_TEXTURE_CREATE_D3D12_SHARE_BOOL, true);
+                SDL_SetPointerProperty(props, SDL_PROP_GPU_TEXTURE_CREATE_D3D12_SHARE_HANDLE_POINTER, &shareHandle);
                 textureDesc.props = props;
 
                 d3d12ShareTex = SDL_CreateGPUTexture(AppContext::GetGraphicDevice(), &textureDesc);
@@ -1334,13 +1389,8 @@ void RenderWindowController::Present()
 
         
 
-
-        //SDL_SubmitGPUCommandBuffer(cmdCurframeCopy);
         pContext->SubmitCopyCommandBuffer();
-        //SDL_SubmitGPUCommandBuffer(cmdCurframeCopy);
-        //SDL_SubmitGPUCommandBuffer(cmd);
-        //确保下方的SDL_RenderPresent已经执行完？
-        SDL_GPUFence* fence= SDL_SubmitGPUCommandBufferAndAcquireFence(cmd);
+        SDL_GPUFence* fence=pContext->SubmitCommandBufferAndAcquireFence();
         if (!fence)
         {
             SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_APPLICATION, "SubmitGPUCommandBufferAndAcquireFence failed! %s", SDL_GetError());
@@ -1353,10 +1403,16 @@ void RenderWindowController::Present()
             SDL_ReleaseGPUFence(AppContext::GetGraphicDevice() ,fence);
             return;
         }
-        
+        SDL_ReleaseGPUFence(AppContext::GetGraphicDevice(), fence);
+
         //渲染完成将D3D11纹理copy到交换链上
+        //SDL_SetRenderDrawColor(renderer, 100, 100, 100, 100);
+        //SDL_RenderFillRect(renderer, NULL);
+        SDL_RenderClear(renderer);
         SDL_RenderTexture(renderer, texToD3D12Copy, NULL, NULL);
         SDL_RenderPresent(renderer);
+
+
         //按理来说应该需要个手段防止下一帧渲染到共享纹理的时候共享纹理没有使用完成。（D3D11\D3D12并行）
         //但这里因为太麻烦而不进行任何作为吗？哈基妮，你这家伙
 
@@ -1497,7 +1553,7 @@ void RenderWindowController::Shutdown() {
 
 
     if (window) {
-        AppSettings::GetIns().GetWindowTransparent();
+        //if(isTransparent)
         SDL_ReleaseWindowFromGPUDevice(AppContext::GetGraphicDevice(),window);
     }
 
@@ -1509,10 +1565,7 @@ void RenderWindowController::Shutdown() {
         SDL_DestroyTexture(offscreenTex_2D);
         offscreenTex_2D = nullptr;
     }
-    if (renderer) {
-        SDL_DestroyRenderer(renderer);
-        renderer = nullptr;
-    }
+
     if (depthStencil)
     {
         SDL_ReleaseGPUTexture(AppContext::GetGraphicDevice(), depthStencil);
@@ -1530,8 +1583,27 @@ void RenderWindowController::Shutdown() {
     }
 
 
+#ifdef SDL_PLATFORM_WINDOWS
+    if (d3d12ShareTex)
+    {
+        SDL_ReleaseGPUTexture(AppContext::GetGraphicDevice(), d3d12ShareTex);
+        d3d12ShareTex = nullptr;
+    }
+    if (texToD3D12Copy)
+    {
+        SDL_DestroyTexture( texToD3D12Copy);
+        texToD3D12Copy = nullptr;
+    }
+    rendererD3d11Device.Reset();
+#endif 
 
 
+
+
+    if (renderer) {
+        SDL_DestroyRenderer(renderer);
+        renderer = nullptr;
+    }
     if (window) {
         SDL_DestroyWindow(window);
         window = nullptr;
