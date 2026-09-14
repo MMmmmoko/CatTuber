@@ -1,4 +1,6 @@
 
+
+
 # CatTuber
 
 此库为CatTuber64位版本（原CatTuber进行64bit跨平台迁移重构的版本）的核心源码（开发中），公开是为了让大家监督工作、大致了解CatTuber的开发进度。**开源不代表我放弃CatTuber及其源码的任何权利**。
@@ -13,7 +15,7 @@
  - 可编辑桌面系统（见下图，用户可以在网点阵列中自行设计自己的键盘而不需要有任何的美术基础）
 	
 	
-<img src="Docs/Images/DeskEditor.gif" alt="可编辑桌面系统"/>
+<img src="web/docs/assets/Images/DeskEditor.gif" alt="可编辑桌面系统"/>
 	
 	
 
@@ -22,7 +24,7 @@
 ### Q: 为什么明明有创意工坊功能（有上传一个模型），但迟迟不开放其他用户上传？
 A：创意工坊功能没有在技术上受阻。暂不开放是两方面原因，一个是一开始没有找到合适的上传方案。初始设计为将CatTuber本体和创意工坊上传工具切分为两个单独的程序（见下图）。开发了一段时间后觉得有点多此一举就放弃了这个路线，最终还是决定直接集成在本体软件中。（创意工坊里那个模型便是用这个工具上传的）
 
-<img src="Docs/Images/WorkshopUpload.gif" alt="弃用的创意工坊上传工具"/>
+<img src="web/docs/assets/Images/WorkshopUpload.gif" alt="弃用的创意工坊上传工具"/>
 
 另一个原因，同时也是主要原因，就是上面提到的2D模型系统重新设计。旧版本CatTuber的模型系统不成熟，CatTuber的模型系统将会被重新设计，现阶段做的模型并不符合未来CatTuber的模型标准，我希望在模型系统重置完后再开放创意工坊。
 

@@ -16,11 +16,11 @@ CatTuber64/src/CatTuberApp.cpp
 CatTuber64/src/CatTuberApp.h
 CatTuber64/src/input/
 #这个是为了方便调试放置的文件夹链接
-Docs/tutorial/assets/
+web/assets/
+web/site/
 Live2DFramework/
 enc_temp_folder/
-
-
+build_temp/
 
 
 

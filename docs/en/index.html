@@ -799,7 +799,7 @@ margin: 0;
   if(isGitHub)
 {
 
-console.log("script start2222" );
+console.log("CatTuber Wiki Running On Github..." );
   // prefix = window.location.hostname.endsWith("github.io")
   //   ? "/" + window.location.pathname.split("/").filter(Boolean)[0] + "/"
   //   : "/";
@@ -811,9 +811,10 @@ console.log("script start2222" );
 document.querySelectorAll("[src]").forEach(el => {
     const src = el.getAttribute("src");
     // 跳过已经是绝对路径的（http://、https://、/开头）
-    if (src.startsWith("/assets") )
+    if (src.startsWith("/assets/") )
     // 拼接新路径
       el.src = prefix + src;
+console.log(el.src);
 });
 }
 
