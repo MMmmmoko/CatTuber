@@ -6,6 +6,21 @@ hide:
 ---
 
 <style>
+
+/* 定义页面中用到的颜色 */
+[data-md-color-scheme="default"] {
+    --ctb-home-back-bg-color: #fbfcfd;
+    --ctb-wave-back-bg-color: #eff5fd;
+}
+[data-md-color-scheme="slate"] {
+    --ctb-home-back-bg-color: #1f1d30;
+    --ctb-wave-back-bg-color: #62387a;
+}
+
+
+
+
+
 [data-md-color-scheme="default"] .md-main {
     background-color: transparent;
     background-image: none;
@@ -13,6 +28,17 @@ hide:
 
 
 [data-md-color-scheme="slate"] .md-main {
+    background-color: transparent;
+    background-image: none;
+}
+
+[data-md-color-scheme="default"] .md-main__inner.md-grid::before  {
+    background-color: transparent;
+    background-image: none;
+}
+
+
+[data-md-color-scheme="slate"] .md-main__inner.md-grid::before  {
     background-color: transparent;
     background-image: none;
 }
@@ -41,6 +67,18 @@ margin: 0;
 .md-content__inner.md-typeset::before
 {
   height: 0;
+}
+
+
+
+[data-md-color-scheme="default"] .md-main::before {
+    background: transparent;
+}
+
+
+[data-md-color-scheme="slate"]  .md-main::before {
+  
+    background: transparent;
 }
 
 
@@ -169,7 +207,7 @@ margin: 0;
   </symbol>
 </svg>
 
-  <div class="ctb-brief" style="padding-left: 10vw;padding-right: 10vw; padding-top: 10vh;background-color: #fbfcfd; ">
+  <div class="ctb-brief" style="padding-left: 10vw;padding-right: 10vw; padding-top: 10vh;background-color: var(--ctb-home-back-bg-color); ">
     <a href="index.html" title="{{ config.site_name | e }}">
       <img src="/assets/CatTuberLogo.svg" alt="logo" style="width: 24rem;">
     </a>
@@ -212,7 +250,7 @@ margin: 0;
   </div>
 
 
-<div class="waveCanvas" id="waveCanvas" data-wavefrontcolor="blue" data-wavebackcolor="green" style="background-color: #fbfcfd;">
+<div class="waveCanvas" id="waveCanvas" data-wavefgcolor="--md-default-bg-color" data-wavebgcolor="--ctb-wave-back-bg-color" style="background-color:var(--ctb-home-back-bg-color);">
     <!-- <script src="/assets/js/waveAnimation.js" type="module"></script> -->
 </div>
 

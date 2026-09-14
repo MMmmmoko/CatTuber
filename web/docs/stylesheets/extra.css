@@ -54,12 +54,12 @@ h1 strong {
 
 /* 文章正文底部留出空间 */
 [data-md-color-scheme="default"]  .md-content {
-    padding-bottom: 150px ;
+    padding-bottom: 100px ;
 
     /* background-color: rgba(255, 255, 255, 0.7) !important; */
 }
 [data-md-color-scheme="slate"]  .md-content {
-    padding-bottom: 150px;
+    padding-bottom: 100px;
 
 /* background-color: rgba(30, 33, 41, 0.7) !important; */
 }
@@ -68,42 +68,57 @@ h1 strong {
     z-index: 1;
 }
 
-.md-main::before {
+.md-main{
+    overflow: hidden;
+}
+
+.md-main__inner.md-grid {
+    position: relative;
+}
+.md-main__inner.md-grid::before {
     content: "";
     position: absolute;
     inset: 0;
-    left: 15%;
-    right: 15%;
-    top: 0;
-    bottom: 0;
-
+    left: 5%;
+    right: 5%;
+    top:-10%;
+    height: 200%;
+    min-height: 90vh;
 
     z-index: 0;
     pointer-events: none;
+    transform: scaleX(1.5);
 }
 
 
 
 
-[data-md-color-scheme="default"] .md-main::before {
+[data-md-color-scheme="default"] .md-main__inner.md-grid::before {
     background: linear-gradient(
         to right,
         transparent 0%,
-        rgba(255, 255, 255, 0.88) 12%,
-        rgba(255, 255, 255, 0.88) 88%,
+        rgba(251, 252, 253, 0.88) 20%,
+        rgba(251, 252, 253, 0.88) 80%,
         transparent 100%
     );
 }
 
 
-[data-md-color-scheme="slate"]  .md-main::before {
+[data-md-color-scheme="slate"]  .md-main__inner.md-grid::before {
     background: linear-gradient(
         to right,
         transparent 0%,
-        rgba(23, 27, 41, 0.88) 12%,
-        rgba(23, 27, 41, 0.88) 88%,
+        /* rgba(255, 255, 255, 0.88) 15%,
+        rgba(255, 255, 255, 0.88) 85%, */
+        rgba(23, 27, 41, 0.88) 20%,
+        rgba(23, 27, 41, 0.88) 80%, 
         transparent 100%
     );
+}
+
+.md-nav__link  {
+  background-color: transparent!important;
+    box-shadow: none!important;
 }
 
 .md-footer {
@@ -112,7 +127,11 @@ h1 strong {
 }
 
 
-
+/* 左侧导航标题移除背景色 */
+/* #__nav_2_label {
+    background-color: transparent;
+    box-shadow: none;
+} */
 /* 右侧目录移除背景色 */
 .md-sidebar--secondary .md-nav__title {
     background: transparent !important;

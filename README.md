@@ -1,5 +1,6 @@
 
-
+现在可以访问新版本的CatTuber Wiki网页！（当然还在建设中）
+https://mmmmmoko.github.io/CatTuber
 
 # CatTuber
 

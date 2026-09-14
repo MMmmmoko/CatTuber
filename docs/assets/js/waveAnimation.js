@@ -2,8 +2,50 @@
 //https://www.bilibili.com/video/BV1Ax4y157AB
 
 const waveCanvas = document.getElementById("waveCanvas");
-// waveCanvas.style.backgroundColor="black";
 const style = document.createElement("style");
+
+
+
+function resolveColor(value) {
+    let colorStr = value;
+
+    // 1. 如果是 CSS 变量，先获取浏览器计算后的真实颜色值
+    if (value.startsWith("--")) {
+        colorStr = getComputedStyle(document.documentElement)
+            .getPropertyValue(value).trim();
+    }
+
+    // 2. 此时 colorStr 通常是 "rgb(r, g, b)" 或 "rgba(r, g, b, a)"
+    // 使用正则提取出括号内的所有数值（支持整数和小数）
+    const matches = colorStr.match(/[\d.]+/g);
+
+    // 3. 如果成功提取到了数值，且至少有3个（r, g, b）
+    if (matches && matches.length >= 3) {
+        const r = matches[0];
+        const g = matches[1];
+        const b = matches[2];
+        // 如果原颜色有透明度(a)就用原值，没有则默认为 1
+        const a = matches[3] || 1; 
+        
+        // 4. 强制拼接成 "rgba(x, x, x, x)" 格式的字符串返回
+        return `rgba(${r}, ${g}, ${b}, ${a})`;
+    }
+
+    // 5. 如果解析失败（比如传入了 "red" 或 "transparent"），则原样返回
+    return colorStr;
+}
+
+// const waveBgColor=resolveColor(waveCanvas.dataset.wavebgcolor);
+// const waveFgColor=resolveColor(waveCanvas.dataset.wavefgcolor);
+
+const waveBgColor=(waveCanvas.dataset.wavebgcolor);
+const waveFgColor=(waveCanvas.dataset.wavefgcolor);
+
+// console.log("waveCanvas.dataset.wavebgcolor:"+waveCanvas.dataset.wavebgcolor);
+// console.log("waveCanvas.dataset.wavefgcolor:"+waveCanvas.dataset.wavefgcolor);
+console.log("waveBgColor:"+waveBgColor);
+console.log("waveFgColor:"+waveFgColor);
+
 
 style.textContent = `
         .waves {
@@ -111,11 +153,13 @@ waveCanvas.innerHTML=`
                     在g元素中使用use元素多次引用了赚钱定义的名为gentle-wave的路径元素
                     通过设置不同的x，y坐标和填充颜色，实现了波浪形状和渐变效果 -->
                 <g class="parallax">
-                    <use xlink:href="#gentle-wave" x="48" y="0" fill="rgba(239,245,253,0.7)" />
-                    <use xlink:href="#gentle-wave" x="48" y="3" fill="rgba(239,245,253,0.5)" />
-                    <use xlink:href="#gentle-wave" x="48" y="5" fill="rgba(239,245,253,0.3)" />
-                    <use xlink:href="#gentle-wave" x="48" y="7" fill="#fff" />
+                    <use xlink:href="#gentle-wave" style="color: var(`+waveBgColor+`);" x="48" y="0"  fill="currentColor" fill-opacity="0.7" />
+                    <use xlink:href="#gentle-wave" style="color: var(`+waveBgColor+`);" x="48" y="3" fill="currentColor" fill-opacity="0.5" />
+                    <use xlink:href="#gentle-wave" style="color: var(`+waveBgColor+`);" x="48" y="5" fill="currentColor" fill-opacity="0.3" />
+                    <use xlink:href="#gentle-wave" style="color: var(`+waveFgColor+`);" x="48" y="7" fill="currentColor" />
                 </g>
 
             </svg>
 `;
+
+
