@@ -258,12 +258,15 @@ margin: 0;
 </div>
 <script>
   
+console.log("CatTuber Wiki Running On Github0" );
+console.log("window.location.hostname" +window.location.hostname);
   const isGitHub = window.location.hostname.endsWith("github.io");
   let prefix="";
+console.log("CatTuber Wiki Running On Github1" );
   if(isGitHub)
 {
   
-console.log("CatTuber Wiki Running On Github..." );
+console.log("CatTuber Wiki Running On Github2" );
   // prefix = window.location.hostname.endsWith("github.io")
   //   ? "/" + window.location.pathname.split("/").filter(Boolean)[0] + "/"
   //   : "/";
