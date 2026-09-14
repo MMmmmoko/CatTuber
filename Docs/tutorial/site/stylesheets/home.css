@@ -1,0 +1,12 @@
+/* 针对主页的样式 */
+
+
+
+.md-main.homepage{
+    background-color: transparent;
+    background-image: url("../assets/wikibg_dark.jpg")!important;
+    background-repeat: no-repeat;
+    background-position: center top;
+    background-size: cover;
+    background-attachment: fixed;
+}

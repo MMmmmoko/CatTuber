@@ -5,7 +5,7 @@ use_directory_urls: false
 theme:
   name: material
   custom_dir: docs/overrides
-  logo: assets/CatTuberLogo.png
+  logo: assets/CatTuberLogo.svg
 
   language: zh             # 设置界面语言为中文
   palette:                 # 配色方案（允许用户切换）
@@ -29,15 +29,9 @@ theme:
     - content.code.copy    # 代码块复制按钮
 
 
-extra:
-  generator: false #关闭结果网页中下方的生成器信息
 
 extra_css:
   - stylesheets/extra.css
-
-copyright: >
-  <a href="https://beian.miit.gov.cn/" target="_blank">京ICP备XXXXXXXX号</a> |
-  <a href="http://www.beian.gov.cn/" target="_blank">京公网安备 XXXXXXXXXXX号</a>
 
 plugins:
   - offline
@@ -54,29 +48,35 @@ plugins:
           default: true
           nav_translations:
             Tutorial: 教程
-            Broadcast: 使用CatTuber进行直播或录制的方法&常见问题
+            # Broadcast: 使用CatTuber进行直播或录制的方法&常见问题
             Home: 首页
             ChangeLog: 更新日志
         - locale: en
           name: English
           build: true
+          default: true
           nav_translations:
             Wiki: Wiki
-            Broadcast: How to Use CatTuber for Live Streaming or Recording & Frequently Asked Questions
+            # Broadcast: How to Use CatTuber for Live Streaming or Recording & Frequently Asked Questions
             ChangeLog: Change Log
 
 nav:
   - Home: index.md
-  - Wiki: wiki/Tutorial/Broadcast.md
+  - Wiki: 
+    - wiki/WikiHome.md
+    - wiki/Tutorial/Broadcast.md
   - ChangeLog: ChangeLog/ChangeLog.md
 
 
-    # - Tutorial:
-    #   - Broadcast: wiki/Tutorial/Broadcast.md
 
 
 
 
 
-
-
+extra:
+  generator: false #关闭结果网页中下方的生成器信息
+  i18n:
+    zh:
+      hero_title: "欢迎来到我的项目"
+    en:
+      hero_title: "Welcome to My Project"

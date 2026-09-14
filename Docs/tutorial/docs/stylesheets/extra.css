@@ -12,7 +12,10 @@ html {
   --ctb-primary-color: #D392C5;   /* 自定义主色 */
   --ctb-accent-color: #fc7cc950;    /* 自定义强调色 */
 }
-
+/*修复字重*/
+h1 strong {
+    font-weight: 700!important;
+}
 
 ::-webkit-scrollbar {
   width: 8px;
@@ -51,12 +54,12 @@ html {
 
 /* 文章正文底部留出空间 */
 [data-md-color-scheme="default"]  .md-content {
-    padding-bottom: 150px !important;
+    padding-bottom: 150px ;
 
     /* background-color: rgba(255, 255, 255, 0.7) !important; */
 }
 [data-md-color-scheme="slate"]  .md-content {
-    padding-bottom: 150px !important;
+    padding-bottom: 150px;
 
 /* background-color: rgba(30, 33, 41, 0.7) !important; */
 }
@@ -236,6 +239,7 @@ content: "";
 }
 /* 搜索框 */
 .md-search__form {
+  color: transparent;
   background-color:var(--md-default-bg-color);   /* 背景色 */
 }
 
@@ -254,4 +258,8 @@ a[data-md-component="logo"] {
         display:none
     }
 }
+
+
+
+
 

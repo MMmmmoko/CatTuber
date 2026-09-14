@@ -10,7 +10,7 @@
       
       
       
-        <link rel="next" href="wiki/Tutorial/Broadcast.html">
+        <link rel="next" href="wiki/WikiHome.html">
       
       
         
@@ -25,7 +25,7 @@
     
     
       
-        <title>CatTuber Wiki</title>
+        <title>CatTuber</title>
       
     
     
@@ -39,6 +39,8 @@
 
     
     
+      
+        <script src="https://unpkg.com/iframe-worker/shim"></script>
       
     
     
@@ -77,26 +79,457 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
-        
-        <a href="#cattuber" class="md-skip">
-          跳转至
-        </a>
-      
     </div>
     <div data-md-component="announce">
       
     </div>
     
     
+      
 
+
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉" style="height:80px">
+    <div style="display: grid;grid-template-columns: 1fr auto 1fr;align-items: center;width: 100%;height: 100%;">
+      <!-- 左侧元素 -->
+      <div style="grid-column: 1;justify-self: start;">
+        <a href="index.html" title="CatTuber"
+          data-md-component="logo" class="ctb-header__button md-logo">
+          <img src="assets/CatTuberLogo.png" alt="logo" width="200px" height="50px">
+        </a>
+        <label class="md-header__button md-icon" for="__drawer">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+        </label>
+      </div>
+      <!-- 中间导航按钮 -->
+      <div style="grid-column: 2;justify-self: center;height: 40%">
+        
+        
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="index.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  首页
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="wiki/WikiHome.html" class="md-tabs__link">
+          
+  
+  
+  Wiki
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="ChangeLog/ChangeLog.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  更新日志
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+        
+        <!-- <span >首页</span> -->
+      </div>
+      <!-- 右侧按钮 -->
+      <div>
+
+      </div>
+
+
+    </div>
+
+
+
+  </nav>
+
+  <div style="display:flex;position: absolute;right: 16px;top: 0;align-items: center;height: 100%">
+    
+    
+    <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到深色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到深色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.768 3.96zl-.002-.005a9 9 0 0 0-.218-.779c-.13-.394.21-.8.602-.67q.435.144.855.328l.01.005A10.002 10.002 0 0 1 12 22a10 10 0 0 1-9.162-5.985l-.004-.01a10 10 0 0 1-.329-.855c-.13-.392.277-.732.67-.602q.386.126.78.218l.004.002A9 9 0 0 0 14.999 6a9 9 0 0 0-.231-2.04M16.5 6c0 5.799-4.701 10.5-10.5 10.5q-.64 0-1.26-.075A8.5 8.5 0 1 0 16.425 4.74q.075.62.075 1.259Z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到浅色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到浅色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 19a7 7 0 1 1 0-14 7 7 0 0 1 0 14m0-1.5a5.5 5.5 0 1 0 0-11 5.5 5.5 0 1 0 0 11m-5.657.157a.75.75 0 0 1 0 1.06l-1.768 1.768a.749.749 0 0 1-1.275-.326.75.75 0 0 1 .215-.734l1.767-1.768a.75.75 0 0 1 1.061 0M3.515 3.515a.75.75 0 0 1 1.06 0l1.768 1.768a.749.749 0 0 1-.326 1.275.75.75 0 0 1-.734-.215L3.515 4.575a.75.75 0 0 1 0-1.06M12 0a.75.75 0 0 1 .75.75v2.5a.75.75 0 0 1-1.5 0V.75A.75.75 0 0 1 12 0M4 12a.75.75 0 0 1-.75.75H.75a.75.75 0 0 1 0-1.5h2.5A.75.75 0 0 1 4 12m8 8a.75.75 0 0 1 .75.75v2.5a.75.75 0 0 1-1.5 0v-2.5A.75.75 0 0 1 12 20m12-8a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h2.5A.75.75 0 0 1 24 12m-6.343 5.657a.75.75 0 0 1 1.06 0l1.768 1.768a.75.75 0 0 1-.018 1.042.75.75 0 0 1-1.042.018l-1.768-1.767a.75.75 0 0 1 0-1.061m2.828-14.142a.75.75 0 0 1 0 1.06l-1.768 1.768a.75.75 0 0 1-1.042-.018.75.75 0 0 1-.018-1.042l1.767-1.768a.75.75 0 0 1 1.061 0"/></svg>
+      </label>
+    
+  
+</form>
+    
+    
+    
+    <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="选择当前语言">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"/></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item ctb-subjectColorHover">
+            <a href="index.html" hreflang="zh" class="md-select__link">
+              简体中文
+            </a>
+          </li>
+        
+          <li class="md-select__item ctb-subjectColorHover">
+            <a href="en/index.html" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+
+    
+    
+    
+    <label class="md-header__button md-icon" for="__search">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+    </label>
+    <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+    
+
+  </div>
+</header>
+    
     <div class="md-container" data-md-component="container">
       
       
-
+        
+      
       <main class="md-main" data-md-component="main">
         <div class="md-main__inner md-grid">
           
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
 
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer" style="background: transparent; height: auto;
+  padding-bottom: 20px;">
+    <a href="index.html" title="CatTuber" class="md-nav__button md-logo" aria-label="CatTuber" data-md-component="logo">
+      
+  <img src="assets/CatTuberLogo.png" alt="logo">
+
+    </a>
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+      <a href="index.html" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Wiki
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Wiki
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="wiki/WikiHome.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CatTuber使用手册（施工中）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="wiki/Tutorial/Broadcast.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    使用CatTuber进行直播或录制的方法&amp;常见问题
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ChangeLog/ChangeLog.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    更新日志
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
           
             <div class="md-content" data-md-component="content">
               
@@ -108,30 +541,193 @@
 
 
 
-<h1 id="cattuber">CatTuber使用手册（施工中）</h1>
-<h2 id="test">目录test</h2>
-<h3 id="_1"><a href="wiki/Tutorial/Tutorial.html">使用指南</a></h3>
-<ul>
-<li><a href="wiki/Tutorial/Broadcast.html">使用CatTuber进行直播</a></li>
-</ul>
-<h3 id="_2"><a href="FAQ/FAQ.md">常见问题</a></h3>
-<ul>
-<li><a href="FAQ/VersionRollback.md">回退到旧版本CatTuber</a></li>
-</ul>
-<h3 id="_3"><a href="Modeling/Modeling.md">建模指南</a></h3>
-<ul>
-<li><a href="Modeling/Base.md">模型文件结构与交互机制</a></li>
-<li><a href="Modeling/ClassicCharacter.md">经典角色模型</a></li>
-<li><a href="Modeling/ClassicTable.md">经典桌台模型</a></li>
-<li><a href="Modeling/ClassicHandheldItem.md">经典手持物模型</a></li>
-<li><a href="Modeling/BongoCatMver.md">Bongo Cat Mver模型</a></li>
-</ul>
-<h2 id="project-layout">Project layout</h2>
-<pre><code>mkdocs.yml    # The configuration file.
-docs/
-    index.md  # The documentation homepage.
-    ...       # Other markdown pages, images and other files.
-</code></pre>
+<style>
+[data-md-color-scheme="default"] .md-main {
+    background-color: transparent;
+    background-image: none;
+}
+
+
+[data-md-color-scheme="slate"] .md-main {
+    background-color: transparent;
+    background-image: none;
+}
+
+body{
+margin: 0;
+}
+
+.md-content{
+    margin: 0;         /* 去掉居中 */
+  padding: 0  !important;        /* 可选，去掉默认内边距 */
+    }
+
+.md-main__inner.md-grid {
+  flex: 1;
+     max-width: none;
+    margin: 0;         /* 去掉居中 */
+  padding: 0;        /* 可选，去掉默认内边距 */
+    }
+
+.md-content__inner {
+    margin: 0;         /* 去掉居中 */
+  padding: 0;        /* 可选，去掉默认内边距 */
+    }
+
+
+
+
+.steam-btn {
+  position:relative;
+  display: flex;
+  justify-content: center;   /* 水平方向居中 */
+  align-items: center;
+  gap: 0.04rem; /* 图标和文字间距 */
+  padding: 0.5rem 1.2rem 0.5rem 1rem;
+  border: none;
+  border-radius: 9999px; /* 圆角矩形 */
+  background: linear-gradient(to right, #f282d7, #aa90f9, #63d0fc); /* 品红→紫→蓝渐变 */
+
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  /* transition: transform 0.2s ease; */
+  width: 8rem;
+  height: 2.75rem;
+}
+/* 白色叠加层 */
+.steam-btn::after {
+  content: "";
+  position: absolute;
+  inset: 0; /* 覆盖整个按钮 */
+  background: rgba(255, 255, 255, 0.3); /* 半透明白色 */
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: inherit; /* 保持圆角一致 */
+}
+.steam-btn:hover::after {
+  opacity: 1;
+}
+.steam-btn span {
+  font-size: 1rem; /* 设置字体大小 */
+  font-weight: bold; /* 可选：加粗 */
+}
+.steam-icon {
+  width: 1.8rem;
+  height: 1.8rem;
+  fill: white; /* 可以直接改颜色 */
+}
+
+.hboxContainer {
+  display: flex;
+
+  justify-content: center;   /* 水平居中 */
+  align-items: center;       /* 垂直居中（可选） */
+  flex-wrap: wrap;           /* 超出时自动换行 */
+  /* 等距分布 */
+  /* justify-content: space-between;  */
+  margin-top: 0.5rem;
+}
+
+.hboxitem {
+   display: flex;
+  flex-direction: column; /* 垂直排列：图标 → 简称 → 简介 */
+  align-items: center;    /* 水平居中所有子元素 */
+
+  width: 15rem;
+  height: 12rem;
+  /* background: lightblue; */
+}
+
+.feature-icon {
+  width: 6rem;
+  height: 6rem;
+  border: none;
+  border-radius: 0.8rem;
+  text-align: center;
+  margin: 4px 0;
+}
+
+.feature-title {
+  font-size: 1rem;
+  font-weight: bold!important;;
+  text-align: center;
+  margin: 0.5rem 0!important;
+}
+
+.feature-desc {
+  font-size: 0.8rem;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+
+
+</style>
+<div style="flex: 1; ">
+  <div class="ctb-brief" style="padding-left: 10vw;padding-right: 10vw; padding-top: 10vh;background-color: #fbfcfd; ">
+    <a href="index.html" title="{{ config.site_name | e }}">
+      <img src="../assets/CatTuberLogo.png" alt="logo" style="width: 24rem;">
+    </a>
+
+    <h1 style="margin-top: 1rem;"> <strong>以可爱形象展示按键动作，点缀你的桌面或直播间</strong></h1>
+    <p>CatTuber一款带有角色形象的输入展示软件， <br>
+      角色会跟随你的设备输入做出对应的动作。</p>
+    <p>支持键盘、鼠标、游戏手柄、面部捕捉等多种形式的动作输入.<br>
+      支持键盘、鼠标、游戏手柄、面部捕捉等多种形式的动作输入， </p>
+
+   <button class="steam-btn" style="margin-top: 32px;" >
+    <svg class="steam-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12.0052 2C6.75435 2 2.44852 6.05 2.04102 11.1975L7.40102 13.4125C7.85518 13.1033 8.40352 12.9208 8.99435 12.9208C9.04685 12.9208 9.09852 12.9242 9.15102 12.9258L11.5352 9.47417V9.425C11.5352 7.34583 13.2252 5.655 15.3052 5.655C17.3835 5.655 19.0752 7.3475 19.0752 9.4275C19.0752 11.5075 17.3835 13.1983 15.3052 13.1983H15.2177L11.821 15.6242C11.821 15.6675 11.8243 15.7117 11.8243 15.7567C11.8243 17.3192 10.5618 18.5867 8.99935 18.5867C7.63685 18.5867 6.48602 17.6092 6.22352 16.3142L2.38602 14.725C3.57435 18.9225 7.42768 22 12.0052 22C17.5277 22 22.0043 17.5225 22.0043 12C22.0043 6.4775 17.5268 2 12.0052 2ZM7.07852 16.6667C7.29685 17.1192 7.67352 17.4992 8.17352 17.7083C9.25435 18.1575 10.501 17.645 10.9502 16.5625C11.1693 16.0375 11.1702 15.4633 10.9543 14.9383C10.7385 14.4133 10.3293 14.0042 9.80685 13.7858C9.28685 13.5692 8.73185 13.5783 8.24185 13.7608L9.51102 14.2858C10.3077 14.6192 10.6852 15.5358 10.3518 16.3317C10.021 17.1292 9.10435 17.5067 8.30685 17.175L7.07852 16.6667ZM17.8185 9.4225C17.8185 8.0375 16.691 6.91 15.306 6.91C13.9185 6.91 12.7935 8.0375 12.7935 9.4225C12.7935 10.81 13.9185 11.935 15.306 11.935C16.6918 11.935 17.8185 10.81 17.8185 9.4225ZM15.3118 7.53C16.3527 7.53 17.2002 8.375 17.2002 9.41833C17.2002 10.4608 16.3527 11.3058 15.3118 11.3058C14.2677 11.3058 13.4243 10.4608 13.4243 9.41833C13.4243 8.375 14.2685 7.53 15.3118 7.53Z"></path></svg>
+    <span>Steam</span>
+  </button>
+  </div>
+
+
+<div class="waveCanvas" id="waveCanvas" data-wavefrontcolor="blue" data-wavebackcolor="green" style="background-color: #fbfcfd;">
+    <script src="assets/js/waveAnimation.js" type="module"></script>
+</div>
+
+      <!-- <h3 class="feature-title">多元模型</h3>
+      <p class="feature-desc">支持Spine与Live2D模型，<br>DIY上手无压力！</p> -->
+
+<div class="hboxContainer">
+  <!-- 两个元素一组防止换行时被拆分 -->
+  <div class="hboxContainer">
+    <div class="hboxitem">
+      <img src="../assets/icon/homePage_input.svg" class="feature-icon"  >
+    </img>
+
+      <h3 class="feature-title">多元输入</h3>
+      <p class="feature-desc">支持多种品牌的游戏手柄，<br>支持对无法识别的手柄进行映射。</p>
+
+    </div>
+    <div class="hboxitem">
+      <div class="feature-icon" style="background-color: #fee8f3;  ">
+      </div>
+      <h3 class="feature-title">双机支持</h3>
+      <p class="feature-desc">支持将设备输入转发到推流电脑,<br>直播支持无死角</p>
+    </div>
+  </div>
+  <div class="hboxContainer">
+    <div class="hboxitem">
+      <div class="feature-icon" style="background-color: #eee3fd;  ">
+      </div>
+      <h3 class="feature-title">外置面捕</h3>
+      <p class="feature-desc">支持接收来自外部设备的面部数据,<br>电脑压力Down Down</p>
+  </div>
+  <div class="hboxitem">
+      <div class="feature-icon" style="background-color: #ddf7f2;  ">
+      </div>
+      <h3 class="feature-title">Bongo Cat Mver兼容</h3>
+      <p class="feature-desc">Bongo Cat Mver未提供的便利功能,<br>在这里都可以享受到</p>
+
+  </div>
+  </div>
+  </div>
+
+
+
+</div>
 
 
 
@@ -192,7 +788,7 @@ docs/
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "search.highlight", "content.code.copy"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.top", "search.highlight", "content.code.copy"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
     
     
       <script src="assets/javascripts/bundle.79ae519e.min.js"></script>

@@ -1,9 +1,22 @@
 
+
 /* 防止滚动滑块影响画面布局造成背景跳动 */
 html {
      scrollbar-gutter: stable; 
      overflow-y: overlay;
 }
+
+
+/* 主题色 */
+:root  > *{
+  --ctb-primary-color: #D392C5;   /* 自定义主色 */
+  --ctb-accent-color: #fc7cc950;    /* 自定义强调色 */
+}
+/*修复字重*/
+h1 strong {
+    font-weight: 700!important;
+}
+
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -41,12 +54,12 @@ html {
 
 /* 文章正文底部留出空间 */
 [data-md-color-scheme="default"]  .md-content {
-    padding-bottom: 150px !important;
+    padding-bottom: 150px ;
 
     /* background-color: rgba(255, 255, 255, 0.7) !important; */
 }
 [data-md-color-scheme="slate"]  .md-content {
-    padding-bottom: 150px !important;
+    padding-bottom: 150px;
 
 /* background-color: rgba(30, 33, 41, 0.7) !important; */
 }
@@ -124,3 +137,125 @@ html {
 .wiki-button:hover {
     opacity: 0.85;
 } */
+
+
+
+
+.md-tabs__link {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+
+    height: 40px;
+    padding: 0 14px;
+
+    border-radius: 8px;
+margin: 0 6px; /* 左右间距增加 6px */
+    color: var(--md-typeset-color);
+    font-size: 0.9rem;
+    font-weight: 500;
+    
+}
+
+
+.md-tabs__link:hover {
+    color: var(--ctb-primary-color);
+}
+/* 渐变下划线 */
+/* class="md-tabs__item md-tabs__item--active" */
+
+.md-tabs__item--active {
+    position: relative;
+    height: 100%;
+    color: var(--ctb-primary-color);
+}
+.md-tabs__item--active::after {
+
+
+
+content: "";
+    position: absolute;
+
+    left: 50%;
+    bottom: 0px;
+    width: 70%;
+    height: 4px;
+
+
+    transform: translateX(-50%); 
+    background: linear-gradient(
+        90deg,
+        #BE79EA,
+        #7CB0FD
+    ); 
+    border-radius: 999px;
+
+
+   transition:
+        width 0.25s ease; 
+    
+}
+
+
+
+.md-header .md-icon {
+  color: #808080;
+}
+
+.md-header .md-icon:hover {
+    color: var(--ctb-primary-color);
+}
+
+
+.md-header {
+  background: var(--md-default-bg-color); /* 使用主题色 */
+  box-shadow: 0 0px 4px rgba(0,0,0,0.1); /* 移除阴影 */
+}
+
+.md-tabs {
+  background: var(--md-default-bg-color); /* 使用主题色 */
+}
+
+
+
+.md-select__item.ctb-subjectColorHover :hover {
+    color: var(--ctb-primary-color);
+}
+
+/* .md-select__link .ctb-subjectColorHover:hover {
+    color: var(--ctb-primary-color);
+} */
+
+
+
+/* 搜索框 */
+.md-search__input {
+  background-color:var(--md-default-bg-color);   /* 背景色 */
+}
+/* 搜索框 */
+.md-search__input:hover{
+  background-color:#80808038;   /* 背景色 */
+}
+/* 搜索框 */
+.md-search__form {
+  color: transparent;
+  background-color:var(--md-default-bg-color);   /* 背景色 */
+}
+
+.ctb-header__button:hover {
+    opacity: .7
+}
+
+/* 默认显示 logo 超链 */
+a[data-md-component="logo"] {
+  display: inline-block;
+}
+
+/* 隐藏LOGO */
+@media screen and (max-width: 76.234375em) {
+    .ctb-header__button.md-logo {
+        display:none
+    }
+}
+

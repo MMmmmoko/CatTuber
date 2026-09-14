@@ -1,60 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
+//样式来源
+//https://www.bilibili.com/video/BV1Ax4y157AB
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>飞雪前端艺术</title>
-    <style>
-        * {
-            padding: 0;
-            margin: 0;
-        }
-
-        * {
-            padding: 0;
-            margin: 0;
-        }
-
-        h1 {
-            font-weight: 300;
-            letter-spacing: 2px;
-            font-size: 48px;
-        }
-
-        p {
-            font-family: 'Lato', sans-serif;
-            letter-spacing: 1px;
-            font-size: 30px;
-            color: #333333;
-        }
-
-        .header {
-            position: relative;
-            text-align: center;
-            background: linear-gradient(60deg, rgba(84, 58, 183, 1) 0%, rgba(0, 172, 193, 1) 100%);
-            color: white;
-        }
-
-        .inner-header {
-            height: 65vh;
-            width: 100%;
-            margin: 0;
-            padding: 0;
-        }
-
-        .flex {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-        }
-
+const waveCanvas = document.getElementById("waveCanvas");
+// waveCanvas.style.backgroundColor="black";
+const style = document.createElement("style");
+style.textContent = `
         .waves {
             position: relative;
             width: 100%;
-            height: 15vh;
+            height: 20px;
             margin-bottom: -7px;
             min-height: 100px;
             max-height: 150px;
@@ -118,14 +72,12 @@
                 font-size: 24px;
             }
         }
-        
-    </style>
-</head>
+`;
 
-<body>
-    <div class="header">
-        <div class="inner-header flex"></div>
-        <div>
+document.body.appendChild(style);
+
+
+waveCanvas.innerHTML=`
             <!-- 
                 xmlns:SVG命名看见URI
                 viewBox:定义当前视口（viewbox）中绘制区域的位置大小
@@ -145,18 +97,11 @@
                     在g元素中使用use元素多次引用了赚钱定义的名为gentle-wave的路径元素
                     通过设置不同的x，y坐标和填充颜色，实现了波浪形状和渐变效果 -->
                 <g class="parallax">
-                    <use xlink:href="#gentle-wave" x="48" y="0" fill="rgba(255,255,255,0.7)" />
-                    <use xlink:href="#gentle-wave" x="48" y="3" fill="rgba(255,255,255,0.5)" />
-                    <use xlink:href="#gentle-wave" x="48" y="5" fill="rgba(255,255,255,0.3)" />
+                    <use xlink:href="#gentle-wave" x="48" y="0" fill="rgba(239,245,253,0.7)" />
+                    <use xlink:href="#gentle-wave" x="48" y="3" fill="rgba(239,245,253,0.5)" />
+                    <use xlink:href="#gentle-wave" x="48" y="5" fill="rgba(239,245,253,0.3)" />
                     <use xlink:href="#gentle-wave" x="48" y="7" fill="#fff" />
                 </g>
 
             </svg>
-        </div>
-    </div>
-    <div class="content flex">
-        <p>bilibili-飞雪前端艺术</p>
-    </div>
-</body>
-
-</html>
+`;
