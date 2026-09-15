@@ -11,6 +11,9 @@ typedef  uint8_t BYTE;
 #include"Shader/DXIL/BongoCatHandTexVS.h"
 #include"Shader/DXIL/BongoCatHandTexPS.h"
 
+#include"Shader/DXIL/EmptyWindow_PS.h"
+#include"Shader/DXIL/Filter_XY_VS.h"
+
 
 
 
@@ -43,6 +46,10 @@ F(BongoCatHandVS,VS,0,0,0,1)\
 F(BongoCatHandPS,PS,1,0,0,0)\
 F(BongoCatHandTexVS,VS,0,0,0,1)\
 F(BongoCatHandTexPS,PS,1,0,0,0)\
+\
+F(Filter_XY_VS,VS,0,0,0,0)\
+F(EmptyWindow_PS,PS,0,0,0,1)\
+
 
 
 

@@ -15,7 +15,7 @@
 #include"../Tray.h"
 //#include"DuiCommon.h"
 #include"Dui.h"
-
+#include"Renderer/GlobalGraphicResourceManager.h"
 
 #include"ThreadUtil.h"
 SDL_FColor RenderWindowController::clearColor = { 0.f,0.f, 0.f, 0.f };
@@ -70,7 +70,7 @@ bool RenderWindowController::_CreateWindow()
 
     if (isTransparent)
     {
-        SDL_SetBooleanProperty(props, SDL_PROP_WINDOW_CREATE_BORDERLESS_BOOLEAN, false);
+        SDL_SetBooleanProperty(props, SDL_PROP_WINDOW_CREATE_BORDERLESS_BOOLEAN, true);
         SDL_SetBooleanProperty(props, SDL_PROP_WINDOW_CREATE_TRANSPARENT_BOOLEAN, true);
     }
 
@@ -155,8 +155,8 @@ bool RenderWindowController::_CreateWindow()
             else
                 return SDL_HitTestResult::SDL_HITTEST_NORMAL;
         };
-    //if(isTransparent)
-    //    SDL_SetWindowHitTest(window, hittestFunc,this);
+    if(isTransparent)
+        SDL_SetWindowHitTest(window, hittestFunc,this);
 
 
     windowID = SDL_GetWindowID(window);
@@ -793,7 +793,16 @@ void RenderWindowController::Render() {
 		//Rendering
 		//Rendering
         //scene.Draw(curTargetTex, depthStencil, renderW, renderH, cmd, cmdCurframeCopy);
-        scene.Draw(_clearPass, renderW, renderH, cmd, cmdCurframeCopy);
+        
+        if (isTransparent&&scene.Empty())
+        {
+            //透明且为空时绘制内容让透明窗口可见
+            GlobalGraphicResourceManager::GetIns().GetEmptyWindowSprite()->Draw(renderW, renderH);
+        }
+        else
+        {
+            scene.Draw(_clearPass, renderW, renderH, cmd, cmdCurframeCopy);
+        }
         //Rendering
         //Rendering
         //Rendering
@@ -816,6 +825,21 @@ void RenderWindowController::Render() {
 
 
     }while (false);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     //中间出了问题，不进行渲染，进行可能的资源清理
     //if (cmdCurframe)

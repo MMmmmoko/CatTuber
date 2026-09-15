@@ -175,18 +175,26 @@ bool MainUiForm::OnBaseControlBtnClicked(const ui::EventArgs& msg)
 
 		//打开软件的帮助页面
 		//构建链接
-		std::string appBasePath=AppContext::GetAppBasePath();
+		std::string langBase="en";
 		//获取当前语言链接
 		if (0 == strcmp("schinese", AppContext::GetAppLang()))
 		{
-			appBasePath += "Docs/schinese/index.html";
+			langBase ="zh";
 		}
 		else
 		{
-			appBasePath += "Docs/english/index.html";
+			std::string langBase = "en";
 		}
-		SDL_OpenURL(appBasePath.c_str());
 
+		if (langBase == "zh")
+		{
+			SDL_OpenURL("https://mmmmmoko.github.io/CatTuber/wiki/WikiHome");
+		}
+		else
+		{
+			SDL_OpenURL(("https://mmmmmoko.github.io/CatTuber/"+ langBase +"/wiki/WikiHome").c_str());
+
+		}
 
 	}
 

@@ -2,6 +2,7 @@
 #define _Bindable_h
 
 #include<SDL3/SDL.h>
+#include<memory>
 #include<string>
 
 namespace rendering
@@ -22,6 +23,8 @@ namespace rendering
 		virtual ~Bindable() = default;
 
 
+
+		static std::shared_ptr<Bindable> CreateFromStr(const char*) { return nullptr; };
 	};
 	//class CloningBindable : public Bindable
 	//{

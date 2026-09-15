@@ -4,6 +4,17 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
 rendering::IndexBuffer::~IndexBuffer()
 {
     SDL_ReleaseGPUBuffer(AppContext::GetGraphicDevice(), pIndexBuffer);
@@ -86,3 +97,41 @@ void rendering::IndexBuffer::UpdateIndices(const void* data, SDL_GPUIndexElement
 }
 
 
+
+
+
+
+
+static const char* GlobalIndexBufferName[] =
+{
+    "SGIB.Filter",
+};
+static_assert((sizeof GlobalIndexBufferName / sizeof(const char*) == rendering::IndexBuffer::GlobalIndexBuffer_Count)
+    , "Buffer Count Mismatch!"
+    );
+
+
+
+
+std::shared_ptr<rendering::IndexBuffer> rendering::IndexBuffer::GetGlobalIndexBuffer(GlobalIndexBuffer bufferType)
+{
+    std::shared_ptr<rendering::IndexBuffer> result=GlobalGraphicResourceManager::GetGlobalBindable<IndexBuffer>( GlobalIndexBufferName[bufferType]);
+    return result;
+}
+
+std::shared_ptr<rendering::IndexBuffer> rendering::IndexBuffer::CreateFromStr(const char* name)
+{
+    if (0==SDL_strcmp(name, GlobalIndexBufferName[GlobalIndexBuffer_FullScreenFilter]))
+    {
+        //全屏滤镜，
+        //四个点依次为左上右上右下左下
+        std::shared_ptr<IndexBuffer> buffer = std::make_shared<IndexBuffer>();
+        short index[6] = { 0,1,2, 0,2,3 };
+
+        buffer->UpdateIndices(index, SDL_GPUIndexElementSize::SDL_GPU_INDEXELEMENTSIZE_16BIT,6);
+        return buffer;
+    }
+
+    return nullptr;
+
+}

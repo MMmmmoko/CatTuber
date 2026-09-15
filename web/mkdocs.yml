@@ -1,6 +1,6 @@
 site_name: CatTuber
 # 以本地文件的形式提供信息时用下面这行，网页部署时注释掉
-use_directory_urls: false
+#use_directory_urls: false
 
 theme:
   name: material
@@ -28,7 +28,8 @@ theme:
     - navigation.top       # 回到顶部按钮
     - search.highlight     # 搜索高亮
     - content.code.copy    # 代码块复制按钮
-
+    - header.autohide       # 下滚动时自动隐藏顶部导航
+    - toc.follow          #固定左右导航
 
 
 extra_css:
@@ -41,7 +42,7 @@ plugins:
       # default_language: zh
       default_language_only: false
       reconfigure_material: true
-      docs_structure: folder
+      docs_structure: suffix
       languages:
         - locale: zh
           name: 简体中文

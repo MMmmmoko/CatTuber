@@ -68,26 +68,26 @@ h1 strong {
     z-index: 1;
 }
 
-.md-main{
+/* .md-main{
     overflow: hidden;
-}
+} */
 
 .md-main__inner.md-grid {
+    
     position: relative;
 }
 .md-main__inner.md-grid::before {
     content: "";
-    position: absolute;
-    inset: 0;
-    left: 5%;
-    right: 5%;
-    top:-10%;
-    height: 200%;
-    min-height: 90vh;
+    position: fixed;
+    left: 50%;
+    top:0;
+    width: 1800px;
+    height: 100vh;
 
     z-index: 0;
     pointer-events: none;
     transform: scaleX(1.5);
+    transform: translateX(-50%);
 }
 
 

@@ -4,6 +4,8 @@
 
 
 
+
+
 rendering::VertexBuffer::~VertexBuffer()
 {
     SDL_ReleaseGPUBuffer(AppContext::GetGraphicDevice(), pVertexBuffer);
@@ -134,5 +136,59 @@ void rendering::VertexBuffer::ReleaseTransferBuffer()
         pTransferBuffer = NULL;
 	}
 
+
+}
+
+
+
+
+static const char* GlobalVertexBufferName[] =
+{
+    "SGVB.Filter",
+};
+static_assert((sizeof GlobalVertexBufferName / sizeof(const char*) == rendering::VertexBuffer::GlobalVertexBuffer_Count)
+    , "Buffer Count Mismatch!"
+    );
+
+
+
+std::shared_ptr<rendering::VertexBuffer> rendering::VertexBuffer::GetGlobalVertexBuffer(GlobalVertexBuffer bufferType)
+{
+    std::shared_ptr<rendering::VertexBuffer> result = GlobalGraphicResourceManager::GetGlobalBindable<VertexBuffer>(GlobalVertexBufferName[bufferType]);
+    return result;
+}
+
+std::shared_ptr<rendering::VertexBuffer> rendering::VertexBuffer::CreateFromStr(const char* name)
+{
+    if (0==SDL_strcmp(name, GlobalVertexBufferName[VertexBuffer::GlobalVertexBuffer_FullScreenFilter]))
+    {
+        //全屏滤镜，
+        //四个点依次为左上右上右下左下
+        struct SpriteVertex
+        {
+            float x;
+            float y;
+
+            float u;
+            float v;
+
+        }vertices[] =
+        {
+            {-1.f,1.f, 0.f,0.f},
+            {1.f,1.f, 1.f,0.f},
+            {1.f,-1.f , 1.f,1.f},
+            {-1.f,-1.f ,0.f,1.f},
+        };
+        std::shared_ptr<VertexBuffer> vertexbuffer = std::make_shared<VertexBuffer>();
+
+        vertexbuffer->PushLayout(SDL_GPU_VERTEXELEMENTFORMAT_FLOAT2);
+        vertexbuffer->PushLayout(SDL_GPU_VERTEXELEMENTFORMAT_FLOAT2);
+        vertexbuffer->UpdateVertex(vertices,sizeof(vertices));
+
+        //buffer->UpdateIndices(index, SDL_GPUIndexElementSize::SDL_GPU_INDEXELEMENTSIZE_16BIT, 6);
+        return vertexbuffer;
+    }
+
+    return nullptr;
 
 }

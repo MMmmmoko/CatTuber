@@ -72,6 +72,9 @@
     <Filter Include="源文件\Steam">
       <UniqueIdentifier>{49e94c3d-35ad-416d-a837-ab2fc08152b0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="源文件\Renderer\Drawable">
+      <UniqueIdentifier>{b81d700b-1855-4bfc-9db0-b6c02b762117}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dui\DuiCommon.h">
@@ -320,6 +323,9 @@
     <ClInclude Include="src\Util\ThreadUtil.h">
       <Filter>源文件\Util</Filter>
     </ClInclude>
+    <ClInclude Include="src\Renderer\Drawable\EmptyWindowSprite.h">
+      <Filter>源文件\Renderer\Drawable</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -559,6 +565,12 @@
     <ClCompile Include="src\Util\ThreadUtil.cpp">
       <Filter>源文件\Util</Filter>
     </ClCompile>
+    <ClCompile Include="src\Renderer\Bindable\Bindable.cpp">
+      <Filter>源文件\Renderer\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer\Drawable\EmptyWindowSprite.cpp">
+      <Filter>源文件\Renderer\Drawable</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CatTuber64.rc">
@@ -682,6 +694,12 @@
       <Filter>源文件\Renderer\Shader</Filter>
     </FxCompile>
     <FxCompile Include="src\Renderer\Shader\BongoCatHandVS.hlsl">
+      <Filter>源文件\Renderer\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="src\Renderer\Shader\Filter_XY_VS.hlsl">
+      <Filter>源文件\Renderer\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="src\Renderer\Shader\EmptyWindow_PS.hlsl">
       <Filter>源文件\Renderer\Shader</Filter>
     </FxCompile>
   </ItemGroup>

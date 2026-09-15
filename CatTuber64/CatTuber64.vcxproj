@@ -224,6 +224,7 @@
     <ClInclude Include="src\Renderer\Bindable\IndexBuffer.h" />
     <ClInclude Include="src\Renderer\Bindable\VertexBuffer.h" />
     <ClInclude Include="src\Renderer\CatRendererContext.h" />
+    <ClInclude Include="src\Renderer\Drawable\EmptyWindowSprite.h" />
     <ClInclude Include="src\Renderer\GlobalGraphicResourceManager.h" />
     <ClInclude Include="src\Renderer\MixDrawList.h" />
     <ClInclude Include="src\RenderThread.h" />
@@ -303,8 +304,10 @@
     <ClCompile Include="src\Net\SDL3_net.c" />
     <ClCompile Include="src\Pack\Pack.cpp" />
     <ClCompile Include="src\Pack\PackReader_CatZPack.cpp" />
+    <ClCompile Include="src\Renderer\Bindable\Bindable.cpp" />
     <ClCompile Include="src\Renderer\Bindable\IndexBuffer.cpp" />
     <ClCompile Include="src\Renderer\Bindable\VertexBuffer.cpp" />
+    <ClCompile Include="src\Renderer\Drawable\EmptyWindowSprite.cpp" />
     <ClCompile Include="src\Renderer\GlobalGraphicResourceManager.cpp" />
     <ClCompile Include="src\Renderer\GlobalGraphicResourceManager_Shader.cpp" />
     <ClCompile Include="src\Renderer\MixDrawList.cpp" />
@@ -426,6 +429,14 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="src\Renderer\Shader\EmptyWindow_PS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="src\Renderer\Shader\Filter_XY_VS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
     </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

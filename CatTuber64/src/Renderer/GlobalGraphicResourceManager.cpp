@@ -7,9 +7,40 @@
 
 
 
-void GlobalGraphicResourceManager::SetUp(SDL_GPUDevice* device)
+bool GlobalGraphicResourceManager::SetUp(SDL_GPUDevice* device)
 {
+	if (pDevice)
+	{
+		SDL_assert(false && "device already existed.");
+		return false;
+	}
+
+
+
+	releaseDeviceWhenQuit = false;
 	pDevice = device;
+	if (!pDevice)
+	{
+
+		bool b_debug = false;
+#ifdef _DEBUG
+		b_debug = true;
+#endif // _DEBUG
+
+
+#if defined SDL_PLATFORM_WINDOWS
+		pDevice = SDL_CreateGPUDevice(SDL_GPU_SHADERFORMAT_DXIL, b_debug, "direct3d12");
+#elif defined SDL_PLATFORM_MACOS
+		pDevice = SDL_CreateGPUDevice(SDL_GPU_SHADERFORMAT_MSL, b_debug, "metal");
+#elif defined SDL_PLATFORM_LINUX
+		pDevice = SDL_CreateGPUDevice(SDL_GPU_SHADERFORMAT_SPIRV, b_debug, "vulkan");
+#endif // 
+		if(pDevice)
+			releaseDeviceWhenQuit = true;
+	}
+
+	return pDevice != nullptr;
+
 }
 
 void GlobalGraphicResourceManager::CleanUp()
@@ -23,9 +54,18 @@ void GlobalGraphicResourceManager::CleanUp()
 	for (auto& x : shaderPool)
 		SDL_ReleaseGPUShader(pDevice,x.second);
 	shaderPool.clear();
-
 	bindsMap.clear();
 
+	SDL_ReleaseGPUTexture(pDevice,renderDisabledTexture);
+	SDL_ReleaseGPUTexture(pDevice,emptyWindowTexture);
+
+
+
+	if (releaseDeviceWhenQuit)
+	{
+		SDL_DestroyGPUDevice(pDevice);
+		releaseDeviceWhenQuit = false;
+	}
 
 	//SDL_CreateGPUBuffer
 }

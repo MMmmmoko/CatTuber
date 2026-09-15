@@ -35,7 +35,7 @@ public:
 	//void Draw(SDL_GPUTexture* renderTarget, SDL_GPUTexture* depth,int width,int height,SDL_GPUCommandBuffer* mainCmdBuffer, SDL_GPUCommandBuffer* copyCmdBuffer=NULL);
 	void Draw(SDL_GPURenderPass* mainRenderPass,int width,int height,SDL_GPUCommandBuffer* mainCmdBuffer, SDL_GPUCommandBuffer* copyCmdBuffer=NULL);
 
-
+	bool Empty() { return _itemList.size() == 0; };
 
 
 	//保存或载入当前场景内容

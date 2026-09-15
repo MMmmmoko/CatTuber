@@ -7,7 +7,7 @@
 #include<string>
 #include<memory>
 #include"Bindable/Bindables.h"
-
+#include"Drawable/EmptyWindowSprite.h"
 
 //struct SDL_GPUIndexBuffer
 //{
@@ -29,12 +29,15 @@ public:
 	static GlobalGraphicResourceManager& GetIns() { static GlobalGraphicResourceManager ref; return ref; }
 
 
-	void SetUp(SDL_GPUDevice* device);
+	bool SetUp(SDL_GPUDevice* device=nullptr);
 	void CleanUp();
 
-
-
+	//获取禁止渲染时所用的纹理
+	SDL_GPUTexture* GetRenderDisabledTexture();
+	//获取透明窗口且窗口里无内容的时候的绘制内容
+	EmptyWindowSprite* GetEmptyWindowSprite() { if (!emptyWindowSprite.Avaliable()) emptyWindowSprite.SetUp(); return &emptyWindowSprite; };
 	
+	//TODO 考虑避免字符串？
 	SDL_GPUShader* GetShaderByName(const char* shaderName);
 	
 
@@ -45,12 +48,22 @@ public:
 
 
 	template<class T>
-	static  std::shared_ptr<T> GetGlobalBindable(const char* bindableGlobalName)
+	static  std::shared_ptr<T> GetGlobalBindable(const char* bindableGlobalName,bool tryCreateIfNull=true)
 	{
 		auto it = GetIns().bindsMap.find(bindableGlobalName);
 		if (it == GetIns().bindsMap.end())
 		{
-			return nullptr;
+			if (tryCreateIfNull)
+			{
+				std::shared_ptr<T>  result = T::CreateFromStr(bindableGlobalName);
+				if (result)
+					StoreBindable<T>(bindableGlobalName, result);
+				return result;
+			}
+			else
+			{
+				return nullptr;
+			}
 		}
 		else
 		{
@@ -65,9 +78,18 @@ public:
 	}
 
 private:
+	
+
+
+
 	SDL_GPUDevice* pDevice = nullptr;
+	bool releaseDeviceWhenQuit = false;
 
 
+	EmptyWindowSprite emptyWindowSprite;
+
+	SDL_GPUTexture* renderDisabledTexture=nullptr;
+	SDL_GPUTexture* emptyWindowTexture=nullptr;
 
 	//着色器池
 	std::unordered_map<std::string, SDL_GPUShader*> shaderPool;
