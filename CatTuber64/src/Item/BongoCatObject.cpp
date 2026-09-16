@@ -1,4 +1,5 @@
 #include"AppContext.h"
+#include"AppSettings.h"
 #include"Util/Util.h"
 #include"Input/InputManager.h"
 #include"Input/InputParser.h"
@@ -612,23 +613,6 @@ bool BongoCatObject::LoadFromPath(const char* u8PackPath, const Json::Value& bin
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	//如果重新加载
 	if (_model)
 	{
@@ -764,7 +748,7 @@ bool BongoCatObject::LoadFromPath(const char* u8PackPath, const Json::Value& bin
 	if (!resourceLoadResult)return false;
 
 
-
+	model2dExpressionCount = (int)l2dExpressionKeyVec.size();
 
 
 
@@ -1025,6 +1009,64 @@ bool BongoCatObject::LoadFromPath(const char* u8PackPath, const Json::Value& bin
 		auto& curButton = soundsButtonVec.emplace_back();
 		curButton.uiName = "Sound_" + std::to_string(buttonIndex);
 		for (auto& y : soundsKeyVec[buttonIndex])
+		{
+			//检查当前按钮是否已经进行了映射
+			const char* curKey = InputParser::BongoCatKeyToButtonBaseName(y);
+			curButton.defaultBinding.type = BindingInfo::Button_ActualButton;
+			curButton.defaultBinding.controllList.push_back(curKey);
+			curButton.binding = curButton.defaultBinding;
+		}
+	}
+
+	for (int buttonIndex=0; buttonIndex< l2dExpressionKeyVec.size(); buttonIndex++)
+	{
+		auto& curButton = modelEmotionButtonVec.emplace_back();
+		curButton.uiName = "ModelExpression_" + std::to_string(buttonIndex);
+		for (auto& y : l2dExpressionKeyVec[buttonIndex])
+		{
+			//检查当前按钮是否已经进行了映射
+			const char* curKey = InputParser::BongoCatKeyToButtonBaseName(y);
+			curButton.defaultBinding.type = BindingInfo::Button_ActualButton;
+			curButton.defaultBinding.controllList.push_back(curKey);
+			curButton.binding = curButton.defaultBinding;
+		}
+	}
+
+	for (int buttonIndex=0; buttonIndex< l2dMotionKeyVec.size(); buttonIndex++)
+	{
+		auto& curButton = live2DMotionButtonVec.emplace_back();
+		curButton.uiName = "ModelMotion_" + std::to_string(buttonIndex);
+		for (auto& y : l2dMotionKeyVec[buttonIndex])
+		{
+			//检查当前按钮是否已经进行了映射
+			const char* curKey = InputParser::BongoCatKeyToButtonBaseName(y);
+			curButton.defaultBinding.type = BindingInfo::Button_ActualButton;
+			curButton.defaultBinding.controllList.push_back(curKey);
+			curButton.binding = curButton.defaultBinding;
+		}
+	}
+
+	for (int buttonIndex=0; buttonIndex< l2dMotionKeyVec_LockHand.size(); buttonIndex++)
+	{
+		auto& curButton = live2DMotionButtonVec_LockHand.emplace_back();
+		curButton.uiName = "ModelLockHandMotion_" + std::to_string(buttonIndex);
+		for (auto& y : l2dMotionKeyVec_LockHand[buttonIndex])
+		{
+			//检查当前按钮是否已经进行了映射
+			const char* curKey = InputParser::BongoCatKeyToButtonBaseName(y);
+			curButton.defaultBinding.type = BindingInfo::Button_ActualButton;
+			curButton.defaultBinding.controllList.push_back(curKey);
+			curButton.binding = curButton.defaultBinding;
+		}
+	}
+
+
+
+	for (int buttonIndex=0; buttonIndex< faceKeyVec.size(); buttonIndex++)
+	{
+		auto& curButton = emotionButtonVec.emplace_back();
+		curButton.uiName = "ImgExpression_" + std::to_string(buttonIndex);
+		for (auto& y : faceKeyVec[buttonIndex])
 		{
 			//检查当前按钮是否已经进行了映射
 			const char* curKey = InputParser::BongoCatKeyToButtonBaseName(y);
@@ -1485,6 +1527,18 @@ void BongoCatObject::ClearBinding()
 	{
 			x.binding.UnRegisterBinding();
 	}
+	for (auto& x : modelEmotionButtonVec)
+	{
+			x.binding.UnRegisterBinding();
+	}
+	for (auto& x : live2DMotionButtonVec)
+	{
+			x.binding.UnRegisterBinding();
+	}
+	for (auto& x : live2DMotionButtonVec_LockHand)
+	{
+			x.binding.UnRegisterBinding();
+	}
 	for (auto& x : leftHandAxis.axisVec)
 	{
 			x.binding.UnRegisterBinding();
@@ -1791,22 +1845,22 @@ void BongoCatObject::RegisterAllActionFunc(bool falseToUnregister)
 				((BongoCatObject*)userData)->Play_Sound(UTIL_GETLOW32VALUE(userData2));
 			};
 
-		ActionCallback upActionCallBack;
-		upActionCallBack.userData = this;
-		upActionCallBack.callback = [](const char* actionName, float value, void* userData, uint64_t userData2)
-			{
-				((BongoCatObject*)userData)->Play_Sound(UTIL_GETLOW32VALUE(userData2));
-			};
+		//ActionCallback upActionCallBack;
+		//upActionCallBack.userData = this;
+		//upActionCallBack.callback = [](const char* actionName, float value, void* userData, uint64_t userData2)
+		//	{
+		//		((BongoCatObject*)userData)->Play_Sound(UTIL_GETLOW32VALUE(userData2));
+		//	};
 
 
 
-		for (int i = 0; i < keyboardKeyVec.size(); i++)
+		for (int i = 0; i < soundsKeyVec.size(); i++)
 		{
 			std::string downActionName = "BCM.Sound." + std::to_string(i) + ".Down";
 			//std::string upActionName = "BCM.Sound." + std::to_string(i) + ".Up";
 
 			UTIL_SETLOW32VALUE(downActionCallBack.userData2, i);
-			UTIL_SETLOW32VALUE(upActionCallBack.userData2, i);
+			//UTIL_SETLOW32VALUE(upActionCallBack.userData2, i);
 			//downActionCallBack.userData2 = (void*)i;
 			//upActionCallBack.userData2 = (void*)i;
 			if (falseToUnregister)
@@ -1823,7 +1877,96 @@ void BongoCatObject::RegisterAllActionFunc(bool falseToUnregister)
 		}
 	}
 
+	//表情
+	{
+		ActionCallback downActionCallBack;
+		downActionCallBack.userData = this;
+		downActionCallBack.callback = [](const char* actionName, float value, void* userData, uint64_t userData2)
+			{
+				((BongoCatObject*)userData)->OnExpressionDown(UTIL_GETLOW32VALUE(userData2));
+			};
 
+		ActionCallback upActionCallBack;
+		upActionCallBack.userData = this;
+		upActionCallBack.callback = [](const char* actionName, float value, void* userData, uint64_t userData2)
+			{
+				((BongoCatObject*)userData)->OnExpressionUp(UTIL_GETLOW32VALUE(userData2));
+			};
+
+
+
+		for (int i = 0; i < faceKeyVec.size(); i++)
+		{
+			std::string downActionName = "BCM.Emotion." + std::to_string(i) + ".Down";
+			std::string upActionName = "BCM.Emotion." + std::to_string(i) + ".Up";
+			UTIL_SETLOW32VALUE(downActionCallBack.userData2, i);
+			UTIL_SETLOW32VALUE(upActionCallBack.userData2, i);
+			//downActionCallBack.userData2 = (void*)i;
+			//upActionCallBack.userData2 = (void*)i;
+			if (falseToUnregister)
+			{
+				im.RegisterActionCallback(downActionName.c_str(), downActionCallBack);
+				im.RegisterActionCallback(upActionName.c_str(), upActionCallBack);
+			}
+			else
+			{
+				im.UnregisterActionCallback(downActionName.c_str(), downActionCallBack);
+				im.UnregisterActionCallback(upActionName.c_str(), upActionCallBack);
+
+			}
+		}
+	}
+
+	//live2d动作
+	{
+		ActionCallback downActionCallBack;
+		downActionCallBack.userData = this;
+		downActionCallBack.callback = [](const char* actionName, float value, void* userData, uint64_t userData2)
+			{
+				((BongoCatObject*)userData)->_model->PlayAnimationEX("CAT_motion", UTIL_GETLOW32VALUE(userData2)); 
+			};
+
+
+
+		for (int i = 0; i < l2dMotionKeyVec.size(); i++)
+		{
+			std::string downActionName = "BCM.Motion." + std::to_string(i) + ".Down";
+			UTIL_SETLOW32VALUE(downActionCallBack.userData2, i);
+			//downActionCallBack.userData2 = (void*)i;
+			//upActionCallBack.userData2 = (void*)i;
+			if (falseToUnregister)
+			{
+				im.RegisterActionCallback(downActionName.c_str(), downActionCallBack);
+			}
+			else
+			{
+				im.UnregisterActionCallback(downActionName.c_str(), downActionCallBack);
+			}
+		}
+
+		ActionCallback downActionCallBack_lock;
+		downActionCallBack_lock.userData = this;
+		downActionCallBack_lock.callback = [](const char* actionName, float value, void* userData, uint64_t userData2)
+			{
+				((BongoCatObject*)userData)->_model->PlayAnimationEX("CAT_motion_lock", UTIL_GETLOW32VALUE(userData2));
+			};
+		for (int i = 0; i < l2dMotionKeyVec_LockHand.size(); i++)
+		{
+			std::string downActionName = "BCM.LockHandMotion." + std::to_string(i) + ".Down";
+			UTIL_SETLOW32VALUE(downActionCallBack_lock.userData2, i);
+			//downActionCallBack.userData2 = (void*)i;
+			//upActionCallBack.userData2 = (void*)i;
+			if (falseToUnregister)
+			{
+				im.RegisterActionCallback(downActionName.c_str(), downActionCallBack_lock);
+			}
+			else
+			{
+				im.UnregisterActionCallback(downActionName.c_str(), downActionCallBack_lock);
+			}
+		}
+
+	}
 
 
 
@@ -1998,7 +2141,21 @@ void BongoCatObject::ApplyControlBindings()
 	}
 	for (uint32_t i = 0; i < emotionButtonVec.size(); i++)
 	{
-		emotionButtonVec[i].binding.RegisterBindingEx("BCM.Emotion.", i);
+		emotionButtonVec[i].binding.RegisterBindingEx("BCM.Emotion.", model2dExpressionCount+i);
+	}
+	for (uint32_t i = 0; i < modelEmotionButtonVec.size(); i++)
+	{
+		modelEmotionButtonVec[i].binding.RegisterBindingEx("BCM.Emotion.",i);
+	}
+
+	for (uint32_t i = 0; i < live2DMotionButtonVec.size(); i++)
+	{
+		live2DMotionButtonVec[i].binding.RegisterBindingEx("BCM.Motion.",i);
+	}
+
+	for (uint32_t i = 0; i < live2DMotionButtonVec_LockHand.size(); i++)
+	{
+		live2DMotionButtonVec_LockHand[i].binding.RegisterBindingEx("BCM.LockHandMotion.",i);
 	}
 
 	for (int j = 0; j < leftHandAxis.axisVec.size(); j++)
@@ -2046,6 +2203,88 @@ void BongoCatObject::Play_Sound(int index)
 
 
 }
+
+void BongoCatObject::SetEexpression(int index)
+{
+	//区分index为live2D部分或bongo cat部分
+	if (index < model2dExpressionCount)
+	{
+		_model->SetExpression(index);
+	}
+	else
+	{
+		int bcmExpressionIndex = index - model2dExpressionCount;
+		currentStates.emoticonIndex = bcmExpressionIndex;
+	}
+}
+
+void BongoCatObject::CancelEexpression(int index)
+{
+	if(IsEexpressionActive(index))
+	if (index < model2dExpressionCount)
+	{
+		_model->StopExpression();
+	}
+	else
+	{
+		currentStates.emoticonIndex = -1;
+	}
+}
+
+bool BongoCatObject::IsEexpressionActive(int index)
+{
+
+	if (index < model2dExpressionCount)
+	{
+		return index==_model->GetCurrentExpressionIndex();
+	}
+	else
+	{
+		return currentStates.emoticonIndex == index;
+	}
+	return false;
+}
+
+void BongoCatObject::OnExpressionDown(int index)
+{
+	if (AppSettings::ModelExpressionControlMode::ModelExpressionControlType_Press == AppSettings::GetIns().GetModelExpressionControlMode())
+	{
+		//按下时播放表情，抬起时结束表情
+		SetEexpression(index);
+
+	}
+	else
+	{
+		if(IsEexpressionActive(index))
+			CancelEexpression(index);
+		else
+			SetEexpression(index);
+	}
+
+
+
+
+}
+
+void BongoCatObject::OnExpressionUp(int index)
+{
+	if (AppSettings::ModelExpressionControlMode::ModelExpressionControlType_Press == AppSettings::GetIns().GetModelExpressionControlMode())
+	{
+		//按下时播放表情，抬起时结束表情
+		CancelEexpression(index);
+
+	}
+	else
+	{
+		//切换模式时，不响应抬起按键
+
+
+	}
+
+}
+
+
+
 
 void BongoCatObject::SetLeftHandState(int index, bool bdown)
 {

@@ -34,6 +34,9 @@ typedef std::string _CatString;
     F(DeadZone,Joystick,double,0.05) \
  \
  \
+    F(Model,ExpressionControlMode,int64_t,0) \
+ \
+ \
  \
     F(Misc,Language,_CatString,"unspecified") \
  \
@@ -103,6 +106,16 @@ void _On##settingGroup##setting##Change(const type##& value);
 #undef APPSETTINGS_Declarations
 
 
+
+public:
+    //一些枚举
+
+    enum ModelExpressionControlMode
+    {
+        ModelExpressionControlType_Toggle,
+        ModelExpressionControlType_Press,
+        //ModelExpressionControlType_Toggle,
+    };
 
 
 private:

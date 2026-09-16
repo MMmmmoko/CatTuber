@@ -250,8 +250,12 @@ private:
 	void ClearSound();
 	void ClearEmoticon();
 	void Play_Sound(int index);
-	void SetEmoticon(int index);
-	void CancelEmoticon(int index);
+	void SetEexpression(int index);
+	void CancelEexpression(int index);
+	bool IsEexpressionActive(int index);
+	void OnExpressionDown(int index);
+	void OnExpressionUp(int index);
+
 	void SetLeftHandState(int index, bool bdown);
 	void SetLeftHandPos(float x,float y);
 	void SetRightHandState(int index, bool bdown);
@@ -384,7 +388,7 @@ private:
 		bool emoticonKeep = true;//true时 取消表情为再次按表情键，false松手取消按键
 		std::vector<unsigned char> soundClearKey;//停止音频播放的按键
 		std::vector<unsigned char> emoticonClearKey;//停止音频播放的按键
-		int initialSize[2] = { 612,352 };//初始画布大小，数据来自Config.json
+		int initialSize[2] = { 612,354 };//初始画布大小，数据来自Config.json
 		//CubismMatrix44 projection;
 	}decoration;
 
@@ -425,7 +429,7 @@ private:
 	bool isUsingGamepadKeycode = false;
 
 
-
+	int model2dExpressionCount = 0;
 
 
 
@@ -445,7 +449,10 @@ private:
 	std::vector<ModelButtonControl> rightHandButtonVec;
 	std::vector<ModelButtonControl> keyboardButtonVec;
 	std::vector<ModelButtonControl> soundsButtonVec;//音频触发按钮绑定
-	std::vector<ModelButtonControl> emotionButtonVec;//角色表情
+	std::vector<ModelButtonControl> emotionButtonVec;//角色图片表情
+	std::vector<ModelButtonControl> modelEmotionButtonVec;//角色2D表情
+	std::vector<ModelButtonControl> live2DMotionButtonVec;//角色动作
+	std::vector<ModelButtonControl> live2DMotionButtonVec_LockHand;//角色锁手动作
 	//std::vector<ModelAxisControl> modelAxisVec;
 	//鼠标轴
 	ModelButtonControl mouseButtonVec[MouseButtonIndex_Count];
@@ -466,6 +473,7 @@ private:
 	
 
 
+	//std::vector<ModelExpressionControl> modelExpressionVec;
 	std::vector<ModelAnimationControl> modelAnimationVec;
 
 

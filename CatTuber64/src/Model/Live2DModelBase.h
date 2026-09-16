@@ -61,11 +61,13 @@ public:
 	void SetExpression(const Csm::csmChar* expressionID);
 	void SetExpression(Csm::csmInt32 no);
 	void StopExpression();
+	int GetCurrentExpressionIndex() { return currentExpressionId; };
 	void SetRandomExpression();
 
 	//获取的是CatTuber可控的参数和动画
 	std::vector<std::string> GetParamList();
 	std::vector<std::string> GetAnimationList();
+	std::vector<std::string> GetExpressionList();
 	
 	
 	void ReleaseMotions();
@@ -103,6 +105,8 @@ private:
 	//保存动作和表情列表，供调用和数据清理
 	Csm::csmMap<Csm::csmString, Csm::ACubismMotion*>   _motions; 
 	Csm::csmMap<Csm::csmString, Csm::ACubismMotion*>   _expressions;
+	Csm::ACubismMotion*   _emptyExpression =nullptr;//一个空表情
+	int currentExpressionId = -1;
 
 	//Csm::csmVector<Csm::csmUint64> _bindTextureId; ///< 纹理ID
 	Csm::csmVector<SDL_GPUTexture*> _bindTexture; ///< 纹理
@@ -114,7 +118,7 @@ private:
 	std::unordered_map<std::string, int>   _animationTrackMap;
 	int _idleMotionTrack = 0;//待机动作的轨道
 
-	Csm::ACubismMotion* currentExpression = nullptr;
+	
 
 	//std::unordered_map<>
 	//音频系统
@@ -161,6 +165,7 @@ public:
 	//后续再实现hit
 	//virtual void Hit(float x, float y)override {};
 	virtual std::vector<std::string> GetParamList()override;
+	virtual std::vector<std::string> GetExpressionList()override;
 	virtual std::vector<std::string> GetAnimationList()override;
 
 
@@ -171,6 +176,8 @@ public:
 
 	virtual void SetExpression(const char* expressionID)override;
 	virtual void SetExpression(int expressionIndex)override;
+	virtual void StopExpression()override;
+	virtual int GetCurrentExpressionIndex()override;//如果没有表情，返回-1
 
 
 	virtual ParamHandle GetParamHandle(const std::string& param)override;

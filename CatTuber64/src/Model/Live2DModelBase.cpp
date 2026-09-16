@@ -63,6 +63,8 @@ CubismLive2DModel::~CubismLive2DModel()
 {
 	ReleaseMotions();
 	ReleaseExpressions();
+	if (_emptyExpression)ACubismMotion::Delete(_emptyExpression);
+		
 	if(_modelSetting)
 	for (csmInt32 i = 0; i < _modelSetting->GetMotionGroupCount(); i++)
 	{
@@ -238,7 +240,6 @@ Csm::CubismMotionQueueEntryHandle CubismLive2DModel::StartMotion(const Csm::csmC
 	std::string voice = _modelSetting->GetMotionSoundFileName(group, no);
 	if (!voice.empty())
 	{
-		//暂时等待SDL3_mixer发布稳定版本
 		//https://github.com/libsdl-org/SDL_mixer
 
 
@@ -303,7 +304,22 @@ void CubismLive2DModel::SetExpression(const Csm::csmChar* expressionID)
 	if (motion != NULL)
 	{
 		_expressionManager->StartMotionPriority(motion, false,  /*PriorityForce*/3);
-		currentExpression = motion;
+
+
+
+
+		//设置id
+		//csmInt32 i = 0;
+		//csmMap<csmString, ACubismMotion*>::const_iterator map_ite;
+		//for (map_ite = _expressions.Begin(); map_ite != _expressions.End(); map_ite++)
+		//{
+		//	if ((*map_ite).First == expressionID)
+		//	{
+		//		currentExpressionId = i;
+		//		return;
+		//	}
+		//	i++;
+		//}
 	}
 	else
 	{
@@ -312,6 +328,11 @@ void CubismLive2DModel::SetExpression(const Csm::csmChar* expressionID)
 			SDL_Log("[APP]expression[%s] is null ", expressionID);
 		}
 	}
+
+
+
+
+
 }
 
 void CubismLive2DModel::SetExpression(Csm::csmInt32 no)
@@ -328,6 +349,10 @@ void CubismLive2DModel::SetExpression(Csm::csmInt32 no)
 		if (i == no)
 		{
 			csmString name = (*map_ite).First;
+
+			currentExpressionId = no;
+
+
 			SetExpression(name.GetRawString());
 			return;
 		}
@@ -337,10 +362,16 @@ void CubismLive2DModel::SetExpression(Csm::csmInt32 no)
 
 void CubismLive2DModel::StopExpression()
 {
-	if (!_expressionManager->IsFinished()&& currentExpression)
+	if (!_expressionManager->IsFinished())
 	{
-		_expressionManager->StartMotion(currentExpression,false);
+		if (!_emptyExpression)
+		{
+			_emptyExpression=LoadExpression((uint8_t*)"{}",sizeof("{}"),"##emptyExpression");
+		}
+		_expressionManager->StartMotion(_emptyExpression,false);
+		
 	}
+	currentExpressionId = -1;
 }
 
 void CubismLive2DModel::SetRandomExpression()
@@ -395,6 +426,19 @@ std::vector<std::string> CubismLive2DModel::GetAnimationList()
 		//}
 
 
+	}
+	return resultVec;
+}
+
+std::vector<std::string> CubismLive2DModel::GetExpressionList()
+{
+	auto motionExpressionCount = _modelSetting->GetExpressionCount();
+	std::vector<std::string> resultVec;
+
+	for (int i = 0; i < motionExpressionCount; i++)
+	{
+		auto expressionName = _modelSetting->GetExpressionName(i);
+		resultVec.push_back(expressionName);
 	}
 	return resultVec;
 }
@@ -1035,6 +1079,11 @@ std::vector<std::string> Live2DModelBase::GetParamList()
 	return l2dmodel.GetParamList();
 }
 
+std::vector<std::string> Live2DModelBase::GetExpressionList()
+{
+	return std::vector<std::string>();
+}
+
 std::vector<std::string> Live2DModelBase::GetAnimationList()
 {
 	return l2dmodel.GetAnimationList();
@@ -1073,6 +1122,17 @@ void Live2DModelBase::SetExpression(const char* expressionID)
 void Live2DModelBase::SetExpression(int expressionIndex)
 {
 	l2dmodel.SetExpression(expressionIndex);
+}
+
+void Live2DModelBase::StopExpression()
+{
+	l2dmodel.StopExpression();
+}
+
+int Live2DModelBase::GetCurrentExpressionIndex()
+{
+	
+	return l2dmodel.GetCurrentExpressionIndex();;
 }
 
 ParamHandle Live2DModelBase::GetParamHandle(const std::string& param)

@@ -61,6 +61,8 @@ public:
 		BeganAnimationCallback beganCall=nullptr,void* beganCallUserData=nullptr)=0;
 	virtual void SetExpression(const char* expressionID)=0;
 	virtual void SetExpression(int expressionIndex)=0;
+	virtual void StopExpression()=0;
+	virtual int GetCurrentExpressionIndex()=0;//如果没有表情，返回-1
 
 
 	virtual ParamHandle GetParamHandle(const std::string& param)=0;
@@ -75,8 +77,9 @@ public:
 
 	//获取所有软件可控参数
 	virtual std::vector<std::string> GetParamList() { return std::vector<std::string>(); };
-	//获取的是CatTuber可控的动画
+	//获取的是CatTuber可控的表情
 	virtual std::vector<std::string> GetAnimationList() { return std::vector<std::string>(); };
+	virtual std::vector<std::string> GetExpressionList() { return std::vector<std::string>(); };
 
 
 	//其他接口

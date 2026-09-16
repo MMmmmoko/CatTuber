@@ -335,6 +335,21 @@ void AppSettings::_OnDeadZoneJoystickChange(const double& value)
 }
 
 
+
+void AppSettings::_OnModelExpressionControlModeChange(const int64_t& value)
+{
+}
+
+
+
+
+
+
+
+
+
+
+
 void AppSettings::_OnMiscLanguageChange(const std::string& value)
 {
 	//语言采用SteamAPI的形式

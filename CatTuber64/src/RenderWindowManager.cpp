@@ -2259,11 +2259,13 @@ bool RenderWindowManager::LoadScene(const char* sceneName, bool isQuitSave)
 Json::Value RenderWindowManager::GenerateDefaultWindowJson()
 {
     Json::Value defaultWindowJson;
-    defaultWindowJson["Size"][0] = 400;
-    defaultWindowJson["Size"][1] = 300;
+    //defaultWindowJson["Size"][0] = 400;
+    //defaultWindowJson["Size"][1] = 300;
+    defaultWindowJson["Size"][0] = 612;
+    defaultWindowJson["Size"][1] = 354;
 
     //默认构造一个CatTuber经典场景
-#define LLLLL1
+#define LLLLL2
 #ifdef LLLLL1
     auto& item0 = defaultWindowJson["Scene"]["Items"][0];
     item0["Type"] = "ClassicItem";
@@ -2277,7 +2279,7 @@ Json::Value RenderWindowManager::GenerateDefaultWindowJson()
     //测试bongo cat
     auto& item0 = defaultWindowJson["Scene"]["Items"][0];
     item0["Type"] = "BongoCatItem";
-    item0["Detail"]["Object"]["PackPath"] = "[AppBasePath]/Resources/BongoCatMver/DefaultBongoCat";
+    item0["Detail"]["Object"]["PackPath"] = "[AppBasePath]/Resources/BongoCatMver/DefaultBongoCat_Live2D";
 #endif
 
 #ifdef LLLLL3

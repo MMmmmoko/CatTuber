@@ -168,6 +168,10 @@ struct ModelAxisControl
 
 
 
+
+
+
+
 struct ModelAnimationControl
 {
 	std::string uiName;//用于UI展示的名称
@@ -178,10 +182,25 @@ struct ModelAnimationControl
 
 	//std::string endAction;//动画结束时的action
 
-	//动画允许绑定多种触发方式
+
+	//enum AnimationStates
+	//{
+	//	AnimationStates_NotActive,
+	//	AnimationStates_Playing,
+	//	AnimationStates_FadeOut,
+	//}animationStates;
+
+	//动画允许绑定多种触发方式;
 	std::vector<BindingInfo> defaultBinding;//默认绑定
 	std::vector<BindingInfo> binding;//当前应用的绑定
 };
+//表情暂时用和动画相同的格式
+typedef ModelAnimationControl ModelExpressionControl;
+
+
+
+
+
 
 
 class ModelControl
