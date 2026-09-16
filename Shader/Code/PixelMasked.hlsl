@@ -43,6 +43,7 @@ SamplerState maskSampler : register(s1, space2);
 // Pixel Shader
 // masked
 float4 PixelMasked(VS_OUT In) : SV_Target{
+    
     float4 texColor = mainTexture.Sample(mainSampler, In.uv);
     texColor.rgb = texColor.rgb * cBuffer[0].multiplyColor.rgb;
     texColor.rgb = (texColor.rgb + cBuffer[0].screenColor.rgb) - (texColor.rgb * cBuffer[0].screenColor.rgb);

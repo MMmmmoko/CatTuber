@@ -220,7 +220,7 @@ void BongoCatObject::_Update_Keyboard(uint64_t dtNS)
 				}
 				else
 				{
-					_model->SetParamValue(leftHandDown, 0.F, true, true);
+					_model->SetParamValue(leftHandDown, 0.F, true);
 				}
 		}
 		else
@@ -232,7 +232,10 @@ void BongoCatObject::_Update_Keyboard(uint64_t dtNS)
 				}
 				else
 				{
-					_model->SetParamValue(leftHandDown, 1.F, true, true);
+					if (currentStates.isLockingHand)
+						_model->SetParamValue(leftHandDown, 0.F, true);
+					else
+						_model->SetParamValue(leftHandDown, 1.F, true);
 				}
 		}
 
@@ -245,7 +248,7 @@ void BongoCatObject::_Update_Keyboard(uint64_t dtNS)
 				}
 				else
 				{
-					_model->SetParamValue(rightHandDown, 0.F, true, true);
+					_model->SetParamValue(rightHandDown, 0.F, true);
 				}
 		}
 		else
@@ -257,7 +260,10 @@ void BongoCatObject::_Update_Keyboard(uint64_t dtNS)
 				}
 				else
 				{
-					_model->SetParamValue(rightHandDown, 1.F, true, true);
+					if (currentStates.isLockingHand)
+						_model->SetParamValue(rightHandDown, 0.F, true);
+					else
+						_model->SetParamValue(rightHandDown, 1.F, true);
 				}
 		}
 

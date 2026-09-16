@@ -499,8 +499,8 @@ void BongoCatObject::_Update_Standard(uint64_t dtNS)
 	if (isUsingLive2D)
 	{
 		//设置鼠标位置
-		_model->SetParamValue(rightHandPosParamX, currentStates.rightHandPos[0],true,true);
-		_model->SetParamValue(rightHandPosParamY, currentStates.rightHandPos[1],true,true);
+		_model->SetParamValue(rightHandPosParamX, currentStates.rightHandPos[0],true);
+		_model->SetParamValue(rightHandPosParamY, currentStates.rightHandPos[1],true);
 
 		if (currentStates.leftHandStateStack.empty())
 		{
@@ -513,7 +513,7 @@ void BongoCatObject::_Update_Standard(uint64_t dtNS)
 				}
 				else
 				{
-					_model->SetParamValue(leftHandDown, 0.F, true, true);
+					_model->SetParamValue(leftHandDown, 0.F, true);
 
 				}
 			}
@@ -529,7 +529,11 @@ void BongoCatObject::_Update_Standard(uint64_t dtNS)
 				}
 				else
 				{
-					_model->SetParamValue(leftHandDown, 1.F, true, true);
+
+					if (currentStates.isLockingHand)
+						_model->SetParamValue(leftHandDown, 0.F, true);
+					else
+						_model->SetParamValue(leftHandDown, 1.F, true);
 
 				}
 			}

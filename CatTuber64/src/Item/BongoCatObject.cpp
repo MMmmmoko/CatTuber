@@ -1895,8 +1895,9 @@ void BongoCatObject::RegisterAllActionFunc(bool falseToUnregister)
 
 
 
-		for (int i = 0; i < faceKeyVec.size(); i++)
+		for (int i = 0; i < l2dExpressionKeyVec.size()+ faceKeyVec.size(); i++)
 		{
+			
 			std::string downActionName = "BCM.Emotion." + std::to_string(i) + ".Down";
 			std::string upActionName = "BCM.Emotion." + std::to_string(i) + ".Up";
 			UTIL_SETLOW32VALUE(downActionCallBack.userData2, i);
@@ -1923,6 +1924,7 @@ void BongoCatObject::RegisterAllActionFunc(bool falseToUnregister)
 		downActionCallBack.userData = this;
 		downActionCallBack.callback = [](const char* actionName, float value, void* userData, uint64_t userData2)
 			{
+				if (((BongoCatObject*)userData)->_model)
 				((BongoCatObject*)userData)->_model->PlayAnimationEX("CAT_motion", UTIL_GETLOW32VALUE(userData2)); 
 			};
 
@@ -1948,7 +1950,18 @@ void BongoCatObject::RegisterAllActionFunc(bool falseToUnregister)
 		downActionCallBack_lock.userData = this;
 		downActionCallBack_lock.callback = [](const char* actionName, float value, void* userData, uint64_t userData2)
 			{
-				((BongoCatObject*)userData)->_model->PlayAnimationEX("CAT_motion_lock", UTIL_GETLOW32VALUE(userData2));
+				IModel::FinishedAnimationCallback finishCall = [](void* _pthis)
+					{
+						((BongoCatObject*)_pthis)->currentStates.isLockingHand --;
+
+					};
+				IModel::BeganAnimationCallback beganCall = [](void* _pthis)
+					{
+						((BongoCatObject*)_pthis)->currentStates.isLockingHand ++;
+					};
+				if(((BongoCatObject*)userData)->_model)
+				((BongoCatObject*)userData)->_model->PlayAnimationEX("CAT_motion_lock", UTIL_GETLOW32VALUE(userData2)
+				,finishCall, userData,beganCall, userData);
 			};
 		for (int i = 0; i < l2dMotionKeyVec_LockHand.size(); i++)
 		{
@@ -2209,6 +2222,7 @@ void BongoCatObject::SetEexpression(int index)
 	//区分index为live2D部分或bongo cat部分
 	if (index < model2dExpressionCount)
 	{
+		if (_model)
 		_model->SetExpression(index);
 	}
 	else
@@ -2223,7 +2237,8 @@ void BongoCatObject::CancelEexpression(int index)
 	if(IsEexpressionActive(index))
 	if (index < model2dExpressionCount)
 	{
-		_model->StopExpression();
+		if(_model)
+			_model->StopExpression();
 	}
 	else
 	{
@@ -2234,13 +2249,13 @@ void BongoCatObject::CancelEexpression(int index)
 bool BongoCatObject::IsEexpressionActive(int index)
 {
 
-	if (index < model2dExpressionCount)
+	if (index < model2dExpressionCount&& _model)
 	{
 		return index==_model->GetCurrentExpressionIndex();
 	}
 	else
 	{
-		return currentStates.emoticonIndex == index;
+		return currentStates.emoticonIndex == index - model2dExpressionCount;
 	}
 	return false;
 }

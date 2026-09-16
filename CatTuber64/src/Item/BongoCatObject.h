@@ -312,7 +312,7 @@ private:
 		bool useRightHandPos=false;
 		bool useLeftHandPos=false;//手柄时等效于letfStickButtonDown
 
-		bool isLockingHand = false;
+		int isLockingHand = 0;
 
 
 

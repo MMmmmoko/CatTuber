@@ -47,7 +47,8 @@ static void Live2DFinishedMotionCallBack(Csm::ACubismMotion* motion)
 static void Live2DBeganMotionCallBack(Csm::ACubismMotion* motion)
 {
 	IModel::BeganAnimationCallback beganCall=(IModel::BeganAnimationCallback) motion->GetBeganMotionCustomData();
-	if (beganCall)beganCall(motion->GetBeganMotionCustomDat2());
+	void* userData = motion->GetBeganMotionCustomDat2();
+	if (beganCall)beganCall(userData);
 }
 
 
@@ -231,9 +232,9 @@ Csm::CubismMotionQueueEntryHandle CubismLive2DModel::StartMotion(const Csm::csmC
 	if (motion)
 	{
 		motion->SetBeganMotionHandler(beganMotionCall?Live2DBeganMotionCallBack:nullptr);
-		motion->SetBeganMotionCustomData(beganMotionUserHandlerUserData);
+		motion->SetBeganMotionCustomData(beganMotionCall,beganMotionUserHandlerUserData);
 		motion->SetFinishedMotionHandler(finishedMotionCall?Live2DFinishedMotionCallBack:nullptr);
-		motion->SetFinishedMotionCustomData(finishedMotionUserHandlerUserData);
+		motion->SetFinishedMotionCustomData(finishedMotionCall,finishedMotionUserHandlerUserData);
 	}
 
 	//voice
@@ -776,7 +777,7 @@ void CubismLive2DModel::SetupTexture()
 
 void CubismLive2DModel::Update(float deltaTimeSeconds)
 {
-
+	//32位版本是移除了drag的
 	_dragManager->Update(deltaTimeSeconds);
 	_dragX = _dragManager->GetX();
 	_dragY = _dragManager->GetY();
@@ -787,7 +788,20 @@ void CubismLive2DModel::Update(float deltaTimeSeconds)
 	//-----------------------------------------------------------------
 	_model->LoadParameters(); // 加载之前save的参数
 
+	//对于长期应用的参数
+	for (auto& x : _paramSetCache_longterm)
+	{
+		if (x.op == _ParamInfo::OP_SET)
+			GetModel()->SetParameterValue(static_cast<Csm::csmInt32>(x.param), x.value);
+		else if (x.op == _ParamInfo::OP_ADD)
+			GetModel()->AddParameterValue(static_cast<Csm::csmInt32>(x.param), x.value);
+		else if (x.op == _ParamInfo::OP_MULTIPLY)
+			GetModel()->MultiplyParameterValue(static_cast<Csm::csmInt32>(x.param), x.value);
+	}
+	_paramSetCache_longterm.clear();
 
+
+	_model->SaveParameters(); //保存应用动作后的参数
 
 	//if (_motionManager->IsFinished())
 	//{
@@ -815,20 +829,7 @@ void CubismLive2DModel::Update(float deltaTimeSeconds)
 		}
 	}
 
-	//对于长期应用的参数
-	for (auto& x : _paramSetCache_longterm)
-	{
-		if (x.op== _ParamInfo::OP_SET)
-			GetModel()->SetParameterValue(static_cast<Csm::csmInt32>(x.param),x.value);
-		else if (x.op == _ParamInfo::OP_ADD)
-			GetModel()->AddParameterValue(static_cast<Csm::csmInt32>(x.param), x.value);
-		else if (x.op == _ParamInfo::OP_MULTIPLY)
-			GetModel()->MultiplyParameterValue(static_cast<Csm::csmInt32>(x.param), x.value);
-	}
-	_paramSetCache_longterm.clear();
 
-
-	_model->SaveParameters(); //保存应用动作后的参数
 	//保存是为了之后计算各种参数的最终值后不会影响到下帧（下帧加载参数重新计算，不保存其他状态）
 	//保存后设置只影响当前帧的参数改动
 	for (auto& x : _paramSetCache_curFrame)

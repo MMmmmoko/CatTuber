@@ -346,7 +346,13 @@ void BongoCatObject::_Update_Gamepad(uint64_t dtNS)
 			{
 			}
 
-
+			if (currentStates.isLockingHand)
+			{
+				_model->SetParamValue(leftHandDown, 0.f);
+				_model->SetParamValue(showStickHandLeft, 0.f);
+				_model->SetParamValue(rightHandDown, 0.f);
+				_model->SetParamValue(showStickHandRight, 0.f);
+			}
 
 
 
@@ -370,6 +376,11 @@ void BongoCatObject::_Draw_Gamepad()
 	//return;
 	if (isUsingLive2D)
 	{
+
+
+
+
+
 
 
 		if (!isUsingLive2DDesk)
