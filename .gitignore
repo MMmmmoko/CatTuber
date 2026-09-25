@@ -4,22 +4,8 @@
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
 
-
-
-#自定义输出文件
-#着色器输出路径
-Shader/DXIL
-
-
-#ababa
-CatTuber64/src/CatTuberApp.cpp
-CatTuber64/src/CatTuberApp.h
-CatTuber64/src/Input/
-CatTuber64/src/Pack/
-#这个是为了方便调试放置的文件夹链接
-web/assets/
-web/site/
-Live2DFramework/
+assets/
+site/
 enc_temp_folder/
 build_temp/
 
