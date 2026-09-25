@@ -38,10 +38,8 @@ extra_css:
 plugins:
   - offline
   - search
+  # - blog
   - i18n:
-      # default_language: zh
-      default_language_only: false
-      reconfigure_material: true
       docs_structure: suffix
       languages:
         - locale: zh
@@ -62,14 +60,14 @@ plugins:
             # Broadcast: How to Use CatTuber for Live Streaming or Recording & Frequently Asked Questions
             ChangeLog: Change Log
 
+
 nav:
   - Home: index.md
   - Wiki: 
     - wiki/WikiHome.md
     - wiki/Tutorial/Broadcast.md
   - ChangeLog: ChangeLog/ChangeLog.md
-
-
+  # - Blog: blog/index.md
 
 
 
