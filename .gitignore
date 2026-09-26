@@ -5,10 +5,9 @@
 
 
 assets/
-site/
 enc_temp_folder/
 build_temp/
-
+Web/site
 
 
 
